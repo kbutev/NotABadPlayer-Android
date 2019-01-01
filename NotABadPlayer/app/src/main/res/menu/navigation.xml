@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_albums"
+        android:icon="@drawable/baseline_music_video_black_18dp"
+        android:title="@string/title_albums"/>
+
+    <item
+        android:id="@+id/navigation_playlists"
+        android:icon="@drawable/baseline_library_books_black_18dp"
+        android:title="@string/title_playlists" />
+
+    <item
+        android:id="@+id/navigation_search"
+        android:icon="@drawable/baseline_search_black_18dp"
+        android:title="@string/title_search"/>
+
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/baseline_build_black_18dp"
+        android:title="@string/title_settings"/>
+
+</menu>
