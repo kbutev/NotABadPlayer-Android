@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorBackgroundPrimary">#ffffff</color>
+    <color name="colorTextPrimary">#313131</color>
+    
+    <color name="colorOverlayBackground">#414141</color>
+    <color name="colorOverlayText">#ffffff</color>
+
+    <color name="colorBottomNavigationBackground">#414141</color>
+    <color name="colorBottomNavigationText">#2676d9</color>
+    <color name="colorBottomNavigationTextDeselected">#ffffff</color>
+
+    <color name="colorAlbumItemText">#313131</color>
+    <color name="colorAlbumItemTextSub">#9c9696</color>
+    
+    <color name="colorPrimaryDark">#00acd2</color>
+    <color name="colorAccent">#D81B60</color>
+</resources>
