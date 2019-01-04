@@ -28,12 +28,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
 
         initUI();
         
-        String trackFilePath = getIntent().getStringExtra("track.filePath");
-        String trackTitle = getIntent().getStringExtra("track.title");
-        String trackTrackNum = getIntent().getStringExtra("track.trackNum");
-        String trackDur = getIntent().getStringExtra("track.duration");
-        
-        AudioTrack track = new AudioTrack(trackFilePath, trackTitle, trackTrackNum, trackDur);
+        AudioTrack track = AudioTrack.createFromString(getIntent().getStringExtra("track"));
         
         _presenter = new PlayerPresenter(_fragment, getApplicationContext(), track);
         _fragment.setPresenter(_presenter);
@@ -43,7 +38,6 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     protected void onResume()
     {
         super.onResume();
-        _presenter.start();
     }
     
     private void initUI()
@@ -79,43 +73,13 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void openPlayer()
+    public void openPlayerScreen()
     {
 
     }
 
     @Override
-    public void startPlayer(com.media.notabadplayer.Audio.AudioTrack track)
-    {
-
-    }
-    
-    @Override
-    public void onPlayerPlay(AudioTrack current) 
-    {
-
-    }
-    
-    @Override
-    public void onPlayerStop()
-    {
-
-    }
-    
-    @Override
-    public void onPlayerPause()
-    {
-
-    }
-    
-    @Override
-    public void onPlayerResume()
-    {
-
-    }
-    
-    @Override
-    public void onPlayerVolumeChanged() 
+    public void openPlayerScreen(com.media.notabadplayer.Audio.AudioTrack track)
     {
 
     }

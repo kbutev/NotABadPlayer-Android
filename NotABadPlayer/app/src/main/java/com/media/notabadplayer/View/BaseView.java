@@ -10,12 +10,6 @@ public interface BaseView {
     void onMediaAlbumsLoad(ArrayList<com.media.notabadplayer.Audio.AlbumInfo> albums);
     void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.AudioTrack> songs);
     
-    void openPlayer();
-    void startPlayer(com.media.notabadplayer.Audio.AudioTrack track);
-    
-    void onPlayerPlay(com.media.notabadplayer.Audio.AudioTrack current);
-    void onPlayerStop();
-    void onPlayerPause();
-    void onPlayerResume();
-    void onPlayerVolumeChanged();
+    void openPlayerScreen();
+    void openPlayerScreen(com.media.notabadplayer.Audio.AudioTrack track);
 }

@@ -129,44 +129,14 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void openPlayer()
+    public void openPlayerScreen()
     {
 
     }
 
     @Override
-    public void startPlayer(com.media.notabadplayer.Audio.AudioTrack track)
+    public void openPlayerScreen(com.media.notabadplayer.Audio.AudioTrack track)
     {
 
-    }
-    
-    @Override
-    public void onPlayerPlay(AudioTrack current)
-    {
-        _currentTab.onPlayerPlay(current);
-    }
-    
-    @Override
-    public void onPlayerStop()
-    {
-        _currentTab.onPlayerStop();
-    }
-    
-    @Override
-    public void onPlayerPause()
-    {
-        _currentTab.onPlayerPause();
-    }
-    
-    @Override
-    public void onPlayerResume()
-    {
-        _currentTab.onPlayerResume();
-    }
-    
-    @Override
-    public void onPlayerVolumeChanged()
-    {
-        _currentTab.onPlayerVolumeChanged();
     }
 }

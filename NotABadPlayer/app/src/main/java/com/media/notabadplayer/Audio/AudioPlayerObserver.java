@@ -1,9 +1,10 @@
 package com.media.notabadplayer.Audio;
 
 public interface AudioPlayerObserver {
-    void onPlay(AudioTrack current);
-    void onStop();
-    void onPause();
-    void onResume();
-    void onVolumeChanged();
+    void onPlayerPlay(AudioTrack current);
+    void onPlayerFinish();
+    void onPlayerStop();
+    void onPlayerPause();
+    void onPlayerResume();
+    void onPlayerVolumeChanged();
 }

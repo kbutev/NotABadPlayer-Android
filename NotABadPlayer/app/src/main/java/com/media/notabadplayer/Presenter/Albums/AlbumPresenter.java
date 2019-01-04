@@ -45,6 +45,6 @@ public class AlbumPresenter implements BasePresenter {
         
         Log.v("AlbumPresenter", "Play song " + track.title);
         
-        _view.startPlayer(track);
+        _view.openPlayerScreen(track);
     }
 }

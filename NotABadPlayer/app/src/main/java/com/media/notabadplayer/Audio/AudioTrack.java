@@ -1,38 +1,55 @@
 package com.media.notabadplayer.Audio;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class AudioTrack {
     public final String filePath;
     public final String title;
+    public final String artist;
+    public final String artCover;
     public final String trackNum;
+    public final double durationInSeconds;
     public final String duration;
     
-    public AudioTrack(String filePath, String title, int trackNum, double durationInSeconds)
+    public AudioTrack(String filePath, String title, String artist, String artCover, int trackNum, double durationInSeconds)
     {
         this.filePath = filePath;
         this.title = title;
+        this.artist = artist;
+        this.artCover = artCover;
         this.trackNum = String.valueOf(trackNum);
+        this.durationInSeconds = durationInSeconds;
         this.duration = secondsToString((int)durationInSeconds);
     }
-
-    public AudioTrack(String filePath, String title, String trackNum, String durationInSeconds)
+    
+    public static AudioTrack createFromString(String data)
     {
-        this.filePath = filePath;
-        this.title = title;
-        this.trackNum = trackNum;
-        this.duration = durationInSeconds;
+        String values[] = data.split("\n");
+        
+        if (values.length != 6)
+        {
+            return null;
+        }
+        
+        return new AudioTrack(values[0], values[1], values[2], values[3], Integer.parseInt(values[4]), Double.parseDouble(values[5]));
     }
-
-    private String timeDescription(String pDescription, int pTime)
+    
+    @Override
+    public String toString()
+    {
+        return filePath + "\n" + title + "\n" + artist + "\n" + artCover + "\n" + trackNum + "\n" + String.valueOf(durationInSeconds);
+    }
+    
+    public static String timeDescription(String pDescription, int pTime)
     {
         final String preformatedTime = secondsToString(pTime);
         final String timeForReturn = putTimeInXX(pDescription,preformatedTime);
         return timeForReturn;
     }
-
-    private String secondsToString(int pTime) 
+  
+    public static String secondsToString(int pTime) 
     {
         final int min = pTime/60;
         final int sec = pTime-(min*60);
@@ -41,13 +58,13 @@ public class AudioTrack {
         final String strSec = placeZeroIfNeede(sec);
         return String.format("%s:%s",strMin,strSec);
     }
-
-    private String placeZeroIfNeede(int number) 
+  
+    public static String placeZeroIfNeede(int number) 
     {
         return (number >=10)? Integer.toString(number):String.format("0%s",Integer.toString(number));
     }
-
-    private String putTimeInXX(String pDescription, String pTime)
+  
+    public static String putTimeInXX(String pDescription, String pTime)
     {
         String[] apartDescription = pDescription.split("XX");
 
