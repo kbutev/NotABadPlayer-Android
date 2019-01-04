@@ -5,16 +5,20 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class AudioPlayer {
     private static AudioPlayer _singleton;
     
     private MediaPlayer _player;
     
-    private AudioPlayerObserver _observer;
+    private ArrayList<AudioPlayerObserver> _observers;
     
     private AudioPlayer()
     {
-        
+        _player = new MediaPlayer();
+        _observers = new ArrayList<>();
     }
     
     public static synchronized AudioPlayer getShared()
@@ -27,31 +31,48 @@ public class AudioPlayer {
         return _singleton;
     }
     
-    public boolean hasObserver()
+    private void onPlay(AudioTrack track)
     {
-        return _observer != null;
+        for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPlay(track);}
+    }
+  
+    private void onFinish()
+    {
+        for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerStop();}
+    }
+    
+    public final MediaPlayer getPlayer()
+    {
+        return _player;
     }
     
     public void attachObserver(AudioPlayerObserver observer)
     {
-        _observer = observer;
+        if (_observers.contains(observer))
+        {
+            return;
+        }
+        
+        _observers.add(observer);
     }
     
-    public void detachObserver()
+    public void detachObserver(AudioPlayerObserver observer)
     {
-        _observer = null;
+        _observers.remove(observer);
     }
     
     public void playTrack(Context applicationContext, AudioTrack track)
     {
         Uri path = Uri.parse(Uri.decode(track.filePath));
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        
+        _player.setAudioStreamType(AudioManager.STREAM_MUSIC);
         
         try {
-            mediaPlayer.setDataSource(applicationContext, path);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
+            _player.reset();
+            _player.setDataSource(applicationContext, path);
+            _player.prepare();
+            _player.start();
+            onPlay(track);
         }
         catch (Exception e)
         {

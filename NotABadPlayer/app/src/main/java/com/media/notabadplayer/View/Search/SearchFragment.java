@@ -69,43 +69,13 @@ public class SearchFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openPlayer()
+    public void openPlayerScreen()
     {
 
     }
 
     @Override
-    public void startPlayer(com.media.notabadplayer.Audio.AudioTrack track)
-    {
-
-    }
-
-    @Override
-    public void onPlayerPlay(AudioTrack current)
-    {
-
-    }
-
-    @Override
-    public void onPlayerStop()
-    {
-
-    }
-
-    @Override
-    public void onPlayerPause()
-    {
-
-    }
-
-    @Override
-    public void onPlayerResume()
-    {
-
-    }
-
-    @Override
-    public void onPlayerVolumeChanged()
+    public void openPlayerScreen(com.media.notabadplayer.Audio.AudioTrack track)
     {
 
     }

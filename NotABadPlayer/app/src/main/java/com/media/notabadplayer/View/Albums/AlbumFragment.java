@@ -91,50 +91,17 @@ public class AlbumFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openPlayer()
+    public void openPlayerScreen()
     {
         
     }
     
     @Override
-    public void startPlayer(com.media.notabadplayer.Audio.AudioTrack track)
+    public void openPlayerScreen(com.media.notabadplayer.Audio.AudioTrack track)
     {
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("track.filePath", track.filePath);
-        intent.putExtra("track.title", track.title);
-        intent.putExtra("track.trackNum", track.trackNum);
-        intent.putExtra("track.duration", track.duration);
+        intent.putExtra("track", track.toString());
         startActivity(intent);
-    }
-    
-    @Override
-    public void onPlayerPlay(AudioTrack current)
-    {
-
-    }
-
-    @Override
-    public void onPlayerStop()
-    {
-
-    }
-
-    @Override
-    public void onPlayerPause()
-    {
-
-    }
-
-    @Override
-    public void onPlayerResume()
-    {
-
-    }
-    
-    @Override
-    public void onPlayerVolumeChanged()
-    {
-
     }
 }

@@ -6,7 +6,7 @@ import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
-public class MainPresenter implements BasePresenter, AudioPlayerObserver {
+public class MainPresenter implements BasePresenter {
     private BaseView _view;
     
     public MainPresenter(BaseView view) {
@@ -15,7 +15,7 @@ public class MainPresenter implements BasePresenter, AudioPlayerObserver {
     
     public void start()
     {
-        AudioPlayer.getShared().attachObserver(this);
+        
     }
 
     @Override
@@ -28,35 +28,5 @@ public class MainPresenter implements BasePresenter, AudioPlayerObserver {
     public void onAlbumsItemClick(int index)
     {
 
-    }
-    
-    @Override
-    public void onPlay(AudioTrack current)
-    {
-        _view.onPlayerPlay(current);
-    }
-    
-    @Override
-    public void onStop()
-    {
-        _view.onPlayerStop();
-    }
-    
-    @Override
-    public void onPause()
-    {
-        _view.onPlayerPause();
-    }
-    
-    @Override
-    public void onResume()
-    {
-        _view.onPlayerResume();
-    }
-    
-    @Override
-    public void onVolumeChanged()
-    {
-        _view.onPlayerVolumeChanged();
     }
 }
