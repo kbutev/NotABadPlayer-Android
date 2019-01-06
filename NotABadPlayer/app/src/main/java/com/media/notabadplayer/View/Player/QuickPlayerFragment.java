@@ -6,16 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.media.notabadplayer.Audio.AudioPlayerObserver;
-import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Audio.MediaPlayerObserver;
+import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
 
-public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver {
+public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlayerObserver {
     public QuickPlayerFragment()
     {
 
@@ -60,7 +59,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.AudioTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
     {
 
     }
@@ -72,13 +71,13 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void openPlayerScreen(com.media.notabadplayer.Audio.AudioTrack track)
+    public void openPlayerScreen(MediaTrack track)
     {
 
     }
 
     @Override
-    public void onPlayerPlay(AudioTrack current)
+    public void onPlayerPlay(MediaTrack current)
     {
 
     }

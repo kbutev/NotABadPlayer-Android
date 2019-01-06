@@ -1,17 +1,15 @@
 package com.media.notabadplayer.View.Albums;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.R;
 
 import java.util.ArrayList;
@@ -21,9 +19,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class AlbumListAdapter extends BaseAdapter
 {
     private Context _context;
-    private ArrayList<AudioTrack> _tracks;
+    private ArrayList<MediaTrack> _tracks;
     
-    public AlbumListAdapter(@NonNull Context context, ArrayList<AudioTrack> tracks)
+    public AlbumListAdapter(@NonNull Context context, ArrayList<MediaTrack> tracks)
     {
         this._context = context;
         this._tracks = tracks;

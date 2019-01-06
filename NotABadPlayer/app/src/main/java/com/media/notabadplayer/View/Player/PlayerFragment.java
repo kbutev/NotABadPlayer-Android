@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -15,20 +14,23 @@ import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AlbumInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlayerObserver;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.MediaPlayerObserver;
+import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Controlls.ApplicationInput;
+import com.media.notabadplayer.Controlls.KeyBinds;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.View.Albums.AlbumFragment;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
 
-public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver
+public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObserver
 {
     private BasePresenter _presenter;
-  
+
+    AudioPlayer _player = AudioPlayer.getShared();
+    
     private Handler _handler = new Handler();
     
     private ImageView _imageCover;
@@ -61,7 +63,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     public void onResume()
     {
         super.onResume();
-        AudioPlayer.getShared().attachObserver(this);
+        _player.attachObserver(this);
         _presenter.start();
     }
     
@@ -69,7 +71,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     public void onPause()
     {
        super.onPause();
-       AudioPlayer.getShared().detachObserver(this); 
+        _player.detachObserver(this); 
     }
     
     @Override
@@ -88,16 +90,75 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonPlay = root.findViewById(R.id.mediaButtonPlay);
         _buttonForward = root.findViewById(R.id.mediaButtonForward);
         
+        // Init UI
+        initUI();
+        
         return root;
     }
     
-    private void updateState()
+    private void initUI()
     {
-        AudioPlayer player = AudioPlayer.getShared();
+        _mediaBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (!fromUser)
+                {
+                    return;
+                }
+                
+                _player.seekTo(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         
-        int currentPosition = player.getPlayer().getCurrentPosition() / 1000;
+        _buttonPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                KeyBinds.getShared().respondToInput(ApplicationInput.PLAYER_PLAY_BUTTON);
+                
+                if (_player.isPlaying())
+                {
+                    _buttonPlay.setText("Pause");
+                }
+                else
+                {
+                    _buttonPlay.setText("Resume");
+                }
+            }
+        });
+
+        _buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                KeyBinds.getShared().respondToInput(ApplicationInput.PLAYER_PREVIOUS_BUTTON);
+            }
+        });
+
+        _buttonForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                KeyBinds.getShared().respondToInput(ApplicationInput.PLAYER_NEXT_BUTTON);
+            }
+        });
+    }
+    
+    private void updateUIState()
+    {
+        int currentPosition = _player.getPlayer().getCurrentPosition() / 1000;
         _mediaBar.setProgress(currentPosition);
-        _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
+        _labelDurationCurrent.setText(MediaTrack.secondsToString(currentPosition));
     }
     
     @Override
@@ -118,7 +179,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
     {
 
     }
@@ -130,13 +191,13 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void openPlayerScreen(AudioTrack track) 
+    public void openPlayerScreen(MediaTrack track) 
     {
 
     }
   
     @Override
-    public void onPlayerPlay(AudioTrack current)
+    public void onPlayerPlay(MediaTrack current)
     {
         _imageCover.setImageURI(Uri.parse(Uri.decode(current.artCover)));
         _labelTitle.setText(current.title);
@@ -149,7 +210,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
           public void run() {
             if (getActivity() != null)
             {
-                updateState();
+                updateUIState();
                 
                 _handler.postDelayed(this, 100);
             }
