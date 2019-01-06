@@ -96,34 +96,31 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
     
     @Override
-    public void onBackPressed()
-    {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.tabLayout);
-        
-        if (fragment != _currentTab)
-        {
-            super.onBackPressed();
-        }
-    }
-    
-    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+        if ((keyCode == KeyEvent.KEYCODE_BACK))
         {
-            KeyBinds.getShared().respondToInput(ApplicationInput.VOLUME_DOWN_BUTTON);
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.tabLayout);
+
+            if (fragment != _currentTab)
+            {
+                super.onBackPressed();
+                return true;
+            }
         }
-        
-        return true;
-    }
-    
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
+
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
         {
             KeyBinds.getShared().respondToInput(ApplicationInput.VOLUME_UP_BUTTON);
+            return true;
         }
-        
-        return true;
+
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+        {
+            KeyBinds.getShared().respondToInput(ApplicationInput.VOLUME_DOWN_BUTTON);
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
     
     @Override
