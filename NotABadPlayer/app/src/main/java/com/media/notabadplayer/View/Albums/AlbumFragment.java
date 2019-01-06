@@ -9,12 +9,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
-import com.media.notabadplayer.View.Main.MainActivity;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 
 import java.util.ArrayList;
@@ -85,7 +83,7 @@ public class AlbumFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.AudioTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
     {
         _albumSongs.setAdapter(new AlbumListAdapter(getContext(), songs));
     }
@@ -97,7 +95,7 @@ public class AlbumFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void openPlayerScreen(com.media.notabadplayer.Audio.AudioTrack track)
+    public void openPlayerScreen(MediaTrack track)
     {
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 
 import com.media.notabadplayer.Audio.AlbumInfo;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Controlls.ApplicationInput;
+import com.media.notabadplayer.Controlls.KeyBinds;
 import com.media.notabadplayer.Presenter.Player.PlayerPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
@@ -28,7 +31,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
 
         initUI();
         
-        AudioTrack track = AudioTrack.createFromString(getIntent().getStringExtra("track"));
+        MediaTrack track = MediaTrack.createFromString(getIntent().getStringExtra("track"));
         
         _presenter = new PlayerPresenter(_fragment, getApplicationContext(), track);
         _fragment.setPresenter(_presenter);
@@ -38,6 +41,26 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     protected void onResume()
     {
         super.onResume();
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+        {
+            KeyBinds.getShared().respondToInput(ApplicationInput.VOLUME_DOWN_BUTTON);
+        }
+        
+        return true;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
+        {
+            KeyBinds.getShared().respondToInput(ApplicationInput.VOLUME_UP_BUTTON);
+        }
+        
+        return true;
     }
     
     private void initUI()
@@ -67,7 +90,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
     {
 
     }
@@ -79,7 +102,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void openPlayerScreen(com.media.notabadplayer.Audio.AudioTrack track)
+    public void openPlayerScreen(MediaTrack track)
     {
 
     }

@@ -11,7 +11,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.media.notabadplayer.Audio.AlbumInfo;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.Presenter.Albums.AlbumPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
@@ -103,7 +103,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.AudioTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
     {
 
     }
@@ -115,7 +115,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openPlayerScreen(com.media.notabadplayer.Audio.AudioTrack track)
+    public void openPlayerScreen(MediaTrack track)
     {
 
     }

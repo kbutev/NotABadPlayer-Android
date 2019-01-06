@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class MediaInfo {
     private Context _context;
     private ArrayList<AlbumInfo> _albums = new  ArrayList<AlbumInfo>();
-    private HashMap<String, ArrayList<AudioTrack>> _albumSongs = new HashMap<>();
+    private HashMap<String, ArrayList<MediaTrack>> _albumSongs = new HashMap<>();
     
     public MediaInfo(Context context)
     {
@@ -63,18 +63,18 @@ public class MediaInfo {
         return _albums;
     }
     
-    public ArrayList<AudioTrack> getAlbumSongs(AlbumInfo album)
+    public ArrayList<MediaTrack> getAlbumSongs(AlbumInfo album)
     {
         if (!_albumSongs.containsKey(album.albumID))
         {
-            _albumSongs.put(album.albumID, new ArrayList<AudioTrack>());
+            _albumSongs.put(album.albumID, new ArrayList<MediaTrack>());
         }
         else
         {
             return _albumSongs.get(album.albumID);
         }
         
-        ArrayList<AudioTrack> albumSongs = _albumSongs.get(album.albumID);
+        ArrayList<MediaTrack> albumSongs = _albumSongs.get(album.albumID);
         
         String projection[] = {
                 MediaStore.Audio.Media.DATA,
@@ -111,7 +111,7 @@ public class MediaInfo {
             int trackNum = cursor.getInt(trackNumColumn);
             double duration = cursor.getLong(durationColumn) / 1000;
             
-            albumSongs.add(new AudioTrack(filePath, title, artist,album.albumCover, trackNum, duration));
+            albumSongs.add(new MediaTrack(filePath, title, artist,album.albumCover, trackNum, duration));
         }
         
         return albumSongs;
