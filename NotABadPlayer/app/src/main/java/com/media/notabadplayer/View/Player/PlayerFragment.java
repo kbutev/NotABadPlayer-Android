@@ -27,6 +27,8 @@ import java.util.ArrayList;
 
 public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObserver
 {
+    private boolean _initialized = false;
+    
     private BasePresenter _presenter;
 
     AudioPlayer _player = AudioPlayer.getShared();
@@ -64,7 +66,12 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     {
         super.onResume();
         _player.attachObserver(this);
-        _presenter.start();
+        
+        if (!_initialized)
+        {
+            _initialized = true;
+            _presenter.start();
+        }
     }
     
     @Override

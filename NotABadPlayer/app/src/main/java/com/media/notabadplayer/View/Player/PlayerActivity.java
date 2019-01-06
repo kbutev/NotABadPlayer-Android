@@ -42,25 +42,28 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     {
         super.onResume();
     }
-    
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
-        {
-            KeyBinds.getShared().respondToInput(ApplicationInput.VOLUME_DOWN_BUTTON);
-        }
-        
-        return true;
+    public void onBackPressed()
+    {
+        super.onBackPressed();
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
         {
             KeyBinds.getShared().respondToInput(ApplicationInput.VOLUME_UP_BUTTON);
+            return true;
         }
-        
-        return true;
+
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+        {
+            KeyBinds.getShared().respondToInput(ApplicationInput.VOLUME_DOWN_BUTTON);
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
     
     private void initUI()
