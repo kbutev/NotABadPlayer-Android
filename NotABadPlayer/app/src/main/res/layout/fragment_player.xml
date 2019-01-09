@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,9 +8,9 @@
     <ImageView
         android:id="@+id/cover"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="25"/>
+        android:layout_weight="0.25"/>
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +18,7 @@
         android:layout_marginTop="15dp"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_weight="25">
+        android:layout_weight="0.25">
         
         <TextView
             android:id="@+id/songTitle"
@@ -36,10 +35,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
         android:gravity="bottom"
         android:orientation="vertical"
-        android:layout_weight="50">
+        android:layout_weight="0.5">
 
         <SeekBar
             android:id="@+id/mediaBar"
@@ -59,14 +58,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0:00"
-                android:layout_weight="50"
+                android:textSize="12sp"
+                android:layout_weight="0.5"
                 android:layout_marginLeft="10dp"/>
             <TextView
                 android:id="@+id/durationTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0:00"
-                android:layout_weight="50"
+                android:textSize="12sp"
+                android:layout_weight="0.5"
                 android:gravity="right"
                 android:layout_marginRight="10dp"/>
         </LinearLayout>

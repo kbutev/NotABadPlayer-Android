@@ -87,12 +87,6 @@ public class AlbumFragment extends Fragment implements BaseView
     {
         _albumSongs.setAdapter(new AlbumListAdapter(getContext(), songs));
     }
-
-    @Override
-    public void openPlayerScreen()
-    {
-        
-    }
     
     @Override
     public void openPlayerScreen(MediaTrack track)

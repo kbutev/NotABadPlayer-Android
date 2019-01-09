@@ -12,6 +12,5 @@ public interface BaseView {
     void onMediaAlbumsLoad(ArrayList<com.media.notabadplayer.Audio.AlbumInfo> albums);
     void onAlbumSongsLoad(ArrayList<MediaTrack> songs);
     
-    void openPlayerScreen();
     void openPlayerScreen(MediaTrack track);
 }
