@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.math.MathUtils;
 import android.util.Log;
 
@@ -84,8 +85,10 @@ public class AudioPlayer {
     {
         return _playlist;
     }
-
-    public void playPlaylist(Context applicationContext, MediaPlayerPlaylist playlist)
+    
+    public boolean hasPlaylist() {return _playlist != null;}
+    
+    public void playPlaylist(Context applicationContext, @NonNull MediaPlayerPlaylist playlist)
     {
         _applicationContext = applicationContext;
         _playlist = playlist;
@@ -102,7 +105,7 @@ public class AudioPlayer {
         }
         
         Uri path = Uri.parse(Uri.decode(track.filePath));
-
+        
         _player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         try {
@@ -165,6 +168,11 @@ public class AudioPlayer {
     
     public void next()
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         _playlist.goToNextPlayingTrack();
 
         if (_playlist.getPlayingTrack() == null)
@@ -179,6 +187,11 @@ public class AudioPlayer {
 
     public void previous()
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         _playlist.goToNextPlayingTrack();
         
         if (_playlist.getPlayingTrack() == null)
@@ -193,6 +206,11 @@ public class AudioPlayer {
 
     public void shuffle()
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         _playlist.goToTrackByShuffle();
     }
     

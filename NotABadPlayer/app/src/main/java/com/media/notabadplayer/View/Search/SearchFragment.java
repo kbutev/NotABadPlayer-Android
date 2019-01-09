@@ -66,13 +66,7 @@ public class SearchFragment extends Fragment implements BaseView
     {
 
     }
-
-    @Override
-    public void openPlayerScreen()
-    {
-
-    }
-
+    
     @Override
     public void openPlayerScreen(MediaTrack track)
     {

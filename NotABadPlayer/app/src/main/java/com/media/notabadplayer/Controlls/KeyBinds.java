@@ -37,9 +37,9 @@ public class KeyBinds
             case QUICK_PLAYER_PLAY_BUTTON:
                 return performAction(ApplicationAction.PAUSE_OR_RESUME);
             case QUICK_PLAYER_NEXT_BUTTON:
-                return performAction(ApplicationAction.NEXT);
+                return performAction(ApplicationAction.JUMP_FORWARDS_15);
             case QUICK_PLAYER_PREVIOUS_BUTTON:
-                return performAction(ApplicationAction.PREVIOUS);
+                return performAction(ApplicationAction.JUMP_BACKWARDS_15);
         }
         
         return ApplicationAction.DO_NOTHING;

@@ -145,13 +145,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
 
     }
-
-    @Override
-    public void openPlayerScreen()
-    {
-
-    }
-
+    
     @Override
     public void openPlayerScreen(MediaTrack track)
     {

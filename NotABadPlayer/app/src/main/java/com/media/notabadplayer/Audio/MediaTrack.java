@@ -22,6 +22,11 @@ public class MediaTrack {
     
     public static MediaTrack createFromString(String data)
     {
+        if (data == null)
+        {
+            return null;
+        }
+        
         String values[] = data.split("\n");
         
         if (values.length != 6)

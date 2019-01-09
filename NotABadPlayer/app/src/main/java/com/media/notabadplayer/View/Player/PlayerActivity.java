@@ -97,13 +97,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     {
 
     }
-
-    @Override
-    public void openPlayerScreen()
-    {
-
-    }
-
+    
     @Override
     public void openPlayerScreen(MediaTrack track)
     {

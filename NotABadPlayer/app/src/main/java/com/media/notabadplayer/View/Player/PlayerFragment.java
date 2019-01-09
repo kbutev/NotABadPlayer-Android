@@ -78,7 +78,7 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     public void onPause()
     {
        super.onPause();
-        _player.detachObserver(this); 
+        _player.detachObserver(this);
     }
     
     @Override
@@ -159,6 +159,18 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
                 KeyBinds.getShared().respondToInput(ApplicationInput.PLAYER_NEXT_BUTTON);
             }
         });
+    
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity() != null)
+                {
+                    updateUIState();
+                
+                    _handler.postDelayed(this, 100);
+                }
+            }
+        });
     }
     
     private void updateUIState()
@@ -190,39 +202,21 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     {
 
     }
-
-    @Override
-    public void openPlayerScreen()
-    {
-
-    }
-
+    
     @Override
     public void openPlayerScreen(MediaTrack track) 
     {
-
+        _imageCover.setImageURI(Uri.parse(Uri.decode(track.artCover)));
+        _labelTitle.setText(track.title);
+        _labelArtist.setText(track.artist);
+        _mediaBar.setMax((int)track.durationInSeconds);
+        _labelDurationTotal.setText(track.duration);
     }
   
     @Override
     public void onPlayerPlay(MediaTrack current)
     {
-        _imageCover.setImageURI(Uri.parse(Uri.decode(current.artCover)));
-        _labelTitle.setText(current.title);
-        _labelArtist.setText(current.artist);
-        _mediaBar.setMax((int)current.durationInSeconds);
-        _labelDurationTotal.setText(current.duration);
         
-        getActivity().runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            if (getActivity() != null)
-            {
-                updateUIState();
-                
-                _handler.postDelayed(this, 100);
-            }
-          }
-        });
     }
     
     @Override
