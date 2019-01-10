@@ -15,4 +15,6 @@
     
     <color name="colorPrimaryDark">#00acd2</color>
     <color name="colorAccent">#D81B60</color>
+    
+    <color name="mediaButtons">#ffffff</color>
 </resources>

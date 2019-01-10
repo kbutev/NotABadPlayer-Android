@@ -56,6 +56,16 @@ public class AudioPlayer {
         for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerStop();}
     }
     
+    private void onResume(MediaTrack track)
+    {
+        for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerResume(track);}
+    }
+    
+    private void onPause(MediaTrack track)
+    {
+        for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPause(track);}
+    }
+    
     public final MediaPlayer getPlayer()
     {
         return _player;
@@ -131,6 +141,8 @@ public class AudioPlayer {
             if (!_player.isPlaying())
             {
                 _player.start();
+                
+                onResume(_playlist.getPlayingTrack());
             }
         }
         catch (Exception e)
@@ -146,6 +158,8 @@ public class AudioPlayer {
             if (_player.isPlaying())
             {
                 _player.pause();
+                
+                onPause(_playlist.getPlayingTrack());
             }
         }
         catch (Exception e)
@@ -159,6 +173,8 @@ public class AudioPlayer {
         try
         {
             _player.stop();
+            
+            onStop();
         }
         catch (Exception e)
         {
