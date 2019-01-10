@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android" 
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="100dp">
     
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingLeft="10dp"
+        android:paddingTop="3dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
         android:gravity="bottom"
         android:orientation="vertical">
 
@@ -20,25 +21,23 @@
             
             <ImageView
                 android:id="@+id/cover"
-                android:layout_width="32dp"
-                android:layout_height="32dp" />
+                android:layout_width="64dp"
+                android:layout_height="32dp"
+                android:scaleType="fitXY"/>
 
             <Space
-                android:layout_width="5dp"
+                android:layout_width="3dp"
                 android:layout_height="0dp"/>
 
             <TextView
                 android:id="@+id/labelTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="250dp"
+                android:layout_weight="1"
+                android:maxWidth="200dp"
                 android:textSize="12sp"
-                android:text="Nothing playing"/>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:text="Nothing playing"
+                android:singleLine="true"/>
 
             <TextView
                 android:id="@+id/durationCurrent"
@@ -59,10 +58,6 @@
                 android:text="0:00"
                 android:gravity="right"/>
 
-            <Space
-                android:layout_width="10dp"
-                android:layout_height="0dp"/>
-
         </LinearLayout>
 
         <SeekBar
@@ -71,28 +66,44 @@
             android:layout_height="32dp">
 
         </SeekBar>
-
-        <LinearLayout
+        
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
-            <Button
-                android:id="@+id/mediaButtonBack"
-                android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Backw"/>
-            <Button
-                android:id="@+id/mediaButtonPlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pause"/>
-            <Button
-                android:id="@+id/mediaButtonForward"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Forw"/>
-        </LinearLayout>
+                android:orientation="vertical">
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal">
+                    <Button
+                        android:id="@+id/mediaButtonBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/media_previous"
+                        android:backgroundTint="@color/mediaButtons"/>
+                    <Button
+                        android:id="@+id/mediaButtonPlay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/media_play"
+                        android:backgroundTint="@color/mediaButtons"/>
+                    <Button
+                        android:id="@+id/mediaButtonForward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/media_next"
+                        android:backgroundTint="@color/mediaButtons"/>
+                </LinearLayout>
+            </LinearLayout>
+            
+        </android.support.constraint.ConstraintLayout>
+        
     </LinearLayout>
-
-</android.support.constraint.ConstraintLayout>
+    
+</FrameLayout>

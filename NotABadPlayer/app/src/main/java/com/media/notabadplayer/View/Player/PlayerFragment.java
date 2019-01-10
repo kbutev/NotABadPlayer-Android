@@ -132,18 +132,18 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
             public void onClick(View v) {
 
                 KeyBinds.getShared().respondToInput(ApplicationInput.PLAYER_PLAY_BUTTON);
-                
-                if (_player.isPlaying())
-                {
-                    _buttonPlay.setText("Pause");
-                }
-                else
-                {
-                    _buttonPlay.setText("Resume");
-                }
             }
         });
-
+        
+        if (_player.isPlaying())
+        {
+            _buttonPlay.setBackgroundResource(R.drawable.media_pause);
+        }
+        else
+        {
+            _buttonPlay.setBackgroundResource(R.drawable.media_play);
+        }
+        
         _buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,35 +212,35 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
         _mediaBar.setMax((int)track.durationInSeconds);
         _labelDurationTotal.setText(track.duration);
     }
-  
+    
     @Override
     public void onPlayerPlay(MediaTrack current)
     {
-        
+        _buttonPlay.setBackgroundResource(R.drawable.media_pause);
     }
     
     @Override
-    public void onPlayerFinish()
+    public void onPlayerFinish(MediaTrack track)
     {
-        
+        _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }
     
     @Override
     public void onPlayerStop()
     {
-        
+        _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }
     
     @Override
-    public void onPlayerPause()
+    public void onPlayerPause(MediaTrack track)
     {
-        
+        _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }
     
     @Override
-    public void onPlayerResume()
+    public void onPlayerResume(MediaTrack track)
     {
-        
+        _buttonPlay.setBackgroundResource(R.drawable.media_pause);
     }
     
     @Override

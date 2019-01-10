@@ -128,15 +128,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
             public void onClick(View v) {
             
                 KeyBinds.getShared().respondToInput(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON);
-            
-                if (_player.isPlaying())
-                {
-                    _buttonPlay.setText("Pause");
-                }
-                else
-                {
-                    _buttonPlay.setText("Resume");
-                }
             }
         });
     
@@ -208,34 +199,35 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     @Override
     public void onPlayerPlay(MediaTrack current)
     {
+        _buttonPlay.setBackgroundResource(R.drawable.media_pause);
         _imageCover.setImageURI(Uri.parse(Uri.decode(current.artCover)));
         _labelTitle.setText(current.title);
         _mediaBar.setMax((int)current.durationInSeconds);
         _labelDurationTotal.setText(current.duration);
     }
-  
+    
     @Override
-    public void onPlayerFinish()
+    public void onPlayerFinish(MediaTrack track)
     {
-        
+        _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }
-
+    
     @Override
     public void onPlayerStop()
     {
 
     }
-
+    
     @Override
-    public void onPlayerPause()
+    public void onPlayerPause(MediaTrack track)
     {
-
+        _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }
-
+    
     @Override
-    public void onPlayerResume()
+    public void onPlayerResume(MediaTrack track)
     {
-
+        _buttonPlay.setBackgroundResource(R.drawable.media_pause);
     }
     
     @Override
