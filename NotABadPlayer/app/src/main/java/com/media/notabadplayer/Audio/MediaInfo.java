@@ -80,6 +80,7 @@ public class MediaInfo {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.DISPLAY_NAME,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.TRACK
@@ -100,6 +101,7 @@ public class MediaInfo {
         int dataColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
         int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
         int artistColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+        int albumTitleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
         int trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
         int durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
         
@@ -108,10 +110,11 @@ public class MediaInfo {
             String filePath = cursor.getString(dataColumn);
             String title = cursor.getString(titleColumn);
             String artist = cursor.getString(artistColumn);
+            String albumTitle = cursor.getString(albumTitleColumn);
             int trackNum = cursor.getInt(trackNumColumn);
             double duration = cursor.getLong(durationColumn) / 1000;
             
-            albumSongs.add(new MediaTrack(filePath, title, artist,album.albumCover, trackNum, duration));
+            albumSongs.add(new MediaTrack(filePath, title, artist, albumTitle, album.albumCover, trackNum, duration));
         }
         
         return albumSongs;
