@@ -10,6 +10,7 @@
     <color name="colorBottomNavigationText">#2676d9</color>
     <color name="colorBottomNavigationTextDeselected">#ffffff</color>
 
+    <color name="colorAlbumTitleText">#313131</color>
     <color name="colorAlbumItemText">#313131</color>
     <color name="colorAlbumItemTextSub">#9c9696</color>
     

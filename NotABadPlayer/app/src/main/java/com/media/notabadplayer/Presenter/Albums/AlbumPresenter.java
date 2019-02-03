@@ -41,6 +41,15 @@ public class AlbumPresenter implements BasePresenter {
     @Override
     public void onAlbumsItemClick(int index)
     {
+        // Index zero is the header - ignore
+        if (index == 0)
+        {
+            return;
+        }
+        
+        // Index greater than zero is an song track
+        index--;
+        
         MediaTrack track = _songs.get(index);
         
         Log.v("AlbumPresenter", "Play song " + track.title);

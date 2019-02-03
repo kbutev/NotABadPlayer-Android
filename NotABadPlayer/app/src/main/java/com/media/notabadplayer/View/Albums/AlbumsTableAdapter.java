@@ -36,27 +36,31 @@ class AlbumsTableAdapter extends BaseAdapter
 
     public Object getItem(int position)
     {
-        return null;
+        return _data.get(position);
     }
 
     public long getItemId(int position)
     {
-        return 0;
+        return position;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
     {
-        View listItem = convertView;
-        
-        if (listItem == null)
+        // Init
+        if (convertView == null)
         {
-            listItem = LayoutInflater.from(_context).inflate(R.layout.item_table_album, parent, false);
+            LayoutInflater.from(_context).inflate(R.layout.item_table_album, parent, false);
         }
         
-        String dataTitle = _data.get(position).albumTitle;
-        String dataCover = _data.get(position).albumCover;
+        // Item
+        AlbumInfo item = (AlbumInfo) getItem(position);
+
+        View listItem = LayoutInflater.from(_context).inflate(R.layout.item_table_album, parent, false);
+        
+        String dataTitle = item.albumTitle;
+        String dataCover = item.albumCover;
         
         ImageView cover = checkNotNull((ImageView)listItem.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
         

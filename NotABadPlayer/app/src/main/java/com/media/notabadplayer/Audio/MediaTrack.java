@@ -4,16 +4,18 @@ public class MediaTrack {
     public final String filePath;
     public final String title;
     public final String artist;
+    public final String albumTitle;
     public final String artCover;
     public final String trackNum;
     public final double durationInSeconds;
     public final String duration;
     
-    public MediaTrack(String filePath, String title, String artist, String artCover, int trackNum, double durationInSeconds)
+    public MediaTrack(String filePath, String title, String artist, String albumTitle, String artCover, int trackNum, double durationInSeconds)
     {
         this.filePath = filePath;
         this.title = title;
         this.artist = artist;
+        this.albumTitle = albumTitle;
         this.artCover = artCover;
         this.trackNum = String.valueOf(trackNum);
         this.durationInSeconds = durationInSeconds;
@@ -29,18 +31,18 @@ public class MediaTrack {
         
         String values[] = data.split("\n");
         
-        if (values.length != 6)
+        if (values.length != 7)
         {
             return null;
         }
         
-        return new MediaTrack(values[0], values[1], values[2], values[3], Integer.parseInt(values[4]), Double.parseDouble(values[5]));
+        return new MediaTrack(values[0], values[1], values[2], values[3], values[4], Integer.parseInt(values[5]), Double.parseDouble(values[6]));
     }
     
     @Override
     public String toString()
     {
-        return filePath + "\n" + title + "\n" + artist + "\n" + artCover + "\n" + trackNum + "\n" + String.valueOf(durationInSeconds);
+        return filePath + "\n" + title + "\n" + artist + "\n" + albumTitle + "\n" + artCover + "\n" + trackNum + "\n" + String.valueOf(durationInSeconds);
     }
     
     public static String timeDescription(String pDescription, int pTime)
@@ -55,12 +57,12 @@ public class MediaTrack {
         final int min = pTime/60;
         final int sec = pTime-(min*60);
 
-        final String strMin = placeZeroIfNeede(min);
-        final String strSec = placeZeroIfNeede(sec);
+        final String strMin = placeZeroIfNeeded(min);
+        final String strSec = placeZeroIfNeeded(sec);
         return String.format("%s:%s",strMin,strSec);
     }
   
-    public static String placeZeroIfNeede(int number) 
+    public static String placeZeroIfNeeded(int number) 
     {
         return (number >=10)? Integer.toString(number):String.format("0%s",Integer.toString(number));
     }
