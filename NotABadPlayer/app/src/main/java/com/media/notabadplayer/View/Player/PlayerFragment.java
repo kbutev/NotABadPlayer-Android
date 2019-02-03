@@ -198,25 +198,39 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(MediaTrack track) 
+    public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist) 
     {
-        _imageCover.setImageURI(Uri.parse(Uri.decode(track.artCover)));
-        _labelTitle.setText(track.title);
-        _labelArtist.setText(track.artist);
-        _mediaBar.setMax((int)track.durationInSeconds);
-        _labelDurationTotal.setText(track.duration);
+        MediaTrack playingTrack = playlist.getPlayingTrack();
+        
+        if (playingTrack != null)
+        {
+            _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.artCover)));
+            _labelTitle.setText(playingTrack.title);
+            _labelArtist.setText(playingTrack.artist);
+            _mediaBar.setMax((int) playingTrack.durationInSeconds);
+            _labelDurationTotal.setText(playingTrack.duration);
+        }
     }
     
     @Override
     public void onPlayerPlay(MediaTrack current)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
+        
+        if (current != null)
+        {
+            _imageCover.setImageURI(Uri.parse(Uri.decode(current.artCover)));
+            _labelTitle.setText(current.title);
+            _labelArtist.setText(current.artist);
+            _mediaBar.setMax((int) current.durationInSeconds);
+            _labelDurationTotal.setText(current.duration);
+        }
     }
     
     @Override

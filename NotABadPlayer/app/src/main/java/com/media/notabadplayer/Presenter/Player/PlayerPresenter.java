@@ -1,5 +1,6 @@
 package com.media.notabadplayer.Presenter.Player;
 
+import android.app.Application;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -13,41 +14,35 @@ import com.media.notabadplayer.View.BaseView;
 public class PlayerPresenter implements BasePresenter
 {
     private BaseView _view;
-    private Context _applicationContext;
-    private final MediaTrack _track;
+    private Application _application;
+    private MediaPlayerPlaylist _playlist;
     
-    public PlayerPresenter(BaseView view, Context applicationContext, @Nullable MediaTrack track)
+    public PlayerPresenter(BaseView view, Application application, @Nullable MediaPlayerPlaylist playlist)
     {
         _view = view;
-        _applicationContext = applicationContext;
-        _track = track;
+        _application = application;
+        _playlist = playlist;
     }
     
     @Override
     public void start() 
     {
-        if (_track != null)
+        MediaPlayerPlaylist currentPlaylist = AudioPlayer.getShared().getPlaylist();
+        MediaTrack currentPlayingTrack = currentPlaylist != null ? currentPlaylist.getPlayingTrack() : null;
+        
+        if (currentPlayingTrack == null || !_playlist.getPlayingTrack().title.equals(currentPlayingTrack.title))
         {
-            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing a song");
+            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with " + String.valueOf(_playlist.size()) + " tracks");
             
-            MediaPlayerPlaylist playlist = new MediaPlayerPlaylist(_track);
+            AudioPlayer.getShared().playPlaylist(_application, _playlist);
             
-            AudioPlayer.getShared().playPlaylist(_applicationContext, playlist);
-            _view.openPlayerScreen(playlist.getPlayingTrack());
+            _view.openPlayerScreen(_playlist);
         }
         else
         {
-            MediaPlayerPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and continuing to listen to current song");
             
-            if (playlist != null)
-            {
-                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and continuing to listen to current song");
-                _view.openPlayerScreen(playlist.getPlayingTrack());
-            }
-            else
-            {
-                Log.v(PlayerPresenter.class.getCanonicalName(), "Cannot open player and continuing to listen to current song - nothing is playing");
-            }
+            _view.openPlayerScreen(currentPlaylist);
         }
     }
     

@@ -141,13 +141,13 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(MediaTrack track)
+    public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist)
     {
 
     }

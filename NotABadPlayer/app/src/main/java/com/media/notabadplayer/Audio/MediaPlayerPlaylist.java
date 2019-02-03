@@ -22,10 +22,10 @@ public class MediaPlayerPlaylist
         _tracks.add(track);
         _playingTrack = track;
         _playingTrackPosition = 0;
-        _playOrder = MediaPlayerPlaylistPlayOrder.ONCE_FOREVER;
+        _playOrder = MediaPlayerPlaylistPlayOrder.FORWARDS;
     }
 
-    public MediaPlayerPlaylist(ArrayList<MediaTrack> tracks) throws IllegalArgumentException
+    public MediaPlayerPlaylist(ArrayList<MediaTrack> tracks, String playingTrack) throws IllegalArgumentException
     {
         if (tracks.size() == 0)
         {
@@ -35,7 +35,30 @@ public class MediaPlayerPlaylist
         _tracks = tracks;
         _playingTrack = tracks.get(0);
         _playingTrackPosition = 0;
-        _playOrder = MediaPlayerPlaylistPlayOrder.ONCE_FOREVER;
+        _playOrder = MediaPlayerPlaylistPlayOrder.FORWARDS;
+        
+        if (playingTrack != null)
+        {
+            for (int e = 0; e < _tracks.size(); e++)
+            {
+                if (_tracks.get(e).title.equals(playingTrack))
+                {
+                    _playingTrackPosition = e;
+                    _playingTrack = _tracks.get(e);
+                    break;
+                }
+            }
+        }
+    }
+    
+    public int size()
+    {
+        return _tracks.size();
+    }
+    
+    public final MediaTrack getTrack(int index)
+    {
+        return _tracks.get(index);
     }
     
     public MediaPlayerPlaylistPlayOrder getPlayOrder()

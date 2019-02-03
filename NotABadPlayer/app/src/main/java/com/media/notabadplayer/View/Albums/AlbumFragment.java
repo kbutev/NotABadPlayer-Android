@@ -1,7 +1,6 @@
 package com.media.notabadplayer.View.Albums;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -10,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.R;
@@ -101,17 +98,31 @@ public class AlbumFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs)
     {
         _table.setAdapter(new AlbumListAdapter(getContext(), songs));
     }
     
     @Override
-    public void openPlayerScreen(MediaTrack track)
+    public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist)
     {
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("track", track.toString());
+        
+        ArrayList<String> tracks = new ArrayList<>();
+        
+        for (int e = 0; e < playlist.size(); e++)
+        {
+            tracks.add(playlist.getTrack(e).toString());
+        }
+        
+        intent.putExtra("tracks", tracks);
+        
+        if (playlist.getPlayingTrack() != null)
+        {
+            intent.putExtra("playingTrack", playlist.getPlayingTrack().title);
+        }
+        
         startActivity(intent);
     }
 }

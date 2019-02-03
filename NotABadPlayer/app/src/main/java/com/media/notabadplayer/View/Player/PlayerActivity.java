@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 
 import com.media.notabadplayer.Audio.AlbumInfo;
+import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
 import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.Controlls.ApplicationInput;
@@ -31,9 +32,19 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
 
         initUI();
         
-        MediaTrack track = MediaTrack.createFromString(getIntent().getStringExtra("track"));
+        String playingTrack = getIntent().getStringExtra("playingTrack");
         
-        _presenter = new PlayerPresenter(_fragment, getApplicationContext(), track);
+        ArrayList<String> tracksString = getIntent().getStringArrayListExtra("tracks");
+        ArrayList<MediaTrack> tracks = new ArrayList<>();
+        
+        for (int e = 0; e < tracksString.size(); e++)
+        {
+            tracks.add(MediaTrack.createFromString(tracksString.get(e)));
+        }
+        
+        MediaPlayerPlaylist playlist = new MediaPlayerPlaylist(tracks, playingTrack);
+        
+        _presenter = new PlayerPresenter(_fragment, getApplication(), playlist);
         _fragment.setPresenter(_presenter);
     }
     
@@ -93,13 +104,13 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(MediaTrack track)
+    public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist)
     {
 
     }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.MediaPlayerObserver;
+import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
 import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.Controlls.ApplicationInput;
 import com.media.notabadplayer.Controlls.KeyBinds;
@@ -95,8 +96,30 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
         _header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MediaPlayerPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+                
+                if (playlist == null)
+                {
+                    return;
+                }
+                
+                ArrayList<String> tracks = new ArrayList<>();
+
+                for (int e = 0; e < playlist.size(); e++)
+                {
+                    tracks.add(playlist.getTrack(e).toString());
+                }
+                
                 Intent intent = new Intent(getActivity(), PlayerActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                
+                intent.putExtra("tracks", tracks);
+
+                if (playlist.getPlayingTrack() != null)
+                {
+                    intent.putExtra("playingTrack", playlist.getPlayingTrack().title);
+                }
+                
                 startActivity(intent);
             }
         });
@@ -185,19 +208,19 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(MediaTrack track)
+    public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist)
     {
 
     }
 
     @Override
-    public void onPlayerPlay(MediaTrack current)
+    public void onPlayerPlay(com.media.notabadplayer.Audio.MediaTrack current)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
         _imageCover.setImageURI(Uri.parse(Uri.decode(current.artCover)));
@@ -207,7 +230,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     }
     
     @Override
-    public void onPlayerFinish(MediaTrack track)
+    public void onPlayerFinish(com.media.notabadplayer.Audio.MediaTrack track)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }
@@ -215,7 +238,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     @Override
     public void onPlayerStop()
     {
-
+        _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }
     
     @Override
