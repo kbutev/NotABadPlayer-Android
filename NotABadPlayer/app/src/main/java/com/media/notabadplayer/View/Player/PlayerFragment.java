@@ -15,8 +15,11 @@ import android.widget.TextView;
 import com.media.notabadplayer.Audio.AlbumInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.MediaPlayerObserver;
+import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
+import com.media.notabadplayer.Audio.MediaPlayerPlaylistPlayOrder;
 import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Controlls.ApplicationAction;
 import com.media.notabadplayer.Controlls.ApplicationInput;
 import com.media.notabadplayer.Controlls.KeyBinds;
 import com.media.notabadplayer.R;
@@ -41,6 +44,7 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     private SeekBar _mediaBar;
     private TextView _labelDurationCurrent;
     private TextView _labelDurationTotal;
+    private Button _buttonPlayOrder;
     private Button _buttonBack;
     private Button _buttonPlay;
     private Button _buttonForward;
@@ -93,6 +97,7 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
         _mediaBar = root.findViewById(R.id.mediaBar);
         _labelDurationCurrent = root.findViewById(R.id.durationCurrent);
         _labelDurationTotal = root.findViewById(R.id.durationTotal);
+        _buttonPlayOrder = root.findViewById(R.id.mediaButtonPlayOrder);
         _buttonBack = root.findViewById(R.id.mediaButtonBack);
         _buttonPlay = root.findViewById(R.id.mediaButtonPlay);
         _buttonForward = root.findViewById(R.id.mediaButtonForward);
@@ -124,6 +129,13 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+        
+        _buttonPlayOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
             }
         });
         
@@ -178,6 +190,29 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
         int currentPosition = _player.getPlayer().getCurrentPosition() / 1000;
         _mediaBar.setProgress(currentPosition);
         _labelDurationCurrent.setText(MediaTrack.secondsToString(currentPosition));
+        
+        MediaPlayerPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+        
+        if (playlist != null)
+        {
+            MediaPlayerPlaylistPlayOrder order = playlist.getPlayOrder();
+            
+            switch (order)
+            {
+                case FORWARDS:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards);
+                    break;
+                case ONCE_FOREVER:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_repeat);
+                    break;
+                case SHUFFLE:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_shuffle);
+                    break;
+                default:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards);
+                    break;
+            }
+        }
     }
     
     @Override
