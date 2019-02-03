@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.TrackSorting;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ class AlbumListAdapter extends BaseAdapter
     public AlbumListAdapter(@NonNull Context context, ArrayList<MediaTrack> tracks)
     {
         this._context = context;
-        this._tracks = tracks;
+        this._tracks = TrackSorting.sortByTrackNumber(tracks);
     }
     
     public int getCount()
