@@ -130,7 +130,9 @@ public class MediaPlayerPlaylist
     
     public MediaTrack goToTrackByShuffle()
     {
-        _playingTrackPosition = _random.nextInt() % (_tracks.size()-1);
+        int min = 0;
+        int max = _tracks.size()-1;
+        _playingTrackPosition = _random.nextInt((max - min) + 1) + min;
         _playingTrack = _tracks.get(_playingTrackPosition);
         
         return _playingTrack;

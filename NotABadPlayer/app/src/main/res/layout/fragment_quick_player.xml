@@ -86,19 +86,19 @@
                     android:gravity="center_horizontal">
                     <Button
                         android:id="@+id/mediaButtonBack"
-                        android:layout_width="wrap_content"
+                        android:layout_width="64dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/media_previous"
                         android:backgroundTint="@color/mediaButtons"/>
                     <Button
                         android:id="@+id/mediaButtonPlay"
-                        android:layout_width="wrap_content"
+                        android:layout_width="64dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/media_play"
                         android:backgroundTint="@color/mediaButtons"/>
                     <Button
                         android:id="@+id/mediaButtonForward"
-                        android:layout_width="wrap_content"
+                        android:layout_width="64dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/media_next"
                         android:backgroundTint="@color/mediaButtons"/>

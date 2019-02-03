@@ -1,6 +1,8 @@
 package com.media.notabadplayer.Controlls;
 
 import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
+import com.media.notabadplayer.Audio.MediaPlayerPlaylistPlayOrder;
 
 public class KeyBinds
 {
@@ -45,7 +47,7 @@ public class KeyBinds
         return ApplicationAction.DO_NOTHING;
     }
     
-    private ApplicationAction performAction(ApplicationAction action)
+    public ApplicationAction performAction(ApplicationAction action)
     {
         switch (action)
         {
@@ -104,6 +106,30 @@ public class KeyBinds
                 break;
             case JUMP_BACKWARDS_15:
                 AudioPlayer.getShared().jumpBackwards(15);
+            case CHANGE_PLAY_ORDER:
+                MediaPlayerPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+                
+                if (playlist != null)
+                {
+                    MediaPlayerPlaylistPlayOrder order = playlist.getPlayOrder();
+                    
+                    switch (order)
+                    {
+                        case FORWARDS:
+                            playlist.setPlayOrder(MediaPlayerPlaylistPlayOrder.ONCE_FOREVER);
+                            break;
+                        case ONCE_FOREVER:
+                            playlist.setPlayOrder(MediaPlayerPlaylistPlayOrder.SHUFFLE);
+                            break;
+                        case SHUFFLE:
+                            playlist.setPlayOrder(MediaPlayerPlaylistPlayOrder.FORWARDS);
+                            break;
+                        default:
+                            playlist.setPlayOrder(MediaPlayerPlaylistPlayOrder.FORWARDS);
+                            break;
+                    }
+                }
+                
                 break;
         }
         

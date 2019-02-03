@@ -106,8 +106,11 @@ public class AudioPlayer {
     
     public void playPlaylist(Application application, @NonNull MediaPlayerPlaylist playlist)
     {
+        MediaPlayerPlaylistPlayOrder order = _playlist != null ? playlist.getPlayOrder() : playlist.getPlayOrder();
+        
         _application = application;
         _playlist = playlist;
+        _playlist.setPlayOrder(order);
         
         playTrack(_playlist.getPlayingTrack());
     }

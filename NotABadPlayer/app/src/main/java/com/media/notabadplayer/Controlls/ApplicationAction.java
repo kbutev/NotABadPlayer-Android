@@ -19,5 +19,6 @@ public enum ApplicationAction {
     JUMP_BACKWARDS_5,
     JUMP_BACKWARDS_8,
     JUMP_BACKWARDS_10,
-    JUMP_BACKWARDS_15
+    JUMP_BACKWARDS_15,
+    CHANGE_PLAY_ORDER
 }

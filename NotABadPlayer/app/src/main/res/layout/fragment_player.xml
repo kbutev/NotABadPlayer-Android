@@ -82,29 +82,42 @@
                 android:gravity="right"
                 android:layout_marginRight="10dp"/>
         </LinearLayout>
-
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_horizontal">
+            <Space
+                android:layout_width="64dp"
+                android:layout_height="64dp" />
             <Button
                 android:id="@+id/mediaButtonBack"
-                android:layout_width="wrap_content"
+                android:layout_width="64dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.3"
                 android:background="@drawable/media_previous"
                 android:backgroundTint="@color/mediaButtons"/>
             <Button
                 android:id="@+id/mediaButtonPlay"
-                android:layout_width="wrap_content"
+                android:layout_width="64dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.3"
                 android:background="@drawable/media_play"
                 android:backgroundTint="@color/mediaButtons"/>
             <Button
                 android:id="@+id/mediaButtonForward"
-                android:layout_width="wrap_content"
+                android:layout_width="64dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.3"
                 android:background="@drawable/media_next"
+                android:backgroundTint="@color/mediaButtons"/>
+            <Button
+                android:id="@+id/mediaButtonPlayOrder"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:background="@drawable/media_sort_repeat"
                 android:backgroundTint="@color/mediaButtons"/>
         </LinearLayout>
     </LinearLayout>
