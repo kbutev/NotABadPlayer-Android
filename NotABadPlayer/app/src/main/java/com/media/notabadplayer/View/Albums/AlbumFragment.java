@@ -3,6 +3,7 @@ package com.media.notabadplayer.View.Albums;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +24,9 @@ import java.util.ArrayList;
 public class AlbumFragment extends Fragment implements BaseView
 {
     private BasePresenter _presenter;
-
-    private ImageView _albumCover;
-    private TextView _albumTitle;
-    private GridView _albumSongs;
+    
+    private GridView _table;
+    private Parcelable _tableState;
     
     public AlbumFragment()
     {
@@ -48,7 +48,20 @@ public class AlbumFragment extends Fragment implements BaseView
     public void onResume()
     {
         super.onResume();
+        
         _presenter.start();
+
+        if (_tableState != null)
+        {
+            _table.onRestoreInstanceState(_tableState);
+        }
+    }
+
+    @Override
+    public void onPause()
+    {
+        _tableState = _table.onSaveInstanceState();
+        super.onPause();
     }
     
     @Override
@@ -57,10 +70,8 @@ public class AlbumFragment extends Fragment implements BaseView
         View root = inflater.inflate(R.layout.fragment_album, container, false);
         
         // Setup UI
-        _albumCover = root.findViewById(R.id.albumCover);
-        _albumTitle = root.findViewById(R.id.albumTitle);
-        _albumSongs = root.findViewById(R.id.albumSongs);
-        _albumSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        _table = root.findViewById(R.id.albumSongs);
+        _table.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
@@ -92,22 +103,7 @@ public class AlbumFragment extends Fragment implements BaseView
     @Override
     public void onAlbumSongsLoad(ArrayList<MediaTrack> songs)
     {
-        if (false)
-        {
-            MediaTrack firstTrack = songs.get(0);
-            
-            String uri = Uri.decode(firstTrack.artCover);
-            
-            if (uri != null)
-            {
-                _albumCover.setImageURI(Uri.parse(uri));
-                _albumCover.setVisibility(View.VISIBLE);
-            }
-            
-            _albumTitle.setText(firstTrack.albumTitle);
-        }
-        
-        _albumSongs.setAdapter(new AlbumListAdapter(getContext(), songs));
+        _table.setAdapter(new AlbumListAdapter(getContext(), songs));
     }
     
     @Override
