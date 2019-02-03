@@ -1,5 +1,6 @@
 package com.media.notabadplayer.Audio;
 
+import android.app.Application;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -14,7 +15,7 @@ public class AudioPlayer {
     private static AudioPlayer _singleton;
     
     private MediaPlayer _player;
-    private Context _applicationContext;
+    private Application _application;
     private MediaPlayerPlaylist _playlist;
     
     private ArrayList<MediaPlayerObserver> _observers;
@@ -39,6 +40,11 @@ public class AudioPlayer {
         }
         
         return _singleton;
+    }
+    
+    private Context getContext()
+    {
+        return _application.getApplicationContext();
     }
     
     private void onPlay(MediaTrack track)
@@ -98,9 +104,9 @@ public class AudioPlayer {
     
     public boolean hasPlaylist() {return _playlist != null;}
     
-    public void playPlaylist(Context applicationContext, @NonNull MediaPlayerPlaylist playlist)
+    public void playPlaylist(Application application, @NonNull MediaPlayerPlaylist playlist)
     {
-        _applicationContext = applicationContext;
+        _application = application;
         _playlist = playlist;
         
         playTrack(_playlist.getPlayingTrack());
@@ -120,7 +126,7 @@ public class AudioPlayer {
 
         try {
             _player.reset();
-            _player.setDataSource(_applicationContext, path);
+            _player.setDataSource(getContext(), path);
             _player.prepare();
             _player.start();
             
@@ -193,14 +199,18 @@ public class AudioPlayer {
 
         if (_playlist.getPlayingTrack() == null)
         {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
+            
             onStop();
         }
         else
         {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Play next track " + _playlist.getPlayingTrack().title);
+            
             playTrack(_playlist.getPlayingTrack());
         }
     }
-
+    
     public void previous()
     {
         if (!hasPlaylist())
@@ -208,7 +218,7 @@ public class AudioPlayer {
             return;
         }
         
-        _playlist.goToNextPlayingTrack();
+        _playlist.goToPreviousPlayingTrack();
         
         if (_playlist.getPlayingTrack() == null)
         {
