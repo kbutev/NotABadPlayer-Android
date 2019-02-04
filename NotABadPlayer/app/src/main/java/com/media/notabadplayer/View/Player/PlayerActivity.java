@@ -92,7 +92,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumTitle, String albumCover)
+    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover)
     {
 
     }

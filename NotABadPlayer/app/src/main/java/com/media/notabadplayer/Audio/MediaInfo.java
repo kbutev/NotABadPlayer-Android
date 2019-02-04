@@ -44,7 +44,7 @@ public class MediaInfo {
             String artist = cursor.getString(artistColumn);
             String cover = cursor.getString(albumArtColumn);
             
-            AlbumInfo a = new AlbumInfo(String.valueOf(albumID), title, cover);
+            AlbumInfo a = new AlbumInfo(String.valueOf(albumID), artist, title, cover != null ? cover : "");
             _albums.add(a);
         }
         

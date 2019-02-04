@@ -1,6 +1,7 @@
 package com.media.notabadplayer.View.Albums;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
 import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.TrackSorting;
@@ -65,12 +68,15 @@ class AlbumListAdapter extends BaseAdapter
 
             MediaTrack firstTrack = _tracks.get(0);
 
-            String uri = Uri.decode(firstTrack.artCover);
-
-            if (uri != null)
+            if (!firstTrack.artCover.isEmpty())
             {
-                albumCover.setImageURI(Uri.parse(uri));
-                albumCover.setVisibility(View.VISIBLE);
+                String uri = Uri.decode(firstTrack.artCover);
+                
+                if (uri != null)
+                {
+                    albumCover.setImageURI(Uri.parse(uri));
+                    albumCover.setVisibility(View.VISIBLE);
+                }
             }
 
             albumTitle.setText(firstTrack.albumTitle);
@@ -110,6 +116,37 @@ class AlbumListAdapter extends BaseAdapter
         TextView duration = checkNotNull((TextView)listItem.findViewById(R.id.duration), "Base adapter is expecting a valid text view");
 
         duration.setText(dataDuration);
+        
+        // Color
+        boolean isPlayingTrack = false;
+        
+        MediaPlayerPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+        
+        if (playlist != null)
+        {
+            MediaTrack track = playlist.getPlayingTrack();
+            
+            if (track != null)
+            {
+                if (track.title.equals(dataTitle) && track.albumTitle.equals(item.albumTitle))
+                {
+                    isPlayingTrack = true;
+                }
+            }
+        }
+        
+        Resources resources = parent.getResources();
+        
+        if (!isPlayingTrack)
+        {
+            title.setTextColor(resources.getColor(R.color.colorAlbumItemText));
+            duration.setTextColor(resources.getColor(R.color.colorAlbumItemTextSub));
+        }
+        else
+        {
+            title.setTextColor(resources.getColor(R.color.colorAlbumItemTextPlaying));
+            duration.setTextColor(resources.getColor(R.color.colorAlbumItemTextSubPlaying));
+        }
         
         return listItem;
     }

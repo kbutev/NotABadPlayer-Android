@@ -13,6 +13,8 @@
     <color name="colorAlbumTitleText">#313131</color>
     <color name="colorAlbumItemText">#313131</color>
     <color name="colorAlbumItemTextSub">#9c9696</color>
+    <color name="colorAlbumItemTextPlaying">#009b39</color>
+    <color name="colorAlbumItemTextSubPlaying">#ed851c</color>
     
     <color name="colorPrimaryDark">#00acd2</color>
     <color name="colorAccent">#D81B60</color>

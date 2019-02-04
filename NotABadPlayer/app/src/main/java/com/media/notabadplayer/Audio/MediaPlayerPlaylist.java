@@ -11,6 +11,7 @@ public class MediaPlayerPlaylist
     
     private ArrayList<MediaTrack> _tracks;
     
+    private boolean _playing;
     private MediaTrack _playingTrack;
     private int _playingTrackPosition;
     
@@ -20,6 +21,7 @@ public class MediaPlayerPlaylist
     {
         _tracks = new ArrayList<>();
         _tracks.add(track);
+        _playing = true;
         _playingTrack = track;
         _playingTrackPosition = 0;
         _playOrder = MediaPlayerPlaylistPlayOrder.FORWARDS;
@@ -33,6 +35,7 @@ public class MediaPlayerPlaylist
         }
         
         _tracks = tracks;
+        _playing = false;
         _playingTrack = tracks.get(0);
         _playingTrackPosition = 0;
         _playOrder = MediaPlayerPlaylistPlayOrder.FORWARDS;
@@ -71,6 +74,11 @@ public class MediaPlayerPlaylist
         _playOrder = order;
     }
     
+    public boolean isPlaying()
+    {
+        return _playing;
+    }
+    
     public MediaTrack getPlayingTrack()
     {
         return _playingTrack;
@@ -78,18 +86,19 @@ public class MediaPlayerPlaylist
 
     public MediaTrack goToNextPlayingTrack()
     {
+        _playing = true;
+        
         switch (_playOrder)
         {
             case ONCE:
-                _playingTrack = null;
+                _playing = false;
                 break;
             case ONCE_FOREVER:
                 break;
             case FORWARDS:
                 if (_playingTrackPosition + 1 == _tracks.size())
                 {
-                    _playingTrack = null;
-                    _playingTrackPosition = 0;
+                    _playing = false;
                 }
                 else
                 {
@@ -114,10 +123,13 @@ public class MediaPlayerPlaylist
 
     public MediaTrack goToPreviousPlayingTrack()
     {
+        _playing = true;
+        
         if (_playingTrackPosition - 1 < 0)
         {
             _playingTrack = _tracks.get(0);
             _playingTrackPosition = 0;
+            _playing = false;
         }
         else
         {
@@ -134,6 +146,8 @@ public class MediaPlayerPlaylist
         int max = _tracks.size()-1;
         _playingTrackPosition = _random.nextInt((max - min) + 1) + min;
         _playingTrack = _tracks.get(_playingTrackPosition);
+        
+        _playing = true;
         
         return _playingTrack;
     }

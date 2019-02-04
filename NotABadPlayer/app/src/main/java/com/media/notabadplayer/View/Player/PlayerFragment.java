@@ -215,13 +215,33 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
         }
     }
     
+    private void updateMediaInfo(MediaTrack playingTrack)
+    {
+        if (playingTrack != null)
+        {
+            if (!playingTrack.artCover.isEmpty())
+            {
+                _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.artCover)));
+            }
+            else
+            {
+                _imageCover.setImageDrawable(getResources().getDrawable(R.drawable.cover_art_none));
+            }
+            
+            _labelTitle.setText(playingTrack.title);
+            _labelArtist.setText(playingTrack.artist);
+            _mediaBar.setMax((int) playingTrack.durationInSeconds);
+            _labelDurationTotal.setText(playingTrack.duration);
+        }
+    }
+    
     @Override
     public void setPresenter(BasePresenter presenter) {
         _presenter = presenter;
     }
 
     @Override
-    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumTitle, String albumCover) 
+    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover) 
     {
 
     }
@@ -241,16 +261,7 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     @Override
     public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist) 
     {
-        MediaTrack playingTrack = playlist.getPlayingTrack();
-        
-        if (playingTrack != null)
-        {
-            _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.artCover)));
-            _labelTitle.setText(playingTrack.title);
-            _labelArtist.setText(playingTrack.artist);
-            _mediaBar.setMax((int) playingTrack.durationInSeconds);
-            _labelDurationTotal.setText(playingTrack.duration);
-        }
+        updateMediaInfo(playlist.getPlayingTrack());
     }
     
     @Override
@@ -258,18 +269,11 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
         
-        if (current != null)
-        {
-            _imageCover.setImageURI(Uri.parse(Uri.decode(current.artCover)));
-            _labelTitle.setText(current.title);
-            _labelArtist.setText(current.artist);
-            _mediaBar.setMax((int) current.durationInSeconds);
-            _labelDurationTotal.setText(current.duration);
-        }
+        updateMediaInfo(current);
     }
     
     @Override
-    public void onPlayerFinish(MediaTrack track)
+    public void onPlayerFinish()
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }

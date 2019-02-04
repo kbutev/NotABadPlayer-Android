@@ -11,7 +11,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.media.notabadplayer.Audio.AlbumInfo;
-import com.media.notabadplayer.Audio.MediaTrack;
+import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.Presenter.Albums.AlbumPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
@@ -87,13 +87,13 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openAlbumScreen(com.media.notabadplayer.Audio.MediaInfo mediaInfo, String albumID, String albumTitle, String albumCover) 
+    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover) 
     {
         AlbumFragment f = AlbumFragment.newInstance();
-        f.setPresenter(new AlbumPresenter(f, mediaInfo, new AlbumInfo(albumID, albumTitle, albumCover)));
+        f.setPresenter(new AlbumPresenter(f, mediaInfo, new AlbumInfo(albumID, albumArtist, albumTitle, albumCover)));
         
         FragmentManager manager = getActivity().getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.tabLayout, f).addToBackStack(AlbumsFragment.class.getCanonicalName()).commit();
+        manager.beginTransaction().replace(R.id.mainLayout, f).addToBackStack(AlbumsFragment.class.getCanonicalName()).commit();
     }
     
     @Override
