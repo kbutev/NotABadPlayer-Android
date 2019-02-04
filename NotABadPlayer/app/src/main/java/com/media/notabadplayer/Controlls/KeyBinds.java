@@ -106,6 +106,7 @@ public class KeyBinds
                 break;
             case JUMP_BACKWARDS_15:
                 AudioPlayer.getShared().jumpBackwards(15);
+                break;
             case CHANGE_PLAY_ORDER:
                 MediaPlayerPlaylist playlist = AudioPlayer.getShared().getPlaylist();
                 

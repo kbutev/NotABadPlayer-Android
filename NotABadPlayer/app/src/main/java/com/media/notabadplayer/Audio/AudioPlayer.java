@@ -54,7 +54,7 @@ public class AudioPlayer {
   
     private void onFinish()
     {
-        next();
+        for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerFinish();}
     }
 
     private void onStop()
@@ -145,6 +145,14 @@ public class AudioPlayer {
     
     public void resume()
     {
+        // Start, instead of resuming
+        if (!_playlist.isPlaying())
+        {
+            playTrack(_playlist.getPlayingTrack());
+            
+            return;
+        }
+        
         try
         {
             if (!_player.isPlaying())
@@ -199,10 +207,12 @@ public class AudioPlayer {
         }
         
         _playlist.goToNextPlayingTrack();
-
-        if (_playlist.getPlayingTrack() == null)
+        
+        if (!_playlist.isPlaying())
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
+            
+            stop();
             
             onStop();
         }
@@ -223,12 +233,18 @@ public class AudioPlayer {
         
         _playlist.goToPreviousPlayingTrack();
         
-        if (_playlist.getPlayingTrack() == null)
+        if (!_playlist.isPlaying())
         {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, cannot go before first track");
+
+            stop();
+            
             onStop();
         }
         else
         {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Play previous track " + _playlist.getPlayingTrack().title);
+            
             playTrack(_playlist.getPlayingTrack());
         }
     }

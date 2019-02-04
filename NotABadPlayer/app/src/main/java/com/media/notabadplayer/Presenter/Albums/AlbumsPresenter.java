@@ -29,10 +29,11 @@ public class AlbumsPresenter implements BasePresenter {
         AlbumInfo a = _mediaInfo.getAlbums().get(index);
         String identifier = a.albumID;
         String title = a.albumTitle;
+        String artist = a.albumArtist;
         String cover = a.albumCover;
         
         Log.v("AlbumsPresenter", "Open " + title + " album");
-        _view.openAlbumScreen(_mediaInfo, identifier, title, cover);
+        _view.openAlbumScreen(_mediaInfo, identifier, artist, title, cover);
     }
 
     @Override

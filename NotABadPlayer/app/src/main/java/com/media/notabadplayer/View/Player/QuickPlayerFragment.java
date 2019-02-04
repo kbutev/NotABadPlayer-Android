@@ -14,6 +14,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.Audio.MediaPlayerObserver;
 import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
 import com.media.notabadplayer.Audio.MediaTrack;
@@ -190,6 +191,25 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
         _labelDurationCurrent.setText(MediaTrack.secondsToString(currentPosition));
     }
 
+    private void updateMediaInfo(MediaTrack playingTrack)
+    {
+        if (playingTrack != null)
+        {
+            if (!playingTrack.artCover.isEmpty())
+            {
+                _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.artCover)));
+            }
+            else
+            {
+                _imageCover.setImageDrawable(getResources().getDrawable(R.drawable.cover_art_none));
+            }
+
+            _labelTitle.setText(playingTrack.title);
+            _mediaBar.setMax((int) playingTrack.durationInSeconds);
+            _labelDurationTotal.setText(playingTrack.duration);
+        }
+    }
+
     @Override
     public void setPresenter(BasePresenter presenter)
     {
@@ -197,7 +217,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     }
 
     @Override
-    public void openAlbumScreen(com.media.notabadplayer.Audio.MediaInfo mediaInfo, String albumID, String albumTitle, String albumCover) {
+    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover) {
         
     }
 
@@ -223,14 +243,11 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     public void onPlayerPlay(com.media.notabadplayer.Audio.MediaTrack current)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
-        _imageCover.setImageURI(Uri.parse(Uri.decode(current.artCover)));
-        _labelTitle.setText(current.title);
-        _mediaBar.setMax((int)current.durationInSeconds);
-        _labelDurationTotal.setText(current.duration);
+        updateMediaInfo(current);
     }
     
     @Override
-    public void onPlayerFinish(com.media.notabadplayer.Audio.MediaTrack track)
+    public void onPlayerFinish()
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }

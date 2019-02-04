@@ -46,7 +46,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:gravity="bottom"
         android:orientation="vertical"
         android:layout_weight="0.5">
@@ -94,31 +94,36 @@
             <Button
                 android:id="@+id/mediaButtonBack"
                 android:layout_width="64dp"
-                android:layout_height="wrap_content"
+                android:layout_height="64dp"
                 android:layout_weight="0.3"
                 android:background="@drawable/media_previous"
                 android:backgroundTint="@color/mediaButtons"/>
             <Button
                 android:id="@+id/mediaButtonPlay"
                 android:layout_width="64dp"
-                android:layout_height="wrap_content"
+                android:layout_height="64dp"
                 android:layout_weight="0.3"
                 android:background="@drawable/media_play"
                 android:backgroundTint="@color/mediaButtons"/>
             <Button
                 android:id="@+id/mediaButtonForward"
                 android:layout_width="64dp"
-                android:layout_height="wrap_content"
+                android:layout_height="64dp"
                 android:layout_weight="0.3"
                 android:background="@drawable/media_next"
                 android:backgroundTint="@color/mediaButtons"/>
-            <Button
-                android:id="@+id/mediaButtonPlayOrder"
+            <FrameLayout
                 android:layout_width="64dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:background="@drawable/media_sort_repeat"
-                android:backgroundTint="@color/mediaButtons"/>
+                android:layout_height="64dp"
+                android:layout_weight="0.1">
+                <Button
+                    android:id="@+id/mediaButtonPlayOrder"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/media_sort_repeat"
+                    android:backgroundTint="@color/mediaButtons"/>
+            </FrameLayout>
         </LinearLayout>
     </LinearLayout>
 

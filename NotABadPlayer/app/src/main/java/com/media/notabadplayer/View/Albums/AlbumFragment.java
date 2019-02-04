@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.media.notabadplayer.Audio.MediaTrack;
+import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -52,6 +52,8 @@ public class AlbumFragment extends Fragment implements BaseView
         {
             _table.onRestoreInstanceState(_tableState);
         }
+
+        _table.deferNotifyDataSetChanged();
     }
 
     @Override
@@ -86,7 +88,7 @@ public class AlbumFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void openAlbumScreen(com.media.notabadplayer.Audio.MediaInfo mediaInfo, String albumID, String albumTitle, String albumCover) 
+    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover) 
     {
         
     }

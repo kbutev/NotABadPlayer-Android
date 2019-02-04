@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.media.notabadplayer.Audio.MediaTrack;
+import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.Presenter.Main.MainPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
@@ -51,7 +51,7 @@ public class SearchFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openAlbumScreen(com.media.notabadplayer.Audio.MediaInfo mediaInfo, String albumID, String albumTitle, String albumCover) {
+    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover) {
         
     }
 

@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
-import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.Controlls.ApplicationInput;
 import com.media.notabadplayer.Controlls.KeyBinds;
@@ -92,14 +91,14 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void refreshCurrentTab()
     {
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.tabLayout, (Fragment)_currentTab).commit();
+        manager.beginTransaction().replace(R.id.mainLayout, (Fragment)_currentTab).commit();
     }
     
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK))
         {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.tabLayout);
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.mainLayout);
 
             if (fragment != _currentTab)
             {
@@ -130,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void openAlbumScreen(com.media.notabadplayer.Audio.MediaInfo mediaInfo, String albumID, String albumTitle, String albumCover) {
+    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover) {
         
     }
 
