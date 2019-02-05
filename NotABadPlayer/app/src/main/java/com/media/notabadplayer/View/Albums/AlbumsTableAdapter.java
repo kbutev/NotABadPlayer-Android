@@ -66,17 +66,21 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
         String dataCover = item.albumCover;
         
         ImageView cover = checkNotNull((ImageView)listItem.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
-        
-        if (dataCover != null)
+
+        if (!dataCover.isEmpty())
         {
-            cover.setImageURI(Uri.parse(dataCover));
+            cover.setImageURI(Uri.parse(Uri.decode(dataCover)));
+        }
+        else
+        {
+            cover.setImageDrawable(parent.getResources().getDrawable(R.drawable.cover_art_none));
         }
         
         TextView title = checkNotNull((TextView)listItem.findViewById(R.id.title), "Base adapter is expecting a valid text view");
         
-        if (dataTitle == null || dataTitle.length() == 0)
+        if (dataTitle.length() == 0)
         {
-            title.setText("Unknown");
+            title.setText(R.string.title_unknown);
         }
         else
         {

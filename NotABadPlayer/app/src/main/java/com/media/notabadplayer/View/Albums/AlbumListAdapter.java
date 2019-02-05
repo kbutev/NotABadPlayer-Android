@@ -99,7 +99,7 @@ class AlbumListAdapter extends BaseAdapter
         
         if (dataTitle == null || dataTitle.length() == 0)
         {
-            title.setText("Unknown");
+            title.setText(R.string.title_unknown);
         }
         else
         {
@@ -108,7 +108,7 @@ class AlbumListAdapter extends BaseAdapter
         
         TextView trackNum = checkNotNull((TextView)listItem.findViewById(R.id.trackNum), "Base adapter is expecting a valid text view");
         
-        if (dataTrackNum != null && !dataTrackNum.equals("0"))
+        if (!dataTrackNum.equals("0"))
         {
             trackNum.setText(dataTrackNum);
         }
