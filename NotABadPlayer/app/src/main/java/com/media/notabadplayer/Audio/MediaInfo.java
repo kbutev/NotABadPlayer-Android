@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
+import com.media.notabadplayer.Utilities.MediaSorting;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -60,10 +62,12 @@ public class MediaInfo {
         
         load();
         
+        MediaSorting.sortAlbumsByTitle(_albums);
+        
         return _albums;
     }
     
-    public ArrayList<MediaTrack> getAlbumSongs(MediaAlbum album)
+    public ArrayList<MediaTrack> getAlbumTracks(MediaAlbum album)
     {
         if (!_albumSongs.containsKey(album.albumID))
         {
@@ -74,7 +78,7 @@ public class MediaInfo {
             return _albumSongs.get(album.albumID);
         }
         
-        ArrayList<MediaTrack> albumSongs = _albumSongs.get(album.albumID);
+        ArrayList<MediaTrack> albumTracks = _albumSongs.get(album.albumID);
         
         String projection[] = {
                 MediaStore.Audio.Media.DATA,
@@ -114,9 +118,11 @@ public class MediaInfo {
             int trackNum = cursor.getInt(trackNumColumn);
             double duration = cursor.getLong(durationColumn) / 1000;
             
-            albumSongs.add(new MediaTrack(filePath, title, artist, albumTitle, album.albumCover, trackNum, duration));
+            albumTracks.add(new MediaTrack(filePath, title, artist, albumTitle, album.albumCover, trackNum, duration));
         }
         
-        return albumSongs;
+        MediaSorting.sortTracksByTrackNumber(albumTracks);
+        
+        return albumTracks;
     }
 }

@@ -29,7 +29,7 @@ public class AlbumPresenter implements BasePresenter {
     @Override
     public void start()
     {
-        _songs = _mediaInfo.getAlbumSongs(_album);
+        _songs = _mediaInfo.getAlbumTracks(_album);
         _view.onAlbumSongsLoad(_songs);
     }
 
