@@ -84,7 +84,7 @@ public class MediaPlayerPlaylist
         return _playingTrack;
     }
 
-    public MediaTrack goToNextPlayingTrack()
+    public MediaTrack goToTrackBasedOnPlayOrder()
     {
         _playing = true;
         
@@ -96,26 +96,44 @@ public class MediaPlayerPlaylist
             case ONCE_FOREVER:
                 break;
             case FORWARDS:
-                if (_playingTrackPosition + 1 == _tracks.size())
-                {
-                    _playing = false;
-                }
-                else
-                {
-                    _playingTrackPosition++;
-                    _playingTrack = _tracks.get(_playingTrackPosition);
-                }
+                goToNextPlayingTrack();
                 break;
             case FORWARDS_REPEAT:
-                if (_playingTrackPosition + 1 == _tracks.size())
-                {
-                    _playingTrack = _tracks.get(0);
-                    _playingTrackPosition = 0;
-                }
+                goToNextPlayingTrackRepeat();
                 break;
             case SHUFFLE:
                 goToTrackByShuffle();
                 break;
+        }
+        
+        return _playingTrack;
+    }
+
+    public MediaTrack goToNextPlayingTrack()
+    {
+        if (_playingTrackPosition + 1 == _tracks.size())
+        {
+            _playing = false;
+        }
+        else
+        {
+            _playingTrackPosition++;
+            _playingTrack = _tracks.get(_playingTrackPosition);
+        }
+        
+        return _playingTrack;
+    }
+
+    public MediaTrack goToNextPlayingTrackRepeat()
+    {
+        if (_playingTrackPosition + 1 < _tracks.size())
+        {
+            goToNextPlayingTrack();
+        }
+        else
+        {
+            _playingTrack = _tracks.get(0);
+            _playingTrackPosition = 0;
         }
         
         return _playingTrack;

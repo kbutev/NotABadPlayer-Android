@@ -66,10 +66,10 @@ public class KeyBinds
                 AudioPlayer.getShared().pauseOrResume();
                 break;
             case NEXT:
-                AudioPlayer.getShared().next();
+                AudioPlayer.getShared().playNext();
                 break;
             case PREVIOUS:
-                AudioPlayer.getShared().previous();
+                AudioPlayer.getShared().playPrevious();
                 break;
             case SHUFFLE:
                 AudioPlayer.getShared().shuffle();
