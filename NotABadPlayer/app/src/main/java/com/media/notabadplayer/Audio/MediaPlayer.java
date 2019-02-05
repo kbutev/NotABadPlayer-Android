@@ -117,6 +117,11 @@ public class MediaPlayer {
     
     private void playTrack(MediaTrack track)
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         if (track == null)
         {
             stop();
@@ -145,6 +150,11 @@ public class MediaPlayer {
     
     public void resume()
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         // Start, instead of resuming
         if (!_playlist.isPlaying())
         {
@@ -170,6 +180,11 @@ public class MediaPlayer {
 
     public void pause()
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         try
         {
             if (_player.isPlaying())
@@ -187,6 +202,11 @@ public class MediaPlayer {
     
     public void stop()
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         try
         {
             seekTo(0);
@@ -287,6 +307,11 @@ public class MediaPlayer {
     
     public void pauseOrResume()
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         if (!_player.isPlaying())
         {
             resume();
@@ -299,6 +324,11 @@ public class MediaPlayer {
 
     public void jumpBackwards(int msec)
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         int duration = _player.getDuration() / 1000;
         int currentPosition = _player.getCurrentPosition() / 1000;
         int destination = currentPosition - msec;
@@ -307,6 +337,11 @@ public class MediaPlayer {
 
     public void jumpForwards(int msec)
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         int duration = _player.getDuration() / 1000;
         int currentPosition = _player.getCurrentPosition() / 1000;
         int destination = currentPosition + msec;
@@ -315,6 +350,11 @@ public class MediaPlayer {
     
     public void seekTo(int msec)
     {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
         msec *= 1000;
         
         int destination = msec;
