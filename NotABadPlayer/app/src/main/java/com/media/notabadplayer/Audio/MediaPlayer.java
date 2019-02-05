@@ -339,16 +339,30 @@ public class MediaPlayer {
 
     public void volumeUp()
     {
-
+        AudioManager manager = (AudioManager)getContext().getSystemService(Context.AUDIO_SERVICE);
+        
+        int currentVolume = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int incrementVolume = manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 10;
+        int result = currentVolume + incrementVolume;
+        
+        manager.setStreamVolume(AudioManager.STREAM_MUSIC, result,0);
     }
 
     public void volumeDown()
     {
-
+        AudioManager manager = (AudioManager)getContext().getSystemService(Context.AUDIO_SERVICE);
+        
+        int currentVolume = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int incrementVolume = manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 10;
+        int result = currentVolume - incrementVolume > 0 ? currentVolume - incrementVolume : 0;
+        
+        manager.setStreamVolume(AudioManager.STREAM_MUSIC, result,0);
     }
 
     public void muteOrUnmute()
     {
-
+        AudioManager manager = (AudioManager)getContext().getSystemService(Context.AUDIO_SERVICE);
+        
+        manager.setStreamMute(AudioManager.STREAM_MUSIC, !manager.isStreamMute(AudioManager.STREAM_MUSIC));
     }
 }

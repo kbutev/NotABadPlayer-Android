@@ -110,13 +110,13 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
         {
-            KeyBinds.getShared().respondToInput(ApplicationInput.VOLUME_UP_BUTTON);
+            KeyBinds.getShared().respondToInput(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
             return true;
         }
-
+        
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
         {
-            KeyBinds.getShared().respondToInput(ApplicationInput.VOLUME_DOWN_BUTTON);
+            KeyBinds.getShared().respondToInput(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
             return true;
         }
 

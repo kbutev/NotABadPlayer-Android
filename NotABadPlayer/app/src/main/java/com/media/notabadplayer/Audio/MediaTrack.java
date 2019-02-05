@@ -40,6 +40,19 @@ public class MediaTrack {
     }
     
     @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof MediaTrack)
+        {
+            MediaTrack other = (MediaTrack)o;
+            
+            return title.equals(other.title) && albumTitle.equals(other.albumTitle) && duration.equals(other.duration) && trackNum.equals(other.trackNum);
+        }
+        
+        return false;
+    }
+    
+    @Override
     public String toString()
     {
         return filePath + "\n" + title + "\n" + artist + "\n" + albumTitle + "\n" + artCover + "\n" + trackNum + "\n" + String.valueOf(durationInSeconds);
