@@ -24,9 +24,13 @@ public class KeyBinds
         {
             case HOME_BUTTON:
                 return performAction(ApplicationAction.DO_NOTHING);
-            case VOLUME_UP_BUTTON:
+            case PLAYER_VOLUME_UP_BUTTON:
+                return performAction(ApplicationAction.VOLUME_UP);
+            case PLAYER_VOLUME_DOWN_BUTTON:
+                return performAction(ApplicationAction.VOLUME_DOWN);
+            case QUICK_PLAYER_VOLUME_UP_BUTTON:
                 return performAction(ApplicationAction.JUMP_FORWARDS_15);
-            case VOLUME_DOWN_BUTTON:
+            case QUICK_PLAYER_VOLUME_DOWN_BUTTON:
                 return performAction(ApplicationAction.JUMP_BACKWARDS_15);
             case SCREEN_LOCK_BUTTON:
                 return performAction(ApplicationAction.DO_NOTHING);

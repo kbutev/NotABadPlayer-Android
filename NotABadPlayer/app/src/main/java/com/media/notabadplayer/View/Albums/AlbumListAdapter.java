@@ -128,7 +128,7 @@ class AlbumListAdapter extends BaseAdapter
             
             if (track != null)
             {
-                if (track.title.equals(dataTitle) && track.albumTitle.equals(item.albumTitle))
+                if (track.equals(item))
                 {
                     isPlayingTrack = true;
                 }
@@ -139,13 +139,11 @@ class AlbumListAdapter extends BaseAdapter
         
         if (!isPlayingTrack)
         {
-            title.setTextColor(resources.getColor(R.color.colorAlbumItemText));
-            duration.setTextColor(resources.getColor(R.color.colorAlbumItemTextSub));
+            listItem.setBackgroundColor(resources.getColor(R.color.colorTransparent));
         }
         else
         {
-            title.setTextColor(resources.getColor(R.color.colorAlbumItemTextPlaying));
-            duration.setTextColor(resources.getColor(R.color.colorAlbumItemTextSubPlaying));
+            listItem.setBackgroundColor(resources.getColor(R.color.colorAlbumItemPlayingBackground));
         }
         
         return listItem;
