@@ -79,8 +79,15 @@ public class AlbumFragment extends Fragment implements BaseView, MediaPlayerObse
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_album, container, false);
         
-        // Setup UI
         _table = root.findViewById(R.id.albumSongs);
+
+        initUI();
+        
+        return root;
+    }
+    
+    private void initUI()
+    {
         _table.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -88,8 +95,6 @@ public class AlbumFragment extends Fragment implements BaseView, MediaPlayerObse
                 _presenter.onAlbumsItemClick(position);
             }
         });
-        
-        return root;
     }
     
     @Override

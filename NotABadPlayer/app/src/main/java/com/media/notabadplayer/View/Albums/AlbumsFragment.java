@@ -25,6 +25,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     
     private GridView _table;
     private Parcelable _tableState;
+    private GridSideIndexingView _tableSideSelector;
     
     public AlbumsFragment()
     {
@@ -67,17 +68,23 @@ public class AlbumsFragment extends Fragment implements BaseView
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_albums, container, false);
         
-        // Setup UI
         _table = root.findViewById(R.id.primaryArea);
+        _tableSideSelector = root.findViewById(R.id.sideIndexing);
+        
+        initUI();
+        
+        return root;
+    }
+    
+    private void initUI()
+    {
         _table.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 _presenter.onAlbumClick(position);
             }
         });
-        
-        return root;
     }
     
     @Override
@@ -99,7 +106,17 @@ public class AlbumsFragment extends Fragment implements BaseView
     @Override
     public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums)
     {
-        _table.setAdapter(new AlbumsTableAdapter(getContext(), albums));
+        _table.setAdapter(new AlbumsTableAdapter(getContext(), albums, _tableSideSelector));
+        
+        ArrayList<String> titles = new ArrayList<>();
+        
+        for (int e = 0; e < albums.size(); e++)
+        {
+            titles.add(albums.get(e).albumTitle);
+        }
+        
+        _tableSideSelector.updateAlphabet(titles);
+        _tableSideSelector.setGridView(_table);
     }
 
     @Override
