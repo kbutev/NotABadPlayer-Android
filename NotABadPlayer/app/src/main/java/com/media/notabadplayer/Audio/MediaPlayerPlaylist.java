@@ -27,7 +27,7 @@ public class MediaPlayerPlaylist
         _playOrder = MediaPlayerPlaylistPlayOrder.FORWARDS;
     }
 
-    public MediaPlayerPlaylist(ArrayList<MediaTrack> tracks, String playingTrack) throws IllegalArgumentException
+    public MediaPlayerPlaylist(ArrayList<MediaTrack> tracks, MediaTrack playingTrack) throws IllegalArgumentException
     {
         if (tracks.size() == 0)
         {
@@ -35,7 +35,7 @@ public class MediaPlayerPlaylist
         }
         
         _tracks = tracks;
-        _playing = false;
+        _playing = true;
         _playingTrack = tracks.get(0);
         _playingTrackPosition = 0;
         _playOrder = MediaPlayerPlaylistPlayOrder.FORWARDS;
@@ -44,7 +44,7 @@ public class MediaPlayerPlaylist
         {
             for (int e = 0; e < _tracks.size(); e++)
             {
-                if (_tracks.get(e).title.equals(playingTrack))
+                if (_tracks.get(e).equals(playingTrack))
                 {
                     _playingTrackPosition = e;
                     _playingTrack = _tracks.get(e);
@@ -111,6 +111,8 @@ public class MediaPlayerPlaylist
 
     public MediaTrack goToNextPlayingTrack()
     {
+        _playing = true;
+        
         if (_playingTrackPosition + 1 == _tracks.size())
         {
             _playing = false;
@@ -126,6 +128,8 @@ public class MediaPlayerPlaylist
 
     public MediaTrack goToNextPlayingTrackRepeat()
     {
+        _playing = true;
+        
         if (_playingTrackPosition + 1 < _tracks.size())
         {
             goToNextPlayingTrack();
@@ -160,12 +164,12 @@ public class MediaPlayerPlaylist
     
     public MediaTrack goToTrackByShuffle()
     {
+        _playing = true;
+        
         int min = 0;
         int max = _tracks.size()-1;
         _playingTrackPosition = _random.nextInt((max - min) + 1) + min;
         _playingTrack = _tracks.get(_playingTrackPosition);
-        
-        _playing = true;
         
         return _playingTrack;
     }

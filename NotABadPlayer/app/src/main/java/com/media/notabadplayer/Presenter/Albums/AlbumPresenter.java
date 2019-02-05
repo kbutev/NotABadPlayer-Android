@@ -52,7 +52,7 @@ public class AlbumPresenter implements BasePresenter {
         index--;
         
         MediaTrack clickedTrack = _songs.get(index);
-        MediaPlayerPlaylist playlist = new MediaPlayerPlaylist(_songs, clickedTrack.title);
+        MediaPlayerPlaylist playlist = new MediaPlayerPlaylist(_songs, clickedTrack);
         
         Log.v("AlbumPresenter", "Play playlist with specific song " + clickedTrack.title);
         

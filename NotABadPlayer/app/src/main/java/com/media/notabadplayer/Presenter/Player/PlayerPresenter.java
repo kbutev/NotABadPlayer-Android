@@ -29,7 +29,7 @@ public class PlayerPresenter implements BasePresenter
         MediaPlayerPlaylist currentPlaylist = MediaPlayer.getShared().getPlaylist();
         MediaTrack currentPlayingTrack = currentPlaylist != null ? currentPlaylist.getPlayingTrack() : null;
         
-        if (currentPlayingTrack == null || !_playlist.getPlayingTrack().title.equals(currentPlayingTrack.title))
+        if (!_playlist.getPlayingTrack().equals(currentPlayingTrack))
         {
             Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with " + String.valueOf(_playlist.size()) + " tracks");
             
