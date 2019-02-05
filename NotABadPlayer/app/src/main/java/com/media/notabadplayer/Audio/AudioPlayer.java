@@ -27,6 +27,7 @@ public class AudioPlayer {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 onFinish();
+                playNextBasedOnPlayOrder();
             }
         });
         _observers = new ArrayList<>();
@@ -56,7 +57,7 @@ public class AudioPlayer {
     {
         for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerFinish();}
     }
-
+    
     private void onStop()
     {
         for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerStop();}
@@ -199,7 +200,7 @@ public class AudioPlayer {
         }
     }
     
-    public void next()
+    public void playNext()
     {
         if (!hasPlaylist())
         {
@@ -224,7 +225,7 @@ public class AudioPlayer {
         }
     }
     
-    public void previous()
+    public void playPrevious()
     {
         if (!hasPlaylist())
         {
@@ -245,6 +246,31 @@ public class AudioPlayer {
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Play previous track " + _playlist.getPlayingTrack().title);
             
+            playTrack(_playlist.getPlayingTrack());
+        }
+    }
+    
+    public void playNextBasedOnPlayOrder()
+    {
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
+        _playlist.goToTrackBasedOnPlayOrder();
+        
+        if (!_playlist.isPlaying())
+        {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
+
+            stop();
+
+            onStop();
+        }
+        else
+        {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Play next track " + _playlist.getPlayingTrack().title);
+
             playTrack(_playlist.getPlayingTrack());
         }
     }
