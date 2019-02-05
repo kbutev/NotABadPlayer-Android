@@ -72,6 +72,13 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     }
     
     @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        _player.detachObserver(this);
+    }
+    
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_quick_player, container, false);

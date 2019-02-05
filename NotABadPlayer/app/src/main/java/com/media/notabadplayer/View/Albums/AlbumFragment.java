@@ -12,6 +12,9 @@ import android.widget.GridView;
 
 import com.media.notabadplayer.Audio.MediaAlbum;
 import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Audio.MediaPlayer;
+import com.media.notabadplayer.Audio.MediaPlayerObserver;
+import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -19,8 +22,10 @@ import com.media.notabadplayer.View.Player.PlayerActivity;
 
 import java.util.ArrayList;
 
-public class AlbumFragment extends Fragment implements BaseView
+public class AlbumFragment extends Fragment implements BaseView, MediaPlayerObserver
 {
+    MediaPlayer _player = MediaPlayer.getShared();
+    
     private BasePresenter _presenter;
     
     private GridView _table;
@@ -47,6 +52,8 @@ public class AlbumFragment extends Fragment implements BaseView
     {
         super.onResume();
         
+        _player.attachObserver(this);
+        
         _presenter.start();
 
         if (_tableState != null)
@@ -54,14 +61,17 @@ public class AlbumFragment extends Fragment implements BaseView
             _table.onRestoreInstanceState(_tableState);
         }
 
-        _table.deferNotifyDataSetChanged();
+        _table.invalidateViews();
     }
 
     @Override
     public void onPause()
     {
         _tableState = _table.onSaveInstanceState();
+        
         super.onPause();
+        
+        _player.detachObserver(this);
     }
     
     @Override
@@ -127,5 +137,41 @@ public class AlbumFragment extends Fragment implements BaseView
         }
         
         startActivity(intent);
+    }
+
+    @Override
+    public void onPlayerPlay(com.media.notabadplayer.Audio.MediaTrack current)
+    {
+        _table.invalidateViews();
+    }
+
+    @Override
+    public void onPlayerFinish()
+    {
+        
+    }
+
+    @Override
+    public void onPlayerStop()
+    {
+        
+    }
+
+    @Override
+    public void onPlayerPause(MediaTrack track)
+    {
+        
+    }
+
+    @Override
+    public void onPlayerResume(MediaTrack track)
+    {
+        
+    }
+
+    @Override
+    public void onPlayerVolumeChanged()
+    {
+
     }
 }
