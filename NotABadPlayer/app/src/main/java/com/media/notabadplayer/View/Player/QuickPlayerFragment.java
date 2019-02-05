@@ -13,7 +13,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.MediaAlbum;
+import com.media.notabadplayer.Audio.MediaPlayer;
 import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.Audio.MediaPlayerObserver;
 import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
@@ -27,7 +28,7 @@ import com.media.notabadplayer.View.BaseView;
 import java.util.ArrayList;
 
 public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlayerObserver {
-    AudioPlayer _player = AudioPlayer.getShared();
+    MediaPlayer _player = MediaPlayer.getShared();
     
     private Handler _handler = new Handler();
     
@@ -97,7 +98,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
         _header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaPlayerPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+                MediaPlayerPlaylist playlist = MediaPlayer.getShared().getPlaylist();
                 
                 if (playlist == null)
                 {
@@ -222,7 +223,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<com.media.notabadplayer.Audio.AlbumInfo> albums)
+    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums)
     {
 
     }

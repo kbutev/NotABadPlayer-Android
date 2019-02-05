@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
+import com.media.notabadplayer.Audio.MediaAlbum;
 import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.Controlls.ApplicationInput;
 import com.media.notabadplayer.Controlls.KeyBinds;
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<com.media.notabadplayer.Audio.AlbumInfo> albums)
+    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums)
     {
 
     }

@@ -2,7 +2,7 @@ package com.media.notabadplayer.Presenter.Albums;
 
 import android.util.Log;
 
-import com.media.notabadplayer.Audio.AlbumInfo;
+import com.media.notabadplayer.Audio.MediaAlbum;
 import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
 import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.Audio.MediaInfo;
@@ -15,11 +15,11 @@ public class AlbumPresenter implements BasePresenter {
     private BaseView _view;
     private MediaInfo _mediaInfo;
     
-    private final AlbumInfo _album;
+    private final MediaAlbum _album;
     
     private ArrayList<MediaTrack> _songs = new ArrayList<>();
     
-    public AlbumPresenter(BaseView view, MediaInfo mediaInfo, AlbumInfo album)
+    public AlbumPresenter(BaseView view, MediaInfo mediaInfo, MediaAlbum album)
     {
         _view = view;
         _mediaInfo = mediaInfo;

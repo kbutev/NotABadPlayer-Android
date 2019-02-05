@@ -1,11 +1,10 @@
 package com.media.notabadplayer.Presenter.Player;
 
 import android.app.Application;
-import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.MediaPlayer;
 import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
 import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.View.BasePresenter;
@@ -27,14 +26,14 @@ public class PlayerPresenter implements BasePresenter
     @Override
     public void start() 
     {
-        MediaPlayerPlaylist currentPlaylist = AudioPlayer.getShared().getPlaylist();
+        MediaPlayerPlaylist currentPlaylist = MediaPlayer.getShared().getPlaylist();
         MediaTrack currentPlayingTrack = currentPlaylist != null ? currentPlaylist.getPlayingTrack() : null;
         
         if (currentPlayingTrack == null || !_playlist.getPlayingTrack().title.equals(currentPlayingTrack.title))
         {
             Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with " + String.valueOf(_playlist.size()) + " tracks");
             
-            AudioPlayer.getShared().playPlaylist(_application, _playlist);
+            MediaPlayer.getShared().playPlaylist(_application, _playlist);
             
             _view.openPlayerScreen(_playlist);
         }

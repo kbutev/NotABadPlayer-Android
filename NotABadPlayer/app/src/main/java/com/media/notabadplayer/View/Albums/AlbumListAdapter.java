@@ -12,7 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.MediaPlayer;
 import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
 import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.R;
@@ -120,7 +120,7 @@ class AlbumListAdapter extends BaseAdapter
         // Color
         boolean isPlayingTrack = false;
         
-        MediaPlayerPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+        MediaPlayerPlaylist playlist = MediaPlayer.getShared().getPlaylist();
         
         if (playlist != null)
         {

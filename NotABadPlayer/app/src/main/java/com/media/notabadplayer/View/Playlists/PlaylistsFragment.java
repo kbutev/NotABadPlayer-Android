@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.media.notabadplayer.Audio.MediaAlbum;
 import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.Presenter.Main.MainPresenter;
 import com.media.notabadplayer.R;
@@ -55,7 +56,7 @@ public class PlaylistsFragment extends Fragment implements BaseView {
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<com.media.notabadplayer.Audio.AlbumInfo> albums)
+    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums)
     {
 
     }

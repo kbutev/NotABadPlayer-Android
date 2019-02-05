@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.media.notabadplayer.Audio.MediaAlbum;
 import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
@@ -94,7 +95,7 @@ public class AlbumFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void onMediaAlbumsLoad(ArrayList<com.media.notabadplayer.Audio.AlbumInfo> albums)
+    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums)
     {
 
     }
