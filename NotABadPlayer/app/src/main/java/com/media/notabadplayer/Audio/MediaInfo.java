@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class MediaInfo {
     private Context _context;
-    private ArrayList<AlbumInfo> _albums = new  ArrayList<AlbumInfo>();
+    private ArrayList<MediaAlbum> _albums = new  ArrayList<MediaAlbum>();
     private HashMap<String, ArrayList<MediaTrack>> _albumSongs = new HashMap<>();
     
     public MediaInfo(Context context)
@@ -44,14 +44,14 @@ public class MediaInfo {
             String artist = cursor.getString(artistColumn);
             String cover = cursor.getString(albumArtColumn);
             
-            AlbumInfo a = new AlbumInfo(String.valueOf(albumID), artist, title, cover != null ? cover : "");
+            MediaAlbum a = new MediaAlbum(String.valueOf(albumID), artist, title, cover != null ? cover : "");
             _albums.add(a);
         }
         
         cursor.close();
     }
     
-    public ArrayList<AlbumInfo> getAlbums()
+    public ArrayList<MediaAlbum> getAlbums()
     {
         if (_albums.size() > 0)
         {
@@ -63,7 +63,7 @@ public class MediaInfo {
         return _albums;
     }
     
-    public ArrayList<MediaTrack> getAlbumSongs(AlbumInfo album)
+    public ArrayList<MediaTrack> getAlbumSongs(MediaAlbum album)
     {
         if (!_albumSongs.containsKey(album.albumID))
         {

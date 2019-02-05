@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 
-import com.media.notabadplayer.Audio.AlbumInfo;
+import com.media.notabadplayer.Audio.MediaAlbum;
 import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
 import com.media.notabadplayer.Audio.MediaTrack;
 import com.media.notabadplayer.Audio.MediaInfo;
@@ -98,7 +98,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void onMediaAlbumsLoad(ArrayList<AlbumInfo> albums)
+    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums)
     {
 
     }

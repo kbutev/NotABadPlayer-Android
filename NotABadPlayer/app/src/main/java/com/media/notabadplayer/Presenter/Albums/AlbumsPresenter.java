@@ -2,7 +2,7 @@ package com.media.notabadplayer.Presenter.Albums;
 
 import android.util.Log;
 
-import com.media.notabadplayer.Audio.AlbumInfo;
+import com.media.notabadplayer.Audio.MediaAlbum;
 import com.media.notabadplayer.Audio.MediaInfo;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -26,7 +26,7 @@ public class AlbumsPresenter implements BasePresenter {
     @Override
     public void onAlbumClick(int index) 
     {
-        AlbumInfo a = _mediaInfo.getAlbums().get(index);
+        MediaAlbum a = _mediaInfo.getAlbums().get(index);
         String identifier = a.albumID;
         String title = a.albumTitle;
         String artist = a.albumArtist;

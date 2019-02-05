@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.AlbumInfo;
+import com.media.notabadplayer.Audio.MediaAlbum;
 import com.media.notabadplayer.R;
 
 import java.util.ArrayList;
@@ -21,9 +21,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class AlbumsTableAdapter extends BaseAdapter
 {
     private Context _context;
-    private ArrayList<AlbumInfo> _data;
+    private ArrayList<MediaAlbum> _data;
     
-    public AlbumsTableAdapter(@NonNull Context context, ArrayList<AlbumInfo> albums)
+    public AlbumsTableAdapter(@NonNull Context context, ArrayList<MediaAlbum> albums)
     {
         this._context = context;
         this._data = albums;
@@ -55,7 +55,7 @@ class AlbumsTableAdapter extends BaseAdapter
         }
         
         // Item
-        AlbumInfo item = (AlbumInfo) getItem(position);
+        MediaAlbum item = (MediaAlbum) getItem(position);
 
         View listItem = LayoutInflater.from(_context).inflate(R.layout.item_table_album, parent, false);
         

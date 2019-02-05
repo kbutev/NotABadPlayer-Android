@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.AlbumInfo;
-import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.MediaAlbum;
+import com.media.notabadplayer.Audio.MediaPlayer;
 import com.media.notabadplayer.Audio.MediaPlayerObserver;
 import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
 import com.media.notabadplayer.Audio.MediaPlayerPlaylistPlayOrder;
@@ -34,7 +34,7 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     
     private BasePresenter _presenter;
 
-    AudioPlayer _player = AudioPlayer.getShared();
+    MediaPlayer _player = MediaPlayer.getShared();
     
     private Handler _handler = new Handler();
     
@@ -191,7 +191,7 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
         _mediaBar.setProgress(currentPosition);
         _labelDurationCurrent.setText(MediaTrack.secondsToString(currentPosition));
         
-        MediaPlayerPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+        MediaPlayerPlaylist playlist = MediaPlayer.getShared().getPlaylist();
         
         if (playlist != null)
         {
@@ -247,7 +247,7 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<AlbumInfo> albums) 
+    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums) 
     {
 
     }
