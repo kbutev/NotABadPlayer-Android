@@ -123,7 +123,7 @@ public class AlbumFragment extends Fragment implements BaseView
         
         if (playlist.getPlayingTrack() != null)
         {
-            intent.putExtra("playingTrack", playlist.getPlayingTrack().title);
+            intent.putExtra("playingTrack", playlist.getPlayingTrack().toString());
         }
         
         startActivity(intent);

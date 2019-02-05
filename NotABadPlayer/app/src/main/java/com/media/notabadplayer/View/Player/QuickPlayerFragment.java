@@ -119,7 +119,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
 
                 if (playlist.getPlayingTrack() != null)
                 {
-                    intent.putExtra("playingTrack", playlist.getPlayingTrack().title);
+                    intent.putExtra("playingTrack", playlist.getPlayingTrack().toString());
                 }
                 
                 startActivity(intent);

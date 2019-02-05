@@ -189,6 +189,7 @@ public class MediaPlayer {
     {
         try
         {
+            seekTo(0);
             _player.stop();
             
             onStop();
@@ -361,8 +362,6 @@ public class MediaPlayer {
 
     public void muteOrUnmute()
     {
-        AudioManager manager = (AudioManager)getContext().getSystemService(Context.AUDIO_SERVICE);
         
-        manager.setStreamMute(AudioManager.STREAM_MUSIC, !manager.isStreamMute(AudioManager.STREAM_MUSIC));
     }
 }

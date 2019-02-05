@@ -32,8 +32,6 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
 
         initUI();
         
-        String playingTrack = getIntent().getStringExtra("playingTrack");
-        
         ArrayList<String> tracksString = getIntent().getStringArrayListExtra("tracks");
         ArrayList<MediaTrack> tracks = new ArrayList<>();
         
@@ -42,7 +40,8 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
             tracks.add(MediaTrack.createFromString(tracksString.get(e)));
         }
         
-        MediaPlayerPlaylist playlist = new MediaPlayerPlaylist(tracks, playingTrack);
+        String playingTrackString = getIntent().getStringExtra("playingTrack");
+        MediaPlayerPlaylist playlist = new MediaPlayerPlaylist(tracks, MediaTrack.createFromString(playingTrackString));
         
         _presenter = new PlayerPresenter(_fragment, getApplication(), playlist);
         _fragment.setPresenter(_presenter);
