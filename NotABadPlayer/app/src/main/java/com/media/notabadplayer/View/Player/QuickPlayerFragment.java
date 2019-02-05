@@ -126,28 +126,8 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
             }
         });
         
-        _mediaBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (!fromUser)
-                {
-                    return;
-                }
-            
-                _player.seekTo(progress);
-            }
+        _mediaBar.setEnabled(false);
         
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            
-            }
-        
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            
-            }
-        });
-    
         _buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
