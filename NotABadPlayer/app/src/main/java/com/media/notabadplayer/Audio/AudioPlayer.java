@@ -10,16 +10,16 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class MediaPlayer {
-    private static MediaPlayer _singleton;
+public class AudioPlayer {
+    private static AudioPlayer _singleton;
     
     private android.media.MediaPlayer _player;
     private Application _application;
-    private MediaPlayerPlaylist _playlist;
+    private AudioPlaylist _playlist;
     
-    private ArrayList<MediaPlayerObserver> _observers;
+    private ArrayList<AudioPlayerObserver> _observers;
     
-    private MediaPlayer()
+    private AudioPlayer()
     {
         _player = new android.media.MediaPlayer();
         _player.setOnCompletionListener(new android.media.MediaPlayer.OnCompletionListener() {
@@ -32,11 +32,11 @@ public class MediaPlayer {
         _observers = new ArrayList<>();
     }
     
-    public static synchronized MediaPlayer getShared()
+    public static synchronized AudioPlayer getShared()
     {
         if (_singleton == null)
         {
-            _singleton = new MediaPlayer();
+            _singleton = new AudioPlayer();
         }
         
         return _singleton;
@@ -47,7 +47,7 @@ public class MediaPlayer {
         return _application.getApplicationContext();
     }
     
-    private void onPlay(MediaTrack track)
+    private void onPlay(AudioTrack track)
     {
         for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPlay(track);}
     }
@@ -62,12 +62,12 @@ public class MediaPlayer {
         for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerStop();}
     }
     
-    private void onResume(MediaTrack track)
+    private void onResume(AudioTrack track)
     {
         for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerResume(track);}
     }
     
-    private void onPause(MediaTrack track)
+    private void onPause(AudioTrack track)
     {
         for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPause(track);}
     }
@@ -77,7 +77,7 @@ public class MediaPlayer {
         return _player;
     }
     
-    public void attachObserver(MediaPlayerObserver observer)
+    public void attachObserver(AudioPlayerObserver observer)
     {
         if (_observers.contains(observer))
         {
@@ -87,7 +87,7 @@ public class MediaPlayer {
         _observers.add(observer);
     }
     
-    public void detachObserver(MediaPlayerObserver observer)
+    public void detachObserver(AudioPlayerObserver observer)
     {
         _observers.remove(observer);
     }
@@ -97,16 +97,16 @@ public class MediaPlayer {
         return _player.isPlaying();
     }
     
-    public MediaPlayerPlaylist getPlaylist()
+    public AudioPlaylist getPlaylist()
     {
         return _playlist;
     }
     
     public boolean hasPlaylist() {return _playlist != null;}
     
-    public void playPlaylist(Application application, @NonNull MediaPlayerPlaylist playlist)
+    public void playPlaylist(Application application, @NonNull AudioPlaylist playlist)
     {
-        MediaPlayerPlaylistPlayOrder order = _playlist != null ? playlist.getPlayOrder() : playlist.getPlayOrder();
+        AudioPlayOrder order = _playlist != null ? _playlist.getPlayOrder() : playlist.getPlayOrder();
         
         _application = application;
         _playlist = playlist;
@@ -115,7 +115,7 @@ public class MediaPlayer {
         playTrack(_playlist.getPlayingTrack());
     }
     
-    private void playTrack(MediaTrack track)
+    private void playTrack(AudioTrack track)
     {
         if (!hasPlaylist())
         {
@@ -138,13 +138,13 @@ public class MediaPlayer {
             _player.prepare();
             _player.start();
             
-            Log.v(MediaPlayer.class.getCanonicalName(), "Playing track: " + track.title);
+            Log.v(AudioPlayer.class.getCanonicalName(), "Playing track: " + track.title);
             
             onPlay(track);
         }
         catch (Exception e)
         {
-            Log.v(MediaPlayer.class.getCanonicalName(), "Cannot play track: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot play track: " + e.toString());
         }
     }
     
@@ -174,7 +174,7 @@ public class MediaPlayer {
         }
         catch (Exception e)
         {
-            Log.v(MediaPlayer.class.getCanonicalName(), "Cannot resume: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot resume: " + e.toString());
         }
     }
 
@@ -196,7 +196,7 @@ public class MediaPlayer {
         }
         catch (Exception e)
         {
-            Log.v(MediaPlayer.class.getCanonicalName(), "Cannot pause: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot pause: " + e.toString());
         }
     }
     
@@ -231,7 +231,7 @@ public class MediaPlayer {
         
         if (!_playlist.isPlaying())
         {
-            Log.v(MediaPlayer.class.getCanonicalName(), "Stop playing, got to last track");
+            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
             
             stop();
             
@@ -239,7 +239,7 @@ public class MediaPlayer {
         }
         else
         {
-            Log.v(MediaPlayer.class.getCanonicalName(), "Play next track " + _playlist.getPlayingTrack().title);
+            Log.v(AudioPlayer.class.getCanonicalName(), "Play next track " + _playlist.getPlayingTrack().title);
             
             playTrack(_playlist.getPlayingTrack());
         }
@@ -256,7 +256,7 @@ public class MediaPlayer {
         
         if (!_playlist.isPlaying())
         {
-            Log.v(MediaPlayer.class.getCanonicalName(), "Stop playing, cannot go before first track");
+            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, cannot go before first track");
 
             stop();
             
@@ -264,7 +264,7 @@ public class MediaPlayer {
         }
         else
         {
-            Log.v(MediaPlayer.class.getCanonicalName(), "Play previous track " + _playlist.getPlayingTrack().title);
+            Log.v(AudioPlayer.class.getCanonicalName(), "Play previous track " + _playlist.getPlayingTrack().title);
             
             playTrack(_playlist.getPlayingTrack());
         }
@@ -281,7 +281,7 @@ public class MediaPlayer {
         
         if (!_playlist.isPlaying())
         {
-            Log.v(MediaPlayer.class.getCanonicalName(), "Stop playing, got to last track");
+            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
 
             stop();
 
@@ -289,7 +289,7 @@ public class MediaPlayer {
         }
         else
         {
-            Log.v(MediaPlayer.class.getCanonicalName(), "Play next track " + _playlist.getPlayingTrack().title);
+            Log.v(AudioPlayer.class.getCanonicalName(), "Play next track " + _playlist.getPlayingTrack().title);
 
             playTrack(_playlist.getPlayingTrack());
         }
@@ -370,11 +370,11 @@ public class MediaPlayer {
                 _player.seekTo(0);
             }
 
-            Log.v(MediaPlayer.class.getCanonicalName(), "Seek to " + String.valueOf(destination));
+            Log.v(AudioPlayer.class.getCanonicalName(), "Seek to " + String.valueOf(destination));
         }
         catch (Exception e)
         {
-            Log.v(MediaPlayer.class.getCanonicalName(), "Cannot seek to: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot seek to: " + e.toString());
         }
     }
 

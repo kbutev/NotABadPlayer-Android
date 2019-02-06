@@ -12,29 +12,30 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.MediaAlbum;
-import com.media.notabadplayer.Audio.MediaPlayer;
-import com.media.notabadplayer.Audio.MediaPlayerObserver;
-import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
-import com.media.notabadplayer.Audio.MediaPlayerPlaylistPlayOrder;
-import com.media.notabadplayer.Audio.MediaTrack;
-import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlayerObserver;
+import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioPlayOrder;
+import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Controlls.ApplicationAction;
 import com.media.notabadplayer.Controlls.ApplicationInput;
 import com.media.notabadplayer.Controlls.KeyBinds;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
 
-public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObserver
+public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
     private boolean _initialized = false;
     
     private BasePresenter _presenter;
 
-    MediaPlayer _player = MediaPlayer.getShared();
+    AudioPlayer _player = AudioPlayer.getShared();
     
     private Handler _handler = new Handler();
     
@@ -76,6 +77,9 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
             _initialized = true;
             _presenter.start();
         }
+        
+        // Save current audio state
+        saveCurrentAudioState();
     }
     
     @Override
@@ -136,6 +140,9 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
             @Override
             public void onClick(View v) {
                 KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+                
+                // Save current audio state
+                saveCurrentAudioState();
             }
         });
         
@@ -189,13 +196,13 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     {
         int currentPosition = _player.getPlayer().getCurrentPosition() / 1000;
         _mediaBar.setProgress(currentPosition);
-        _labelDurationCurrent.setText(MediaTrack.secondsToString(currentPosition));
+        _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
         
-        MediaPlayerPlaylist playlist = MediaPlayer.getShared().getPlaylist();
+        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
         
         if (playlist != null)
         {
-            MediaPlayerPlaylistPlayOrder order = playlist.getPlayOrder();
+            AudioPlayOrder order = playlist.getPlayOrder();
             
             switch (order)
             {
@@ -215,7 +222,12 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
         }
     }
     
-    private void updateMediaInfo(MediaTrack playingTrack)
+    private void saveCurrentAudioState()
+    {
+        GeneralStorage.getShared().saveCurrentAudioState(getContext());
+    }
+    
+    private void updateMediaInfo(AudioTrack playingTrack)
     {
         if (playingTrack != null)
         {
@@ -241,31 +253,31 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     }
 
     @Override
-    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover) 
+    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover) 
     {
 
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums) 
+    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums) 
     {
 
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist) 
+    public void openPlayerScreen(AudioPlaylist playlist) 
     {
         updateMediaInfo(playlist.getPlayingTrack());
     }
     
     @Override
-    public void onPlayerPlay(MediaTrack current)
+    public void onPlayerPlay(AudioTrack current)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
         
@@ -285,13 +297,13 @@ public class PlayerFragment extends Fragment implements BaseView, MediaPlayerObs
     }
     
     @Override
-    public void onPlayerPause(MediaTrack track)
+    public void onPlayerPause(AudioTrack track)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }
     
     @Override
-    public void onPlayerResume(MediaTrack track)
+    public void onPlayerResume(AudioTrack track)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
     }

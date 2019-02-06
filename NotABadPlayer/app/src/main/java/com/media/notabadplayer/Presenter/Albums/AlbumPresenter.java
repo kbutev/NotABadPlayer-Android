@@ -2,10 +2,10 @@ package com.media.notabadplayer.Presenter.Albums;
 
 import android.util.Log;
 
-import com.media.notabadplayer.Audio.MediaAlbum;
-import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
-import com.media.notabadplayer.Audio.MediaTrack;
-import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
@@ -13,23 +13,23 @@ import java.util.ArrayList;
 
 public class AlbumPresenter implements BasePresenter {
     private BaseView _view;
-    private MediaInfo _mediaInfo;
+    private AudioInfo _audioInfo;
     
-    private final MediaAlbum _album;
+    private final AudioAlbum _album;
     
-    private ArrayList<MediaTrack> _songs = new ArrayList<>();
+    private ArrayList<AudioTrack> _songs = new ArrayList<>();
     
-    public AlbumPresenter(BaseView view, MediaInfo mediaInfo, MediaAlbum album)
+    public AlbumPresenter(BaseView view, AudioInfo audioInfo, AudioAlbum album)
     {
         _view = view;
-        _mediaInfo = mediaInfo;
+        _audioInfo = audioInfo;
         _album = album;
     }
 
     @Override
     public void start()
     {
-        _songs = _mediaInfo.getAlbumTracks(_album);
+        _songs = _audioInfo.getAlbumTracks(_album);
         _view.onAlbumSongsLoad(_songs);
     }
 
@@ -51,8 +51,8 @@ public class AlbumPresenter implements BasePresenter {
         // Index greater than zero is an song track
         index--;
         
-        MediaTrack clickedTrack = _songs.get(index);
-        MediaPlayerPlaylist playlist = new MediaPlayerPlaylist(_songs, clickedTrack);
+        AudioTrack clickedTrack = _songs.get(index);
+        AudioPlaylist playlist = new AudioPlaylist(_songs, clickedTrack);
         
         Log.v("AlbumPresenter", "Play playlist with specific song " + clickedTrack.title);
         

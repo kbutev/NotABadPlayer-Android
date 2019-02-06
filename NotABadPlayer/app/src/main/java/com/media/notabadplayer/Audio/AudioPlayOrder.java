@@ -1,6 +1,6 @@
 package com.media.notabadplayer.Audio;
 
-public enum MediaPlayerPlaylistPlayOrder {
+public enum AudioPlayOrder {
     ONCE,
     ONCE_FOREVER,
     FORWARDS,

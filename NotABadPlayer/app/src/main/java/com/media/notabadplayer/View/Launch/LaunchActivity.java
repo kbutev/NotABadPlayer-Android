@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.Main.MainActivity;
 
 import java.security.Permission;
@@ -26,6 +27,14 @@ public class LaunchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launch);
 
         requestPermissionForReadExtertalStorage();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        
+        GeneralStorage.getShared().restoreAudioState(getApplication(), this);
     }
     
     private void openMainScreen()

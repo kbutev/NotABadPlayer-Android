@@ -1,33 +1,36 @@
 package com.media.notabadplayer.Audio;
 
-import android.support.v4.math.MathUtils;
-
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MediaPlayerPlaylist
+public class AudioPlaylist
 {
-    private MediaPlayerPlaylistPlayOrder _playOrder;
+    private AudioPlayOrder _playOrder;
     
-    private ArrayList<MediaTrack> _tracks;
+    private ArrayList<AudioTrack> _tracks;
     
     private boolean _playing;
-    private MediaTrack _playingTrack;
+    private AudioTrack _playingTrack;
     private int _playingTrackPosition;
     
     private Random _random = new Random();
     
-    public MediaPlayerPlaylist(MediaTrack track)
+    public AudioPlaylist(AudioTrack track)
     {
         _tracks = new ArrayList<>();
         _tracks.add(track);
         _playing = true;
         _playingTrack = track;
         _playingTrackPosition = 0;
-        _playOrder = MediaPlayerPlaylistPlayOrder.FORWARDS;
+        _playOrder = AudioPlayOrder.FORWARDS;
     }
 
-    public MediaPlayerPlaylist(ArrayList<MediaTrack> tracks, MediaTrack playingTrack) throws IllegalArgumentException
+    public AudioPlaylist(ArrayList<AudioTrack> tracks) throws IllegalArgumentException
+    {
+        this(tracks, null);
+    }
+
+    public AudioPlaylist(ArrayList<AudioTrack> tracks, AudioTrack playingTrack) throws IllegalArgumentException
     {
         if (tracks.size() == 0)
         {
@@ -38,7 +41,7 @@ public class MediaPlayerPlaylist
         _playing = true;
         _playingTrack = tracks.get(0);
         _playingTrackPosition = 0;
-        _playOrder = MediaPlayerPlaylistPlayOrder.FORWARDS;
+        _playOrder = AudioPlayOrder.FORWARDS;
         
         if (playingTrack != null)
         {
@@ -59,17 +62,17 @@ public class MediaPlayerPlaylist
         return _tracks.size();
     }
     
-    public final MediaTrack getTrack(int index)
+    public final AudioTrack getTrack(int index)
     {
         return _tracks.get(index);
     }
     
-    public MediaPlayerPlaylistPlayOrder getPlayOrder()
+    public AudioPlayOrder getPlayOrder()
     {
         return _playOrder;
     }
     
-    public void setPlayOrder(MediaPlayerPlaylistPlayOrder order)
+    public void setPlayOrder(AudioPlayOrder order)
     {
         _playOrder = order;
     }
@@ -79,12 +82,12 @@ public class MediaPlayerPlaylist
         return _playing;
     }
     
-    public MediaTrack getPlayingTrack()
+    public AudioTrack getPlayingTrack()
     {
         return _playingTrack;
     }
 
-    public MediaTrack goToTrackBasedOnPlayOrder()
+    public AudioTrack goToTrackBasedOnPlayOrder()
     {
         _playing = true;
         
@@ -109,7 +112,7 @@ public class MediaPlayerPlaylist
         return _playingTrack;
     }
 
-    public MediaTrack goToNextPlayingTrack()
+    public AudioTrack goToNextPlayingTrack()
     {
         _playing = true;
         
@@ -126,7 +129,7 @@ public class MediaPlayerPlaylist
         return _playingTrack;
     }
 
-    public MediaTrack goToNextPlayingTrackRepeat()
+    public AudioTrack goToNextPlayingTrackRepeat()
     {
         _playing = true;
         
@@ -143,7 +146,7 @@ public class MediaPlayerPlaylist
         return _playingTrack;
     }
 
-    public MediaTrack goToPreviousPlayingTrack()
+    public AudioTrack goToPreviousPlayingTrack()
     {
         _playing = true;
         
@@ -162,7 +165,7 @@ public class MediaPlayerPlaylist
         return _playingTrack;
     }
     
-    public MediaTrack goToTrackByShuffle()
+    public AudioTrack goToTrackByShuffle()
     {
         _playing = true;
         
@@ -172,5 +175,22 @@ public class MediaPlayerPlaylist
         _playingTrack = _tracks.get(_playingTrackPosition);
         
         return _playingTrack;
+    }
+    
+    public ArrayList<String> getTracksAsStrings()
+    {
+        ArrayList<String> tracks = new ArrayList<>();
+
+        for (int e = 0; e < size(); e++)
+        {
+            tracks.add(getTrack(e).toString());
+        }
+        
+        return tracks;
+    }
+
+    public String getPlayingTrackAsString()
+    {
+        return _playingTrack != null ? _playingTrack.toString() : "";
     }
 }

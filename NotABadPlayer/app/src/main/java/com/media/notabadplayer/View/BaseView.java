@@ -1,17 +1,19 @@
 package com.media.notabadplayer.View;
 
-import com.media.notabadplayer.Audio.MediaAlbum;
-import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioTrack;
 
 import java.util.ArrayList;
 
 public interface BaseView {
     void setPresenter(BasePresenter presenter);
     
-    void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover);
+    void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover);
     
-    void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums);
-    void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs);
+    void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums);
+    void onAlbumSongsLoad(ArrayList<AudioTrack> songs);
     
-    void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist);
+    void openPlayerScreen(AudioPlaylist playlist);
 }

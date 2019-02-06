@@ -1,6 +1,6 @@
 package com.media.notabadplayer.Audio;
 
-public class MediaTrack {
+public class AudioTrack {
     public final String filePath;
     public final String title;
     public final String artist;
@@ -10,7 +10,7 @@ public class MediaTrack {
     public final double durationInSeconds;
     public final String duration;
     
-    public MediaTrack(String filePath, String title, String artist, String albumTitle, String artCover, int trackNum, double durationInSeconds)
+    public AudioTrack(String filePath, String title, String artist, String albumTitle, String artCover, int trackNum, double durationInSeconds)
     {
         this.filePath = filePath;
         this.title = title;
@@ -22,7 +22,7 @@ public class MediaTrack {
         this.duration = secondsToString((int)durationInSeconds);
     }
     
-    public static MediaTrack createFromString(String data)
+    public static AudioTrack createFromString(String data)
     {
         if (data == null)
         {
@@ -36,15 +36,15 @@ public class MediaTrack {
             return null;
         }
         
-        return new MediaTrack(values[0], values[1], values[2], values[3], values[4], Integer.parseInt(values[5]), Double.parseDouble(values[6]));
+        return new AudioTrack(values[0], values[1], values[2], values[3], values[4], Integer.parseInt(values[5]), Double.parseDouble(values[6]));
     }
     
     @Override
     public boolean equals(Object o)
     {
-        if (o instanceof MediaTrack)
+        if (o instanceof AudioTrack)
         {
-            MediaTrack other = (MediaTrack)o;
+            AudioTrack other = (AudioTrack)o;
             
             return title.equals(other.title) && albumTitle.equals(other.albumTitle) && duration.equals(other.duration) && trackNum.equals(other.trackNum);
         }
