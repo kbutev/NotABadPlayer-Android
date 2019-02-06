@@ -16,4 +16,6 @@ public interface BaseView {
     void onAlbumSongsLoad(ArrayList<AudioTrack> songs);
     
     void openPlayerScreen(AudioPlaylist playlist);
+    
+    void searchQueryResults(ArrayList<AudioTrack> songs);
 }

@@ -17,6 +17,7 @@ import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Presenter.Albums.AlbumsPresenter;
 import com.media.notabadplayer.Presenter.Main.MainPresenter;
+import com.media.notabadplayer.Presenter.Search.SearchPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.View.BasePresenter;
@@ -43,20 +44,21 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_albums:
-                    _currentTab = new AlbumsFragment().newInstance();
+                    _currentTab = AlbumsFragment.newInstance();
                     _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
                     refreshCurrentTab();
                     return true;
                 case R.id.navigation_playlists:
-                    _currentTab = new PlaylistsFragment().newInstance();
+                    _currentTab = PlaylistsFragment.newInstance();
                     refreshCurrentTab();
                     return true;
                 case R.id.navigation_search:
-                    _currentTab = new SearchFragment().newInstance();
+                    _currentTab = SearchFragment.newInstance();
+                    _currentTab.setPresenter(new SearchPresenter(_currentTab, _audioInfo));
                     refreshCurrentTab();
                     return true;
                 case R.id.navigation_settings:
-                    _currentTab = new SettingsFragment().newInstance();
+                    _currentTab = SettingsFragment.newInstance();
                     refreshCurrentTab();
                     return true;
             }
@@ -67,8 +69,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.activity_main);
-
+        
+        _presenter = new MainPresenter(this);
+        
         _audioInfo = new AudioInfo(this);
         
         initUI();
@@ -79,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private void initUI()
     {
-        _presenter = new MainPresenter(this);
         _currentTab = AlbumsFragment.newInstance();
         _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
         refreshCurrentTab();
@@ -150,6 +154,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     @Override
     public void openPlayerScreen(AudioPlaylist playlist)
+    {
+
+    }
+
+    @Override
+    public void searchQueryResults(ArrayList<AudioTrack> songs)
     {
 
     }

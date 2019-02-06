@@ -141,6 +141,12 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     }
     
     @Override
+    public void searchQueryResults(ArrayList<AudioTrack> songs) 
+    {
+        
+    }
+    
+    @Override
     public void onPlayerPlay(AudioTrack current)
     {
         _table.invalidateViews();

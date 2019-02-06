@@ -132,4 +132,10 @@ public class AlbumsFragment extends Fragment implements BaseView
     {
 
     }
+
+    @Override
+    public void searchQueryResults(ArrayList<AudioTrack> songs)
+    {
+
+    }
 }

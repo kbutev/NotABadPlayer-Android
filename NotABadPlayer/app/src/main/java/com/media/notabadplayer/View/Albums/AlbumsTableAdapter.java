@@ -51,12 +51,6 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
     {
-        // Init
-        if (convertView == null)
-        {
-            LayoutInflater.from(_context).inflate(R.layout.item_table_album, parent, false);
-        }
-        
         // Item
         AudioAlbum item = (AudioAlbum) getItem(position);
 
@@ -66,7 +60,7 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
         String dataCover = item.albumCover;
         
         ImageView cover = checkNotNull((ImageView)listItem.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
-
+        
         if (!dataCover.isEmpty())
         {
             cover.setImageURI(Uri.parse(Uri.decode(dataCover)));
