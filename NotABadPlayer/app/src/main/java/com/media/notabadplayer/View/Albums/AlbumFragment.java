@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Albums;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -125,15 +126,20 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     @Override
     public void openPlayerScreen(AudioPlaylist playlist)
     {
-        Intent intent = new Intent(getActivity(), PlayerActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Activity a = getActivity();
         
+        if (a == null)
+        {
+            return;
+        }
+        
+        Intent intent = new Intent(a, PlayerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("tracks", playlist.getTracksAsStrings());
         intent.putExtra("playingTrack", playlist.getPlayingTrackAsString());
-        
         startActivity(intent);
     }
-
+    
     @Override
     public void onPlayerPlay(AudioTrack current)
     {

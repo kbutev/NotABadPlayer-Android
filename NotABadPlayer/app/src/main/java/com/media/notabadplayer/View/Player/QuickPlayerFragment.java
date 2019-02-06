@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Player;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,8 +20,8 @@ import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Controlls.ApplicationInput;
-import com.media.notabadplayer.Controlls.KeyBinds;
+import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -110,31 +111,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         _header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
-                
-                if (playlist == null)
-                {
-                    return;
-                }
-                
-                ArrayList<String> tracks = new ArrayList<>();
-
-                for (int e = 0; e < playlist.size(); e++)
-                {
-                    tracks.add(playlist.getTrack(e).toString());
-                }
-                
-                Intent intent = new Intent(getActivity(), PlayerActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                
-                intent.putExtra("tracks", tracks);
-
-                if (playlist.getPlayingTrack() != null)
-                {
-                    intent.putExtra("playingTrack", playlist.getPlayingTrack().toString());
-                }
-                
-                startActivity(intent);
+                openPlayerScreen();
             }
         });
         
@@ -175,6 +152,43 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
                 }
             }
         });
+    }
+    
+    private void openPlayerScreen()
+    {
+        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+        
+        if (playlist == null)
+        {
+            return;
+        }
+        
+        ArrayList<String> tracks = new ArrayList<>();
+        
+        for (int e = 0; e < playlist.size(); e++)
+        {
+            tracks.add(playlist.getTrack(e).toString());
+        }
+        
+        Intent intent = new Intent(getActivity(), PlayerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        
+        intent.putExtra("tracks", tracks);
+        
+        if (playlist.getPlayingTrack() != null)
+        {
+            intent.putExtra("playingTrack", playlist.getPlayingTrack().toString());
+        }
+        
+        startActivity(intent);
+        
+        // Transition animation
+        Activity a = getActivity();
+        
+        if (a != null)
+        {
+            a.overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
+        }
     }
     
     private void updateUIState()
