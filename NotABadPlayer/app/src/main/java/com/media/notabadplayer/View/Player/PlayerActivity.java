@@ -60,14 +60,20 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         // Transition animation
         overridePendingTransition(R.anim.slide_up, R.anim.hold);
     }
+
+    @Override
+    public void finish()
+    {
+        super.finish();
+
+        // Transition animation
+        overridePendingTransition(0, R.anim.slide_down);
+    }
     
     @Override
     public void onBackPressed()
     {
         super.onBackPressed();
-        
-        // Transition animation
-        overridePendingTransition(0, R.anim.slide_down);
     }
 
     @Override

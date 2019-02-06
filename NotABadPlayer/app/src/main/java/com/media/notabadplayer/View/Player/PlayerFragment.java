@@ -4,11 +4,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -31,6 +35,8 @@ import java.util.ArrayList;
 
 public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
+    private static float SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED = 400;
+    
     private boolean _initialized = false;
     
     private BasePresenter _presenter;
@@ -39,6 +45,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private Handler _handler = new Handler();
     
+    private LinearLayout _layout;
     private ImageView _imageCover;
     private TextView _labelTitle;
     private TextView _labelArtist;
@@ -49,6 +56,8 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     private Button _buttonBack;
     private Button _buttonPlay;
     private Button _buttonForward;
+    
+    private float _layoutTouchMotionLastYPosition = -1;
     
     public PlayerFragment()
     {
@@ -98,6 +107,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         View root = inflater.inflate(R.layout.fragment_player, container, false);
         
         // Setup UI
+        _layout = root.findViewById(R.id.layout);
         _imageCover = root.findViewById(R.id.cover);
         _labelTitle = root.findViewById(R.id.songTitle);
         _labelArtist = root.findViewById(R.id.songArtist);
@@ -117,6 +127,13 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private void initUI()
     {
+        _layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return updateSwipeDown(event);
+            }
+        });
+        
         _mediaBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -247,6 +264,42 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             _labelArtist.setText(playingTrack.artist);
             _mediaBar.setMax((int) playingTrack.durationInSeconds);
             _labelDurationTotal.setText(playingTrack.duration);
+        }
+    }
+    
+    private boolean updateSwipeDown(MotionEvent event)
+    {
+        if (event.getAction() == MotionEvent.ACTION_MOVE)
+        {
+            float currentY = event.getY();
+
+            if (_layoutTouchMotionLastYPosition == -1)
+            {
+                _layoutTouchMotionLastYPosition = currentY;
+                return false;
+            }
+
+            if (currentY - _layoutTouchMotionLastYPosition > SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED)
+            {
+                _layoutTouchMotionLastYPosition = -1;
+                swipeDown();
+                return true;
+            }
+        }
+        
+        if (event.getAction() == MotionEvent.ACTION_UP)
+        {
+            _layoutTouchMotionLastYPosition = -1;
+        }
+        
+        return false;
+    }
+    
+    private void swipeDown()
+    {
+        if (getActivity() != null)
+        {
+            getActivity().finish();
         }
     }
     
