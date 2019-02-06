@@ -58,6 +58,8 @@ public class GeneralStorage
         
         editor.putString("playOrder", playlist.getPlayOrder().toString());
         
+        editor.putInt("playerPosition", player.getCurrentPositionMSec());
+        
         editor.apply();
     }
     
@@ -83,6 +85,8 @@ public class GeneralStorage
             return;
         }
         
+        AudioPlayer player = AudioPlayer.getShared();
+        
         String track = preferences.getString("playingTrack", "");
         
         ArrayList<AudioTrack> tracks = new ArrayList<>();
@@ -105,9 +109,15 @@ public class GeneralStorage
         }
         
         AudioPlaylist playlist = new AudioPlaylist(tracks, AudioTrack.createFromString(track));
+
+        player.playPlaylist(application, playlist);
+        player.getPlaylist().setPlayOrder(order);
         
-        AudioPlayer.getShared().playPlaylist(application, playlist);
-        AudioPlayer.getShared().getPlaylist().setPlayOrder(order);
-        AudioPlayer.getShared().pause();
+        int positionMSec = preferences.getInt("playerPosition", 0);
+        
+        player.seekTo(positionMSec);
+        
+        // Always pause by default when restoring state from storage
+        player.pause();
     }
 }

@@ -26,14 +26,20 @@ public class PlayerPresenter implements BasePresenter
     @Override
     public void start() 
     {
-        AudioPlaylist currentPlaylist = AudioPlayer.getShared().getPlaylist();
+        AudioPlayer player = AudioPlayer.getShared();
+        AudioPlaylist currentPlaylist = player.getPlaylist();
         AudioTrack currentPlayingTrack = currentPlaylist != null ? currentPlaylist.getPlayingTrack() : null;
         
         if (!_playlist.getPlayingTrack().equals(currentPlayingTrack))
         {
             Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with " + String.valueOf(_playlist.size()) + " tracks");
+
+            player.playPlaylist(_application, _playlist);
             
-            AudioPlayer.getShared().playPlaylist(_application, _playlist);
+            if (!player.isPlaying())
+            {
+                player.resume();
+            }
             
             _view.openPlayerScreen(_playlist);
         }
