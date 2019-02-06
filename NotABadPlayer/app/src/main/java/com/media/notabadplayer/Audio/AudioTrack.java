@@ -46,7 +46,7 @@ public class AudioTrack {
         {
             AudioTrack other = (AudioTrack)o;
             
-            return title.equals(other.title) && albumTitle.equals(other.albumTitle) && duration.equals(other.duration) && trackNum.equals(other.trackNum);
+            return filePath.equals(other.filePath);
         }
         
         return false;
