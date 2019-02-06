@@ -10,11 +10,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.media.notabadplayer.Audio.MediaAlbum;
-import com.media.notabadplayer.Audio.MediaInfo;
-import com.media.notabadplayer.Audio.MediaPlayer;
-import com.media.notabadplayer.Audio.MediaPlayerObserver;
-import com.media.notabadplayer.Audio.MediaTrack;
+import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlayerObserver;
+import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -22,9 +23,9 @@ import com.media.notabadplayer.View.Player.PlayerActivity;
 
 import java.util.ArrayList;
 
-public class AlbumFragment extends Fragment implements BaseView, MediaPlayerObserver
+public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
-    MediaPlayer _player = MediaPlayer.getShared();
+    AudioPlayer _player = AudioPlayer.getShared();
     
     private BasePresenter _presenter;
     
@@ -104,48 +105,37 @@ public class AlbumFragment extends Fragment implements BaseView, MediaPlayerObse
     }
     
     @Override
-    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover) 
+    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover) 
     {
         
     }
     
     @Override
-    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums)
+    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
     {
 
     }
     
     @Override
-    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
     {
         _table.setAdapter(new AlbumListAdapter(getContext(), songs));
     }
     
     @Override
-    public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist)
+    public void openPlayerScreen(AudioPlaylist playlist)
     {
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         
-        ArrayList<String> tracks = new ArrayList<>();
-        
-        for (int e = 0; e < playlist.size(); e++)
-        {
-            tracks.add(playlist.getTrack(e).toString());
-        }
-        
-        intent.putExtra("tracks", tracks);
-        
-        if (playlist.getPlayingTrack() != null)
-        {
-            intent.putExtra("playingTrack", playlist.getPlayingTrack().toString());
-        }
+        intent.putExtra("tracks", playlist.getTracksAsStrings());
+        intent.putExtra("playingTrack", playlist.getPlayingTrackAsString());
         
         startActivity(intent);
     }
 
     @Override
-    public void onPlayerPlay(com.media.notabadplayer.Audio.MediaTrack current)
+    public void onPlayerPlay(AudioTrack current)
     {
         _table.invalidateViews();
     }
@@ -163,13 +153,13 @@ public class AlbumFragment extends Fragment implements BaseView, MediaPlayerObse
     }
 
     @Override
-    public void onPlayerPause(MediaTrack track)
+    public void onPlayerPause(AudioTrack track)
     {
         
     }
 
     @Override
-    public void onPlayerResume(MediaTrack track)
+    public void onPlayerResume(AudioTrack track)
     {
         
     }

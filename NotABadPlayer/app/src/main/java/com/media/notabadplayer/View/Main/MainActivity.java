@@ -9,8 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
-import com.media.notabadplayer.Audio.MediaAlbum;
-import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Controlls.ApplicationInput;
 import com.media.notabadplayer.Controlls.KeyBinds;
 import com.media.notabadplayer.Presenter.Albums.AlbumsPresenter;
@@ -27,7 +29,7 @@ import com.media.notabadplayer.View.Settings.SettingsFragment;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements BaseView {
-    private MediaInfo _mediaInfo;
+    private AudioInfo _audioInfo;
     private MainPresenter _presenter;
     
     private BaseView _currentTab;
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             switch (item.getItemId()) {
                 case R.id.navigation_albums:
                     _currentTab = new AlbumsFragment().newInstance();
-                    _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _mediaInfo));
+                    _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
                     refreshCurrentTab();
                     return true;
                 case R.id.navigation_playlists:
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        _mediaInfo = new MediaInfo(this);
+        _audioInfo = new AudioInfo(this);
         
         initUI();
         
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         _presenter = new MainPresenter(this);
         _currentTab = AlbumsFragment.newInstance();
-        _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _mediaInfo));
+        _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
         refreshCurrentTab();
         _presenter.start();
         
@@ -130,24 +132,24 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover) {
+    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover) {
         
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums)
+    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
     {
 
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist)
+    public void openPlayerScreen(AudioPlaylist playlist)
     {
 
     }

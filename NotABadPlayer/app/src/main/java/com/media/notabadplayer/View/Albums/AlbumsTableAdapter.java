@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.MediaAlbum;
+import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.R;
 
 import java.util.ArrayList;
@@ -22,10 +22,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
 {
     private Context _context;
-    private ArrayList<MediaAlbum> _data;
+    private ArrayList<AudioAlbum> _data;
     private GridSideIndexingView _sideSelector;
     
-    public AlbumsTableAdapter(@NonNull Context context, ArrayList<MediaAlbum> albums, GridSideIndexingView sideSelector)
+    public AlbumsTableAdapter(@NonNull Context context, ArrayList<AudioAlbum> albums, GridSideIndexingView sideSelector)
     {
         this._context = context;
         this._data = albums;
@@ -58,7 +58,7 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
         }
         
         // Item
-        MediaAlbum item = (MediaAlbum) getItem(position);
+        AudioAlbum item = (AudioAlbum) getItem(position);
 
         View listItem = LayoutInflater.from(_context).inflate(R.layout.item_table_album, parent, false);
         

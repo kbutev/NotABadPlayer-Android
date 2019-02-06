@@ -9,12 +9,12 @@ import com.media.notabadplayer.Utilities.MediaSorting;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MediaInfo {
+public class AudioInfo {
     private Context _context;
-    private ArrayList<MediaAlbum> _albums = new  ArrayList<MediaAlbum>();
-    private HashMap<String, ArrayList<MediaTrack>> _albumSongs = new HashMap<>();
+    private ArrayList<AudioAlbum> _albums = new  ArrayList<AudioAlbum>();
+    private HashMap<String, ArrayList<AudioTrack>> _albumSongs = new HashMap<>();
     
-    public MediaInfo(Context context)
+    public AudioInfo(Context context)
     {
         _context = context;
     }
@@ -46,14 +46,14 @@ public class MediaInfo {
             String artist = cursor.getString(artistColumn);
             String cover = cursor.getString(albumArtColumn);
             
-            MediaAlbum a = new MediaAlbum(String.valueOf(albumID), artist, title, cover != null ? cover : "");
+            AudioAlbum a = new AudioAlbum(String.valueOf(albumID), artist, title, cover != null ? cover : "");
             _albums.add(a);
         }
         
         cursor.close();
     }
     
-    public ArrayList<MediaAlbum> getAlbums()
+    public ArrayList<AudioAlbum> getAlbums()
     {
         if (_albums.size() > 0)
         {
@@ -67,18 +67,18 @@ public class MediaInfo {
         return _albums;
     }
     
-    public ArrayList<MediaTrack> getAlbumTracks(MediaAlbum album)
+    public ArrayList<AudioTrack> getAlbumTracks(AudioAlbum album)
     {
         if (!_albumSongs.containsKey(album.albumID))
         {
-            _albumSongs.put(album.albumID, new ArrayList<MediaTrack>());
+            _albumSongs.put(album.albumID, new ArrayList<AudioTrack>());
         }
         else
         {
             return _albumSongs.get(album.albumID);
         }
         
-        ArrayList<MediaTrack> albumTracks = _albumSongs.get(album.albumID);
+        ArrayList<AudioTrack> albumTracks = _albumSongs.get(album.albumID);
         
         String projection[] = {
                 MediaStore.Audio.Media.DATA,
@@ -118,7 +118,7 @@ public class MediaInfo {
             int trackNum = cursor.getInt(trackNumColumn);
             double duration = cursor.getLong(durationColumn) / 1000;
             
-            albumTracks.add(new MediaTrack(filePath, title, artist, albumTitle, album.albumCover, trackNum, duration));
+            albumTracks.add(new AudioTrack(filePath, title, artist, albumTitle, album.albumCover, trackNum, duration));
         }
         
         MediaSorting.sortTracksByTrackNumber(albumTracks);

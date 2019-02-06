@@ -6,10 +6,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 
-import com.media.notabadplayer.Audio.MediaAlbum;
-import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
-import com.media.notabadplayer.Audio.MediaTrack;
-import com.media.notabadplayer.Audio.MediaInfo;
+import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Controlls.ApplicationInput;
 import com.media.notabadplayer.Controlls.KeyBinds;
 import com.media.notabadplayer.Presenter.Player.PlayerPresenter;
@@ -33,26 +33,20 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         initUI();
         
         ArrayList<String> tracksString = getIntent().getStringArrayListExtra("tracks");
-        ArrayList<MediaTrack> tracks = new ArrayList<>();
+        ArrayList<AudioTrack> tracks = new ArrayList<>();
         
         for (int e = 0; e < tracksString.size(); e++)
         {
-            tracks.add(MediaTrack.createFromString(tracksString.get(e)));
+            tracks.add(AudioTrack.createFromString(tracksString.get(e)));
         }
         
         String playingTrackString = getIntent().getStringExtra("playingTrack");
-        MediaPlayerPlaylist playlist = new MediaPlayerPlaylist(tracks, MediaTrack.createFromString(playingTrackString));
+        AudioPlaylist playlist = new AudioPlaylist(tracks, AudioTrack.createFromString(playingTrackString));
         
         _presenter = new PlayerPresenter(_fragment, getApplication(), playlist);
         _fragment.setPresenter(_presenter);
     }
     
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-    }
-
     @Override
     public void onBackPressed()
     {
@@ -91,25 +85,25 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover)
+    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover)
     {
 
     }
     
     @Override
-    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums)
+    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
     {
 
     }
     
     @Override
-    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist)
+    public void openPlayerScreen(AudioPlaylist playlist)
     {
 
     }

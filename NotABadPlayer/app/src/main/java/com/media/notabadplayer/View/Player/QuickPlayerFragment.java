@@ -13,12 +13,12 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.MediaAlbum;
-import com.media.notabadplayer.Audio.MediaPlayer;
-import com.media.notabadplayer.Audio.MediaInfo;
-import com.media.notabadplayer.Audio.MediaPlayerObserver;
-import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
-import com.media.notabadplayer.Audio.MediaTrack;
+import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayerObserver;
+import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Controlls.ApplicationInput;
 import com.media.notabadplayer.Controlls.KeyBinds;
 import com.media.notabadplayer.R;
@@ -27,8 +27,8 @@ import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
 
-public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlayerObserver {
-    MediaPlayer _player = MediaPlayer.getShared();
+public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver {
+    AudioPlayer _player = AudioPlayer.getShared();
     
     private Handler _handler = new Handler();
     
@@ -63,6 +63,11 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     {
         super.onResume();
         _player.attachObserver(this);
+        
+        if (AudioPlayer.getShared().hasPlaylist())
+        {
+            updateMediaInfo(AudioPlayer.getShared().getPlaylist().getPlayingTrack());
+        }
     }
     
     @Override
@@ -105,7 +110,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
         _header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaPlayerPlaylist playlist = MediaPlayer.getShared().getPlaylist();
+                AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
                 
                 if (playlist == null)
                 {
@@ -176,10 +181,10 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     {
         int currentPosition = _player.getPlayer().getCurrentPosition() / 1000;
         _mediaBar.setProgress(currentPosition);
-        _labelDurationCurrent.setText(MediaTrack.secondsToString(currentPosition));
+        _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
     }
 
-    private void updateMediaInfo(MediaTrack playingTrack)
+    private void updateMediaInfo(AudioTrack playingTrack)
     {
         if (playingTrack != null)
         {
@@ -205,30 +210,30 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     }
 
     @Override
-    public void openAlbumScreen(MediaInfo mediaInfo, String albumID, String albumArtist, String albumTitle, String albumCover) {
+    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover) {
         
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<MediaAlbum> albums)
+    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
     {
 
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<com.media.notabadplayer.Audio.MediaTrack> songs)
+    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(com.media.notabadplayer.Audio.MediaPlayerPlaylist playlist)
+    public void openPlayerScreen(AudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void onPlayerPlay(com.media.notabadplayer.Audio.MediaTrack current)
+    public void onPlayerPlay(AudioTrack current)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
         updateMediaInfo(current);
@@ -247,13 +252,13 @@ public class QuickPlayerFragment extends Fragment implements BaseView, MediaPlay
     }
     
     @Override
-    public void onPlayerPause(MediaTrack track)
+    public void onPlayerPause(AudioTrack track)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_play);
     }
     
     @Override
-    public void onPlayerResume(MediaTrack track)
+    public void onPlayerResume(AudioTrack track)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
     }

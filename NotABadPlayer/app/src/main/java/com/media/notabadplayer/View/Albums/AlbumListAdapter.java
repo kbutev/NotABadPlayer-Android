@@ -12,11 +12,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.MediaPlayer;
-import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
-import com.media.notabadplayer.Audio.MediaTrack;
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Utilities.MediaSorting;
 
 import java.util.ArrayList;
 
@@ -25,9 +24,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class AlbumListAdapter extends BaseAdapter
 {
     private Context _context;
-    private ArrayList<MediaTrack> _tracks;
+    private ArrayList<AudioTrack> _tracks;
     
-    public AlbumListAdapter(@NonNull Context context, ArrayList<MediaTrack> tracks)
+    public AlbumListAdapter(@NonNull Context context, ArrayList<AudioTrack> tracks)
     {
         this._context = context;
         this._tracks = tracks;
@@ -66,7 +65,7 @@ class AlbumListAdapter extends BaseAdapter
             ImageView albumCover = header.findViewById(R.id.albumCover);
             TextView albumTitle = header.findViewById(R.id.albumTitle);
 
-            MediaTrack firstTrack = _tracks.get(0);
+            AudioTrack firstTrack = _tracks.get(0);
 
             if (!firstTrack.artCover.isEmpty())
             {
@@ -87,7 +86,7 @@ class AlbumListAdapter extends BaseAdapter
         // Item (follow position > 0)
         position--;
 
-        MediaTrack item = (MediaTrack) getItem(position);
+        AudioTrack item = (AudioTrack) getItem(position);
         
         View listItem = LayoutInflater.from(_context).inflate(R.layout.item_album_song, parent, false);
         
@@ -120,11 +119,11 @@ class AlbumListAdapter extends BaseAdapter
         // Color
         boolean isPlayingTrack = false;
         
-        MediaPlayerPlaylist playlist = MediaPlayer.getShared().getPlaylist();
+        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
         
         if (playlist != null)
         {
-            MediaTrack track = playlist.getPlayingTrack();
+            AudioTrack track = playlist.getPlayingTrack();
             
             if (track != null)
             {

@@ -4,9 +4,9 @@ import android.app.Application;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.media.notabadplayer.Audio.MediaPlayer;
-import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
-import com.media.notabadplayer.Audio.MediaTrack;
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
@@ -14,9 +14,9 @@ public class PlayerPresenter implements BasePresenter
 {
     private BaseView _view;
     private Application _application;
-    private MediaPlayerPlaylist _playlist;
+    private AudioPlaylist _playlist;
     
-    public PlayerPresenter(BaseView view, Application application, @Nullable MediaPlayerPlaylist playlist)
+    public PlayerPresenter(BaseView view, Application application, @Nullable AudioPlaylist playlist)
     {
         _view = view;
         _application = application;
@@ -26,14 +26,14 @@ public class PlayerPresenter implements BasePresenter
     @Override
     public void start() 
     {
-        MediaPlayerPlaylist currentPlaylist = MediaPlayer.getShared().getPlaylist();
-        MediaTrack currentPlayingTrack = currentPlaylist != null ? currentPlaylist.getPlayingTrack() : null;
+        AudioPlaylist currentPlaylist = AudioPlayer.getShared().getPlaylist();
+        AudioTrack currentPlayingTrack = currentPlaylist != null ? currentPlaylist.getPlayingTrack() : null;
         
         if (!_playlist.getPlayingTrack().equals(currentPlayingTrack))
         {
             Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with " + String.valueOf(_playlist.size()) + " tracks");
             
-            MediaPlayer.getShared().playPlaylist(_application, _playlist);
+            AudioPlayer.getShared().playPlaylist(_application, _playlist);
             
             _view.openPlayerScreen(_playlist);
         }

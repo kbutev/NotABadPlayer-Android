@@ -1,8 +1,8 @@
 package com.media.notabadplayer.Controlls;
 
-import com.media.notabadplayer.Audio.MediaPlayer;
-import com.media.notabadplayer.Audio.MediaPlayerPlaylist;
-import com.media.notabadplayer.Audio.MediaPlayerPlaylistPlayOrder;
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioPlayOrder;
 
 public class KeyBinds
 {
@@ -61,76 +61,76 @@ public class KeyBinds
                 System.exit(0);
                 break;
             case PLAY:
-                MediaPlayer.getShared().resume();
+                AudioPlayer.getShared().resume();
                 break;
             case PAUSE:
-                MediaPlayer.getShared().pause();
+                AudioPlayer.getShared().pause();
                 break;
             case PAUSE_OR_RESUME:
-                MediaPlayer.getShared().pauseOrResume();
+                AudioPlayer.getShared().pauseOrResume();
                 break;
             case NEXT:
-                MediaPlayer.getShared().playNext();
+                AudioPlayer.getShared().playNext();
                 break;
             case PREVIOUS:
-                MediaPlayer.getShared().playPrevious();
+                AudioPlayer.getShared().playPrevious();
                 break;
             case SHUFFLE:
-                MediaPlayer.getShared().shuffle();
+                AudioPlayer.getShared().shuffle();
                 break;
             case VOLUME_UP:
-                MediaPlayer.getShared().volumeUp();
+                AudioPlayer.getShared().volumeUp();
                 break;
             case VOLUME_DOWN:
-                MediaPlayer.getShared().volumeDown();
+                AudioPlayer.getShared().volumeDown();
                 break;
             case MUTE_OR_UNMUTE:
-                MediaPlayer.getShared().muteOrUnmute();
+                AudioPlayer.getShared().muteOrUnmute();
                 break;
             case JUMP_FORWARDS_5:
-                MediaPlayer.getShared().jumpForwards(5);
+                AudioPlayer.getShared().jumpForwards(5);
                 break;
             case JUMP_FORWARDS_8:
-                MediaPlayer.getShared().jumpForwards(8);
+                AudioPlayer.getShared().jumpForwards(8);
                 break;
             case JUMP_FORWARDS_10:
-                MediaPlayer.getShared().jumpForwards(10);
+                AudioPlayer.getShared().jumpForwards(10);
                 break;
             case JUMP_FORWARDS_15:
-                MediaPlayer.getShared().jumpForwards(15);
+                AudioPlayer.getShared().jumpForwards(15);
                 break;
             case JUMP_BACKWARDS_5:
-                MediaPlayer.getShared().jumpBackwards(5);
+                AudioPlayer.getShared().jumpBackwards(5);
                 break;
             case JUMP_BACKWARDS_8:
-                MediaPlayer.getShared().jumpBackwards(8);
+                AudioPlayer.getShared().jumpBackwards(8);
                 break;
             case JUMP_BACKWARDS_10:
-                MediaPlayer.getShared().jumpBackwards(10);
+                AudioPlayer.getShared().jumpBackwards(10);
                 break;
             case JUMP_BACKWARDS_15:
-                MediaPlayer.getShared().jumpBackwards(15);
+                AudioPlayer.getShared().jumpBackwards(15);
                 break;
             case CHANGE_PLAY_ORDER:
-                MediaPlayerPlaylist playlist = MediaPlayer.getShared().getPlaylist();
+                AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
                 
                 if (playlist != null)
                 {
-                    MediaPlayerPlaylistPlayOrder order = playlist.getPlayOrder();
+                    AudioPlayOrder order = playlist.getPlayOrder();
                     
                     switch (order)
                     {
                         case FORWARDS:
-                            playlist.setPlayOrder(MediaPlayerPlaylistPlayOrder.ONCE_FOREVER);
+                            playlist.setPlayOrder(AudioPlayOrder.ONCE_FOREVER);
                             break;
                         case ONCE_FOREVER:
-                            playlist.setPlayOrder(MediaPlayerPlaylistPlayOrder.SHUFFLE);
+                            playlist.setPlayOrder(AudioPlayOrder.SHUFFLE);
                             break;
                         case SHUFFLE:
-                            playlist.setPlayOrder(MediaPlayerPlaylistPlayOrder.FORWARDS);
+                            playlist.setPlayOrder(AudioPlayOrder.FORWARDS);
                             break;
                         default:
-                            playlist.setPlayOrder(MediaPlayerPlaylistPlayOrder.FORWARDS);
+                            playlist.setPlayOrder(AudioPlayOrder.FORWARDS);
                             break;
                     }
                 }
