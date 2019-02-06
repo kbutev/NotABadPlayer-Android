@@ -130,4 +130,10 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     {
 
     }
+
+    @Override
+    public void searchQueryResults(ArrayList<AudioTrack> songs)
+    {
+
+    }
 }

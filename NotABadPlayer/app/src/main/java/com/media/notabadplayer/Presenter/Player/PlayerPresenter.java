@@ -62,4 +62,16 @@ public class PlayerPresenter implements BasePresenter
     {
         
     }
+
+    @Override
+    public void onSearchResultClick(int index)
+    {
+
+    }
+    
+    @Override
+    public void onSearchQuery(String searchValue)
+    {
+
+    }
 }

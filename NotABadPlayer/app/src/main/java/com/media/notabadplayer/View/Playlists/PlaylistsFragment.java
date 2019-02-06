@@ -74,4 +74,10 @@ public class PlaylistsFragment extends Fragment implements BaseView {
     {
 
     }
+
+    @Override
+    public void searchQueryResults(ArrayList<AudioTrack> songs)
+    {
+
+    }
 }

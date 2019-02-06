@@ -6,7 +6,8 @@ import com.media.notabadplayer.View.BaseView;
 public class MainPresenter implements BasePresenter {
     private BaseView _view;
     
-    public MainPresenter(BaseView view) {
+    public MainPresenter(BaseView view) 
+    {
         _view = view;
     }
     
@@ -23,6 +24,18 @@ public class MainPresenter implements BasePresenter {
 
     @Override
     public void onAlbumsItemClick(int index)
+    {
+
+    }
+
+    @Override
+    public void onSearchResultClick(int index)
+    {
+
+    }
+
+    @Override
+    public void onSearchQuery(String searchValue)
     {
 
     }

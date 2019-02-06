@@ -51,12 +51,6 @@ class AlbumListAdapter extends BaseAdapter
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
     {
-        // Init
-        if (convertView == null)
-        {
-            LayoutInflater.from(_context).inflate(R.layout.item_table_album, parent, false);
-        }
-        
         // Header (position = 0)
         if (position == 0)
         {

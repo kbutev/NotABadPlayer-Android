@@ -247,6 +247,12 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
+    public void searchQueryResults(ArrayList<AudioTrack> songs)
+    {
+
+    }
+
+    @Override
     public void onPlayerPlay(AudioTrack current)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);

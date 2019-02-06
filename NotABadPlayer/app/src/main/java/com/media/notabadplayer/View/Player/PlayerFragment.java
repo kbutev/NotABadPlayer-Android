@@ -331,6 +331,12 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     {
         updateMediaInfo(playlist.getPlayingTrack());
     }
+
+    @Override
+    public void searchQueryResults(ArrayList<AudioTrack> songs)
+    {
+
+    }
     
     @Override
     public void onPlayerPlay(AudioTrack current)

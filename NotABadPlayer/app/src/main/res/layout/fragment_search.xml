@@ -1,13 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" 
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    
+    <EditText
+        android:id="@+id/searchField"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:textColor="@color/colorSearchFieldText"
+        android:background="@drawable/search_field_border"
+        android:hint="@string/search_hint"
+        android:textColorHint="@color/colorSearchFieldHint"
+        android:inputType="textNoSuggestions"
+        android:imeOptions="actionDone"/>
+    
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+    
     <TextView
+        android:id="@+id/searchTip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=">Search"
-        android:textColor="@color/colorTextPrimary"/>
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="@string/search_results_tip"
+        android:singleLine="true"
+        android:textColor="@color/colorTextPrimary"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:visibility="gone"/>
 
-</android.support.constraint.ConstraintLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+    
+    <ListView
+        android:id="@+id/searchResults"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+</LinearLayout>

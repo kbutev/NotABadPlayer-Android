@@ -5,4 +5,7 @@ public interface BasePresenter {
     
     void onAlbumClick(int index);
     void onAlbumsItemClick(int index);
+    
+    void onSearchResultClick(int index);
+    void onSearchQuery(String searchValue);
 }
