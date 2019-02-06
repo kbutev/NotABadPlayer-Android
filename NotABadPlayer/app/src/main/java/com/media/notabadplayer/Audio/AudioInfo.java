@@ -197,7 +197,7 @@ public class AudioInfo {
                 albumCover = album.albumCover;
             }
 
-            albumTracks.add(new AudioTrack(filePath, title, artist, albumTitle, album.albumCover, trackNum, duration));
+            albumTracks.add(new AudioTrack(filePath, title, artist, albumTitle, albumCover, trackNum, duration));
         }
         
         return albumTracks;
