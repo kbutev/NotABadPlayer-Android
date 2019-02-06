@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Player;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,8 +11,8 @@ import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Controlls.ApplicationInput;
-import com.media.notabadplayer.Controlls.KeyBinds;
+import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Presenter.Player.PlayerPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.BasePresenter;
@@ -28,10 +29,14 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Content
         setContentView(R.layout.activity_player);
-
+        
+        // UI
         initUI();
         
+        // Audio model - retrieve from intent
         ArrayList<String> tracksString = getIntent().getStringArrayListExtra("tracks");
         ArrayList<AudioTrack> tracks = new ArrayList<>();
         
@@ -48,9 +53,21 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
+    public void onStart()
+    {
+        super.onStart();
+        
+        // Transition animation
+        overridePendingTransition(R.anim.slide_up, R.anim.hold);
+    }
+    
+    @Override
     public void onBackPressed()
     {
         super.onBackPressed();
+        
+        // Transition animation
+        overridePendingTransition(0, R.anim.slide_down);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Controlls;
+package com.media.notabadplayer.Controls;
 
 public enum ApplicationInput
 {

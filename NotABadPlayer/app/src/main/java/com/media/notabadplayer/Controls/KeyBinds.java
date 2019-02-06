@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Controlls;
+package com.media.notabadplayer.Controls;
 
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
@@ -25,13 +25,13 @@ public class KeyBinds
             case HOME_BUTTON:
                 return performAction(ApplicationAction.DO_NOTHING);
             case PLAYER_VOLUME_UP_BUTTON:
-                return performAction(ApplicationAction.VOLUME_UP);
+                return performAction(ApplicationAction.JUMP_FORWARDS_10);
             case PLAYER_VOLUME_DOWN_BUTTON:
-                return performAction(ApplicationAction.VOLUME_DOWN);
+                return performAction(ApplicationAction.JUMP_BACKWARDS_10);
             case QUICK_PLAYER_VOLUME_UP_BUTTON:
-                return performAction(ApplicationAction.JUMP_FORWARDS_15);
+                return performAction(ApplicationAction.VOLUME_UP);
             case QUICK_PLAYER_VOLUME_DOWN_BUTTON:
-                return performAction(ApplicationAction.JUMP_BACKWARDS_15);
+                return performAction(ApplicationAction.VOLUME_DOWN);
             case SCREEN_LOCK_BUTTON:
                 return performAction(ApplicationAction.DO_NOTHING);
             case PLAYER_PLAY_BUTTON:
