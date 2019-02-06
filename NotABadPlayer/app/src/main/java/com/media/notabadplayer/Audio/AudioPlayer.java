@@ -328,9 +328,9 @@ public class AudioPlayer {
         {
             return;
         }
-        
-        int duration = _player.getDuration() / 1000;
-        int currentPosition = _player.getCurrentPosition() / 1000;
+
+        int duration = getDurationMSec();
+        int currentPosition = getCurrentPositionMSec();
         int destination = currentPosition - msec;
         seekTo(MathUtils.clamp(destination, 0, duration));
     }
@@ -342,10 +342,20 @@ public class AudioPlayer {
             return;
         }
         
-        int duration = _player.getDuration() / 1000;
-        int currentPosition = _player.getCurrentPosition() / 1000;
+        int duration = getDurationMSec();
+        int currentPosition = getCurrentPositionMSec();
         int destination = currentPosition + msec;
         seekTo(MathUtils.clamp(destination, 0, duration));
+    }
+
+    public int getDurationMSec()
+    {
+        return _player.getDuration() / 1000;
+    }
+    
+    public int getCurrentPositionMSec()
+    {
+        return _player.getCurrentPosition() / 1000;
     }
     
     public void seekTo(int msec)
