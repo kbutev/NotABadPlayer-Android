@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private MainPresenter _presenter;
     
     private BaseView _currentTab;
+    private int _currentTabID;
     
     private BaseView _quickPlayer;
     
@@ -42,26 +43,26 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            if (_currentTabID == item.getItemId())
+            {
+                return false;
+            }
+            
             switch (item.getItemId()) {
                 case R.id.navigation_albums:
-                    _currentTab = AlbumsFragment.newInstance();
-                    _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
-                    refreshCurrentTab();
+                    selectAlbumsTab();
                     return true;
                 case R.id.navigation_playlists:
-                    _currentTab = PlaylistsFragment.newInstance();
-                    refreshCurrentTab();
+                    selectPlaylistsTab();
                     return true;
                 case R.id.navigation_search:
-                    _currentTab = SearchFragment.newInstance();
-                    _currentTab.setPresenter(new SearchPresenter(_currentTab, _audioInfo));
-                    refreshCurrentTab();
+                    selectSearchTab();
                     return true;
                 case R.id.navigation_settings:
-                    _currentTab = SettingsFragment.newInstance();
-                    refreshCurrentTab();
+                    selectSettingsTab();
                     return true;
             }
+            
             return false;
         }
     };
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private void initUI()
     {
+        _currentTabID = R.id.navigation_albums;
         _currentTab = AlbumsFragment.newInstance();
         _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
         refreshCurrentTab();
@@ -93,6 +95,36 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.quickPlayer, (Fragment)_quickPlayer).commit();
+    }
+    
+    private void selectAlbumsTab()
+    {
+        _currentTabID = R.id.navigation_albums;
+        _currentTab = AlbumsFragment.newInstance();
+        _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
+        refreshCurrentTab();
+    }
+
+    private void selectPlaylistsTab()
+    {
+        _currentTabID = R.id.navigation_playlists;
+        _currentTab = PlaylistsFragment.newInstance();
+        refreshCurrentTab();
+    }
+
+    private void selectSearchTab()
+    {
+        _currentTabID = R.id.navigation_search;
+        _currentTab = SearchFragment.newInstance();
+        _currentTab.setPresenter(new SearchPresenter(_currentTab, _audioInfo));
+        refreshCurrentTab();
+    }
+
+    private void selectSettingsTab()
+    {
+        _currentTabID = R.id.navigation_settings;
+        _currentTab = SettingsFragment.newInstance();
+        refreshCurrentTab();
     }
     
     private void refreshCurrentTab()
@@ -159,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void searchQueryResults(ArrayList<AudioTrack> songs)
+    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
     {
 
     }

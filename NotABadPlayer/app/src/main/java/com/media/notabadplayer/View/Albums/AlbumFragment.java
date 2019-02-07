@@ -141,7 +141,7 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     }
     
     @Override
-    public void searchQueryResults(ArrayList<AudioTrack> songs) 
+    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs) 
     {
         
     }

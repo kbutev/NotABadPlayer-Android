@@ -160,11 +160,13 @@ public class AudioInfo {
         };
         
         String selection = MediaStore.Audio.Media.TITLE + " LIKE ?";
-        String[] selectionArgs = query.split(" ");
+        String[] selectionArgs = new String[] {""};
+
+        String[] words = query.split(" ");
         
-        for (int i = 0; i < selectionArgs.length; i++) 
+        for (int i = 0; i < words.length; i++) 
         {
-            selectionArgs[i] = "%" + selectionArgs[i] + "%";
+            selectionArgs[0] += "%" + words[i] + "%";
         }
         
         String orderBy = null;

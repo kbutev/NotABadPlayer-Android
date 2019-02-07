@@ -247,7 +247,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void searchQueryResults(ArrayList<AudioTrack> songs)
+    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
     {
 
     }

@@ -1,6 +1,5 @@
 package com.media.notabadplayer.View.Player;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -132,7 +131,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void searchQueryResults(ArrayList<AudioTrack> songs)
+    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
     {
 
     }
