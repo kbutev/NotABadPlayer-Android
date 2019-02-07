@@ -18,9 +18,8 @@ import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Presenter.Main.MainPresenter;
-import com.media.notabadplayer.Presenter.Search.SearchPresenter;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
@@ -72,6 +71,15 @@ public class SearchFragment extends Fragment implements BaseView
         super.onResume();
         
         _presenter.start();
+        
+        // Retrieve saved search query, if there is one
+        String searchQuery = GeneralStorage.getShared().retrieveSearchQuery(getContext());
+        
+        if (!_searchField.getText().toString().equals(searchQuery))
+        {
+            _searchField.setText(searchQuery);
+            _presenter.onSearchQuery(_searchField.getText().toString());
+        }
     }
     
     private void initUI()
@@ -139,7 +147,7 @@ public class SearchFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void searchQueryResults(ArrayList<AudioTrack> songs)
+    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
     {
         _searchTip.setVisibility(View.VISIBLE);
         
@@ -154,5 +162,8 @@ public class SearchFragment extends Fragment implements BaseView
         
         _searchResults.setAdapter(new SearchListAdapter(getContext(), songs));
         _searchResults.invalidateViews();
+        
+        // Save search query
+        GeneralStorage.getShared().saveSearchQuery(getContext(), searchQuery);
     }
 }

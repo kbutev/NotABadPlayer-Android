@@ -120,4 +120,21 @@ public class GeneralStorage
         // Always pause by default when restoring state from storage
         player.pause();
     }
+    
+    public void saveSearchQuery(Context context, String searchQuery)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        
+        editor.putString("searchQuery", searchQuery);
+        
+        editor.apply();
+    }
+    
+    public String retrieveSearchQuery(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        
+        return preferences.getString("searchQuery", "");
+    }
 }
