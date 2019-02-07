@@ -95,6 +95,11 @@ public class GridSideIndexingView extends View {
         int y = (int) event.getY();
         float selectedIndex = ((float) y / (float) getPaddedHeight()) * getAlphabet().size();
         
+        if (selectedIndex >= getAlphabet().size())
+        {
+            selectedIndex = getAlphabet().size() - 1;
+        }
+        
         if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE)
         {
             if (_selectionIndexer == null)
