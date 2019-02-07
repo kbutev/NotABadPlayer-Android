@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
-    private static float SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED = 50;
+    private static float SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED = 80;
     private static float SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED = 400;
     
     private boolean _initialized = false;
