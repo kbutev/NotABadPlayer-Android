@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ public class SearchFragment extends Fragment implements BaseView
     private BasePresenter _presenter;
     
     private EditText _searchField;
+    private ImageButton _searchFieldClearButton;
     private TextView _searchTip;
     private ListView _searchResults;
 
@@ -57,6 +60,7 @@ public class SearchFragment extends Fragment implements BaseView
         
         // Setup UI
         _searchField = root.findViewById(R.id.searchField);
+        _searchFieldClearButton = root.findViewById(R.id.searchFieldClearButton);
         _searchTip = root.findViewById(R.id.searchTip);
         _searchResults = root.findViewById(R.id.searchResults);
         
@@ -94,6 +98,13 @@ public class SearchFragment extends Fragment implements BaseView
                 }
                 
                 return false;
+            }
+        });
+        
+        _searchFieldClearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _searchField.setText("");
             }
         });
         

@@ -1,22 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     
-    <EditText
-        android:id="@+id/searchField"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:textColor="@color/colorSearchFieldText"
-        android:background="@drawable/search_field_border"
-        android:hint="@string/search_hint"
-        android:textColorHint="@color/colorSearchFieldHint"
-        android:inputType="textNoSuggestions"
-        android:imeOptions="actionDone"/>
+        android:layout_height="48dp">
+        <EditText
+            android:id="@+id/searchField"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="@color/colorSearchFieldText"
+            android:background="@drawable/search_field_border"
+            android:hint="@string/search_hint"
+            android:textColorHint="@color/colorSearchFieldHint"
+            android:inputType="textNoSuggestions"
+            android:imeOptions="actionDone"/>
+        <ImageButton
+            android:id="@+id/searchFieldClearButton"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_clear_black"
+            android:background="@null"
+            app:layout_constraintRight_toRightOf="parent"
+            android:gravity="center_vertical"/>
+    </android.support.constraint.ConstraintLayout>
     
     <Space
         android:layout_width="match_parent"
