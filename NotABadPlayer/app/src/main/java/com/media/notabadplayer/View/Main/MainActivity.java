@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Main;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -11,6 +12,8 @@ import android.view.MenuItem;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -29,6 +32,8 @@ import com.media.notabadplayer.View.Settings.SettingsFragment;
 
 import java.util.ArrayList;
 
+import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
+
 public class MainActivity extends AppCompatActivity implements BaseView {
     private AudioInfo _audioInfo;
     private MainPresenter _presenter;
@@ -37,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private int _currentTabID;
     
     private BaseView _quickPlayer;
+    
+    private AudioPlayerNoiseSuppression _noiseSuppression;
     
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -81,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        
+        // Noise suppression
+        _noiseSuppression = new AudioPlayerNoiseSuppression();
+        registerReceiver(_noiseSuppression, new IntentFilter(ACTION_AUDIO_BECOMING_NOISY));
     }
     
     private void initUI()

@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Player;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -19,11 +21,15 @@ import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
 
+import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
+
 public class PlayerActivity extends AppCompatActivity implements BaseView
 {
     private BasePresenter _presenter;
     
     private BaseView _fragment;
+    
+    private AudioPlayerNoiseSuppression _noiseSuppression;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,10 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         
         _presenter = new PlayerPresenter(_fragment, getApplication(), playlist);
         _fragment.setPresenter(_presenter);
+        
+        // Noise suppression
+        _noiseSuppression = new AudioPlayerNoiseSuppression();
+        registerReceiver(_noiseSuppression, new IntentFilter(ACTION_AUDIO_BECOMING_NOISY));
     }
     
     @Override

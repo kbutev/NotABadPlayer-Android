@@ -1,7 +1,10 @@
 package com.media.notabadplayer.Audio;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -29,6 +32,7 @@ public class AudioPlayer {
                 playNextBasedOnPlayOrder();
             }
         });
+        
         _observers = new ArrayList<>();
     }
     
@@ -413,5 +417,15 @@ public class AudioPlayer {
     public void muteOrUnmute()
     {
         
+    }
+    
+    private class BecomingNoisyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction()))
+            {
+                AudioPlayer.getShared().pause();
+            }
+        }
     }
 }
