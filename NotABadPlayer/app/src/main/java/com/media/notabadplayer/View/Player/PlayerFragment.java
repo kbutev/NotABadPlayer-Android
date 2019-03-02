@@ -96,10 +96,16 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     public void onPause()
     {
        super.onPause();
-        _player.detachObserver(this);
-        
+
         // Save current audio state
         saveCurrentAudioState();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        _player.detachObserver(this);
     }
     
     @Override
