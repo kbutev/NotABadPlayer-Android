@@ -135,6 +135,8 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private void initUI()
     {
+        final Fragment fragment = this;
+        
         _layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -178,7 +180,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             @Override
             public void onClick(View v) {
 
-                KeyBinds.getShared().respondToInput(ApplicationInput.PLAYER_PLAY_BUTTON);
+                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_PLAY_BUTTON);
             }
         });
         
@@ -195,7 +197,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             @Override
             public void onClick(View v) {
 
-                KeyBinds.getShared().respondToInput(ApplicationInput.PLAYER_PREVIOUS_BUTTON);
+                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_PREVIOUS_BUTTON);
             }
         });
 
@@ -203,7 +205,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             @Override
             public void onClick(View v) {
 
-                KeyBinds.getShared().respondToInput(ApplicationInput.PLAYER_NEXT_BUTTON);
+                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_NEXT_BUTTON);
             }
         });
     

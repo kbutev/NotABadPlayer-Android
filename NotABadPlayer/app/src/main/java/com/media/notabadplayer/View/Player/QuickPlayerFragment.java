@@ -108,6 +108,8 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     
     private void initUI()
     {
+        final Fragment fragment = this;
+        
         _header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,7 +123,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
             
-                KeyBinds.getShared().respondToInput(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON);
+                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.QUICK_PLAYER_PLAY_BUTTON);
             }
         });
     
@@ -129,7 +131,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
             
-                KeyBinds.getShared().respondToInput(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
+                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
             }
         });
     
@@ -137,7 +139,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
             
-                KeyBinds.getShared().respondToInput(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
+                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
             }
         });
         

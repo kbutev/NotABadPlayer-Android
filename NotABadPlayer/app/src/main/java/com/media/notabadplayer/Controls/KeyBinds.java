@@ -1,8 +1,11 @@
 package com.media.notabadplayer.Controls;
 
+import android.content.Context;
+
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioPlayOrder;
+import com.media.notabadplayer.Storage.GeneralStorage;
 
 public class KeyBinds
 {
@@ -18,37 +21,9 @@ public class KeyBinds
         return _singleton;
     }
     
-    public synchronized ApplicationAction respondToInput(ApplicationInput input)
+    public synchronized ApplicationAction evaluateInput(Context context, ApplicationInput input)
     {
-        switch (input)
-        {
-            case HOME_BUTTON:
-                return performAction(ApplicationAction.DO_NOTHING);
-            case PLAYER_VOLUME_UP_BUTTON:
-                return performAction(ApplicationAction.JUMP_FORWARDS_10);
-            case PLAYER_VOLUME_DOWN_BUTTON:
-                return performAction(ApplicationAction.JUMP_BACKWARDS_10);
-            case QUICK_PLAYER_VOLUME_UP_BUTTON:
-                return performAction(ApplicationAction.VOLUME_UP);
-            case QUICK_PLAYER_VOLUME_DOWN_BUTTON:
-                return performAction(ApplicationAction.VOLUME_DOWN);
-            case SCREEN_LOCK_BUTTON:
-                return performAction(ApplicationAction.DO_NOTHING);
-            case PLAYER_PLAY_BUTTON:
-                return performAction(ApplicationAction.PAUSE_OR_RESUME);
-            case PLAYER_NEXT_BUTTON:
-                return performAction(ApplicationAction.NEXT);
-            case PLAYER_PREVIOUS_BUTTON:
-                return performAction(ApplicationAction.PREVIOUS);
-            case QUICK_PLAYER_PLAY_BUTTON:
-                return performAction(ApplicationAction.PAUSE_OR_RESUME);
-            case QUICK_PLAYER_NEXT_BUTTON:
-                return performAction(ApplicationAction.JUMP_FORWARDS_15);
-            case QUICK_PLAYER_PREVIOUS_BUTTON:
-                return performAction(ApplicationAction.JUMP_BACKWARDS_15);
-        }
-        
-        return ApplicationAction.DO_NOTHING;
+        return performAction(GeneralStorage.getShared().getSettingsAction(context, input));
     }
     
     public ApplicationAction performAction(ApplicationAction action)

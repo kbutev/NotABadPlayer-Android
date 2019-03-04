@@ -9,19 +9,24 @@ import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Controls.ApplicationAction;
+import com.media.notabadplayer.Controls.ApplicationInput;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GeneralStorage
 {
     private static GeneralStorage singleton;
     
+    private HashMap<ApplicationInput, ApplicationAction> _keyBinds = new HashMap<>();
+    
     private GeneralStorage()
     {
         
     }
-    
-    public static synchronized GeneralStorage getShared()
+
+    synchronized public static GeneralStorage getShared()
     {
         if (singleton == null)
         {
@@ -31,7 +36,20 @@ public class GeneralStorage
         return singleton;
     }
     
-    public void saveCurrentAudioState(Context context)
+    synchronized public boolean isFirstApplicationLaunch(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        
+        boolean firstTime = preferences.getBoolean("firstTime", true);
+        
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("firstTime", false);
+        editor.apply();
+        
+        return firstTime;
+    }
+    
+    synchronized public void saveCurrentAudioState(Context context)
     {
         AudioPlayer player = AudioPlayer.getShared();
         
@@ -62,8 +80,8 @@ public class GeneralStorage
         
         editor.apply();
     }
-    
-    public void restoreAudioState(Application application, Context context)
+
+    synchronized public void restoreAudioState(Application application, Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         
@@ -120,8 +138,8 @@ public class GeneralStorage
         // Always pause by default when restoring state from storage
         player.pause();
     }
-    
-    public void saveSearchQuery(Context context, String searchQuery)
+
+    synchronized public void saveSearchQuery(Context context, String searchQuery)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -130,11 +148,70 @@ public class GeneralStorage
         
         editor.apply();
     }
-    
-    public String retrieveSearchQuery(Context context)
+
+    synchronized public String retrieveSearchQuery(Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         
         return preferences.getString("searchQuery", "");
+    }
+    
+    synchronized public void resetDefaultSettingsActions(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        
+        editor.putString(ApplicationInput.HOME_BUTTON.name(), ApplicationAction.DO_NOTHING.name());
+        editor.putString(ApplicationInput.SCREEN_LOCK_BUTTON.name(), ApplicationAction.DO_NOTHING.name());
+        editor.putString(ApplicationInput.EARPHONES_UNPLUG.name(), ApplicationAction.PAUSE.name());
+        editor.putString(ApplicationInput.PLAYER_VOLUME_UP_BUTTON.name(), ApplicationAction.VOLUME_UP.name());
+        editor.putString(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON.name(), ApplicationAction.VOLUME_DOWN.name());
+        editor.putString(ApplicationInput.PLAYER_PLAY_BUTTON.name(), ApplicationAction.PAUSE_OR_RESUME.name());
+        editor.putString(ApplicationInput.PLAYER_NEXT_BUTTON.name(), ApplicationAction.NEXT.name());
+        editor.putString(ApplicationInput.PLAYER_PREVIOUS_BUTTON.name(), ApplicationAction.PREVIOUS.name());
+        editor.putString(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON.name(), ApplicationAction.VOLUME_UP.name());
+        editor.putString(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON.name(), ApplicationAction.VOLUME_DOWN.name());
+        editor.putString(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON.name(), ApplicationAction.PAUSE_OR_RESUME.name());
+        editor.putString(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON.name(), ApplicationAction.JUMP_FORWARDS_15.name());
+        editor.putString(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON.name(), ApplicationAction.JUMP_BACKWARDS_15.name());
+        
+        editor.apply();
+    }
+    
+    synchronized public void saveSettingsAction(Context context, ApplicationInput input, ApplicationAction action)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        
+        editor.putString(input.name(), action.name());
+        
+        editor.apply();
+        
+        _keyBinds.put(input, action);
+    }
+    
+    synchronized public ApplicationAction getSettingsAction(Context context, ApplicationInput input)
+    {
+        ApplicationAction cachedAction = _keyBinds.get(input);
+        
+        if (cachedAction != null)
+        {
+            return cachedAction;
+        }
+        
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        
+        String actionStr = preferences.getString(input.name(), "");
+        
+        try {
+            ApplicationAction action = ApplicationAction.valueOf(actionStr);
+            _keyBinds.put(input, action);
+            return action;
+        }
+        catch (Exception e) {
+            
+        }
+        
+        return ApplicationAction.DO_NOTHING;
     }
 }

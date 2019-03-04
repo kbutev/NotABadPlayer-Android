@@ -12,7 +12,6 @@ import android.view.MenuItem;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
@@ -21,6 +20,7 @@ import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Presenter.Albums.AlbumsPresenter;
 import com.media.notabadplayer.Presenter.Main.MainPresenter;
 import com.media.notabadplayer.Presenter.Search.SearchPresenter;
+import com.media.notabadplayer.Presenter.Settings.SettingsPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.View.BasePresenter;
@@ -37,6 +37,8 @@ import java.util.Map;
 import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
 public class MainActivity extends AppCompatActivity implements BaseView {
+    static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
+    
     private AudioInfo _audioInfo;
     private MainPresenter _presenter;
     
@@ -54,43 +56,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            // Item ID
-            int itemID = item.getItemId();
-            
-            // If already selected, do nothing
-            if (_currentTabID == itemID)
-            {
-                return false;
-            }
-            
-            // If cached, load from cache
-            BaseView cachedView = _cachedTabs.get(itemID);
-            
-            if (cachedView != null)
-            {
-                _currentTab = cachedView;
-                _currentTabID = itemID;
-                refreshCurrentTab();
-                return true;
-            }
-            
-            // If not cached, load from scratch
-            switch (itemID) {
-                case R.id.navigation_albums:
-                    selectAlbumsTab();
-                    return true;
-                case R.id.navigation_playlists:
-                    selectPlaylistsTab();
-                    return true;
-                case R.id.navigation_search:
-                    selectSearchTab();
-                    return true;
-                case R.id.navigation_settings:
-                    selectSettingsTab();
-                    return true;
-            }
-            
-            return false;
+            final int currentTabID = _currentTabID;
+            onTabItemSelected(item.getItemId());
+            return currentTabID != _currentTabID;
         }
     };
     
@@ -116,7 +84,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private void initUI()
     {
-        selectAlbumsTab();
+        // Select default tab
+        onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
+        
+        // Start
         _presenter.start();
         
         _quickPlayer = QuickPlayerFragment.newInstance();
@@ -155,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         _currentTabID = R.id.navigation_settings;
         _currentTab = SettingsFragment.newInstance();
+        _currentTab.setPresenter(new SettingsPresenter(_currentTab, this));
         _cachedTabs.put(R.id.navigation_settings, _currentTab);
         refreshCurrentTab();
     }
@@ -163,6 +135,44 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.mainLayout, (Fragment)_currentTab).commit();
+    }
+    
+    private void onTabItemSelected(int itemID)
+    {
+        // If already selected, do nothing
+        if (_currentTabID == itemID)
+        {
+            return;
+        }
+
+        // If cached, load from cache
+        BaseView cachedView = _cachedTabs.get(itemID);
+
+        if (cachedView != null)
+        {
+            _currentTab = cachedView;
+            _currentTabID = itemID;
+            refreshCurrentTab();
+            return;
+        }
+        
+        // If not cached, load from scratch
+        switch (itemID) {
+            case R.id.navigation_albums:
+                selectAlbumsTab();
+                return;
+            case R.id.navigation_playlists:
+                selectPlaylistsTab();
+                return;
+            case R.id.navigation_search:
+                selectSearchTab();
+                return;
+            case R.id.navigation_settings:
+                selectSettingsTab();
+                return;
+        }
+        
+        return;
     }
     
     @Override
@@ -180,13 +190,13 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
         {
-            KeyBinds.getShared().respondToInput(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
+            KeyBinds.getShared().evaluateInput(this, ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
             return true;
         }
         
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
         {
-            KeyBinds.getShared().respondToInput(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
+            KeyBinds.getShared().evaluateInput(this, ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
             return true;
         }
 

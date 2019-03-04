@@ -16,12 +16,21 @@ import com.media.notabadplayer.View.Main.MainActivity;
 public class LaunchActivity extends AppCompatActivity {
     public static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 1;
     
+    private boolean _firstTimeLaunch;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
-
+        
+        _firstTimeLaunch = GeneralStorage.getShared().isFirstApplicationLaunch(this);
+        
+        if (_firstTimeLaunch)
+        {
+            GeneralStorage.getShared().resetDefaultSettingsActions(this);
+        }
+        
         requestPermissionForReadExtertalStorage();
     }
 
