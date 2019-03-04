@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ListAdapter;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -26,6 +28,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     private BasePresenter _presenter;
     
     private GridView _table;
+    private ListAdapter _tableAdapter;
     private Parcelable _tableState;
     private GridSideIndexingView _tableSideSelector;
     
@@ -51,6 +54,11 @@ public class AlbumsFragment extends Fragment implements BaseView
         super.onResume();
         
         _presenter.start();
+        
+        if (_tableAdapter != null)
+        {
+            _table.setAdapter(_tableAdapter);
+        }
         
         if (_tableState != null)
         {
@@ -108,7 +116,8 @@ public class AlbumsFragment extends Fragment implements BaseView
     @Override
     public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
     {
-        _table.setAdapter(new AlbumsTableAdapter(getContext(), albums, _tableSideSelector));
+        _tableAdapter = new AlbumsTableAdapter(getContext(), albums, _tableSideSelector);
+        _table.setAdapter(_tableAdapter);
         
         ArrayList<String> titles = new ArrayList<>();
         

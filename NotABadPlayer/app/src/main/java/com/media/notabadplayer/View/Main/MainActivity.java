@@ -31,6 +31,8 @@ import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
@@ -39,7 +41,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private MainPresenter _presenter;
     
     private BaseView _currentTab;
+    
     private int _currentTabID;
+    private Map<Integer, BaseView> _cachedTabs = new HashMap<>();
     
     private BaseView _quickPlayer;
     
@@ -50,12 +54,28 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            if (_currentTabID == item.getItemId())
+            // Item ID
+            int itemID = item.getItemId();
+            
+            // If already selected, do nothing
+            if (_currentTabID == itemID)
             {
                 return false;
             }
             
-            switch (item.getItemId()) {
+            // If cached, load from cache
+            BaseView cachedView = _cachedTabs.get(itemID);
+            
+            if (cachedView != null)
+            {
+                _currentTab = cachedView;
+                _currentTabID = itemID;
+                refreshCurrentTab();
+                return true;
+            }
+            
+            // If not cached, load from scratch
+            switch (itemID) {
                 case R.id.navigation_albums:
                     selectAlbumsTab();
                     return true;
@@ -96,10 +116,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private void initUI()
     {
-        _currentTabID = R.id.navigation_albums;
-        _currentTab = AlbumsFragment.newInstance();
-        _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
-        refreshCurrentTab();
+        selectAlbumsTab();
         _presenter.start();
         
         _quickPlayer = QuickPlayerFragment.newInstance();
@@ -113,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _currentTabID = R.id.navigation_albums;
         _currentTab = AlbumsFragment.newInstance();
         _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
+        _cachedTabs.put(R.id.navigation_albums, _currentTab);
         refreshCurrentTab();
     }
 
@@ -120,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         _currentTabID = R.id.navigation_playlists;
         _currentTab = PlaylistsFragment.newInstance();
+        _cachedTabs.put(R.id.navigation_playlists, _currentTab);
         refreshCurrentTab();
     }
 
@@ -128,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _currentTabID = R.id.navigation_search;
         _currentTab = SearchFragment.newInstance();
         _currentTab.setPresenter(new SearchPresenter(_currentTab, _audioInfo));
+        _cachedTabs.put(R.id.navigation_search, _currentTab);
         refreshCurrentTab();
     }
 
@@ -135,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         _currentTabID = R.id.navigation_settings;
         _currentTab = SettingsFragment.newInstance();
+        _cachedTabs.put(R.id.navigation_settings, _currentTab);
         refreshCurrentTab();
     }
     
