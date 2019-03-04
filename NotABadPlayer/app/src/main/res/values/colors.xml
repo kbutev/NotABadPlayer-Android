@@ -21,6 +21,9 @@
     <color name="colorSearchFieldHint">#6e6c6c</color>
     <color name="colorSearchItemText">#313131</color>
     <color name="colorSearchItemSubText">#6c6c6c</color>
+
+    <color name="colorSettingsKeybindTipText">#3F51B5</color>
+    <color name="colorSettingsKeybindItemSubText">#2676d9</color>
     
     <color name="colorPrimaryDark">#00acd2</color>
     <color name="colorAccent">#D81B60</color>

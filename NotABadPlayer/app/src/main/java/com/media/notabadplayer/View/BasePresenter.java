@@ -8,4 +8,7 @@ public interface BasePresenter {
     
     void onSearchResultClick(int index);
     void onSearchQuery(String searchValue);
+
+    void onAppThemeChange();
+    void onKeybindSelected(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input);
 }

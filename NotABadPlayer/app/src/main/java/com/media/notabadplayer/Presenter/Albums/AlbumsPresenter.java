@@ -53,4 +53,16 @@ public class AlbumsPresenter implements BasePresenter {
     {
 
     }
+
+    @Override
+    public void onAppThemeChange()
+    {
+
+    }
+
+    @Override
+    public void onKeybindSelected(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
+    {
+
+    }
 }

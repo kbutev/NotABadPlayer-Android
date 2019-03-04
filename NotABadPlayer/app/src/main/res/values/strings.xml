@@ -13,5 +13,28 @@
     <string name="search_hint">Search for track</string>
     <string name="search_results_tip">search results</string>
     <string name="search_results_tip_no_results">no results</string>
+
+    <!-- Settings tab -->
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_general_color">General Color</string>
+    <string name="settings_keybinds">Key binds</string>
+    <string name="settings_keybinds_action">Action</string>
+    <string name="settings_keybinds_command">Command</string>
+    <string name="settings_keybind_home">Home button</string>
+    <string name="settings_keybind_player_volume_up">Player Volume Up</string>
+    <string name="settings_keybind_player_volume_down">Player Volume Down</string>
+    <string name="settings_keybind_player_play">Player Play</string>
+    <string name="settings_keybind_player_next">Player Next</string>
+    <string name="settings_keybind_player_prev">Player Previous</string>
+    <string name="settings_keybind_qplayer_volume_up">QPlayer Volume Up</string>
+    <string name="settings_keybind_qplayer_volume_down">QPlayer Volume Down</string>
+    <string name="settings_keybind_qplayer_play">QPlayer Play</string>
+    <string name="settings_keybind_qplayer_next">QPlayer Next</string>
+    <string name="settings_keybind_qplayer_prev">QPlayer Previous</string>
+    <string name="settings_keybind_earphones_unplug">Earphones Unplug</string>
     
+    <!-- About -->
+    <string name="about">About</string>
+    <string name="about_version">Version 1.0, released 2019.03.4</string>
+    <string name="about_credits">Coded, designed &amp; tested by Kristiyan Butev</string>
 </resources>
