@@ -3,16 +3,18 @@ package com.media.notabadplayer.View.Search;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,13 +32,17 @@ import java.util.ArrayList;
 
 public class SearchFragment extends Fragment implements BaseView
 {
+    private boolean _resumedOnce = false;
+    
     private BasePresenter _presenter;
     
     private EditText _searchField;
     private ImageButton _searchFieldClearButton;
     private TextView _searchTip;
     private ListView _searchResults;
-
+    private ListAdapter _searchResultsAdapter;
+    private Parcelable _searchResultsState;
+    
     public SearchFragment()
     {
         
@@ -74,16 +80,38 @@ public class SearchFragment extends Fragment implements BaseView
     {
         super.onResume();
         
-        _presenter.start();
-        
-        // Retrieve saved search query, if there is one
-        String searchQuery = GeneralStorage.getShared().retrieveSearchQuery(getContext());
-        
-        if (!_searchField.getText().toString().equals(searchQuery))
+        if (!_resumedOnce)
         {
-            _searchField.setText(searchQuery);
-            _presenter.onSearchQuery(_searchField.getText().toString());
+            _resumedOnce = true;
+            
+            _presenter.start();
+
+            // Retrieve saved search query, if there is one
+            String searchQuery = GeneralStorage.getShared().retrieveSearchQuery(getContext());
+
+            if (!_searchField.getText().toString().equals(searchQuery))
+            {
+                _searchField.setText(searchQuery);
+                _presenter.onSearchQuery(_searchField.getText().toString());
+            }
         }
+        
+        if (_searchResultsAdapter != null)
+        {
+            _searchResults.setAdapter(_searchResultsAdapter);
+        }
+        
+        if (_searchResultsState != null)
+        {
+            _searchResults.onRestoreInstanceState(_searchResultsState);
+        }
+    }
+
+    @Override
+    public void onPause()
+    {
+        _searchResultsState = _searchResults.onSaveInstanceState();
+        super.onPause();
     }
     
     private void initUI()
@@ -170,8 +198,9 @@ public class SearchFragment extends Fragment implements BaseView
         {
             _searchTip.setText(R.string.search_results_tip_no_results);
         }
-        
-        _searchResults.setAdapter(new SearchListAdapter(getContext(), songs));
+
+        _searchResultsAdapter = new SearchListAdapter(getContext(), songs);
+        _searchResults.setAdapter(_searchResultsAdapter);
         _searchResults.invalidateViews();
         
         // Save search query
