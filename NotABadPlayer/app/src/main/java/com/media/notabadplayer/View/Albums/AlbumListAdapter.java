@@ -110,7 +110,7 @@ class AlbumListAdapter extends BaseAdapter
 
         duration.setText(dataDuration);
         
-        // Color
+        // Select playing track
         boolean isPlayingTrack = false;
         
         AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
