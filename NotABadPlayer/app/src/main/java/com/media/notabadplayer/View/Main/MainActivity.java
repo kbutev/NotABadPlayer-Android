@@ -1,12 +1,15 @@
 package com.media.notabadplayer.View.Main;
 
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
@@ -25,6 +28,7 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
 import com.media.notabadplayer.View.Playlists.PlaylistsFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private AudioPlayerNoiseSuppression _noiseSuppression;
     
+    private boolean _launchedWithInitialTrack;
+    
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -66,20 +72,39 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        // Content
         setContentView(R.layout.activity_main);
         
+        // Presenter, audio model
         _presenter = new MainPresenter(this);
         
         _audioInfo = new AudioInfo(this);
         
+        // UI
         initUI();
         
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         
         // Noise suppression
         _noiseSuppression = new AudioPlayerNoiseSuppression();
         registerReceiver(_noiseSuppression, new IntentFilter(ACTION_AUDIO_BECOMING_NOISY));
+        
+        // App launch track
+        Uri path = getIntent().getParcelableExtra("launchTrackPath");
+        _launchedWithInitialTrack = path != null;
+        
+        if (_launchedWithInitialTrack)
+        {
+            startAppWithTrack(path);
+        }
+    }
+    
+    @Override
+    protected void onDestroy()
+    {
+        unregisterReceiver(_noiseSuppression);
+        super.onDestroy();
     }
     
     private void initUI()
@@ -160,34 +185,37 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         switch (itemID) {
             case R.id.navigation_albums:
                 selectAlbumsTab();
-                return;
+                break;
             case R.id.navigation_playlists:
                 selectPlaylistsTab();
-                return;
+                break;
             case R.id.navigation_search:
                 selectSearchTab();
-                return;
+                break;
             case R.id.navigation_settings:
                 selectSettingsTab();
-                return;
+                break;
         }
+    }
+
+    private void startAppWithTrack(Uri path)
+    {
+        AudioTrack track = _audioInfo.findTrackByPath(path);
+        AudioPlaylist playlist = new AudioPlaylist(track);
         
-        return;
+        Intent intent = new Intent(this, PlayerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.putExtra("tracks", playlist.getTracksAsStrings());
+        intent.putExtra("playingTrack", playlist.getPlayingTrackAsString());
+        startActivity(intent);
+        
+        // Transition animation
+        overridePendingTransition(0, 0);
     }
     
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK))
-        {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.mainLayout);
-
-            if (fragment != _currentTab)
-            {
-                super.onBackPressed();
-                return true;
-            }
-        }
-
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
         {
             KeyBinds.getShared().evaluateInput(this, ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
@@ -201,6 +229,22 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+    
+    @Override
+    public void onBackPressed()
+    {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.mainLayout);
+        
+        // Not on any of the first tabs? Go back
+        if (currentFragment != _currentTab)
+        {
+            super.onBackPressed();
+            return;
+        }
+        
+        // Currently on any of the first tabs? Send to background
+        moveTaskToBack(true);
     }
     
     @Override

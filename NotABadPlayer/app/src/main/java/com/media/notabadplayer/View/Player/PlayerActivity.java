@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -53,12 +54,20 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         String playingTrackString = getIntent().getStringExtra("playingTrack");
         AudioPlaylist playlist = new AudioPlaylist(tracks, AudioTrack.createFromString(playingTrackString));
         
+        // Presenter
         _presenter = new PlayerPresenter(_fragment, getApplication(), playlist);
         _fragment.setPresenter(_presenter);
         
         // Noise suppression
         _noiseSuppression = new AudioPlayerNoiseSuppression();
         registerReceiver(_noiseSuppression, new IntentFilter(ACTION_AUDIO_BECOMING_NOISY));
+    }
+    
+    @Override
+    protected void onDestroy()
+    {
+        unregisterReceiver(_noiseSuppression);
+        super.onDestroy();
     }
     
     @Override

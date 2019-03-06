@@ -216,6 +216,15 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             _labelTitle.setText(playingTrack.title);
             _mediaBar.setMax((int) playingTrack.durationInSeconds);
             _labelDurationTotal.setText(playingTrack.duration);
+            
+            if (_player.isPlaying())
+            {
+                _buttonPlay.setBackgroundResource(R.drawable.media_pause);
+            }
+            else
+            {
+                _buttonPlay.setBackgroundResource(R.drawable.media_play);
+            }
         }
     }
 
