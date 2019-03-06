@@ -2,6 +2,7 @@ package com.media.notabadplayer.Audio;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.media.notabadplayer.Utilities.MediaSorting;
@@ -203,5 +204,52 @@ public class AudioInfo {
         }
         
         return albumTracks;
+    }
+
+    synchronized public AudioTrack findTrackByPath(Uri path)
+    {
+        String projection[] = {
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.DISPLAY_NAME,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.TRACK
+        };
+
+        Cursor cursor = _context.getContentResolver().query(
+                path,
+                projection, null, null, null);
+
+        int dataColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+        int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+        int artistColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+        int albumTitleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+        int albumID = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+        int trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
+        int durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
+
+        while (cursor.moveToNext())
+        {
+            String filePath = cursor.getString(dataColumn);
+            String title = cursor.getString(titleColumn);
+            String artist = cursor.getString(artistColumn);
+            String albumTitle = cursor.getString(albumTitleColumn);
+            int trackNum = cursor.getInt(trackNumColumn);
+            double duration = cursor.getLong(durationColumn) / 1000;
+            String albumCover = "";
+            AudioAlbum album = getAlbumByID(cursor.getString(albumID));
+
+            if (album != null)
+            {
+                albumCover = album.albumCover;
+            }
+
+            return new AudioTrack(filePath, title, artist, albumTitle, albumCover, trackNum, duration);
+        }
+        
+        return null;
     }
 }
