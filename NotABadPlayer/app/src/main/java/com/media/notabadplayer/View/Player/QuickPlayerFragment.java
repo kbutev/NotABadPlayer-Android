@@ -189,7 +189,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         
         if (a != null)
         {
-            a.overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
+            a.overridePendingTransition(R.anim.player_slide_up, R.anim.player_slide_down);
         }
     }
     

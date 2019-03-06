@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -76,7 +75,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         super.onStart();
         
         // Transition animation
-        overridePendingTransition(R.anim.slide_up, R.anim.hold);
+        overridePendingTransition(R.anim.player_slide_up, R.anim.hold);
     }
 
     @Override
@@ -85,7 +84,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         super.finish();
 
         // Transition animation
-        overridePendingTransition(0, R.anim.slide_down);
+        overridePendingTransition(0, R.anim.player_slide_down);
     }
     
     @Override
