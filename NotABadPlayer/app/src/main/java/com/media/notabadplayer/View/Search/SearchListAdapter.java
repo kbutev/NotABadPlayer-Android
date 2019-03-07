@@ -46,11 +46,16 @@ public class SearchListAdapter extends BaseAdapter
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) 
     {
+        if (convertView == null) 
+        {
+            convertView = LayoutInflater.from(_context).inflate(R.layout.item_search_result, parent, false);
+        }
+        
         // Item update
         AudioTrack item = (AudioTrack) getItem(position);
         
-        View listItem = LayoutInflater.from(_context).inflate(R.layout.item_search_result, parent, false);
-
+        View listItem = convertView;
+        
         ImageView cover = listItem.findViewById(R.id.albumCover);
         
         if (!item.artCover.isEmpty())

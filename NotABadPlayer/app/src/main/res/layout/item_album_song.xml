@@ -2,7 +2,9 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" 
     android:layout_width="match_parent"
-    android:layout_height="64dp"
+    android:layout_height="60dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -15,6 +17,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textSize="30dp"
+            android:singleLine="true"
             android:textColor="@color/colorAlbumItemTextSub"/>
     </LinearLayout>
     
@@ -34,13 +37,15 @@
             android:layout_height="wrap_content"
             android:textSize="18dp"
             android:textColor="@color/colorAlbumItemText"
-            android:lines="1"/>
+            android:singleLine="true"
+            android:ellipsize="start"/>
 
         <TextView
             android:id="@+id/duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15dp"
+            android:singleLine="true"
             android:textColor="@color/colorAlbumItemTextSub"/>
         
     </LinearLayout>

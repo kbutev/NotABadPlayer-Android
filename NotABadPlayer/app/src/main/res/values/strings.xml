@@ -8,6 +8,9 @@
 
     <!-- Albums tab -->
     <string name="title_unknown">Unknown</string>
+    <string name="zero_track_num_symbol">-</string>
+    <string name="tracks">tracks</string>
+    <string name="total_duration">duration</string>
     
     <!-- Search tab -->
     <string name="search_hint">Search for track</string>
@@ -17,6 +20,8 @@
     <!-- Settings tab -->
     <string name="settings_appearance">Appearance</string>
     <string name="settings_general_color">General Color</string>
+    <string name="settings_album_sorting">Album Sorting</string>
+    <string name="settings_track_sorting">Track Sorting</string>
     <string name="settings_keybinds">Key binds</string>
     <string name="settings_keybinds_action">Action</string>
     <string name="settings_keybinds_command">Command</string>
@@ -35,6 +40,7 @@
     
     <!-- About -->
     <string name="about">About</string>
-    <string name="about_version">Version 1.0, released 2019.03.4</string>
-    <string name="about_credits">Coded, designed &amp; tested by Kristiyan Butev</string>
+    <string name="about_version">Version 1.0 (1)</string>
+    <string name="about_release_date">Released 2019.03.7</string>
+    <string name="about_credits">Programmed, designed &amp; tested by Kristiyan Butev</string>
 </resources>
