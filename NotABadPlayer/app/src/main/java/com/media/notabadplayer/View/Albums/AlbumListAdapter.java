@@ -17,6 +17,8 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -58,7 +60,8 @@ class AlbumListAdapter extends BaseAdapter
 
             ImageView albumCover = header.findViewById(R.id.albumCover);
             TextView albumTitle = header.findViewById(R.id.albumTitle);
-
+            TextView albumDescription = header.findViewById(R.id.albumDescription);
+            
             AudioTrack firstTrack = _tracks.get(0);
 
             if (!firstTrack.artCover.isEmpty())
@@ -73,7 +76,8 @@ class AlbumListAdapter extends BaseAdapter
             }
 
             albumTitle.setText(firstTrack.albumTitle);
-
+            albumDescription.setText(getAlbumDescription());
+            
             return header;
         }
         
@@ -104,6 +108,10 @@ class AlbumListAdapter extends BaseAdapter
         if (!dataTrackNum.equals("0"))
         {
             trackNum.setText(dataTrackNum);
+        }
+        else
+        {
+            trackNum.setText(R.string.zero_track_num_symbol);
         }
         
         TextView duration = checkNotNull((TextView)listItem.findViewById(R.id.duration), "Base adapter is expecting a valid text view");
@@ -140,5 +148,20 @@ class AlbumListAdapter extends BaseAdapter
         }
         
         return listItem;
+    }
+    
+    private String getAlbumDescription()
+    {
+        double totalDuration = 0;
+        
+        for (AudioTrack track: _tracks) 
+        {
+            totalDuration += track.durationInSeconds;
+        }
+        
+        String tracks = _context.getResources().getString(R.string.tracks);
+        String total_duration = _context.getResources().getString(R.string.total_duration);
+        
+        return String.valueOf(_tracks.size()) + " " + tracks + ", " + total_duration + " " + AudioTrack.secondsToString(totalDuration);
     }
 }

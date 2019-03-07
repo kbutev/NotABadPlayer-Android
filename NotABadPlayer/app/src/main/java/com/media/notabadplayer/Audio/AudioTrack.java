@@ -19,7 +19,7 @@ public class AudioTrack {
         this.artCover = artCover;
         this.trackNum = String.valueOf(trackNum);
         this.durationInSeconds = durationInSeconds;
-        this.duration = secondsToString((int)durationInSeconds);
+        this.duration = secondsToString(durationInSeconds);
     }
     
     public static AudioTrack createFromString(String data)
@@ -65,11 +65,12 @@ public class AudioTrack {
         return timeForReturn;
     }
     
-    public static String secondsToString(int pTime) 
+    public static String secondsToString(double pTime) 
     {
-        final int hr = pTime/60/60;
-        final int min = (pTime - (hr*60*60)) / 60;
-        final int sec = (pTime - (hr*60*60) - (min*60));
+        final int time = (int)pTime;
+        final int hr = time/60/60;
+        final int min = (time - (hr*60*60)) / 60;
+        final int sec = (time - (hr*60*60) - (min*60));
         
         if (hr == 0)
         {

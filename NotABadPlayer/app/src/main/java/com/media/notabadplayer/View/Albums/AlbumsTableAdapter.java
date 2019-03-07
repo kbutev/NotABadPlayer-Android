@@ -51,11 +51,15 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
     {
+        if (convertView == null)
+        {
+            convertView = LayoutInflater.from(_context).inflate(R.layout.item_table_album, parent, false);
+        }
+        
         // Item
         AudioAlbum item = (AudioAlbum) getItem(position);
-
-        View listItem = LayoutInflater.from(_context).inflate(R.layout.item_table_album, parent, false);
         
+        View listItem = convertView;
         String dataTitle = item.albumTitle;
         String dataCover = item.albumCover;
         
