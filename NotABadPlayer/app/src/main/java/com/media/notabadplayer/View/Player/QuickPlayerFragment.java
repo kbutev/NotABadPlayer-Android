@@ -23,6 +23,8 @@ import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.Serializing;
+import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
@@ -122,7 +124,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         _buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            
+                UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
                 KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.QUICK_PLAYER_PLAY_BUTTON);
             }
         });
@@ -130,7 +132,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         _buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            
+                UIAnimations.animateButtonTAP(getContext(), _buttonBack);
                 KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
             }
         });
@@ -138,7 +140,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         _buttonForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            
+                UIAnimations.animateButtonTAP(getContext(), _buttonForward);
                 KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
             }
         });
@@ -154,34 +156,15 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
                 }
             }
         });
+        
+        updatePlayButtonState();
     }
     
     private void openPlayerScreen()
     {
-        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
-        
-        if (playlist == null)
-        {
-            return;
-        }
-        
-        ArrayList<String> tracks = new ArrayList<>();
-        
-        for (int e = 0; e < playlist.size(); e++)
-        {
-            tracks.add(playlist.getTrack(e).toString());
-        }
-        
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        
-        intent.putExtra("tracks", tracks);
-        
-        if (playlist.getPlayingTrack() != null)
-        {
-            intent.putExtra("playingTrack", playlist.getPlayingTrack().toString());
-        }
-        
+        intent.putExtra("playlist", Serializing.serializeObject(AudioPlayer.getShared().getPlaylist()));
         startActivity(intent);
         
         // Transition animation
@@ -217,14 +200,19 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             _mediaBar.setMax((int) playingTrack.durationInSeconds);
             _labelDurationTotal.setText(playingTrack.duration);
             
-            if (_player.isPlaying())
-            {
-                _buttonPlay.setBackgroundResource(R.drawable.media_pause);
-            }
-            else
-            {
-                _buttonPlay.setBackgroundResource(R.drawable.media_play);
-            }
+            updatePlayButtonState();
+        }
+    }
+
+    private void updatePlayButtonState()
+    {
+        if (_player.isPlaying())
+        {
+            _buttonPlay.setBackgroundResource(R.drawable.media_pause);
+        }
+        else
+        {
+            _buttonPlay.setBackgroundResource(R.drawable.media_play);
         }
     }
 

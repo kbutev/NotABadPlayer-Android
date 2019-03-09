@@ -75,7 +75,7 @@
                 android:id="@+id/durationCurrent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0:00"
+                android:text="@string/zero_timer"
                 android:textSize="12sp"
                 android:layout_weight="0.5"
                 android:layout_marginLeft="10dp"/>
@@ -83,7 +83,7 @@
                 android:id="@+id/durationTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0:00"
+                android:text="@string/zero_timer"
                 android:textSize="12sp"
                 android:layout_weight="0.5"
                 android:gravity="right"
@@ -95,39 +95,48 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_horizontal">
-            <Space
+            <FrameLayout
                 android:layout_width="64dp"
-                android:layout_height="64dp" />
+                android:layout_height="64dp"
+                android:layout_weight="0.2">
+                <Button
+                    android:id="@+id/mediaButtonRecall"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/media_recall"
+                    android:backgroundTint="@color/mediaButtons"/>
+            </FrameLayout>
             <Button
                 android:id="@+id/mediaButtonBack"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:layout_weight="0.3"
+                android:layout_weight="0.2"
                 android:background="@drawable/media_previous"
                 android:backgroundTint="@color/mediaButtons"/>
             <Button
                 android:id="@+id/mediaButtonPlay"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:layout_weight="0.3"
+                android:layout_weight="0.2"
                 android:background="@drawable/media_play"
                 android:backgroundTint="@color/mediaButtons"/>
             <Button
                 android:id="@+id/mediaButtonForward"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:layout_weight="0.3"
+                android:layout_weight="0.2"
                 android:background="@drawable/media_next"
                 android:backgroundTint="@color/mediaButtons"/>
             <FrameLayout
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:layout_weight="0.1">
+                android:layout_weight="0.2">
                 <Button
                     android:id="@+id/mediaButtonPlayOrder"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center"
                     android:background="@drawable/media_sort_repeat"
                     android:backgroundTint="@color/mediaButtons"/>
             </FrameLayout>

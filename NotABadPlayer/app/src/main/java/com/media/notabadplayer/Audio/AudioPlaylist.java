@@ -1,9 +1,19 @@
 package com.media.notabadplayer.Audio;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-public class AudioPlaylist
+public class AudioPlaylist implements Serializable
 {
     private AudioPlayOrder _playOrder;
     
@@ -13,7 +23,7 @@ public class AudioPlaylist
     private AudioTrack _playingTrack;
     private int _playingTrackPosition;
     
-    private Random _random = new Random();
+    transient private Random _random = new Random();
     
     public AudioPlaylist(AudioTrack track)
     {
@@ -24,12 +34,12 @@ public class AudioPlaylist
         _playingTrackPosition = 0;
         _playOrder = AudioPlayOrder.FORWARDS;
     }
-
+    
     public AudioPlaylist(ArrayList<AudioTrack> tracks) throws IllegalArgumentException
     {
         this(tracks, null);
     }
-
+    
     public AudioPlaylist(ArrayList<AudioTrack> tracks, AudioTrack playingTrack) throws IllegalArgumentException
     {
         if (tracks.size() == 0)
@@ -82,7 +92,7 @@ public class AudioPlaylist
         return _playing;
     }
     
-    public AudioTrack getPlayingTrack()
+    public @NonNull AudioTrack getPlayingTrack()
     {
         return _playingTrack;
     }
@@ -177,20 +187,26 @@ public class AudioPlaylist
         return _playingTrack;
     }
     
-    public ArrayList<String> getTracksAsStrings()
+    private void writeObject(@NonNull ObjectOutputStream out) throws IOException
     {
-        ArrayList<String> tracks = new ArrayList<>();
-
-        for (int e = 0; e < size(); e++)
-        {
-            tracks.add(getTrack(e).toString());
-        }
-        
-        return tracks;
+        out.defaultWriteObject();
     }
 
-    public String getPlayingTrackAsString()
+    private void readObject(@NonNull ObjectInputStream in) throws IOException,ClassNotFoundException
     {
-        return _playingTrack != null ? _playingTrack.toString() : "";
+        in.defaultReadObject();
+        
+        AudioTrack playingTrack = _playingTrack;
+        _playingTrack = null;
+        
+        for (AudioTrack track : _tracks)
+        {
+            if (track.equals(playingTrack))
+            {
+                _playingTrack = track;
+                break;
+            }
+        }
+        
     }
 }
