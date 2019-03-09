@@ -113,7 +113,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/settings_keybind_player_next"
+            android:text="@string/settings_keybind_player_recall"
             android:singleLine="true"
             android:textColor="@color/colorTextPrimary"/>
         <Space
@@ -121,12 +121,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
         <Spinner
-            android:id="@+id/keybindPlayerNext"
+            android:id="@+id/keybindPlayerPrevPlaylist"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
             android:background="@drawable/settings_keybind_border"/>
     </LinearLayout>
-
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -144,6 +144,28 @@
             android:layout_weight="1"/>
         <Spinner
             android:id="@+id/keybindPlayerPrev"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/settings_keybind_border"/>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_keybind_player_next"
+            android:singleLine="true"
+            android:textColor="@color/colorTextPrimary"/>
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Spinner
+            android:id="@+id/keybindPlayerNext"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
             android:background="@drawable/settings_keybind_border"/>
@@ -201,7 +223,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/settings_keybind_qplayer_next"
+            android:text="@string/settings_keybind_qplayer_prev"
             android:singleLine="true"
             android:textColor="@color/colorTextPrimary"/>
         <Space
@@ -209,7 +231,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
         <Spinner
-            android:id="@+id/keybindQPlayerNext"
+            android:id="@+id/keybindQPlayerPrev"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
             android:background="@drawable/settings_keybind_border"/>
@@ -223,7 +245,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/settings_keybind_qplayer_prev"
+            android:text="@string/settings_keybind_qplayer_next"
             android:singleLine="true"
             android:textColor="@color/colorTextPrimary"/>
         <Space
@@ -231,7 +253,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
         <Spinner
-            android:id="@+id/keybindQPlayerPrev"
+            android:id="@+id/keybindQPlayerNext"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
             android:background="@drawable/settings_keybind_border"/>

@@ -6,8 +6,8 @@ public enum ApplicationAction {
     PLAY,
     PAUSE,
     PAUSE_OR_RESUME,
-    NEXT,
-    PREVIOUS,
+    NEXT_TRACK,
+    PREVIOUS_TRACK,
     SHUFFLE,
     VOLUME_UP,
     VOLUME_DOWN,
@@ -20,5 +20,6 @@ public enum ApplicationAction {
     JUMP_BACKWARDS_8,
     JUMP_BACKWARDS_10,
     JUMP_BACKWARDS_15,
-    CHANGE_PLAY_ORDER
+    CHANGE_PLAY_ORDER,
+    PREVIOUS_PLAYED_TRACK
 }

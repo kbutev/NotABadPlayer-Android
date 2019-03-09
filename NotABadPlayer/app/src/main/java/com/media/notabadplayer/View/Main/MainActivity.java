@@ -9,12 +9,12 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
@@ -25,12 +25,14 @@ import com.media.notabadplayer.Presenter.Main.MainPresenter;
 import com.media.notabadplayer.Presenter.Search.SearchPresenter;
 import com.media.notabadplayer.Presenter.Settings.SettingsPresenter;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
-import com.media.notabadplayer.View.Playlists.PlaylistsFragment;
+import com.media.notabadplayer.View.Lists.ListsFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
 
@@ -126,16 +128,24 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _currentTabID = R.id.navigation_albums;
         _currentTab = AlbumsFragment.newInstance();
         _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
-        _cachedTabs.put(R.id.navigation_albums, _currentTab);
         refreshCurrentTab();
+        
+        if (GeneralStorage.getShared().getCachingPolicyFlagForAlbumsTab(this))
+        {
+            _cachedTabs.put(R.id.navigation_albums, _currentTab);
+        }
     }
 
-    private void selectPlaylistsTab()
+    private void selectListsTab()
     {
-        _currentTabID = R.id.navigation_playlists;
-        _currentTab = PlaylistsFragment.newInstance();
-        _cachedTabs.put(R.id.navigation_playlists, _currentTab);
+        _currentTabID = R.id.navigation_lists;
+        _currentTab = ListsFragment.newInstance();
         refreshCurrentTab();
+        
+        if (GeneralStorage.getShared().getCachingPolicyFlagForListsTab(this))
+        {
+            _cachedTabs.put(R.id.navigation_albums, _currentTab);
+        }
     }
 
     private void selectSearchTab()
@@ -143,8 +153,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _currentTabID = R.id.navigation_search;
         _currentTab = SearchFragment.newInstance();
         _currentTab.setPresenter(new SearchPresenter(_currentTab, _audioInfo));
-        _cachedTabs.put(R.id.navigation_search, _currentTab);
         refreshCurrentTab();
+        
+        if (GeneralStorage.getShared().getCachingPolicyFlagForSearchTab(this))
+        {
+            _cachedTabs.put(R.id.navigation_albums, _currentTab);
+        }
     }
 
     private void selectSettingsTab()
@@ -152,8 +166,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _currentTabID = R.id.navigation_settings;
         _currentTab = SettingsFragment.newInstance();
         _currentTab.setPresenter(new SettingsPresenter(_currentTab, this));
-        _cachedTabs.put(R.id.navigation_settings, _currentTab);
         refreshCurrentTab();
+        
+        if (GeneralStorage.getShared().getCachingPolicyFlagForSettingsTab(this))
+        {
+            _cachedTabs.put(R.id.navigation_albums, _currentTab);
+        }
     }
     
     private void refreshCurrentTab()
@@ -186,8 +204,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             case R.id.navigation_albums:
                 selectAlbumsTab();
                 break;
-            case R.id.navigation_playlists:
-                selectPlaylistsTab();
+            case R.id.navigation_lists:
+                selectListsTab();
                 break;
             case R.id.navigation_search:
                 selectSearchTab();
@@ -206,8 +224,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         Intent intent = new Intent(this, PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra("tracks", playlist.getTracksAsStrings());
-        intent.putExtra("playingTrack", playlist.getPlayingTrackAsString());
+        intent.putExtra("playlist", Serializing.serializeObject(AudioPlayer.getShared().getPlaylist()));
         startActivity(intent);
         
         // Transition animation

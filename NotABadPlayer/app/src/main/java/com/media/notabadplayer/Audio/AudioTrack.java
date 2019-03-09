@@ -1,6 +1,14 @@
 package com.media.notabadplayer.Audio;
 
-public class AudioTrack {
+import android.os.Parcel;
+import android.support.annotation.NonNull;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public class AudioTrack implements Serializable {
     public final String filePath;
     public final String title;
     public final String artist;
@@ -22,23 +30,6 @@ public class AudioTrack {
         this.duration = secondsToString(durationInSeconds);
     }
     
-    public static AudioTrack createFromString(String data)
-    {
-        if (data == null)
-        {
-            return null;
-        }
-        
-        String values[] = data.split("\n");
-        
-        if (values.length != 7)
-        {
-            return null;
-        }
-        
-        return new AudioTrack(values[0], values[1], values[2], values[3], values[4], Integer.parseInt(values[5]), Double.parseDouble(values[6]));
-    }
-    
     @Override
     public boolean equals(Object o)
     {
@@ -50,12 +41,6 @@ public class AudioTrack {
         }
         
         return false;
-    }
-    
-    @Override
-    public String toString()
-    {
-        return filePath + "\n" + title + "\n" + artist + "\n" + albumTitle + "\n" + artCover + "\n" + trackNum + "\n" + String.valueOf(durationInSeconds);
     }
     
     public static String timeDescription(String pDescription, int pTime)
@@ -109,5 +94,15 @@ public class AudioTrack {
         }
         
         return descriptionForReturn.toString();
+    }
+    
+    private void writeObject(@NonNull ObjectOutputStream out) throws IOException 
+    {
+        out.defaultWriteObject();
+    }
+    
+    private void readObject(@NonNull ObjectInputStream in) throws IOException,ClassNotFoundException 
+    {
+        in.defaultReadObject();
     }
 }

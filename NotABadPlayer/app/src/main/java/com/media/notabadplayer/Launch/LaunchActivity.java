@@ -9,9 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.Main.MainActivity;
@@ -54,7 +52,8 @@ public class LaunchActivity extends AppCompatActivity {
         
         if (!_launchedFromFile)
         {
-            GeneralStorage.getShared().restoreAudioState(getApplication(), this);
+            GeneralStorage.getShared().restorePlayerState(getApplication(), this);
+            GeneralStorage.getShared().restorePlayerPlayHistoryState(getApplication(), this);
         }
     }
 

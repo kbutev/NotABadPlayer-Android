@@ -16,6 +16,7 @@ import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Presenter.Player.PlayerPresenter;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
@@ -42,16 +43,8 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         initUI();
         
         // Audio model - retrieve from intent
-        ArrayList<String> tracksString = getIntent().getStringArrayListExtra("tracks");
-        ArrayList<AudioTrack> tracks = new ArrayList<>();
-        
-        for (int e = 0; e < tracksString.size(); e++)
-        {
-            tracks.add(AudioTrack.createFromString(tracksString.get(e)));
-        }
-        
-        String playingTrackString = getIntent().getStringExtra("playingTrack");
-        AudioPlaylist playlist = new AudioPlaylist(tracks, AudioTrack.createFromString(playingTrackString));
+        String intentData = getIntent().getStringExtra("playlist");
+        AudioPlaylist playlist = (AudioPlaylist) Serializing.deserializeObject(intentData);
         
         // Presenter
         _presenter = new PlayerPresenter(_fragment, getApplication(), playlist);

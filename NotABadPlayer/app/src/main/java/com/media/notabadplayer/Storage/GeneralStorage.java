@@ -3,14 +3,12 @@ package com.media.notabadplayer.Storage;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.Utilities.Serializing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +34,15 @@ public class GeneralStorage
         return singleton;
     }
     
+    private void firstTimeLaunch(Context context)
+    {
+        savePlayerPlayedHistory(context, 20);
+        saveCachingPolicyFlagForAlbumsTab(context, true);
+        saveCachingPolicyFlagForListsTab(context, false);
+        saveCachingPolicyFlagForSearchTab(context, false);
+        saveCachingPolicyFlagForSettingsTab(context, false);
+    }
+    
     synchronized public boolean isFirstApplicationLaunch(Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
@@ -46,10 +53,15 @@ public class GeneralStorage
         editor.putBoolean("firstTime", false);
         editor.apply();
         
+        if (firstTime)
+        {
+            firstTimeLaunch(context);
+        }
+        
         return firstTime;
     }
     
-    synchronized public void saveCurrentAudioState(Context context)
+    synchronized public void savePlayerState(Context context)
     {
         AudioPlayer player = AudioPlayer.getShared();
         
@@ -57,86 +69,91 @@ public class GeneralStorage
         {
             return;
         }
-
+        
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         
-        AudioPlaylist playlist = player.getPlaylist();
-        
-        ArrayList<String> tracksArray = playlist.getTracksAsStrings();
-        
-        editor.putInt("tracks_size", tracksArray.size());
-        
-        for (int e = 0; e < tracksArray.size(); e++)
-        {
-            editor.putString("track_" + String.valueOf(e), tracksArray.get(e));
-        }
-        
-        editor.putString("playingTrack", playlist.getPlayingTrackAsString());
-        
-        editor.putString("playOrder", playlist.getPlayOrder().toString());
-        
-        editor.putInt("playerPosition", player.getCurrentPositionMSec());
+        editor.putString("player_current_playlist", Serializing.serializeObject(player.getPlaylist()));
+        editor.putInt("player_current_position", player.getCurrentPositionMSec());
         
         editor.apply();
     }
-
-    synchronized public void restoreAudioState(Application application, Context context)
+    
+    synchronized public void restorePlayerState(Application application, Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         
-        ArrayList<String> tracksArray = new ArrayList<>();
-        int tracksSize = preferences.getInt("tracks_size", 0);
-
-        for (int e = 0; e < tracksSize; e++)
-        {
-            String track = preferences.getString("track_" + String.valueOf(e), "");
-            
-            if (track != null && !track.isEmpty())
-            {
-                tracksArray.add(track);
-            }
-        }
+        AudioPlayer player = AudioPlayer.getShared();
         
-        if (tracksArray.isEmpty())
+        String data = preferences.getString("player_current_playlist", "");
+        
+        if (data == null)
         {
             return;
         }
         
-        AudioPlayer player = AudioPlayer.getShared();
+        AudioPlaylist playlist = (AudioPlaylist)Serializing.deserializeObject(data);
         
-        String track = preferences.getString("playingTrack", "");
-        
-        ArrayList<AudioTrack> tracks = new ArrayList<>();
-
-        for (int e = 0; e < tracksArray.size(); e++)
+        if (playlist == null)
         {
-            tracks.add(AudioTrack.createFromString(tracksArray.get(e)));
+            return;
         }
         
-        AudioPlayOrder order = AudioPlayOrder.FORWARDS;
-        
-        try
-        {
-            String playOrder = preferences.getString("playOrder", "");
-            order = AudioPlayOrder.valueOf(playOrder);
-        }
-        catch (Exception e)
-        {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Could not retrieve the saved play order from storage");
-        }
-        
-        AudioPlaylist playlist = new AudioPlaylist(tracks, AudioTrack.createFromString(track));
-
         player.playPlaylist(application, playlist);
-        player.getPlaylist().setPlayOrder(order);
         
-        int positionMSec = preferences.getInt("playerPosition", 0);
+        AudioPlaylist newPlayerPlaylist = player.getPlaylist();
+        
+        if (newPlayerPlaylist != null)
+        {
+            newPlayerPlaylist.setPlayOrder(playlist.getPlayOrder());
+        }
+        
+        int positionMSec = preferences.getInt("player_current_position", 0);
         
         player.seekTo(positionMSec);
         
         // Always pause by default when restoring state from storage
         player.pause();
+    }
+
+    synchronized public void savePlayerPlayHistoryState(Context context)
+    {
+        AudioPlayer player = AudioPlayer.getShared();
+
+        if (!player.hasPlaylist())
+        {
+            return;
+        }
+
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putString("player_play_history", Serializing.serializeObject(player.getPlayHistory()));
+        
+        editor.apply();
+    }
+
+    synchronized public void restorePlayerPlayHistoryState(Application application, Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+
+        AudioPlayer player = AudioPlayer.getShared();
+        
+        String data = preferences.getString("player_play_history", "");
+
+        if (data == null)
+        {
+            return;
+        }
+        
+        ArrayList<AudioTrack> playHistory = (ArrayList<AudioTrack>)Serializing.deserializeObject(data);
+        
+        if (playHistory == null)
+        {
+            return;
+        }
+        
+        player.setPlayHistory(playHistory);
     }
 
     synchronized public void saveSearchQuery(Context context, String searchQuery)
@@ -167,8 +184,9 @@ public class GeneralStorage
         editor.putString(ApplicationInput.PLAYER_VOLUME_UP_BUTTON.name(), ApplicationAction.VOLUME_UP.name());
         editor.putString(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON.name(), ApplicationAction.VOLUME_DOWN.name());
         editor.putString(ApplicationInput.PLAYER_PLAY_BUTTON.name(), ApplicationAction.PAUSE_OR_RESUME.name());
-        editor.putString(ApplicationInput.PLAYER_NEXT_BUTTON.name(), ApplicationAction.NEXT.name());
-        editor.putString(ApplicationInput.PLAYER_PREVIOUS_BUTTON.name(), ApplicationAction.PREVIOUS.name());
+        editor.putString(ApplicationInput.PLAYER_RECALL.name(), ApplicationAction.PREVIOUS_PLAYED_TRACK.name());
+        editor.putString(ApplicationInput.PLAYER_NEXT_BUTTON.name(), ApplicationAction.NEXT_TRACK.name());
+        editor.putString(ApplicationInput.PLAYER_PREVIOUS_BUTTON.name(), ApplicationAction.PREVIOUS_TRACK.name());
         editor.putString(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON.name(), ApplicationAction.VOLUME_UP.name());
         editor.putString(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON.name(), ApplicationAction.VOLUME_DOWN.name());
         editor.putString(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON.name(), ApplicationAction.PAUSE_OR_RESUME.name());
@@ -213,5 +231,75 @@ public class GeneralStorage
         }
         
         return ApplicationAction.DO_NOTHING;
+    }
+    
+    synchronized public int getPlayerPlayedHistoryCapacity(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        return preferences.getInt("player_history_capacity", 1);
+    }
+    
+    synchronized public void savePlayerPlayedHistory(Context context, int value)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("player_history_capacity", value >= 0 ? value : 0);
+        editor.apply();
+    }
+    
+    synchronized public boolean getCachingPolicyFlagForAlbumsTab(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        return preferences.getBoolean("caching_policy_albums_tab", false);
+    }
+    
+    synchronized public void saveCachingPolicyFlagForAlbumsTab(Context context, boolean value)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("caching_policy_albums_tab", value);
+        editor.apply();
+    }
+    
+    synchronized public boolean getCachingPolicyFlagForListsTab(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        return preferences.getBoolean("caching_policy_lists_tab", false);
+    }
+    
+    synchronized public void saveCachingPolicyFlagForListsTab(Context context, boolean value)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("caching_policy_lists_tab", value);
+        editor.apply();
+    }
+    
+    synchronized public boolean getCachingPolicyFlagForSearchTab(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        return preferences.getBoolean("caching_policy_search_tab", false);
+    }
+    
+    synchronized public void saveCachingPolicyFlagForSearchTab(Context context, boolean value)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("caching_policy_search_tab", value);
+        editor.apply();
+    }
+    
+    synchronized public boolean getCachingPolicyFlagForSettingsTab(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        return preferences.getBoolean("caching_policy_settings_tab", false);
+    }
+    
+    synchronized public void saveCachingPolicyFlagForSettingsTab(Context context, boolean value)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("caching_policy_settings_tab", value);
+        editor.apply();
     }
 }

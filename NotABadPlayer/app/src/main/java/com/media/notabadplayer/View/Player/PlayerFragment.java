@@ -26,6 +26,7 @@ import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
@@ -52,10 +53,11 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     private SeekBar _mediaBar;
     private TextView _labelDurationCurrent;
     private TextView _labelDurationTotal;
-    private Button _buttonPlayOrder;
+    private Button _buttonRecall;
     private Button _buttonBack;
     private Button _buttonPlay;
     private Button _buttonForward;
+    private Button _buttonPlayOrder;
 
     private float _layoutTouchMotionLastXPosition = -1;
     private float _layoutTouchMotionLastYPosition = -1;
@@ -122,10 +124,11 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _mediaBar = root.findViewById(R.id.mediaBar);
         _labelDurationCurrent = root.findViewById(R.id.durationCurrent);
         _labelDurationTotal = root.findViewById(R.id.durationTotal);
-        _buttonPlayOrder = root.findViewById(R.id.mediaButtonPlayOrder);
+        _buttonRecall = root.findViewById(R.id.mediaButtonRecall);
         _buttonBack = root.findViewById(R.id.mediaButtonBack);
         _buttonPlay = root.findViewById(R.id.mediaButtonPlay);
         _buttonForward = root.findViewById(R.id.mediaButtonForward);
+        _buttonPlayOrder = root.findViewById(R.id.mediaButtonPlayOrder);
         
         // Init UI
         initUI();
@@ -166,13 +169,11 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             }
         });
         
-        _buttonPlayOrder.setOnClickListener(new View.OnClickListener() {
+        _buttonRecall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
-                
-                // Save current audio state
-                saveCurrentAudioState();
+                UIAnimations.animateButtonTAP(getContext(), _buttonRecall);
+                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_RECALL);
             }
         });
         
@@ -180,35 +181,40 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             @Override
             public void onClick(View v) {
 
+                UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
                 KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_PLAY_BUTTON);
             }
         });
-        
-        if (_player.isPlaying())
-        {
-            _buttonPlay.setBackgroundResource(R.drawable.media_pause);
-        }
-        else
-        {
-            _buttonPlay.setBackgroundResource(R.drawable.media_play);
-        }
         
         _buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                UIAnimations.animateButtonTAP(getContext(), _buttonBack);
                 KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_PREVIOUS_BUTTON);
             }
         });
-
+        
         _buttonForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                UIAnimations.animateButtonTAP(getContext(), _buttonForward);
                 KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_NEXT_BUTTON);
             }
         });
-    
+        
+        _buttonPlayOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIAnimations.animateButtonTAP(getContext(), _buttonPlayOrder);
+                KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+                
+                // Save current audio state
+                saveCurrentAudioState();
+            }
+        });
+        
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -220,6 +226,9 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                 }
             }
         });
+        
+        // Update play button state
+        updatePlayButtonState();
     }
     
     private void updateUIState()
@@ -254,7 +263,8 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private void saveCurrentAudioState()
     {
-        GeneralStorage.getShared().saveCurrentAudioState(getContext());
+        GeneralStorage.getShared().savePlayerState(getContext());
+        GeneralStorage.getShared().savePlayerPlayHistoryState(getContext());
     }
     
     private void updateMediaInfo(AudioTrack playingTrack)
@@ -275,6 +285,20 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             _labelArtist.setText(playingTrack.artist);
             _mediaBar.setMax((int) playingTrack.durationInSeconds);
             _labelDurationTotal.setText(playingTrack.duration);
+            
+            updatePlayButtonState();
+        }
+    }
+    
+    private void updatePlayButtonState()
+    {
+        if (_player.isPlaying())
+        {
+            _buttonPlay.setBackgroundResource(R.drawable.media_pause);
+        }
+        else
+        {
+            _buttonPlay.setBackgroundResource(R.drawable.media_play);
         }
     }
     

@@ -44,10 +44,10 @@ public class KeyBinds
             case PAUSE_OR_RESUME:
                 AudioPlayer.getShared().pauseOrResume();
                 break;
-            case NEXT:
+            case NEXT_TRACK:
                 AudioPlayer.getShared().playNext();
                 break;
-            case PREVIOUS:
+            case PREVIOUS_TRACK:
                 AudioPlayer.getShared().playPrevious();
                 break;
             case SHUFFLE:
@@ -110,6 +110,9 @@ public class KeyBinds
                     }
                 }
                 
+                break;
+            case PREVIOUS_PLAYED_TRACK:
+                AudioPlayer.getShared().playPreviousInPlayHistory();
                 break;
         }
         

@@ -7,9 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -18,7 +15,6 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
-import com.media.notabadplayer.Presenter.Main.MainPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BasePresenter;
@@ -40,6 +36,8 @@ public class SettingsFragment extends Fragment implements BaseView
     private SettingsKeybindListAdapter _keybindPlayerNextAdapter;
     private Spinner _keybindPlayerPrev;
     private SettingsKeybindListAdapter _keybindPlayerPrevAdapter;
+    private Spinner _keybindPlayerRecall;
+    private SettingsKeybindListAdapter _keybindPlayerRecallAdapter;
     private Spinner _keybindQPlayerVU;
     private SettingsKeybindListAdapter _keybindQPlayerVUAdapter;
     private Spinner _keybindQPlayerVD;
@@ -78,6 +76,7 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindPlayerVD = root.findViewById(R.id.keybindPlayerVD);
         _keybindPlayerNext = root.findViewById(R.id.keybindPlayerNext);
         _keybindPlayerPrev = root.findViewById(R.id.keybindPlayerPrev);
+        _keybindPlayerRecall = root.findViewById(R.id.keybindPlayerPrevPlaylist);
         _keybindQPlayerVU = root.findViewById(R.id.keybindQPlayerVU);
         _keybindQPlayerVD = root.findViewById(R.id.keybindQPlayerVD);
         _keybindQPlayerNext = root.findViewById(R.id.keybindQPlayerNext);
@@ -115,6 +114,10 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindPlayerPrev.setAdapter(_keybindPlayerPrevAdapter);
         setOnItemSelectedListener(_keybindPlayerPrev, ApplicationInput.PLAYER_PREVIOUS_BUTTON);
 
+        _keybindPlayerRecallAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindPlayerRecall.setAdapter(_keybindPlayerRecallAdapter);
+        setOnItemSelectedListener(_keybindPlayerRecall, ApplicationInput.PLAYER_RECALL);
+        
         _keybindQPlayerVUAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindQPlayerVU.setAdapter(_keybindQPlayerVUAdapter);
         setOnItemSelectedListener(_keybindQPlayerVU, ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
@@ -166,6 +169,9 @@ public class SettingsFragment extends Fragment implements BaseView
         ApplicationAction PLAYER_PREVIOUS_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.PLAYER_PREVIOUS_BUTTON);
         _keybindPlayerPrev.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_PREVIOUS_BUTTON));
 
+        ApplicationAction PLAYER_RECALL = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.PLAYER_RECALL);
+        _keybindPlayerRecall.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_RECALL));
+        
         ApplicationAction QUICK_PLAYER_VOLUME_UP_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
         _keybindQPlayerVU.setSelection(SettingsKeybindListAdapter.getCountForAction(QUICK_PLAYER_VOLUME_UP_BUTTON));
 

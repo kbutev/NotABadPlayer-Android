@@ -1,4 +1,4 @@
-package com.media.notabadplayer.View.Playlists;
+package com.media.notabadplayer.View.Lists;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,17 +17,17 @@ import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
 
-public class PlaylistsFragment extends Fragment implements BaseView {
+public class ListsFragment extends Fragment implements BaseView {
     private MainPresenter _presenter;
 
-    public PlaylistsFragment()
+    public ListsFragment()
     {
 
     }
 
-    public static PlaylistsFragment newInstance()
+    public static ListsFragment newInstance()
     {
-        return new PlaylistsFragment();
+        return new ListsFragment();
     }
 
     @Override

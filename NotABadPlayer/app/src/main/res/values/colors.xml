@@ -29,4 +29,9 @@
     <color name="colorAccent">#D81B60</color>
     
     <color name="mediaButtons">#ffffff</color>
+    
+    <color name="animationButtonTapStart">#4CAF50</color>
+    <color name="animationButtonTapEnd">#ffffff</color>
+    <color name="animationAlbumItemTapStart">#C1DAF7</color>
+    <color name="animationAlbumItemTapEnd">#ffffff</color>
 </resources>
