@@ -139,7 +139,10 @@ public class AudioPlayer {
         
         if (previousTrack != null)
         {
-            addTrackToPlayHistory(previousTrack);
+            if (!previousTrack.equals(newTrack))
+            {
+                addTrackToPlayHistory(previousTrack);
+            }
         }
         
         Uri path = Uri.parse(Uri.decode(newTrack.filePath));
@@ -225,17 +228,11 @@ public class AudioPlayer {
         
         try
         {
-            try {
-                _player.seekTo(0);
-            }
-            catch (Exception e)
-            {
-                
-            }
+            _player.seekTo(0);
             
             if (_player.isPlaying())
             {
-                _player.stop();
+                _player.pause();
                 
                 onStop();
             }
@@ -483,9 +480,16 @@ public class AudioPlayer {
         
         _playHistory.remove(lastTrackIndex);
         
+        AudioPlaylist playlist = new AudioPlaylist(previousTrack);
+        
+        if (_playlist != null)
+        {
+            playlist.setPlayOrder(_playlist.getPlayOrder());
+        }
+        
         _playlist = null;
         
-        playPlaylist(_application, new AudioPlaylist(previousTrack));
+        playPlaylist(_application, playlist);
     }
     
     private void addTrackToPlayHistory(@NonNull AudioTrack newTrack)
