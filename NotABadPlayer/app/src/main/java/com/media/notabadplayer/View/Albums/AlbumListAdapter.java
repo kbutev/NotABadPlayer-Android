@@ -60,6 +60,7 @@ class AlbumListAdapter extends BaseAdapter
 
             ImageView albumCover = header.findViewById(R.id.albumCover);
             TextView albumTitle = header.findViewById(R.id.albumTitle);
+            TextView albumArtist = header.findViewById(R.id.albumArtist);
             TextView albumDescription = header.findViewById(R.id.albumDescription);
             
             AudioTrack firstTrack = _tracks.get(0);
@@ -76,6 +77,17 @@ class AlbumListAdapter extends BaseAdapter
             }
 
             albumTitle.setText(firstTrack.albumTitle);
+            
+            if (!firstTrack.artist.isEmpty())
+            {
+                albumArtist.setVisibility(View.VISIBLE);
+                albumArtist.setText(firstTrack.artist);
+            }
+            else
+            {
+                albumArtist.setVisibility(View.GONE);
+            }
+            
             albumDescription.setText(getAlbumDescription());
             
             return header;
@@ -127,12 +139,9 @@ class AlbumListAdapter extends BaseAdapter
         {
             AudioTrack track = playlist.getPlayingTrack();
             
-            if (track != null)
+            if (track.equals(item))
             {
-                if (track.equals(item))
-                {
-                    isPlayingTrack = true;
-                }
+                isPlayingTrack = true;
             }
         }
         
