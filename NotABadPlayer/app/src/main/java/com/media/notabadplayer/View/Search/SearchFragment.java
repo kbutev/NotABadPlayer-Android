@@ -182,7 +182,7 @@ public class SearchFragment extends Fragment implements BaseView
         
         Intent intent = new Intent(a, PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("playlist", Serializing.serializeObject(AudioPlayer.getShared().getPlaylist()));
+        intent.putExtra("playlist", Serializing.serializeObject(playlist));
         startActivity(intent);
     }
 
