@@ -82,6 +82,12 @@
                 android:orientation="horizontal"
                 android:gravity="center_horizontal">
                 <Button
+                    android:id="@+id/mediaButtonPlaylist"
+                    android:layout_width="48dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/playlist"
+                    android:backgroundTint="@color/mediaButtons"/>
+                <Button
                     android:id="@+id/mediaButtonBack"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
@@ -99,6 +105,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/media_next"
                     android:backgroundTint="@color/mediaButtons"/>
+                <Space
+                    android:layout_width="48dp"
+                    android:layout_height="0dp" />
             </LinearLayout>
         </LinearLayout>
         

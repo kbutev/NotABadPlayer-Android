@@ -1,7 +1,5 @@
 package com.media.notabadplayer.Audio;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
@@ -9,12 +7,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class AudioPlaylist implements Serializable
 {
+    private final String _name;
+    
     private AudioPlayOrder _playOrder;
     
     private ArrayList<AudioTrack> _tracks;
@@ -25,8 +23,9 @@ public class AudioPlaylist implements Serializable
     
     transient private Random _random = new Random();
     
-    public AudioPlaylist(AudioTrack track)
+    public AudioPlaylist(String name, AudioTrack track)
     {
+        _name = name;
         _tracks = new ArrayList<>();
         _tracks.add(track);
         _playing = true;
@@ -35,18 +34,19 @@ public class AudioPlaylist implements Serializable
         _playOrder = AudioPlayOrder.FORWARDS;
     }
     
-    public AudioPlaylist(ArrayList<AudioTrack> tracks) throws IllegalArgumentException
+    public AudioPlaylist(String name, ArrayList<AudioTrack> tracks) throws IllegalArgumentException
     {
-        this(tracks, null);
+        this(name, tracks, null);
     }
     
-    public AudioPlaylist(ArrayList<AudioTrack> tracks, AudioTrack playingTrack) throws IllegalArgumentException
+    public AudioPlaylist(String name, ArrayList<AudioTrack> tracks, AudioTrack playingTrack) throws IllegalArgumentException
     {
         if (tracks.size() == 0)
         {
             throw new IllegalArgumentException("Given playlist tracks must not be empty");
         }
         
+        _name = name;
         _tracks = tracks;
         _playing = true;
         _playingTrack = tracks.get(0);
@@ -67,9 +67,19 @@ public class AudioPlaylist implements Serializable
         }
     }
     
+    public String getName()
+    {
+        return _name;
+    }
+    
     public int size()
     {
         return _tracks.size();
+    }
+    
+    public @NonNull ArrayList<AudioTrack> getTracks()
+    {
+        return new ArrayList<>(_tracks);
     }
     
     public final AudioTrack getTrack(int index)

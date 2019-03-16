@@ -1,8 +1,10 @@
 package com.media.notabadplayer.Presenter.Albums;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Storage.AudioInfo;
@@ -14,23 +16,38 @@ import java.util.ArrayList;
 
 public class AlbumPresenter implements BasePresenter {
     private BaseView _view;
-    private AudioInfo _audioInfo;
     
     private final AudioAlbum _album;
+    private final AudioPlaylist _playlist;
     
     private ArrayList<AudioTrack> _songs = new ArrayList<>();
     
-    public AlbumPresenter(BaseView view, AudioInfo audioInfo, AudioAlbum album)
+    public AlbumPresenter(@NonNull BaseView view, @NonNull AudioAlbum album)
     {
         _view = view;
-        _audioInfo = audioInfo;
         _album = album;
+        _playlist = null;
+    }
+
+    public AlbumPresenter(@NonNull BaseView view, @NonNull AudioPlaylist playlist)
+    {
+        _view = view;
+        _album = null;
+        _playlist = playlist;
     }
 
     @Override
     public void start()
     {
-        _songs = _audioInfo.getAlbumTracks(_album);
+        if (_album != null)
+        {
+            _songs = AudioPlayer.getShared().getAudioInfo().getAlbumTracks(_album);
+        }
+        else
+        {
+            _songs = _playlist.getTracks();
+        }
+        
         _view.onAlbumSongsLoad(_songs);
     }
 
@@ -53,7 +70,7 @@ public class AlbumPresenter implements BasePresenter {
         index--;
         
         AudioTrack clickedTrack = _songs.get(index);
-        AudioPlaylist playlist = new AudioPlaylist(_songs, clickedTrack);
+        AudioPlaylist playlist = new AudioPlaylist(clickedTrack.albumTitle, _songs, clickedTrack);
         
         Log.v("AlbumPresenter", "Play playlist with specific song " + clickedTrack.title);
         

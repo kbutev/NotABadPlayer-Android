@@ -34,7 +34,7 @@ public class AlbumsPresenter implements BasePresenter {
         String cover = a.albumCover;
         
         Log.v("AlbumsPresenter", "Open " + title + " album");
-        _view.openAlbumScreen(_audioInfo, identifier, artist, title, cover);
+        _view.openAlbumScreen(identifier, artist, title, cover);
     }
 
     @Override

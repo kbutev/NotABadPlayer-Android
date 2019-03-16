@@ -3,6 +3,7 @@ package com.media.notabadplayer.Storage;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioPlayer;
@@ -78,9 +79,9 @@ public class GeneralStorage
         editor.apply();
     }
     
-    synchronized public void restorePlayerState(Application application, Context context)
+    synchronized public void restorePlayerState(@NonNull Application application, @NonNull AudioInfo audioInfo)
     {
-        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences preferences = application.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         
         AudioPlayer player = AudioPlayer.getShared();
         
@@ -98,7 +99,7 @@ public class GeneralStorage
             return;
         }
         
-        player.playPlaylist(application, playlist);
+        player.playPlaylist(playlist);
         
         AudioPlaylist newPlayerPlaylist = player.getPlaylist();
         
@@ -132,9 +133,9 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public void restorePlayerPlayHistoryState(Application application, Context context)
+    synchronized public void restorePlayerPlayHistoryState(@NonNull Application application)
     {
-        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences preferences = application.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
 
         AudioPlayer player = AudioPlayer.getShared();
         

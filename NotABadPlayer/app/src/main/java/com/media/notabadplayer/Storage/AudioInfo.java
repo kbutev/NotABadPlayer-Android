@@ -5,12 +5,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.AudioTrackSource;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
 public class AudioInfo {
@@ -148,7 +148,14 @@ public class AudioInfo {
             int trackNum = cursor.getInt(trackNumColumn);
             double duration = cursor.getLong(durationColumn) / 1000.0;
             
-            albumTracks.add(new AudioTrack(filePath, title, artist, albumTitle, album.albumCover, trackNum, duration));
+            albumTracks.add(new AudioTrack(filePath, 
+                            title,
+                            artist,
+                            albumTitle,
+                            album.albumCover,
+                            trackNum, 
+                            duration,
+                            AudioTrackSource.create(album)));
         }
 
         cursor.close();
@@ -212,7 +219,14 @@ public class AudioInfo {
             AudioAlbum album = getAlbumByID(cursor.getString(albumID));
             albumCover = album.albumCover;
             
-            albumTracks.add(new AudioTrack(filePath, title, artist, albumTitle, albumCover, trackNum, duration));
+            albumTracks.add(new AudioTrack(filePath,
+                            title, 
+                            artist, 
+                            albumTitle,
+                            albumCover, 
+                            trackNum,
+                            duration,
+                            AudioTrackSource.create(album)));
         }
 
         cursor.close();
@@ -264,6 +278,13 @@ public class AudioInfo {
         
         cursor.close();
         
-        return new AudioTrack(filePath, title, artist, albumTitle, albumCover, trackNum, duration);
+        return new AudioTrack(filePath,
+                              title,
+                              artist,
+                              albumTitle,
+                              albumCover,
+                              trackNum,
+                              duration,
+                              AudioTrackSource.create(album));
     }
 }

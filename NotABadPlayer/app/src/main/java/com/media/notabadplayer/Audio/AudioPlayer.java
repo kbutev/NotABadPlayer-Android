@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.math.MathUtils;
 import android.util.Log;
 
+import com.google.common.util.concurrent.UncheckedExecutionException;
+import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Storage.GeneralStorage;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class AudioPlayer {
     
     private android.media.MediaPlayer _player;
     private Application _application;
+    private AudioInfo _audioInfo;
     private AudioPlaylist _playlist;
     
     private ArrayList<AudioPlayerObserver> _observers;
@@ -60,6 +63,16 @@ public class AudioPlayer {
         return _application.getApplicationContext();
     }
     
+    public @NonNull AudioInfo getAudioInfo() 
+    {
+        if (_application == null)
+        {
+            throw new UncheckedExecutionException(new Exception("AudioPlayer is not initialized"));
+        }
+        
+        return _audioInfo;
+    }
+    
     private void onPlay(AudioTrack track)
     {
         for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPlay(track);}
@@ -90,6 +103,18 @@ public class AudioPlayer {
         return _player;
     }
     
+    public void init(@NonNull Application application,
+                     @NonNull AudioInfo audioInfo)
+    {
+        if (_application != null)
+        {
+            throw new UncheckedExecutionException(new Exception("Initializing AudioPlayer twice"));
+        }
+        
+        _application = application;
+        _audioInfo = audioInfo;
+    }
+    
     public void attachObserver(AudioPlayerObserver observer)
     {
         if (_observers.contains(observer))
@@ -117,13 +142,17 @@ public class AudioPlayer {
     
     public boolean hasPlaylist() {return _playlist != null;}
     
-    public void playPlaylist(Application application, @NonNull AudioPlaylist playlist)
+    public void playPlaylist(@NonNull AudioPlaylist playlist)
     {
+        if (_application == null)
+        {
+            throw new UncheckedExecutionException(new Exception("Audio player must be initialized before being used"));
+        }
+        
         AudioTrack currentlyPlayingTrack = _playlist != null ? _playlist.getPlayingTrack() : null;
         
         AudioPlayOrder order = _playlist != null ? _playlist.getPlayOrder() : playlist.getPlayOrder();
         
-        _application = application;
         _playlist = playlist;
         _playlist.setPlayOrder(order);
         
@@ -506,7 +535,12 @@ public class AudioPlayer {
         
         _playHistory.remove(lastTrackIndex);
         
-        AudioPlaylist playlist = new AudioPlaylist(previousTrack);
+        AudioPlaylist playlist = previousTrack.source.getSourcePlaylist(_audioInfo, previousTrack);
+        
+        if (playlist == null)
+        {
+            playlist = new AudioPlaylist("Previously played", previousTrack);
+        }
         
         if (_playlist != null)
         {
@@ -515,7 +549,7 @@ public class AudioPlayer {
         
         _playlist = null;
         
-        playPlaylist(_application, playlist);
+        playPlaylist(playlist);
     }
     
     private void addTrackToPlayHistory(@NonNull AudioTrack newTrack)

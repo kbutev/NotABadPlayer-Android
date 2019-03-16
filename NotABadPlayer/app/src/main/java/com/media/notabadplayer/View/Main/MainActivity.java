@@ -28,7 +28,6 @@ import com.media.notabadplayer.Presenter.Search.SearchPresenter;
 import com.media.notabadplayer.Presenter.Settings.SettingsPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -59,8 +58,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private AudioPlayerNoiseSuppression _noiseSuppression;
     
-    private boolean _launchedWithInitialTrack;
-    
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -84,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         _audioInfo = new AudioInfo(this);
         
+        // Audio Player initialization
+        AudioPlayer.getShared().init(getApplication(), _audioInfo);
+        
         // UI
         initUI();
         
@@ -96,11 +96,16 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         // App launch track
         Uri path = getIntent().getParcelableExtra("launchTrackPath");
-        _launchedWithInitialTrack = path != null;
         
-        if (_launchedWithInitialTrack)
+        boolean launchedWithInitialTrack = path != null;
+        
+        if (launchedWithInitialTrack)
         {
             startAppWithTrack(path);
+        }
+        else
+        {
+            restoreAudioPlayerState();
         }
     }
     
@@ -221,16 +226,22 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void startAppWithTrack(Uri path)
     {
         AudioTrack track = _audioInfo.findTrackByPath(path);
-        AudioPlaylist playlist = new AudioPlaylist(track);
+        AudioPlaylist playlist = track.source.getSourcePlaylist(_audioInfo, track);
         
         Intent intent = new Intent(this, PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra("playlist", Serializing.serializeObject(AudioPlayer.getShared().getPlaylist()));
+        intent.putExtra("playlist", playlist);
         startActivity(intent);
         
         // Transition animation
         overridePendingTransition(0, 0);
+    }
+    
+    private void restoreAudioPlayerState()
+    {
+        GeneralStorage.getShared().restorePlayerState(getApplication(), _audioInfo);
+        GeneralStorage.getShared().restorePlayerPlayHistoryState(getApplication());
     }
     
     @Override
@@ -273,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover) {
+    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) {
         
     }
 

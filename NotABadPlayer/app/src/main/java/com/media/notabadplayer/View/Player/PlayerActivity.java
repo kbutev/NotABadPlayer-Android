@@ -2,6 +2,7 @@ package com.media.notabadplayer.View.Player;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,6 @@ import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
@@ -48,7 +48,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         AudioPlaylist playlist = (AudioPlaylist) Serializing.deserializeObject(intentData);
         
         // Presenter
-        _presenter = new PlayerPresenter(_fragment, getApplication(), playlist);
+        _presenter = new PlayerPresenter(_fragment, playlist);
         _fragment.setPresenter(_presenter);
         
         // Noise suppression
@@ -119,7 +119,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover)
+    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover)
     {
 
     }

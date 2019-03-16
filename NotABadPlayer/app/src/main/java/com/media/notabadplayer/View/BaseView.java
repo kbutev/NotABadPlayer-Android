@@ -1,8 +1,9 @@
 package com.media.notabadplayer.View;
 
+import android.support.annotation.NonNull;
+
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Presenter.BasePresenter;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 public interface BaseView {
     void setPresenter(BasePresenter presenter);
     
-    void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover);
+    void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover);
     
     void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums);
     void onAlbumSongsLoad(ArrayList<AudioTrack> songs);

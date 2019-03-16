@@ -17,8 +17,6 @@ import com.media.notabadplayer.View.Main.MainActivity;
 public class LaunchActivity extends AppCompatActivity {
     public static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 1;
     
-    private boolean _firstTimeLaunch;
-    
     private boolean _launchedFromFile;
     private Uri _launchedFromFileUri;
     
@@ -27,8 +25,8 @@ public class LaunchActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
-        
-        _firstTimeLaunch = GeneralStorage.getShared().isFirstApplicationLaunch(this);
+
+        boolean firstTimeLaunch = GeneralStorage.getShared().isFirstApplicationLaunch(this);
         
         _launchedFromFile = Intent.ACTION_VIEW.equals(getIntent().getAction());
         
@@ -37,7 +35,7 @@ public class LaunchActivity extends AppCompatActivity {
             _launchedFromFileUri = getIntent().getData();
         }
         
-        if (_firstTimeLaunch)
+        if (firstTimeLaunch)
         {
             GeneralStorage.getShared().resetDefaultSettingsActions(this);
         }
@@ -49,12 +47,6 @@ public class LaunchActivity extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
-        
-        if (!_launchedFromFile)
-        {
-            GeneralStorage.getShared().restorePlayerState(getApplication(), this);
-            GeneralStorage.getShared().restorePlayerPlayHistoryState(getApplication(), this);
-        }
     }
 
     @Override
