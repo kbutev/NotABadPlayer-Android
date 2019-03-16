@@ -9,6 +9,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
@@ -165,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         _currentTabID = R.id.navigation_settings;
         _currentTab = SettingsFragment.newInstance();
-        _currentTab.setPresenter(new SettingsPresenter(_currentTab, this));
+        _currentTab.setPresenter(new SettingsPresenter(_currentTab, this, this));
         refreshCurrentTab();
         
         if (GeneralStorage.getShared().getCachingPolicyFlagForSettingsTab(this))
@@ -297,5 +298,21 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
     {
 
+    }
+    
+    @Override
+    public void appThemeChanged()
+    {
+        int appTheme = GeneralStorage.getShared().getAppThemeValue(this);
+        
+        Log.v(MainActivity.class.getSimpleName(), "App theme changed to " + String.valueOf(appTheme));
+        
+        _quickPlayer.appThemeChanged();
+    }
+    
+    @Override
+    public void appSortingChanged()
+    {
+        Log.v(MainActivity.class.getSimpleName(), "App sorting changed.");
     }
 }

@@ -18,4 +18,7 @@ public interface BaseView {
     void openPlayerScreen(AudioPlaylist playlist);
     
     void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs);
+    
+    void appThemeChanged();
+    void appSortingChanged();
 }

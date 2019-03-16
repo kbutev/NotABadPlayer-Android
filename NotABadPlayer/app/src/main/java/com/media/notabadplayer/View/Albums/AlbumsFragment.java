@@ -147,4 +147,16 @@ public class AlbumsFragment extends Fragment implements BaseView
     {
 
     }
+
+    @Override
+    public void appThemeChanged()
+    {
+
+    }
+
+    @Override
+    public void appSortingChanged()
+    {
+
+    }
 }

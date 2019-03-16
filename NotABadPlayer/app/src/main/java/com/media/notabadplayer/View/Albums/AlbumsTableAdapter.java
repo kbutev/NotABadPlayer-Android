@@ -53,7 +53,7 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     {
         if (convertView == null)
         {
-            convertView = LayoutInflater.from(_context).inflate(R.layout.item_table_album, parent, false);
+            convertView = LayoutInflater.from(_context).inflate(R.layout.item_album, parent, false);
         }
         
         // Item

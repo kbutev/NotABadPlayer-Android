@@ -83,11 +83,17 @@ public class SearchPresenter implements BasePresenter
     }
 
     @Override
-    public void onAppThemeChange()
+    public void onAppThemeChange(int themeValue)
     {
         
     }
-
+    
+    @Override
+    public void onAppSortingChange(int value)
+    {
+        
+    }
+    
     @Override
     public void onKeybindSelected(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
     {

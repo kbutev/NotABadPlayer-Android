@@ -419,4 +419,16 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     {
         
     }
+
+    @Override
+    public void appThemeChanged()
+    {
+
+    }
+
+    @Override
+    public void appSortingChanged()
+    {
+
+    }
 }

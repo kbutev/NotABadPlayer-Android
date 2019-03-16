@@ -72,7 +72,13 @@ public class AlbumPresenter implements BasePresenter {
     }
 
     @Override
-    public void onAppThemeChange()
+    public void onAppThemeChange(int themeValue)
+    {
+        
+    }
+    
+    @Override
+    public void onAppSortingChange(int value)
     {
 
     }

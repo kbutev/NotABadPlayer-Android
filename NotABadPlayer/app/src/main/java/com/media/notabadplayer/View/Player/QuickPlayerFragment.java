@@ -2,6 +2,7 @@ package com.media.notabadplayer.View.Player;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +24,7 @@ import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.BasePresenter;
@@ -284,6 +286,35 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     
     @Override
     public void onPlayerVolumeChanged()
+    {
+
+    }
+
+    @Override
+    public void appThemeChanged()
+    {
+        int appTheme = GeneralStorage.getShared().getAppThemeValue(getContext());
+        int color;
+        
+        switch (appTheme)
+        {
+            case 0:
+                color = getResources().getColor(R.color.colorOverlayBackground);
+                getView().setBackgroundColor(color);
+                break;
+            case 1:
+                color = getResources().getColor(R.color.colorSettingsKeybindTipText);
+                getView().setBackgroundColor(color);
+                break;
+            case 2:
+                color = getResources().getColor(R.color.colorAccent);
+                getView().setBackgroundColor(color);
+                break;
+        }
+    }
+
+    @Override
+    public void appSortingChanged()
     {
 
     }
