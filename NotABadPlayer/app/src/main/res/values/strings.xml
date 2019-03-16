@@ -45,10 +45,12 @@
     <string name="settings_keybind_qplayer_next">QPlayer Next</string>
     <string name="settings_keybind_qplayer_prev">QPlayer Previous</string>
     <string name="settings_keybind_earphones_unplug">Earphones Unplug</string>
+    <string name="settings_reset">Reset</string>
+    <string name="settings_reset_button">Reset to defaults</string>
     
     <!-- About -->
     <string name="about">About</string>
     <string name="about_version">Version 1.0 (1)</string>
-    <string name="about_release_date">Released 2019.03.9</string>
+    <string name="about_release_date">Released 2019.03.16</string>
     <string name="about_credits">Programmed, designed &amp; tested by Kristiyan Butev</string>
 </resources>

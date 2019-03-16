@@ -4,6 +4,7 @@ import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppSettings;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,9 @@ public interface BaseView {
     void openPlayerScreen(AudioPlaylist playlist);
     
     void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs);
-    
-    void appThemeChanged();
-    void appSortingChanged();
+
+    void appSettingsReset();
+    void appThemeChanged(AppSettings.AppTheme appTheme);
+    void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting);
+    void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar);
 }

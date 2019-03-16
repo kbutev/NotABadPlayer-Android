@@ -15,7 +15,10 @@ import android.widget.TextView;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.MediaSorting;
 
 import org.w3c.dom.Text;
 
@@ -32,6 +35,12 @@ class AlbumListAdapter extends BaseAdapter
     {
         this._context = context;
         this._tracks = tracks;
+        sortTracks(GeneralStorage.getShared().getTrackSortingValue(_context));
+    }
+    
+    public void sortTracks(AppSettings.TrackSorting trackSorting)
+    {
+        MediaSorting.sortTracks(this._tracks, trackSorting);
     }
     
     public int getCount()

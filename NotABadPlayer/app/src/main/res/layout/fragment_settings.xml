@@ -14,6 +14,8 @@
             <include layout="@layout/layout_settings_appearance"/>
             
             <include layout="@layout/layout_settings_keybinds"/>
+
+            <include layout="@layout/layout_settings_reset"/>
             
             <include layout="@layout/layout_settings_about"/>
         </LinearLayout>

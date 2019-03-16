@@ -7,6 +7,7 @@ import android.util.Log;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
@@ -76,19 +77,31 @@ public class PlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onAppThemeChange(int themeValue)
+    public void onAppSettingsReset() 
+    {
+
+    }
+
+    @Override
+    public void onAppThemeChange(AppSettings.AppTheme themeValue)
     {
 
     }
     
     @Override
-    public void onAppSortingChange(int value)
+    public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
     {
 
     }
 
     @Override
-    public void onKeybindSelected(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
+    public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    {
+
+    }
+
+    @Override
+    public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
     {
 
     }

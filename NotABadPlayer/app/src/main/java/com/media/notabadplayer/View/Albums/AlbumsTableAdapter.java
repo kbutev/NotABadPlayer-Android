@@ -13,7 +13,10 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.MediaSorting;
 
 import java.util.ArrayList;
 
@@ -22,24 +25,30 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
 {
     private Context _context;
-    private ArrayList<AudioAlbum> _data;
+    private ArrayList<AudioAlbum> _albums;
     private GridSideIndexingView _sideSelector;
     
     public AlbumsTableAdapter(@NonNull Context context, ArrayList<AudioAlbum> albums, GridSideIndexingView sideSelector)
     {
         this._context = context;
-        this._data = albums;
+        this._albums = albums;
         this._sideSelector = sideSelector;
+        sortAlbums(GeneralStorage.getShared().getAlbumSortingValue(_context));
+    }
+
+    public void sortAlbums(AppSettings.AlbumSorting albumSorting)
+    {
+        MediaSorting.sortAlbums(this._albums, albumSorting);
     }
     
     public int getCount()
     {
-        return _data.size();
+        return _albums.size();
     }
 
     public Object getItem(int position)
     {
-        return _data.get(position);
+        return _albums.get(position);
     }
 
     public long getItemId(int position)
@@ -111,9 +120,9 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
         ArrayList<Character> alphabet = _sideSelector.getAlphabet();
         Character selectedCharacterIndex = alphabet.get(sectionIndex);
         
-        for (int e = 0; e < _data.size(); e++)
+        for (int e = 0; e < _albums.size(); e++)
         {
-            if (_data.get(e).albumTitle.charAt(0) == selectedCharacterIndex)
+            if (_albums.get(e).albumTitle.charAt(0) == selectedCharacterIndex)
             {
                 position = e;
                 break;

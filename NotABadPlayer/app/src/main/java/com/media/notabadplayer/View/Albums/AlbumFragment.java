@@ -17,6 +17,7 @@ import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
@@ -33,6 +34,7 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     private BasePresenter _presenter;
     
     private GridView _table;
+    private AlbumListAdapter _tableAdapter;
     private Parcelable _tableState;
     
     public AlbumFragment()
@@ -123,7 +125,8 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     @Override
     public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
     {
-        _table.setAdapter(new AlbumListAdapter(getContext(), songs));
+        _tableAdapter = new AlbumListAdapter(getContext(), songs);
+        _table.setAdapter(_tableAdapter);
     }
     
     @Override
@@ -185,13 +188,31 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     }
 
     @Override
-    public void appThemeChanged()
+    public void appSettingsReset()
     {
 
     }
 
     @Override
-    public void appSortingChanged()
+    public void appThemeChanged(AppSettings.AppTheme appTheme)
+    {
+
+    }
+
+    @Override
+    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    {
+        _tableAdapter.sortTracks(trackSorting);
+        _table.invalidateViews();
+        
+        if (_tableState != null)
+        {
+            _table.onRestoreInstanceState(_tableState);
+        }
+    }
+
+    @Override
+    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
 
     }

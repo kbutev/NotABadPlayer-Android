@@ -19,6 +19,7 @@ import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Presenter.Albums.AlbumsPresenter;
@@ -299,20 +300,37 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
 
     }
-    
+
     @Override
-    public void appThemeChanged()
+    public void appSettingsReset()
     {
-        int appTheme = GeneralStorage.getShared().getAppThemeValue(this);
-        
-        Log.v(MainActivity.class.getSimpleName(), "App theme changed to " + String.valueOf(appTheme));
-        
-        _quickPlayer.appThemeChanged();
+
     }
     
     @Override
-    public void appSortingChanged()
+    public void appThemeChanged(AppSettings.AppTheme appTheme)
+    {
+        Log.v(MainActivity.class.getSimpleName(), "App theme changed to " + appTheme.name());
+        
+        _currentTab.appThemeChanged(appTheme);
+        _quickPlayer.appThemeChanged(appTheme);
+    }
+    
+    @Override
+    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
     {
         Log.v(MainActivity.class.getSimpleName(), "App sorting changed.");
+        
+        _currentTab.appSortingChanged(albumSorting, trackSorting);
+        _quickPlayer.appSortingChanged(albumSorting, trackSorting);
+    }
+
+    @Override
+    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    {
+        Log.v(MainActivity.class.getSimpleName(), "App appearance changed.");
+        
+        _currentTab.appAppearanceChanged(showStars, showVolumeBar);
+        _quickPlayer.appAppearanceChanged(showStars, showVolumeBar);
     }
 }

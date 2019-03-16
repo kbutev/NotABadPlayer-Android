@@ -58,7 +58,7 @@
             android:id="@+id/keybindHome"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
 
     <LinearLayout
@@ -80,7 +80,7 @@
             android:id="@+id/keybindPlayerVU"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
 
     <LinearLayout
@@ -102,7 +102,7 @@
             android:id="@+id/keybindPlayerVD"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
 
     <LinearLayout
@@ -124,7 +124,7 @@
             android:id="@+id/keybindPlayerPrevPlaylist"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
     
     <LinearLayout
@@ -146,7 +146,7 @@
             android:id="@+id/keybindPlayerPrev"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
     
     <LinearLayout
@@ -168,7 +168,7 @@
             android:id="@+id/keybindPlayerNext"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
 
     <LinearLayout
@@ -190,7 +190,7 @@
             android:id="@+id/keybindQPlayerVU"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
 
     <LinearLayout
@@ -212,7 +212,7 @@
             android:id="@+id/keybindQPlayerVD"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
 
     <LinearLayout
@@ -234,7 +234,7 @@
             android:id="@+id/keybindQPlayerPrev"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
 
     <LinearLayout
@@ -256,7 +256,7 @@
             android:id="@+id/keybindQPlayerNext"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
 
     <LinearLayout
@@ -278,6 +278,6 @@
             android:id="@+id/keybindEarphonesUnplug"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/settings_keybind_border"/>
+            android:background="@drawable/settings_item_border"/>
     </LinearLayout>
 </LinearLayout>
