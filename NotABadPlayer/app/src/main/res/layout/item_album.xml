@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" 
     android:layout_width="match_parent"
-    android:layout_height="196dp"
+    android:layout_height="212dp"
     android:orientation="vertical">
     
     <ImageView
@@ -14,10 +14,10 @@
     
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lines="1"
+        android:lines="2"
         android:textColor="@color/colorAlbumItemText"
-        android:layout_gravity="center_horizontal"/>
+        android:gravity="center_horizontal"/>
 
 </LinearLayout>

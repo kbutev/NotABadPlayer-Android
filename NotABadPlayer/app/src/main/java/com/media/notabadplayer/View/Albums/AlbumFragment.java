@@ -183,4 +183,16 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     {
 
     }
+
+    @Override
+    public void appThemeChanged()
+    {
+
+    }
+
+    @Override
+    public void appSortingChanged()
+    {
+
+    }
 }

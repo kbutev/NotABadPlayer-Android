@@ -12,7 +12,8 @@
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:gravity="bottom"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/header"

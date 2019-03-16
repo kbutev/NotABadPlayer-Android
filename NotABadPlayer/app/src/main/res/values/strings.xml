@@ -24,9 +24,11 @@
 
     <!-- Settings tab -->
     <string name="settings_appearance">Appearance</string>
-    <string name="settings_general_color">General Color</string>
+    <string name="settings_general_color">Theme</string>
     <string name="settings_album_sorting">Album Sorting</string>
     <string name="settings_track_sorting">Track Sorting</string>
+    <string name="settings_stars">Show Stars</string>
+    <string name="settings_volume_bar">Show Volume Bar</string>
     <string name="settings_keybinds">Key binds</string>
     <string name="settings_keybinds_action">Action</string>
     <string name="settings_keybinds_command">Command</string>

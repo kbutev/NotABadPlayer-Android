@@ -146,4 +146,16 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     {
 
     }
+
+    @Override
+    public void appThemeChanged()
+    {
+
+    }
+
+    @Override
+    public void appSortingChanged()
+    {
+
+    }
 }

@@ -207,4 +207,16 @@ public class SearchFragment extends Fragment implements BaseView
         // Save search query
         GeneralStorage.getShared().saveSearchQuery(getContext(), searchQuery);
     }
+
+    @Override
+    public void appThemeChanged()
+    {
+
+    }
+
+    @Override
+    public void appSortingChanged()
+    {
+
+    }
 }

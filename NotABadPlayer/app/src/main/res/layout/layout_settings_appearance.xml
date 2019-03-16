@@ -28,12 +28,14 @@
             android:singleLine="true"
             android:textColor="@color/colorTextPrimary"/>
         <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
         <Spinner
-            android:id="@+id/appearancePicker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:id="@+id/themePicker"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/settings_keybind_border"/>
     </LinearLayout>
 
     <LinearLayout
@@ -48,12 +50,14 @@
             android:singleLine="true"
             android:textColor="@color/colorTextPrimary"/>
         <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
         <Spinner
             android:id="@+id/albumSortingPicker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/settings_keybind_border"/>
     </LinearLayout>
 
     <LinearLayout
@@ -68,12 +72,58 @@
             android:singleLine="true"
             android:textColor="@color/colorTextPrimary"/>
         <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
         <Spinner
             android:id="@+id/trackSortingPicker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/settings_keybind_border"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_stars"
+            android:singleLine="true"
+            android:textColor="@color/colorTextPrimary"/>
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Spinner
+            android:id="@+id/showStarsPicker"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/settings_keybind_border"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_volume_bar"
+            android:singleLine="true"
+            android:textColor="@color/colorTextPrimary"/>
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Spinner
+            android:id="@+id/showVolumeBarPicker"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/settings_keybind_border"/>
     </LinearLayout>
 
 </LinearLayout>

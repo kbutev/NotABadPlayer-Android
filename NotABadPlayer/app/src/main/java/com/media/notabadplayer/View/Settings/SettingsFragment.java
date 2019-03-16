@@ -1,13 +1,17 @@
 package com.media.notabadplayer.View.Settings;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -24,7 +28,12 @@ import java.util.ArrayList;
 
 public class SettingsFragment extends Fragment implements BaseView
 {
+    private String[] APPEARANCE_VALUES = {"LIGHT", "DARK", "GRAY"};
+    
     private BasePresenter _presenter;
+    
+    private Spinner _appearancePicker;
+    private SettingsListAdapter _appearanceAdapter;
     
     private Spinner _keybindHome;
     private SettingsKeybindListAdapter _keybindHomeAdapter;
@@ -71,6 +80,7 @@ public class SettingsFragment extends Fragment implements BaseView
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
         // Setup UI
+        _appearancePicker = root.findViewById(R.id.themePicker);
         _keybindHome = root.findViewById(R.id.keybindHome);
         _keybindPlayerVU = root.findViewById(R.id.keybindPlayerVU);
         _keybindPlayerVD = root.findViewById(R.id.keybindPlayerVD);
@@ -86,7 +96,10 @@ public class SettingsFragment extends Fragment implements BaseView
         // Init UI
         initUI();
         
-        // Keybinds
+        // Select correct app theme
+        selectProperAppTheme();
+        
+        // Select correct keybinds
         selectProperKeybinds();
         
         return root;
@@ -94,52 +107,63 @@ public class SettingsFragment extends Fragment implements BaseView
     
     private void initUI()
     {
+        _appearanceAdapter = new SettingsListAdapter(getContext(), APPEARANCE_VALUES);
+        _appearancePicker.setAdapter(_appearanceAdapter);
+        _appearancePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                _presenter.onAppThemeChange(position);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+        
         _keybindHomeAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindHome.setAdapter(_keybindHomeAdapter);
-        setOnItemSelectedListener(_keybindHome, ApplicationInput.HOME_BUTTON);
+        setKeybindsOnItemSelectedListener(_keybindHome, ApplicationInput.HOME_BUTTON);
         
         _keybindPlayerVUAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindPlayerVU.setAdapter(_keybindPlayerVUAdapter);
-        setOnItemSelectedListener(_keybindPlayerVU, ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
+        setKeybindsOnItemSelectedListener(_keybindPlayerVU, ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
         
         _keybindPlayerVDAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindPlayerVD.setAdapter(_keybindPlayerVDAdapter);
-        setOnItemSelectedListener(_keybindPlayerVD, ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON);
+        setKeybindsOnItemSelectedListener(_keybindPlayerVD, ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON);
         
         _keybindPlayerNextAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindPlayerNext.setAdapter(_keybindPlayerNextAdapter);
-        setOnItemSelectedListener(_keybindPlayerNext, ApplicationInput.PLAYER_NEXT_BUTTON);
+        setKeybindsOnItemSelectedListener(_keybindPlayerNext, ApplicationInput.PLAYER_NEXT_BUTTON);
         
         _keybindPlayerPrevAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindPlayerPrev.setAdapter(_keybindPlayerPrevAdapter);
-        setOnItemSelectedListener(_keybindPlayerPrev, ApplicationInput.PLAYER_PREVIOUS_BUTTON);
+        setKeybindsOnItemSelectedListener(_keybindPlayerPrev, ApplicationInput.PLAYER_PREVIOUS_BUTTON);
 
         _keybindPlayerRecallAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindPlayerRecall.setAdapter(_keybindPlayerRecallAdapter);
-        setOnItemSelectedListener(_keybindPlayerRecall, ApplicationInput.PLAYER_RECALL);
+        setKeybindsOnItemSelectedListener(_keybindPlayerRecall, ApplicationInput.PLAYER_RECALL);
         
         _keybindQPlayerVUAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindQPlayerVU.setAdapter(_keybindQPlayerVUAdapter);
-        setOnItemSelectedListener(_keybindQPlayerVU, ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
+        setKeybindsOnItemSelectedListener(_keybindQPlayerVU, ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
 
         _keybindQPlayerVDAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindQPlayerVD.setAdapter(_keybindQPlayerVDAdapter);
-        setOnItemSelectedListener(_keybindQPlayerVD, ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
+        setKeybindsOnItemSelectedListener(_keybindQPlayerVD, ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
 
         _keybindQPlayerNextAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindQPlayerNext.setAdapter(_keybindQPlayerNextAdapter);
-        setOnItemSelectedListener(_keybindQPlayerNext, ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
+        setKeybindsOnItemSelectedListener(_keybindQPlayerNext, ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
 
         _keybindQPlayerPrevAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindQPlayerPrev.setAdapter(_keybindQPlayerPrevAdapter);
-        setOnItemSelectedListener(_keybindQPlayerPrev, ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
+        setKeybindsOnItemSelectedListener(_keybindQPlayerPrev, ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
 
         _keybindEarphonesUnplugAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindEarphonesUnplug.setAdapter(_keybindEarphonesUnplugAdapter);
-        setOnItemSelectedListener(_keybindEarphonesUnplug, ApplicationInput.EARPHONES_UNPLUG);
+        setKeybindsOnItemSelectedListener(_keybindEarphonesUnplug, ApplicationInput.EARPHONES_UNPLUG);
     }
     
-    private void setOnItemSelectedListener(Spinner spinner, final ApplicationInput input)
+    private void setKeybindsOnItemSelectedListener(Spinner spinner, final ApplicationInput input)
     {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -150,6 +174,18 @@ public class SettingsFragment extends Fragment implements BaseView
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+    }
+    
+    private void selectProperAppTheme()
+    {
+        int appThemeValue = GeneralStorage.getShared().getAppThemeValue(getContext());
+        
+        if (appThemeValue >= APPEARANCE_VALUES.length)
+        {
+            appThemeValue = 0;
+        }
+        
+        _appearancePicker.setSelection(appThemeValue);
     }
     
     private void selectProperKeybinds()
@@ -220,5 +256,57 @@ public class SettingsFragment extends Fragment implements BaseView
     public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
     {
         
+    }
+    
+    @Override
+    public void appThemeChanged()
+    {
+
+    }
+    
+    @Override
+    public void appSortingChanged()
+    {
+
+    }
+    
+    class SettingsListAdapter extends BaseAdapter
+    {
+        private String[] _values;
+        
+        private Context _context;
+        
+        public SettingsListAdapter(@NonNull Context context, String[] values)
+        {
+            this._values = values;
+            this._context = context;
+        }
+        
+        public int getCount()
+        {
+            return _values.length;
+        }
+        
+        public Object getItem(int position)
+        {
+            return _values[position];
+        }
+        
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
+        {
+            View listItem = LayoutInflater.from(_context).inflate(R.layout.item_keybind_action, parent, false);
+
+            TextView title = listItem.findViewById(R.id.title);
+            title.setText(_values[position]);
+
+            return listItem;
+        }
     }
 }

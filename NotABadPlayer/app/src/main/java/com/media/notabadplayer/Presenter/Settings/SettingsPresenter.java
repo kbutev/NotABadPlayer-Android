@@ -12,11 +12,13 @@ import com.media.notabadplayer.View.BaseView;
 public class SettingsPresenter implements BasePresenter 
 {
     @NonNull private BaseView _view;
+    @NonNull private BaseView _applicationRootView;
     @NonNull private Context _context;
 
-    public SettingsPresenter(@NonNull BaseView view, @NonNull Context context)
+    public SettingsPresenter(@NonNull BaseView view, @NonNull BaseView applicationRootView, @NonNull Context context)
     {
         _view = view;
+        _applicationRootView = applicationRootView;
         _context = context;
     }
     
@@ -46,10 +48,25 @@ public class SettingsPresenter implements BasePresenter
     }
 
     @Override
-    public void onAppThemeChange() {
-
+    public void onAppThemeChange(int themeValue) {
+        if (themeValue == GeneralStorage.getShared().getAppThemeValue(_context))
+        {
+            return;
+        }
+        
+        GeneralStorage.getShared().saveAppThemeValue(_context, themeValue);
+        
+        _view.appThemeChanged();
+        _applicationRootView.appThemeChanged();
     }
-
+    
+    @Override
+    public void onAppSortingChange(int value)
+    {
+        _view.appSortingChanged();
+        _applicationRootView.appSortingChanged();
+    }
+    
     @Override
     public void onKeybindSelected(ApplicationAction action, ApplicationInput input) 
     {

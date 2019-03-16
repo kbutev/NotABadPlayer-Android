@@ -246,6 +246,20 @@ public class GeneralStorage
         editor.putInt("player_history_capacity", value >= 0 ? value : 0);
         editor.apply();
     }
+
+    synchronized public int getAppThemeValue(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        return preferences.getInt("app_theme_value", 0);
+    }
+
+    synchronized public void saveAppThemeValue(Context context, int value)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("app_theme_value", value);
+        editor.apply();
+    }
     
     synchronized public boolean getCachingPolicyFlagForAlbumsTab(Context context)
     {
