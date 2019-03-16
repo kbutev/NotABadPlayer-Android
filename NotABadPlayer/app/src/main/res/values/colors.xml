@@ -27,9 +27,15 @@
     
     <color name="colorPrimaryDark">#00acd2</color>
     <color name="colorAccent">#D81B60</color>
-    
+
+    <color name="playerProgressBarThumbColor">#FFFFFF</color>
+    <color name="playerProgressBarColor">#FFC107</color>
+    <color name="volumeBarThumbColor">#FFFFFF</color>
+    <color name="volumeBarColor">#2196F3</color>
     <color name="mediaButtons">#ffffff</color>
-    
+
+    <color name="animationImageTapStart">#4CAF50</color>
+    <color name="animationImageTapEnd">#ffffff</color>
     <color name="animationButtonTapStart">#4CAF50</color>
     <color name="animationButtonTapEnd">#ffffff</color>
     <color name="animationAlbumItemTapStart">#C1DAF7</color>

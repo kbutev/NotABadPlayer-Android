@@ -1,7 +1,7 @@
 package com.media.notabadplayer.Presenter.Main;
 
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.View.BasePresenter;
+import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 public class MainPresenter implements BasePresenter {

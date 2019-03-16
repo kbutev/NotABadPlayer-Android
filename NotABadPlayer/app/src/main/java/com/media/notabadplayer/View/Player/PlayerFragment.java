@@ -20,7 +20,7 @@ import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -28,15 +28,17 @@ import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.UIAnimations;
-import com.media.notabadplayer.View.BasePresenter;
+import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
 
 public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
-    private static float SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED = 80;
-    private static float SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED = 400;
+    private static int MEDIA_BAR_MAX_VALUE = 100;
+    private static int VOLUME_BAR_MAX_VALUE = 100;
+    private static float SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED = 95;
+    private static float SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED = 300;
     
     private boolean _resumedOnce = false;
 
@@ -44,10 +46,13 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
     AudioPlayer _player = AudioPlayer.getShared();
     
+    private Runnable _runnable = null;
     private Handler _handler = new Handler();
     
     private LinearLayout _layout;
     private ImageView _imageCover;
+    private SeekBar _volumeBar;
+    private ImageView _volumeIcon;
     private TextView _labelTitle;
     private TextView _labelAlbum;
     private TextView _labelArtist;
@@ -59,7 +64,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     private Button _buttonPlay;
     private Button _buttonForward;
     private Button _buttonPlayOrder;
-
+    
     private float _layoutTouchMotionLastXPosition = -1;
     private float _layoutTouchMotionLastYPosition = -1;
     
@@ -131,6 +136,32 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonForward = root.findViewById(R.id.mediaButtonForward);
         _buttonPlayOrder = root.findViewById(R.id.mediaButtonPlayOrder);
         
+        AppSettings.ShowVolumeBar showBarState = GeneralStorage.getShared().getShowVolumeBarValue(getContext());
+        
+        if (showBarState == AppSettings.ShowVolumeBar.NO)
+        {
+            _volumeBar = root.findViewById(R.id.volumeBarLeftSeek);
+            _volumeIcon = root.findViewById(R.id.volumeBarLeftIcon);
+            root.findViewById(R.id.volumeBarLeft).setVisibility(View.INVISIBLE);
+            root.findViewById(R.id.volumeBarRight).setVisibility(View.INVISIBLE);
+        }
+        
+        if (showBarState == AppSettings.ShowVolumeBar.LEFT_SIDE)
+        {
+            _volumeBar = root.findViewById(R.id.volumeBarLeftSeek);
+            _volumeIcon = root.findViewById(R.id.volumeBarLeftIcon);
+            root.findViewById(R.id.volumeBarLeft).setVisibility(View.VISIBLE);
+            root.findViewById(R.id.volumeBarRight).setVisibility(View.INVISIBLE);
+        }
+        
+        if (showBarState == AppSettings.ShowVolumeBar.RIGHT_SIDE)
+        {
+            _volumeBar = root.findViewById(R.id.volumeBarRightSeek);
+            _volumeIcon = root.findViewById(R.id.volumeBarRightIcon);
+            root.findViewById(R.id.volumeBarRight).setVisibility(View.VISIBLE);
+            root.findViewById(R.id.volumeBarLeft).setVisibility(View.INVISIBLE);
+        }
+        
         // Init UI
         initUI();
         
@@ -148,6 +179,33 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             }
         });
         
+        _volumeBar.setMax(VOLUME_BAR_MAX_VALUE);
+        _volumeBar.setProgress(AudioPlayer.getShared().getVolume());
+        _volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (!fromUser)
+                {
+                    return;
+                }
+
+                UIAnimations.animateImageTAP(getContext(), _volumeIcon);
+                
+                AudioPlayer.getShared().setVolume(progress);
+                _volumeBar.setProgress(progress);
+            }
+            
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        
         _mediaBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -156,7 +214,10 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                     return;
                 }
                 
-                _player.seekTo(progress);
+                double progressD = (double)progress / MEDIA_BAR_MAX_VALUE;
+                double duration = _player.getDurationMSec();
+                double newPosition = progressD * duration;
+                _player.seekTo((int)newPosition);
             }
 
             @Override
@@ -216,17 +277,8 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             }
         });
         
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (getActivity() != null)
-                {
-                    updateUIState();
-                
-                    _handler.postDelayed(this, 100);
-                }
-            }
-        });
+        // Player looper
+        startLooping();
         
         // Update play button state
         updatePlayButtonState();
@@ -234,8 +286,25 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private void updateUIState()
     {
-        int currentPosition = _player.getPlayer().getCurrentPosition() / 1000;
-        _mediaBar.setProgress(currentPosition);
+        // Current volume
+        if (_volumeBar.getVisibility() == View.VISIBLE)
+        {
+            int currentVolume = AudioPlayer.getShared().getVolume();
+            int progress = _volumeBar.getProgress();
+            
+            if (currentVolume != progress)
+            {
+                _volumeBar.setProgress(currentVolume);
+                
+                UIAnimations.animateImageTAP(getContext(), _volumeIcon);
+            }
+        }
+        
+        // Current position
+        double duration = _player.getDurationMSec();
+        double currentPosition = _player.getCurrentPositionMSec();
+        double newPosition = (currentPosition / duration) * MEDIA_BAR_MAX_VALUE;
+        _mediaBar.setProgress((int)newPosition);
         _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
         
         AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
@@ -284,7 +353,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             _labelTitle.setText(playingTrack.title);
             _labelAlbum.setText(playingTrack.albumTitle);
             _labelArtist.setText(playingTrack.artist);
-            _mediaBar.setMax((int) playingTrack.durationInSeconds);
+            _mediaBar.setMax(MEDIA_BAR_MAX_VALUE);
             _labelDurationTotal.setText(playingTrack.duration);
             
             updatePlayButtonState();
@@ -345,6 +414,33 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         if (getActivity() != null)
         {
             getActivity().finish();
+        }
+    }
+    
+    private void startLooping()
+    {
+        if (getActivity() == null)
+        {
+            return;
+        }
+        
+        _runnable = new Runnable() {
+            @Override
+            public void run() {
+                loop();
+            }
+        };
+        
+        getActivity().runOnUiThread(_runnable);
+    }
+    
+    private void loop()
+    {
+        if (getActivity() != null)
+        {
+            updateUIState();
+            
+            _handler.postDelayed(_runnable, 100);
         }
     }
     

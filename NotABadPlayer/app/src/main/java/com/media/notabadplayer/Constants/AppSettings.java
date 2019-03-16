@@ -19,6 +19,6 @@ public class AppSettings
     }
     
     public enum ShowVolumeBar {
-        YES, NO
+        NO, LEFT_SIDE, RIGHT_SIDE
     }
 }

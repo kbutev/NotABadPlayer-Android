@@ -416,7 +416,33 @@ public class AudioPlayer {
             Log.v(AudioPlayer.class.getCanonicalName(), "Cannot seek to: " + e.toString());
         }
     }
+    
+    public int getVolume()
+    {
+        AudioManager manager = (AudioManager)getContext().getSystemService(Context.AUDIO_SERVICE);
+        double max = manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        
+        double result = (manager.getStreamVolume(AudioManager.STREAM_MUSIC) / max) * 100;
+        return (int)result;
+    }
 
+    public void setVolume(int volume)
+    {
+        if (volume < 0)
+        {
+            volume = 0;
+        }
+        
+        AudioManager manager = (AudioManager)getContext().getSystemService(Context.AUDIO_SERVICE);
+        
+        double v = (double)volume;
+        double max = manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        double result = (v / 100.0) * max;
+        result = result > max ? max : result;
+        
+        manager.setStreamVolume(AudioManager.STREAM_MUSIC, (int)result,0);
+    }
+    
     public void volumeUp()
     {
         AudioManager manager = (AudioManager)getContext().getSystemService(Context.AUDIO_SERVICE);
@@ -438,7 +464,7 @@ public class AudioPlayer {
         
         manager.setStreamVolume(AudioManager.STREAM_MUSIC, result,0);
     }
-
+    
     public void muteOrUnmute()
     {
         if (!_muted)
@@ -512,16 +538,6 @@ public class AudioPlayer {
         while (_playHistory.size() > capacity)
         {
             _playHistory.remove(0);
-        }
-    }
-    
-    private class BecomingNoisyReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction()))
-            {
-                AudioPlayer.getShared().pause();
-            }
         }
     }
 }
