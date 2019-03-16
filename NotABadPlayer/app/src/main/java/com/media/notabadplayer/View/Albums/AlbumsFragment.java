@@ -15,9 +15,9 @@ import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.Albums.AlbumPresenter;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
@@ -28,7 +28,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     private BasePresenter _presenter;
     
     private GridView _table;
-    private ListAdapter _tableAdapter;
+    private AlbumsTableAdapter _tableAdapter;
     private Parcelable _tableState;
     private GridSideIndexingView _tableSideSelector;
     
@@ -149,13 +149,31 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void appThemeChanged()
+    public void appSettingsReset()
     {
 
     }
 
     @Override
-    public void appSortingChanged()
+    public void appThemeChanged(AppSettings.AppTheme appTheme)
+    {
+
+    }
+
+    @Override
+    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    {
+        _tableAdapter.sortAlbums(albumSorting);
+        _table.invalidateViews();
+        
+        if (_tableState != null)
+        {
+            _table.onRestoreInstanceState(_tableState);
+        }
+    }
+
+    @Override
+    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
 
     }

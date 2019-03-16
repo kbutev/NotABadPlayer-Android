@@ -2,7 +2,6 @@ package com.media.notabadplayer.View.Player;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +20,7 @@ import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.R;
@@ -291,30 +291,25 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void appThemeChanged()
+    public void appSettingsReset()
     {
-        int appTheme = GeneralStorage.getShared().getAppThemeValue(getContext());
-        int color;
-        
-        switch (appTheme)
-        {
-            case 0:
-                color = getResources().getColor(R.color.colorOverlayBackground);
-                getView().setBackgroundColor(color);
-                break;
-            case 1:
-                color = getResources().getColor(R.color.colorSettingsKeybindTipText);
-                getView().setBackgroundColor(color);
-                break;
-            case 2:
-                color = getResources().getColor(R.color.colorAccent);
-                getView().setBackgroundColor(color);
-                break;
-        }
+
     }
 
     @Override
-    public void appSortingChanged()
+    public void appThemeChanged(AppSettings.AppTheme appTheme)
+    {
+        
+    }
+
+    @Override
+    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    {
+
+    }
+
+    @Override
+    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
 
     }

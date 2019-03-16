@@ -139,8 +139,8 @@ public class AudioInfo {
             
             albumTracks.add(new AudioTrack(filePath, title, artist, albumTitle, album.albumCover, trackNum, duration));
         }
-        
-        MediaSorting.sortTracksByTrackNumber(albumTracks);
+
+        cursor.close();
         
         return albumTracks;
     }
@@ -202,6 +202,8 @@ public class AudioInfo {
 
             albumTracks.add(new AudioTrack(filePath, title, artist, albumTitle, albumCover, trackNum, duration));
         }
+
+        cursor.close();
         
         return albumTracks;
     }
@@ -249,6 +251,8 @@ public class AudioInfo {
 
             return new AudioTrack(filePath, title, artist, albumTitle, albumCover, trackNum, duration);
         }
+
+        cursor.close();
         
         return null;
     }

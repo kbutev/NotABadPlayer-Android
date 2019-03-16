@@ -12,6 +12,7 @@ import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Presenter.Player.PlayerPresenter;
@@ -148,13 +149,25 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void appThemeChanged()
+    public void appSettingsReset()
     {
 
     }
 
     @Override
-    public void appSortingChanged()
+    public void appThemeChanged(AppSettings.AppTheme appTheme)
+    {
+
+    }
+
+    @Override
+    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    {
+
+    }
+
+    @Override
+    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
 
     }

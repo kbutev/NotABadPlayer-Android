@@ -3,6 +3,7 @@ package com.media.notabadplayer.Presenter.Settings;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Storage.GeneralStorage;
@@ -46,9 +47,18 @@ public class SettingsPresenter implements BasePresenter
     public void onSearchQuery(String searchValue) {
 
     }
+    
+    @Override
+    public void onAppSettingsReset() 
+    {
+        GeneralStorage.getShared().resetDefaultSettingsActions(_context);
+        
+        _view.appSettingsReset();
+        _applicationRootView.appSettingsReset();
+    }
 
     @Override
-    public void onAppThemeChange(int themeValue) {
+    public void onAppThemeChange(AppSettings.AppTheme themeValue) {
         if (themeValue == GeneralStorage.getShared().getAppThemeValue(_context))
         {
             return;
@@ -56,19 +66,32 @@ public class SettingsPresenter implements BasePresenter
         
         GeneralStorage.getShared().saveAppThemeValue(_context, themeValue);
         
-        _view.appThemeChanged();
-        _applicationRootView.appThemeChanged();
+        _view.appThemeChanged(themeValue);
+        _applicationRootView.appThemeChanged(themeValue);
     }
     
     @Override
-    public void onAppSortingChange(int value)
+    public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
     {
-        _view.appSortingChanged();
-        _applicationRootView.appSortingChanged();
+        GeneralStorage.getShared().saveAlbumSortingValue(_context, albumSorting);
+        GeneralStorage.getShared().saveTrackSortingValue(_context, trackSorting);
+        
+        _view.appSortingChanged(albumSorting, trackSorting);
+        _applicationRootView.appSortingChanged(albumSorting, trackSorting);
     }
     
     @Override
-    public void onKeybindSelected(ApplicationAction action, ApplicationInput input) 
+    public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    {
+        GeneralStorage.getShared().saveShowStarsValue(_context, showStars);
+        GeneralStorage.getShared().saveShowVolumeBarValue(_context, showVolumeBar);
+        
+        _view.appAppearanceChanged(showStars, showVolumeBar);
+        _applicationRootView.appAppearanceChanged(showStars, showVolumeBar);
+    }
+    
+    @Override
+    public void onKeybindChange(ApplicationAction action, ApplicationInput input) 
     {
         GeneralStorage.getShared().saveSettingsAction(_context, input, action);
     }

@@ -17,8 +17,15 @@ public class AudioTrack implements Serializable {
     public final String trackNum;
     public final double durationInSeconds;
     public final String duration;
+    public byte stars;
     
-    public AudioTrack(String filePath, String title, String artist, String albumTitle, String artCover, int trackNum, double durationInSeconds)
+    public AudioTrack(String filePath,
+                      String title,
+                      String artist,
+                      String albumTitle,
+                      String artCover,
+                      int trackNum, 
+                      double durationInSeconds)
     {
         this.filePath = filePath;
         this.title = title;

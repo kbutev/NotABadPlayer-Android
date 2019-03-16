@@ -47,6 +47,48 @@
             android:layout_height="wrap_content"
             android:textSize="14dp"
             android:singleLine="true"/>
+        <LinearLayout
+            android:id="@+id/stars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <ImageButton
+                android:id="@+id/star1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rating_star"
+                android:background="@null"
+                android:visibility="gone"/>
+            <ImageButton
+                android:id="@+id/star2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rating_star"
+                android:background="@null"
+                android:visibility="gone"/>
+            <ImageButton
+                android:id="@+id/star3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rating_star"
+                android:background="@null"
+                android:visibility="gone"/>
+            <ImageButton
+                android:id="@+id/star4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rating_star"
+                android:background="@null"
+                android:visibility="gone"/>
+            <ImageButton
+                android:id="@+id/star5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rating_star"
+                android:background="@null"
+                android:visibility="gone"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

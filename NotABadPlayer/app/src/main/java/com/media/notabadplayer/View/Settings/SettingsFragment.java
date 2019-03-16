@@ -1,6 +1,8 @@
 package com.media.notabadplayer.View.Settings;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -17,6 +20,7 @@ import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
@@ -28,12 +32,19 @@ import java.util.ArrayList;
 
 public class SettingsFragment extends Fragment implements BaseView
 {
-    private String[] APPEARANCE_VALUES = {"LIGHT", "DARK", "GRAY"};
-    
     private BasePresenter _presenter;
     
-    private Spinner _appearancePicker;
-    private SettingsListAdapter _appearanceAdapter;
+    private Spinner _themePicker;
+    private SettingsListAdapter _themeAdapter;
+
+    private Spinner _albumSortingPicker;
+    private SettingsListAdapter _albumSortingAdapter;
+
+    private Spinner _trackSortingPicker;
+    private SettingsListAdapter _trackSortingAdapter;
+
+    private Spinner _showVolumeBarPicker;
+    private SettingsListAdapter _showVolumeBarAdapter;
     
     private Spinner _keybindHome;
     private SettingsKeybindListAdapter _keybindHomeAdapter;
@@ -58,6 +69,8 @@ public class SettingsFragment extends Fragment implements BaseView
     private Spinner _keybindEarphonesUnplug;
     private SettingsKeybindListAdapter _keybindEarphonesUnplugAdapter;
     
+    private Button _resetSettingsButton;
+    
     public SettingsFragment()
     {
 
@@ -80,7 +93,10 @@ public class SettingsFragment extends Fragment implements BaseView
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
         // Setup UI
-        _appearancePicker = root.findViewById(R.id.themePicker);
+        _themePicker = root.findViewById(R.id.themePicker);
+        _albumSortingPicker = root.findViewById(R.id.albumSortingPicker);
+        _trackSortingPicker = root.findViewById(R.id.trackSortingPicker);
+        _showVolumeBarPicker = root.findViewById(R.id.showVolumeBarPicker);
         _keybindHome = root.findViewById(R.id.keybindHome);
         _keybindPlayerVU = root.findViewById(R.id.keybindPlayerVU);
         _keybindPlayerVD = root.findViewById(R.id.keybindPlayerVD);
@@ -92,32 +108,95 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindQPlayerNext = root.findViewById(R.id.keybindQPlayerNext);
         _keybindQPlayerPrev = root.findViewById(R.id.keybindQPlayerPrev);
         _keybindEarphonesUnplug = root.findViewById(R.id.keybindEarphonesUnplug);
+        _resetSettingsButton = root.findViewById(R.id.resetButton);
         
         // Init UI
         initUI();
         
-        // Select correct app theme
-        selectProperAppTheme();
-        
-        // Select correct keybinds
-        selectProperKeybinds();
+        // Select correct values
+        selectProperValues();
         
         return root;
     }
     
     private void initUI()
     {
-        _appearanceAdapter = new SettingsListAdapter(getContext(), APPEARANCE_VALUES);
-        _appearancePicker.setAdapter(_appearanceAdapter);
-        _appearancePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        // Appearance pickers
+        ArrayList<String> themeValues = new ArrayList<>();
+        for (int e = 0; e < AppSettings.AppTheme.values().length; e++)
+        {
+            themeValues.add(AppSettings.AppTheme.values()[e].name());
+        }
+        
+        _themeAdapter = new SettingsListAdapter(getContext(), themeValues);
+        _themePicker.setAdapter(_themeAdapter);
+        _themePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                _presenter.onAppThemeChange(position);
+                AppSettings.AppTheme selectedValue = AppSettings.AppTheme.values()[position];
+                _presenter.onAppThemeChange(selectedValue);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        ArrayList<String> albumSortingValues = new ArrayList<>();
+        for (int e = 0; e < AppSettings.AlbumSorting.values().length; e++)
+        {
+            albumSortingValues.add(AppSettings.AlbumSorting.values()[e].name());
+        }
+
+        _albumSortingAdapter = new SettingsListAdapter(getContext(), albumSortingValues);
+        _albumSortingPicker.setAdapter(_albumSortingAdapter);
+        _albumSortingPicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                AppSettings.AlbumSorting selectedValue = AppSettings.AlbumSorting.values()[position];
+                AppSettings.TrackSorting trackSorting = GeneralStorage.getShared().getTrackSortingValue(getContext());
+                _presenter.onAppSortingChange(selectedValue, trackSorting);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        ArrayList<String> trackSortingValues = new ArrayList<>();
+        for (int e = 0; e < AppSettings.TrackSorting.values().length; e++)
+        {
+            trackSortingValues.add(AppSettings.TrackSorting.values()[e].name());
+        }
+        
+        _trackSortingAdapter = new SettingsListAdapter(getContext(), trackSortingValues);
+        _trackSortingPicker.setAdapter(_trackSortingAdapter);
+        _trackSortingPicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                AppSettings.TrackSorting selectedValue = AppSettings.TrackSorting.values()[position];
+                AppSettings.AlbumSorting albumSorting = GeneralStorage.getShared().getAlbumSortingValue(getContext());
+                _presenter.onAppSortingChange(albumSorting, selectedValue);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        ArrayList<String> showVolumeBarValues = new ArrayList<>();
+        for (int e = 0; e < AppSettings.ShowVolumeBar.values().length; e++)
+        {
+            showVolumeBarValues.add(AppSettings.ShowVolumeBar.values()[e].name());
+        }
+
+        _showVolumeBarAdapter = new SettingsListAdapter(getContext(), showVolumeBarValues);
+        _showVolumeBarPicker.setAdapter(_showVolumeBarAdapter);
+        _showVolumeBarPicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                AppSettings.ShowVolumeBar selectedValue = AppSettings.ShowVolumeBar.values()[position];
+                _presenter.onAppAppearanceChange(AppSettings.ShowStars.NO, selectedValue);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
         
+        // Keybinds pickers
         _keybindHomeAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindHome.setAdapter(_keybindHomeAdapter);
         setKeybindsOnItemSelectedListener(_keybindHome, ApplicationInput.HOME_BUTTON);
@@ -161,6 +240,14 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindEarphonesUnplugAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindEarphonesUnplug.setAdapter(_keybindEarphonesUnplugAdapter);
         setKeybindsOnItemSelectedListener(_keybindEarphonesUnplug, ApplicationInput.EARPHONES_UNPLUG);
+        
+        // Reset
+        _resetSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettingsResetDialog();
+            }
+        });
     }
     
     private void setKeybindsOnItemSelectedListener(Spinner spinner, final ApplicationInput input)
@@ -169,23 +256,72 @@ public class SettingsFragment extends Fragment implements BaseView
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ApplicationAction action = ApplicationAction.values()[position];
-                _presenter.onKeybindSelected(action, input);
+                _presenter.onKeybindChange(action, input);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
     
+    private void selectProperValues()
+    {
+        selectProperAppTheme();
+        selectProperAlbumSorting();
+        selectProperTrackSorting();
+        selectProperShowVolumeBarValue();
+        selectProperKeybinds();
+    }
+    
     private void selectProperAppTheme()
     {
-        int appThemeValue = GeneralStorage.getShared().getAppThemeValue(getContext());
+        AppSettings.AppTheme value = GeneralStorage.getShared().getAppThemeValue(getContext());
         
-        if (appThemeValue >= APPEARANCE_VALUES.length)
+        for (int e = 0; e < AppSettings.AppTheme.values().length; e++)
         {
-            appThemeValue = 0;
+            if (value == AppSettings.AppTheme.values()[e])
+            {
+                _themePicker.setSelection(e);
+            }
         }
-        
-        _appearancePicker.setSelection(appThemeValue);
+    }
+
+    private void selectProperAlbumSorting()
+    {
+        AppSettings.AlbumSorting value = GeneralStorage.getShared().getAlbumSortingValue(getContext());
+
+        for (int e = 0; e < AppSettings.AlbumSorting.values().length; e++)
+        {
+            if (value == AppSettings.AlbumSorting.values()[e])
+            {
+                _albumSortingPicker.setSelection(e);
+            }
+        }
+    }
+
+    private void selectProperTrackSorting()
+    {
+        AppSettings.TrackSorting value = GeneralStorage.getShared().getTrackSortingValue(getContext());
+
+        for (int e = 0; e < AppSettings.TrackSorting.values().length; e++)
+        {
+            if (value == AppSettings.TrackSorting.values()[e])
+            {
+                _trackSortingPicker.setSelection(e);
+            }
+        }
+    }
+
+    private void selectProperShowVolumeBarValue()
+    {
+        AppSettings.ShowVolumeBar value = GeneralStorage.getShared().getShowVolumeBarValue(getContext());
+
+        for (int e = 0; e < AppSettings.ShowVolumeBar.values().length; e++)
+        {
+            if (value == AppSettings.ShowVolumeBar.values()[e])
+            {
+                _showVolumeBarPicker.setSelection(e);
+            }
+        }
     }
     
     private void selectProperKeybinds()
@@ -224,6 +360,32 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindEarphonesUnplug.setSelection(SettingsKeybindListAdapter.getCountForAction(EARPHONES_UNPLUG));
     }
     
+    private void openSettingsResetDialog()
+    {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+        builder1.setMessage("Reset settings to defaults?");
+        builder1.setCancelable(true);
+        
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        _presenter.onAppSettingsReset();
+                    }
+                });
+        
+        builder1.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+    
     @Override
     public void setPresenter(BasePresenter presenter)
     {
@@ -257,26 +419,38 @@ public class SettingsFragment extends Fragment implements BaseView
     {
         
     }
+
+    @Override
+    public void appSettingsReset()
+    {
+        selectProperValues();
+    }
     
     @Override
-    public void appThemeChanged()
+    public void appThemeChanged(AppSettings.AppTheme appTheme)
     {
 
     }
     
     @Override
-    public void appSortingChanged()
+    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    {
+
+    }
+    
+    @Override
+    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
 
     }
     
     class SettingsListAdapter extends BaseAdapter
     {
-        private String[] _values;
+        private ArrayList<String> _values;
         
         private Context _context;
         
-        public SettingsListAdapter(@NonNull Context context, String[] values)
+        public SettingsListAdapter(@NonNull Context context, ArrayList<String> values)
         {
             this._values = values;
             this._context = context;
@@ -284,12 +458,12 @@ public class SettingsFragment extends Fragment implements BaseView
         
         public int getCount()
         {
-            return _values.length;
+            return _values.size();
         }
         
         public Object getItem(int position)
         {
-            return _values[position];
+            return _values.get(position);
         }
         
         public long getItemId(int position)
@@ -304,7 +478,7 @@ public class SettingsFragment extends Fragment implements BaseView
             View listItem = LayoutInflater.from(_context).inflate(R.layout.item_keybind_action, parent, false);
 
             TextView title = listItem.findViewById(R.id.title);
-            title.setText(_values[position]);
+            title.setText(_values.get(position));
 
             return listItem;
         }

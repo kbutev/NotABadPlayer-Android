@@ -3,9 +3,12 @@ package com.media.notabadplayer.Storage;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Utilities.Serializing;
@@ -36,11 +39,7 @@ public class GeneralStorage
     
     private void firstTimeLaunch(Context context)
     {
-        savePlayerPlayedHistory(context, 20);
-        saveCachingPolicyFlagForAlbumsTab(context, true);
-        saveCachingPolicyFlagForListsTab(context, false);
-        saveCachingPolicyFlagForSearchTab(context, false);
-        saveCachingPolicyFlagForSettingsTab(context, false);
+        resetDefaultSettingsActions(context);
     }
     
     synchronized public boolean isFirstApplicationLaunch(Context context)
@@ -175,25 +174,32 @@ public class GeneralStorage
     
     synchronized public void resetDefaultSettingsActions(Context context)
     {
-        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
+        savePlayerPlayedHistory(context, 20);
+        saveAppThemeValue(context, AppSettings.AppTheme.LIGHT);
+        saveAlbumSortingValue(context, AppSettings.AlbumSorting.TITLE);
+        saveTrackSortingValue(context, AppSettings.TrackSorting.TRACK_NUMBER);
+        saveShowStarsValue(context, AppSettings.ShowStars.NO);
+        saveShowVolumeBarValue(context, AppSettings.ShowVolumeBar.NO);
         
-        editor.putString(ApplicationInput.HOME_BUTTON.name(), ApplicationAction.DO_NOTHING.name());
-        editor.putString(ApplicationInput.SCREEN_LOCK_BUTTON.name(), ApplicationAction.DO_NOTHING.name());
-        editor.putString(ApplicationInput.EARPHONES_UNPLUG.name(), ApplicationAction.PAUSE.name());
-        editor.putString(ApplicationInput.PLAYER_VOLUME_UP_BUTTON.name(), ApplicationAction.VOLUME_UP.name());
-        editor.putString(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON.name(), ApplicationAction.VOLUME_DOWN.name());
-        editor.putString(ApplicationInput.PLAYER_PLAY_BUTTON.name(), ApplicationAction.PAUSE_OR_RESUME.name());
-        editor.putString(ApplicationInput.PLAYER_RECALL.name(), ApplicationAction.PREVIOUS_PLAYED_TRACK.name());
-        editor.putString(ApplicationInput.PLAYER_NEXT_BUTTON.name(), ApplicationAction.NEXT_TRACK.name());
-        editor.putString(ApplicationInput.PLAYER_PREVIOUS_BUTTON.name(), ApplicationAction.PREVIOUS_TRACK.name());
-        editor.putString(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON.name(), ApplicationAction.VOLUME_UP.name());
-        editor.putString(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON.name(), ApplicationAction.VOLUME_DOWN.name());
-        editor.putString(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON.name(), ApplicationAction.PAUSE_OR_RESUME.name());
-        editor.putString(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON.name(), ApplicationAction.JUMP_FORWARDS_15.name());
-        editor.putString(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON.name(), ApplicationAction.JUMP_BACKWARDS_15.name());
+        saveSettingsAction(context, ApplicationInput.HOME_BUTTON, ApplicationAction.DO_NOTHING);
+        saveSettingsAction(context, ApplicationInput.SCREEN_LOCK_BUTTON, ApplicationAction.DO_NOTHING);
+        saveSettingsAction(context, ApplicationInput.EARPHONES_UNPLUG, ApplicationAction.PAUSE);
+        saveSettingsAction(context, ApplicationInput.PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
+        saveSettingsAction(context, ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
+        saveSettingsAction(context, ApplicationInput.PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
+        saveSettingsAction(context, ApplicationInput.PLAYER_RECALL, ApplicationAction.PREVIOUS_PLAYED_TRACK);
+        saveSettingsAction(context, ApplicationInput.PLAYER_NEXT_BUTTON, ApplicationAction.NEXT_TRACK);
+        saveSettingsAction(context, ApplicationInput.PLAYER_PREVIOUS_BUTTON, ApplicationAction.PREVIOUS_TRACK);
+        saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
+        saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
+        saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
+        saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, ApplicationAction.JUMP_FORWARDS_15);
+        saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, ApplicationAction.JUMP_BACKWARDS_15);
         
-        editor.apply();
+        saveCachingPolicyFlagForAlbumsTab(context, true);
+        saveCachingPolicyFlagForListsTab(context, false);
+        saveCachingPolicyFlagForSearchTab(context, false);
+        saveCachingPolicyFlagForSettingsTab(context, false);
     }
     
     synchronized public void saveSettingsAction(Context context, ApplicationInput input, ApplicationAction action)
@@ -247,17 +253,118 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public int getAppThemeValue(Context context)
+    synchronized public AppSettings.AppTheme getAppThemeValue(Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
-        return preferences.getInt("app_theme_value", 0);
+        
+        try {
+            return AppSettings.AppTheme.valueOf(preferences.getString("app_theme_value", ""));
+        } 
+        catch (Exception e)
+        {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read AppTheme value from storage");
+        }
+        
+        return AppSettings.AppTheme.LIGHT;
     }
 
-    synchronized public void saveAppThemeValue(Context context, int value)
+    synchronized public void saveAppThemeValue(Context context, AppSettings.AppTheme value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("app_theme_value", value);
+        editor.putString("app_theme_value", value.name());
+        editor.apply();
+    }
+
+    synchronized public AppSettings.AlbumSorting getAlbumSortingValue(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+
+        try {
+            return AppSettings.AlbumSorting.valueOf(preferences.getString("album_sorting", ""));
+        }
+        catch (Exception e)
+        {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read AlbumSorting value from storage");
+        }
+
+        return AppSettings.AlbumSorting.TITLE;
+    }
+
+    synchronized public void saveAlbumSortingValue(Context context, AppSettings.AlbumSorting value)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("album_sorting", value.name());
+        editor.apply();
+    }
+
+    synchronized public AppSettings.TrackSorting getTrackSortingValue(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+
+        try {
+            return AppSettings.TrackSorting.valueOf(preferences.getString("track_sorting", ""));
+        }
+        catch (Exception e)
+        {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read TrackSorting value from storage");
+        }
+
+        return AppSettings.TrackSorting.TITLE;
+    }
+
+    synchronized public void saveTrackSortingValue(Context context, AppSettings.TrackSorting value)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("track_sorting", value.name());
+        editor.apply();
+    }
+
+    synchronized public AppSettings.ShowStars getShowStarsValue(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+
+        try {
+            return AppSettings.ShowStars.valueOf(preferences.getString("show_stars", ""));
+        }
+        catch (Exception e)
+        {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read ShowStars value from storage");
+        }
+
+        return AppSettings.ShowStars.NO;
+    }
+
+    synchronized public void saveShowStarsValue(Context context, AppSettings.ShowStars value)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("show_stars", value.name());
+        editor.apply();
+    }
+
+    synchronized public AppSettings.ShowVolumeBar getShowVolumeBarValue(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+
+        try {
+            return AppSettings.ShowVolumeBar.valueOf(preferences.getString("show_volume_bar", ""));
+        }
+        catch (Exception e)
+        {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read ShowVolumeBar value from storage");
+        }
+
+        return AppSettings.ShowVolumeBar.NO;
+    }
+
+    synchronized public void saveShowVolumeBarValue(Context context, AppSettings.ShowVolumeBar value)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("show_volume_bar", value.name());
         editor.apply();
     }
     
