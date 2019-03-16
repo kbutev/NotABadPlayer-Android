@@ -3,9 +3,9 @@ package com.media.notabadplayer.Presenter.Albums;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.View.BasePresenter;
+import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 public class AlbumsPresenter implements BasePresenter {

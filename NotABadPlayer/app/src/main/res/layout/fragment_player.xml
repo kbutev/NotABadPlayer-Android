@@ -8,22 +8,75 @@
     android:clickable="true"
     android:focusable="true">
     
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="325dp"
+        android:orientation="horizontal"
         android:layout_gravity="center_horizontal">
+        <LinearLayout
+            android:id="@+id/volumeBarLeft"
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical"
+            android:visibility="invisible">
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <com.media.notabadplayer.View.Player.VerticalSeekBar
+                android:id="@+id/volumeBarLeftSeek"
+                android:layout_width="24dp"
+                android:layout_height="200dp"
+                android:thumbTint="@color/volumeBarThumbColor"
+                android:progressTint="@color/volumeBarColor"
+                android:background="@null"/>
+            <ImageView
+                android:id="@+id/volumeBarLeftIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/volume_icon"
+                android:layout_gravity="center"/>
+        </LinearLayout>
         <ImageView
             android:id="@+id/cover"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"/>
-    </FrameLayout>
+            android:layout_width="250dp"
+            android:layout_height="fill_parent"
+            android:src="@drawable/cover_art_none"
+            android:layout_weight="0.33"/>
+        <LinearLayout
+            android:id="@+id/volumeBarRight"
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical"
+            android:visibility="invisible">
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <com.media.notabadplayer.View.Player.VerticalSeekBar
+                android:id="@+id/volumeBarRightSeek"
+                android:layout_width="24dp"
+                android:layout_height="200dp"
+                android:thumbTint="@color/volumeBarThumbColor"
+                android:progressTint="@color/volumeBarColor"
+                android:background="@null"/>
+            <ImageView
+                android:id="@+id/volumeBarRightIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/volume_icon"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
     
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:layout_weight="0.25">
@@ -32,7 +85,7 @@
             android:id="@+id/songTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="24dp"
             android:textStyle="bold"
             android:singleLine="true"/>
         <TextView
@@ -103,8 +156,12 @@
             android:id="@+id/mediaBar"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            android:layout_marginTop="15dp">
-
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:thumbTint="@color/playerProgressBarThumbColor"
+            android:progressTint="@color/playerProgressBarColor"
+            android:background="@null">
         </SeekBar>
 
         <LinearLayout

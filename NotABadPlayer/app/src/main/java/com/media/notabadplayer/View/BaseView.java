@@ -1,7 +1,8 @@
 package com.media.notabadplayer.View;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Presenter.BasePresenter;
+import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -19,7 +20,7 @@ public interface BaseView {
     void openPlayerScreen(AudioPlaylist playlist);
     
     void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs);
-
+    
     void appSettingsReset();
     void appThemeChanged(AppSettings.AppTheme appTheme);
     void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting);

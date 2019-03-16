@@ -1,4 +1,4 @@
-package com.media.notabadplayer.View;
+package com.media.notabadplayer.Presenter;
 
 import com.media.notabadplayer.Constants.AppSettings;
 
@@ -10,7 +10,7 @@ public interface BasePresenter {
     
     void onSearchResultClick(int index);
     void onSearchQuery(String searchValue);
-
+    
     void onAppSettingsReset();
     void onAppThemeChange(AppSettings.AppTheme themeValue);
     void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting);

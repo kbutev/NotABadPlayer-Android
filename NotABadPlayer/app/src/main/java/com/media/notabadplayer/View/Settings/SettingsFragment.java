@@ -17,7 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -25,7 +25,7 @@ import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.View.BasePresenter;
+import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;

@@ -14,7 +14,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.AudioPlaylist;
@@ -30,7 +30,7 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
-import com.media.notabadplayer.View.BasePresenter;
+import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
