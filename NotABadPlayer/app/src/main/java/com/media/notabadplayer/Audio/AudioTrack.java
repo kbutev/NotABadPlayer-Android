@@ -1,31 +1,31 @@
 package com.media.notabadplayer.Audio;
 
-import android.os.Parcel;
 import android.support.annotation.NonNull;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class AudioTrack implements Serializable {
-    public final String filePath;
-    public final String title;
-    public final String artist;
-    public final String albumTitle;
-    public final String artCover;
-    public final String trackNum;
+    public final @NonNull String filePath;
+    public final @NonNull String title;
+    public final @NonNull String artist;
+    public final @NonNull String albumTitle;
+    public final @NonNull String artCover;
+    public final @NonNull String trackNum;
     public final double durationInSeconds;
-    public final String duration;
+    public final @NonNull String duration;
+    public final @NonNull AudioTrackSource source;
     public byte stars;
     
-    public AudioTrack(String filePath,
-                      String title,
-                      String artist,
-                      String albumTitle,
-                      String artCover,
+    public AudioTrack(@NonNull String filePath,
+                      @NonNull String title,
+                      @NonNull String artist,
+                      @NonNull String albumTitle,
+                      @NonNull String artCover,
                       int trackNum, 
-                      double durationInSeconds)
+                      double durationInSeconds,
+                      @NonNull AudioTrackSource source)
     {
         this.filePath = filePath;
         this.title = title;
@@ -35,6 +35,7 @@ public class AudioTrack implements Serializable {
         this.trackNum = String.valueOf(trackNum);
         this.durationInSeconds = durationInSeconds;
         this.duration = secondsToString(durationInSeconds);
+        this.source = source;
     }
     
     @Override

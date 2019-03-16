@@ -46,7 +46,7 @@ public class SearchPresenter implements BasePresenter
     @Override
     public void onSearchResultClick(int index)
     {
-        AudioPlaylist playlist = new AudioPlaylist(_searchResults.get(index));
+        AudioPlaylist playlist = new AudioPlaylist("Search Result", _searchResults.get(index));
         
         _view.openPlayerScreen(playlist);
     }

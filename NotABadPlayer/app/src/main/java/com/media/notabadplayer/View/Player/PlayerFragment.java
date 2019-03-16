@@ -3,6 +3,7 @@ package com.media.notabadplayer.View.Player;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,7 +21,6 @@ import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -440,7 +440,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         {
             updateUIState();
             
-            _handler.postDelayed(_runnable, 100);
+            _handler.postDelayed(_runnable, 200);
         }
     }
     
@@ -450,7 +450,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover) 
+    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) 
     {
 
     }

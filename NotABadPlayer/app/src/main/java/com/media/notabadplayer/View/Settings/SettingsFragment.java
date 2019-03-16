@@ -17,7 +17,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -393,7 +392,7 @@ public class SettingsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover) {
+    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) {
         
     }
 

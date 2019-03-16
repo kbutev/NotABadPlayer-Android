@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
@@ -98,8 +98,11 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                UIAnimations.animateAlbumItemTAP(getContext(), view);
-                _presenter.onAlbumsItemClick(position);
+                if (position != 0)
+                {
+                    UIAnimations.animateAlbumItemTAP(getContext(), view);
+                    _presenter.onAlbumsItemClick(position);
+                }
             }
         });
     }
@@ -111,7 +114,7 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     }
     
     @Override
-    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover) 
+    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) 
     {
         
     }

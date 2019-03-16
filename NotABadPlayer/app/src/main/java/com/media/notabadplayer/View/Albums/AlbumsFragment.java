@@ -2,6 +2,7 @@ package com.media.notabadplayer.View.Albums;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -103,10 +103,10 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openAlbumScreen(AudioInfo audioInfo, String albumID, String albumArtist, String albumTitle, String albumCover) 
+    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) 
     {
         AlbumFragment f = AlbumFragment.newInstance();
-        f.setPresenter(new AlbumPresenter(f, audioInfo, new AudioAlbum(albumID, albumArtist, albumTitle, albumCover)));
+        f.setPresenter(new AlbumPresenter(f, new AudioAlbum(albumID, albumArtist, albumTitle, albumCover)));
         
         FragmentManager manager = getActivity().getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.mainLayout, f).addToBackStack(AlbumsFragment.class.getCanonicalName()).commit();
