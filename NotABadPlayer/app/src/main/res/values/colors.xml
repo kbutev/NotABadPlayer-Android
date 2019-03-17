@@ -17,6 +17,11 @@
     <color name="colorAlbumItemTextSub">#9c9696</color>
     <color name="colorAlbumItemPlayingBackground">#8ec1daf7</color>
 
+    <color name="colorPlaylistsText">#313131</color>
+    <color name="colorPlaylistsItemText">#313131</color>
+    <color name="colorPlaylistsItemSubText">#6c6c6c</color>
+    <color name="colorPlaylistsButtonText">#ffffff</color>
+    
     <color name="colorSearchFieldText">#313131</color>
     <color name="colorSearchFieldHint">#6e6c6c</color>
     <color name="colorSearchItemText">#313131</color>

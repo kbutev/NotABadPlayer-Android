@@ -1,26 +1,28 @@
 package com.media.notabadplayer.Presenter.Albums;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
 
 public class AlbumPresenter implements BasePresenter {
-    private BaseView _view;
+    private @NonNull BaseView _view;
     
-    private final AudioAlbum _album;
-    private final AudioPlaylist _playlist;
+    private final @Nullable AudioAlbum _album;
+    private final @Nullable AudioPlaylist _playlist;
     
-    private ArrayList<AudioTrack> _songs = new ArrayList<>();
+    private @NonNull ArrayList<AudioTrack> _songs = new ArrayList<>();
     
     public AlbumPresenter(@NonNull BaseView view, @NonNull AudioAlbum album)
     {
@@ -78,13 +80,31 @@ public class AlbumPresenter implements BasePresenter {
     }
 
     @Override
+    public void onPlayerButtonClick(ApplicationInput input, @NonNull Context context)
+    {
+
+    }
+
+    @Override
+    public void onOpenPlaylistButtonClick(@NonNull Context context)
+    {
+
+    }
+
+    @Override
+    public void onPlayOrderButtonClick(@NonNull Context context)
+    {
+
+    }
+
+    @Override
     public void onSearchResultClick(int index)
     {
 
     }
 
     @Override
-    public void onSearchQuery(String searchValue)
+    public void onSearchQuery(@NonNull String searchValue)
     {
 
     }

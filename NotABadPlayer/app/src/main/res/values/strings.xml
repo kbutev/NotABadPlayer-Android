@@ -17,6 +17,15 @@
     <string name="zero_timer">0:00</string>
     <string name="timer_separator">/</string>
     
+    <!-- Playlists -->
+    <string name="playlist_create">Create</string>
+    <string name="playlist_delete">Delete</string>
+    <string name="playlist_cancel">Cancel</string>
+    <string name="playlist_name">Playlist name</string>
+    <string name="playlist_done">Done</string>
+    <string name="playlist_added_tracks">Added tracks</string>
+    <string name="playlist_tracks">Tracks</string>
+    
     <!-- Search tab -->
     <string name="search_hint">Search for track</string>
     <string name="search_results_tip">search results</string>

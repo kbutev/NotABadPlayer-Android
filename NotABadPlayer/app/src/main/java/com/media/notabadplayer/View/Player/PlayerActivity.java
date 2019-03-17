@@ -82,12 +82,6 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void onBackPressed()
-    {
-        super.onBackPressed();
-    }
-
-    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
         {
@@ -113,37 +107,43 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void setPresenter(BasePresenter presenter)
+    public void setPresenter(@NonNull BasePresenter presenter)
     {
         
     }
     
     @Override
-    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover)
+    public void openAlbumScreen(@NonNull AudioAlbum album)
+    {
+
+    }
+
+    @Override
+    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
 
     }
     
     @Override
-    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
+    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
     {
 
     }
     
     @Override
-    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
+    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {
 
     }

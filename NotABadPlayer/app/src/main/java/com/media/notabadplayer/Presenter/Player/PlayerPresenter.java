@@ -1,22 +1,23 @@
 package com.media.notabadplayer.Presenter.Player;
 
-import android.app.Application;
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Controls.ApplicationAction;
+import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Presenter.BasePresenter;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.View.BaseView;
 
 public class PlayerPresenter implements BasePresenter
 {
-    private BaseView _view;
-    private AudioPlaylist _playlist;
+    private @NonNull BaseView _view;
+    private @NonNull AudioPlaylist _playlist;
     
     public PlayerPresenter(@NonNull BaseView view, 
                            @NonNull AudioPlaylist playlist)
@@ -66,13 +67,31 @@ public class PlayerPresenter implements BasePresenter
     }
 
     @Override
+    public void onPlayerButtonClick(ApplicationInput input, @NonNull Context context)
+    {
+        KeyBinds.getShared().evaluateInput(context, input);
+    }
+
+    @Override
+    public void onOpenPlaylistButtonClick(@NonNull Context context)
+    {
+
+    }
+
+    @Override
+    public void onPlayOrderButtonClick(@NonNull Context context)
+    {
+        KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+    }
+    
+    @Override
     public void onSearchResultClick(int index)
     {
 
     }
     
     @Override
-    public void onSearchQuery(String searchValue)
+    public void onSearchQuery(@NonNull String searchValue)
     {
 
     }

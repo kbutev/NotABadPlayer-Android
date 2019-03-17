@@ -11,16 +11,17 @@ import com.media.notabadplayer.Constants.AppSettings;
 import java.util.ArrayList;
 
 public interface BaseView {
-    void setPresenter(BasePresenter presenter);
+    void setPresenter(@NonNull BasePresenter presenter);
     
-    void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover);
+    void openAlbumScreen(@NonNull AudioAlbum album);
+    void openPlaylistScreen(@NonNull AudioPlaylist playlist);
     
-    void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums);
-    void onAlbumSongsLoad(ArrayList<AudioTrack> songs);
+    void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums);
+    void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs);
     
-    void openPlayerScreen(AudioPlaylist playlist);
+    void openPlayerScreen(@NonNull AudioPlaylist playlist);
     
-    void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs);
+    void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs);
     
     void appSettingsReset();
     void appThemeChanged(AppSettings.AppTheme appTheme);

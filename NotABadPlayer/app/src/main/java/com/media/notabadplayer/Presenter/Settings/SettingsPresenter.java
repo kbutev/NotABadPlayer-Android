@@ -37,6 +37,24 @@ public class SettingsPresenter implements BasePresenter
     public void onAlbumsItemClick(int index) {
 
     }
+    
+    @Override
+    public void onPlayerButtonClick(ApplicationInput input, @NonNull Context context) 
+    {
+        
+    }
+
+    @Override
+    public void onOpenPlaylistButtonClick(@NonNull Context context)
+    {
+
+    }
+    
+    @Override
+    public void onPlayOrderButtonClick(@NonNull Context context)
+    {
+        
+    }
 
     @Override
     public void onSearchResultClick(int index) {
@@ -44,7 +62,7 @@ public class SettingsPresenter implements BasePresenter
     }
 
     @Override
-    public void onSearchQuery(String searchValue) {
+    public void onSearchQuery(@NonNull String searchValue) {
 
     }
     

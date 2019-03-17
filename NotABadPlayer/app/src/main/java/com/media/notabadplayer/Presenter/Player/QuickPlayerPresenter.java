@@ -1,31 +1,36 @@
-package com.media.notabadplayer.Presenter.Main;
+package com.media.notabadplayer.Presenter.Player;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
-public class MainPresenter implements BasePresenter {
+public class QuickPlayerPresenter implements BasePresenter
+{
     private @NonNull BaseView _view;
     
-    public MainPresenter(@NonNull BaseView view) 
+    public QuickPlayerPresenter(@NonNull BaseView view)
     {
-        _view = view;
+        this._view = view;
     }
     
     @Override
-    public void start()
+    public void start() 
     {
         
     }
 
     @Override
-    public void onAlbumClick(int index)
+    public void onAlbumClick(int index) 
     {
-        
+
     }
 
     @Override
@@ -37,13 +42,18 @@ public class MainPresenter implements BasePresenter {
     @Override
     public void onPlayerButtonClick(ApplicationInput input, @NonNull Context context)
     {
-
+        KeyBinds.getShared().evaluateInput(context, input);
     }
-
+    
     @Override
     public void onOpenPlaylistButtonClick(@NonNull Context context)
     {
-
+        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+        
+        if (playlist != null)
+        {
+            _view.openPlaylistScreen(playlist);
+        }
     }
 
     @Override
@@ -71,26 +81,24 @@ public class MainPresenter implements BasePresenter {
     }
 
     @Override
-    public void onAppThemeChange(AppSettings.AppTheme themeValue)
-    {
-
-    }
-    
-    @Override
-    public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void onAppThemeChange(AppSettings.AppTheme themeValue) 
     {
 
     }
 
     @Override
-    public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting) 
     {
 
     }
 
     @Override
-    public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
-    {
+    public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar) {
+
+    }
+
+    @Override
+    public void onKeybindChange(ApplicationAction action, ApplicationInput input) {
 
     }
 }

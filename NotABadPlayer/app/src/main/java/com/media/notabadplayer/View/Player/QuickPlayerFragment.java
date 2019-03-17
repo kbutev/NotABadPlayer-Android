@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
-import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
@@ -39,7 +37,11 @@ import com.media.notabadplayer.View.BaseView;
 import java.util.ArrayList;
 
 public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver {
+    private boolean _resumedOnce = false;
+    
     AudioPlayer _player = AudioPlayer.getShared();
+    
+    private BasePresenter _presenter;
     
     private Runnable _runnable;
     private Handler _handler = new Handler();
@@ -69,13 +71,23 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        
+        _presenter.start();
     }
     
     @Override
     public void onResume()
     {
         super.onResume();
+        
         _player.attachObserver(this);
+        
+        if (!_resumedOnce)
+        {
+            _resumedOnce = true;
+
+            _presenter.start();
+        }
         
         if (AudioPlayer.getShared().hasPlaylist())
         {
@@ -121,8 +133,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     
     private void initUI()
     {
-        final Fragment fragment = this;
-        
         _header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,7 +146,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
-                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.QUICK_PLAYER_PLAY_BUTTON);
+                _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON, getContext());
             }
         });
     
@@ -144,7 +154,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonBack);
-                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
+                _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, getContext());
             }
         });
     
@@ -152,7 +162,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonForward);
-                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
+                _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, getContext());
             }
         });
         
@@ -160,6 +170,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _mediaButtonPlaylist);
+                _presenter.onOpenPlaylistButtonClick(getContext());
                 
                 AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
                 
@@ -189,22 +200,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         {
             a.overridePendingTransition(R.anim.player_slide_up, R.anim.player_slide_down);
         }
-    }
-    
-    private void openPlaylistScreen(AudioPlaylist playlist)
-    {
-        AlbumFragment f = AlbumFragment.newInstance();
-        f.setPresenter(new AlbumPresenter(f, playlist));
-        FragmentActivity a = getActivity();
-        FragmentManager manager = a.getSupportFragmentManager();
-        
-        while (manager.getBackStackEntryCount() > 0)
-        {
-            manager.popBackStackImmediate();
-        }
-        
-        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, f);
-        transaction.addToBackStack(AlbumsFragment.class.getCanonicalName()).commit();
     }
     
     private void updateUIState()
@@ -266,9 +261,11 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
     private void loop()
     {
-        if (getActivity() != null)
+        FragmentActivity a = getActivity();
+        
+        if (a != null)
         {
-            if (getActivity().hasWindowFocus())
+            if (a.hasWindowFocus())
             {
                 updateUIState();
             }
@@ -278,36 +275,53 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void setPresenter(BasePresenter presenter)
+    public void setPresenter(@NonNull BasePresenter presenter)
     {
-
+        _presenter = presenter;
     }
 
     @Override
-    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) {
+    public void openAlbumScreen(@NonNull AudioAlbum album) {
         
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
+    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    {
+        AlbumFragment f = AlbumFragment.newInstance();
+        f.setPresenter(new AlbumPresenter(f, playlist));
+        FragmentActivity a = getActivity();
+        FragmentManager manager = a.getSupportFragmentManager();
+
+        while (manager.getBackStackEntryCount() > 0)
+        {
+            manager.popBackStackImmediate();
+        }
+
+        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, f);
+        transaction.addToBackStack(AlbumsFragment.class.getCanonicalName()).commit();
+    }
+
+    @Override
+    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
     {
 
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
+    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {
 
     }
