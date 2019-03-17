@@ -1,9 +1,11 @@
 package com.media.notabadplayer.Presenter.Search;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 
+import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
@@ -42,6 +44,24 @@ public class SearchPresenter implements BasePresenter
     {
 
     }
+
+    @Override
+    public void onPlayerButtonClick(ApplicationInput input, @NonNull Context context)
+    {
+
+    }
+
+    @Override
+    public void onOpenPlaylistButtonClick(@NonNull Context context)
+    {
+
+    }
+
+    @Override
+    public void onPlayOrderButtonClick(@NonNull Context context)
+    {
+
+    }
     
     @Override
     public void onSearchResultClick(int index)
@@ -52,7 +72,7 @@ public class SearchPresenter implements BasePresenter
     }
     
     @Override
-    public void onSearchQuery(String searchValue)
+    public void onSearchQuery(@NonNull String searchValue)
     {
         if (searchValue.isEmpty())
         {

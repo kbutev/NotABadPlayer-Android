@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Presenter.Player.QuickPlayerPresenter;
 import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
@@ -121,13 +122,15 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // Select default tab
         onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
         
-        // Start
-        _presenter.start();
-        
+        // Create quick player and it's presenter
         _quickPlayer = QuickPlayerFragment.newInstance();
+        _quickPlayer.setPresenter(new QuickPlayerPresenter(_quickPlayer));
         
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.quickPlayer, (Fragment)_quickPlayer).commit();
+        
+        // Start presenter
+        _presenter.start();
     }
     
     private void selectAlbumsTab()
@@ -278,36 +281,42 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
     
     @Override
-    public void setPresenter(BasePresenter presenter)
+    public void setPresenter(@NonNull BasePresenter presenter)
     {
         
     }
 
     @Override
-    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) {
+    public void openAlbumScreen(@NonNull AudioAlbum album) {
         
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
+    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
+    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
+    {
+
+    }
+
+    @Override
+    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {
 
     }

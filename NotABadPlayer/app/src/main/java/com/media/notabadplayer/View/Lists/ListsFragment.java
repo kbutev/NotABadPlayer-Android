@@ -6,21 +6,25 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.Presenter.Main.MainPresenter;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
 
 public class ListsFragment extends Fragment implements BaseView {
     private MainPresenter _presenter;
-
+    
+    private Button _createPlaylistButton;
+    private Button _deletePlaylistButton;
+    
     public ListsFragment()
     {
 
@@ -42,42 +46,68 @@ public class ListsFragment extends Fragment implements BaseView {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_playlists, container, false);
         
+        _createPlaylistButton = root.findViewWithTag(R.id.createPlaylistButton);
+        _deletePlaylistButton = root.findViewWithTag(R.id.deletePlaylistButton);
+        
         // Setup UI
-
+        initUI();
+        
         return root;
     }
 
+    private void initUI()
+    {
+        _createPlaylistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+        
+        _deletePlaylistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
     @Override
-    public void setPresenter(BasePresenter presenter)
+    public void setPresenter(@NonNull BasePresenter presenter)
     {
 
     }
 
     @Override
-    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) {
+    public void openAlbumScreen(@NonNull AudioAlbum album) {
         
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
+    public void openPlaylistScreen(@NonNull AudioPlaylist playlist) {
+
+    }
+
+    @Override
+    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
     {
 
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
+    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {
 
     }

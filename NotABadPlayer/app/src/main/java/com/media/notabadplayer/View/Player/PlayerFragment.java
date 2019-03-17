@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,9 +23,7 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
-import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.UIAnimations;
@@ -88,11 +87,13 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     public void onResume()
     {
         super.onResume();
+        
         _player.attachObserver(this);
         
         if (!_resumedOnce)
         {
             _resumedOnce = true;
+            
             _presenter.start();
         }
         
@@ -235,7 +236,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonRecall);
-                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_RECALL);
+                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_RECALL, getContext());
             }
         });
         
@@ -244,7 +245,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             public void onClick(View v) {
 
                 UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
-                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_PLAY_BUTTON);
+                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_PLAY_BUTTON, getContext());
             }
         });
         
@@ -253,7 +254,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             public void onClick(View v) {
 
                 UIAnimations.animateButtonTAP(getContext(), _buttonBack);
-                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_PREVIOUS_BUTTON);
+                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_PREVIOUS_BUTTON, getContext());
             }
         });
         
@@ -262,7 +263,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             public void onClick(View v) {
 
                 UIAnimations.animateButtonTAP(getContext(), _buttonForward);
-                KeyBinds.getShared().evaluateInput(fragment.getContext(), ApplicationInput.PLAYER_NEXT_BUTTON);
+                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_NEXT_BUTTON, getContext());
             }
         });
         
@@ -270,7 +271,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonPlayOrder);
-                KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+                _presenter.onPlayOrderButtonClick(getContext());
                 
                 // Save current audio state
                 saveCurrentAudioState();
@@ -436,45 +437,56 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private void loop()
     {
-        if (getActivity() != null)
+        FragmentActivity a = getActivity();
+        
+        if (a != null)
         {
-            updateUIState();
+            if (a.hasWindowFocus())
+            {
+                updateUIState();
+            }
             
             _handler.postDelayed(_runnable, 200);
         }
     }
     
     @Override
-    public void setPresenter(BasePresenter presenter) {
+    public void setPresenter(@NonNull BasePresenter presenter) {
         _presenter = presenter;
     }
 
     @Override
-    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) 
+    public void openAlbumScreen(@NonNull AudioAlbum album) 
     {
 
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums) 
+    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
+    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums) 
+    {
+
+    }
+
+    @Override
+    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(AudioPlaylist playlist) 
+    public void openPlayerScreen(@NonNull AudioPlaylist playlist) 
     {
         updateMediaInfo(playlist.getPlayingTrack());
     }
 
     @Override
-    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {
 
     }

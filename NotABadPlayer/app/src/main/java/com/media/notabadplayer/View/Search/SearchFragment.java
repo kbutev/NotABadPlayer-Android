@@ -69,7 +69,7 @@ public class SearchFragment extends Fragment implements BaseView
         _searchField = root.findViewById(R.id.searchField);
         _searchFieldClearButton = root.findViewById(R.id.searchFieldClearButton);
         _searchTip = root.findViewById(R.id.searchTip);
-        _searchResults = root.findViewById(R.id.searchResults);
+        _searchResults = root.findViewById(R.id.searchResultsList);
         
         initUI();
         
@@ -147,30 +147,36 @@ public class SearchFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void setPresenter(BasePresenter presenter)
+    public void setPresenter(@NonNull BasePresenter presenter)
     {
         _presenter = presenter;
     }
 
     @Override
-    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) {
+    public void openAlbumScreen(@NonNull AudioAlbum album) {
         
     }
 
     @Override
-    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
+    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    {
+        
+    }
+
+    @Override
+    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
     {
 
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
+    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
     {
         Activity a = getActivity();
         
@@ -186,7 +192,7 @@ public class SearchFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {
         _searchTip.setVisibility(View.VISIBLE);
         

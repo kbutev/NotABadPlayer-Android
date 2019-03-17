@@ -77,7 +77,7 @@ public class AlbumsFragment extends Fragment implements BaseView
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_albums, container, false);
         
-        _table = root.findViewById(R.id.primaryArea);
+        _table = root.findViewById(R.id.primaryAreaGrid);
         _tableSideSelector = root.findViewById(R.id.sideIndexing);
         
         initUI();
@@ -97,23 +97,29 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void setPresenter(BasePresenter presenter)
+    public void setPresenter(@NonNull BasePresenter presenter)
     {
         _presenter = presenter;
     }
 
     @Override
-    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) 
+    public void openAlbumScreen(@NonNull AudioAlbum album) 
     {
         AlbumFragment f = AlbumFragment.newInstance();
-        f.setPresenter(new AlbumPresenter(f, new AudioAlbum(albumID, albumArtist, albumTitle, albumCover)));
+        f.setPresenter(new AlbumPresenter(f, album));
         
         FragmentManager manager = getActivity().getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.mainLayout, f).addToBackStack(AlbumsFragment.class.getCanonicalName()).commit();
     }
+
+    @Override
+    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    {
+
+    }
     
     @Override
-    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
+    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
     {
         _tableAdapter = new AlbumsTableAdapter(getContext(), albums, _tableSideSelector);
         _table.setAdapter(_tableAdapter);
@@ -130,19 +136,19 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
+    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {
 
     }

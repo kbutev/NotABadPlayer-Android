@@ -85,7 +85,7 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_album, container, false);
         
-        _table = root.findViewById(R.id.albumSongs);
+        _table = root.findViewById(R.id.albumSongsGrid);
 
         initUI();
         
@@ -108,32 +108,38 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     }
     
     @Override
-    public void setPresenter(BasePresenter presenter)
+    public void setPresenter(@NonNull BasePresenter presenter)
     {
         _presenter = presenter;
     }
     
     @Override
-    public void openAlbumScreen(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover) 
+    public void openAlbumScreen(@NonNull AudioAlbum album) 
     {
         
     }
     
     @Override
-    public void onMediaAlbumsLoad(ArrayList<AudioAlbum> albums)
+    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    {
+        
+    }
+    
+    @Override
+    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
     {
 
     }
     
     @Override
-    public void onAlbumSongsLoad(ArrayList<AudioTrack> songs)
+    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
         _tableAdapter = new AlbumListAdapter(getContext(), songs);
         _table.setAdapter(_tableAdapter);
     }
     
     @Override
-    public void openPlayerScreen(AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
     {
         Activity a = getActivity();
         
@@ -149,7 +155,7 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     }
     
     @Override
-    public void searchQueryResults(String searchQuery, ArrayList<AudioTrack> songs) 
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs) 
     {
         
     }

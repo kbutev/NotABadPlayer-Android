@@ -1,43 +1,37 @@
-package com.media.notabadplayer.Presenter.Albums;
+package com.media.notabadplayer.Presenter.Lists;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Controls.ApplicationInput;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Controls.ApplicationAction;
+import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
-public class AlbumsPresenter implements BasePresenter {
+public class ListsPresenter implements BasePresenter
+{
     private @NonNull BaseView _view;
-    private @NonNull AudioInfo _audioInfo;
 
-    public AlbumsPresenter(@NonNull BaseView view, @NonNull AudioInfo audioInfo)
+    public ListsPresenter(@NonNull BaseView view)
     {
         _view = view;
-        _audioInfo = audioInfo;
     }
     
     @Override
     public void start()
     {
-        _view.onMediaAlbumsLoad(_audioInfo.getAlbums());
+        
     }
 
     @Override
     public void onAlbumClick(int index) 
     {
-        AudioAlbum a = _audioInfo.getAlbums().get(index);
-        
-        Log.v("AlbumsPresenter", "Open '" + a.albumTitle + "' album");
-        _view.openAlbumScreen(a);
+
     }
 
     @Override
-    public void onAlbumsItemClick(int index)
+    public void onAlbumsItemClick(int index) 
     {
 
     }
@@ -61,13 +55,13 @@ public class AlbumsPresenter implements BasePresenter {
     }
 
     @Override
-    public void onSearchResultClick(int index)
+    public void onSearchResultClick(int index) 
     {
 
     }
 
     @Override
-    public void onSearchQuery(@NonNull String searchValue)
+    public void onSearchQuery(@NonNull String searchValue) 
     {
 
     }
@@ -83,7 +77,7 @@ public class AlbumsPresenter implements BasePresenter {
     {
 
     }
-    
+
     @Override
     public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
     {
@@ -91,13 +85,13 @@ public class AlbumsPresenter implements BasePresenter {
     }
 
     @Override
-    public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar) 
     {
 
     }
 
     @Override
-    public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
+    public void onKeybindChange(ApplicationAction action, ApplicationInput input) 
     {
 
     }
