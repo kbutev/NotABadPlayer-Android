@@ -8,60 +8,76 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:focusableInTouchMode="true">
         <Button
             android:id="@+id/buttonCancel"
-            android:layout_width="80dp"
+            android:layout_width="70dp"
             android:layout_height="48dp"
             android:text="@string/playlist_cancel"
-            android:textColor="@color/colorPlaylistsButtonText"/>
+            android:textSize="12dp"
+            android:textColor="@color/colorPlaylistsEditButtonText"/>
         <Space
-            android:layout_width="20dp"
+            android:layout_width="10dp"
             android:layout_height="0dp" />
         <EditText
             android:id="@+id/playlistNameField"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:textColor="@color/colorPlaylistsText"
+            android:textColor="@color/colorPlaylistsEditText"
             android:hint="@string/playlist_name"
-            android:layout_weight="0.33"/>
+            android:layout_weight="0.33"
+            android:inputType="text"
+            android:singleLine="true"/>
         <Space
-            android:layout_width="20dp"
+            android:layout_width="10dp"
             android:layout_height="0dp" />
         <Button
             android:id="@+id/buttonDone"
-            android:layout_width="80dp"
+            android:layout_width="64dp"
             android:layout_height="48dp"
             android:text="@string/playlist_done"
-            android:textColor="@color/colorPlaylistsButtonText"/>
+            android:textSize="12dp"
+            android:textColor="@color/colorPlaylistsEditButtonText"/>
     </LinearLayout>
     
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/playlist_added_tracks"
-        android:textColor="@color/colorPlaylistsText"
-        android:textSize="25dp"/>
-
-    <ListView
-        android:id="@+id/addedTracksList"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
-    
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/playlist_tracks"
-        android:textColor="@color/colorPlaylistsText"
-        android:textSize="25dp"/>
-
-    <ListView
-        android:id="@+id/tracksList"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/playlist_added_tracks"
+            android:textColor="@color/colorPlaylistsEditTitleText"
+            android:textSize="25dp"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="10dp" />
+
+        <ListView
+            android:id="@+id/addedTracksList"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/playlist_tracks"
+            android:textColor="@color/colorPlaylistsEditTitleText"
+            android:textSize="25dp"/>
+        
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="10dp" />
+
+        <ListView
+            android:id="@+id/albumsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.media.notabadplayer.View.Player;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -10,15 +11,15 @@ public class VerticalSeekBar extends AppCompatSeekBar
 {
     private OnSeekBarChangeListener _onSeekListener;
     
-    public VerticalSeekBar(Context context) {
+    public VerticalSeekBar(@NonNull Context context) {
         super(context);
     }
 
-    public VerticalSeekBar(Context context, AttributeSet attrs, int defStyle) {
+    public VerticalSeekBar(@NonNull Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public VerticalSeekBar(Context context, AttributeSet attrs) {
+    public VerticalSeekBar(@NonNull Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

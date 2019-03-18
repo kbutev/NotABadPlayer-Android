@@ -44,13 +44,13 @@ public class AlbumPresenter implements BasePresenter {
         if (_album != null)
         {
             _songs = AudioPlayer.getShared().getAudioInfo().getAlbumTracks(_album);
+            _view.onAlbumSongsLoad(_songs);
         }
         else
         {
             _songs = _playlist.getTracks();
+            _view.onPlaylistLoad(_playlist, false);
         }
-        
-        _view.onAlbumSongsLoad(_songs);
     }
 
     @Override
@@ -68,11 +68,13 @@ public class AlbumPresenter implements BasePresenter {
             return;
         }
         
+        String playlistName = _album != null ? _album.albumTitle : _playlist.getName();
+        
         // Index greater than zero is an song track
         index--;
         
         AudioTrack clickedTrack = _songs.get(index);
-        AudioPlaylist playlist = new AudioPlaylist(clickedTrack.albumTitle, _songs, clickedTrack);
+        AudioPlaylist playlist = new AudioPlaylist(playlistName, _songs, clickedTrack);
         
         Log.v("AlbumPresenter", "Play playlist with specific song " + clickedTrack.title);
         

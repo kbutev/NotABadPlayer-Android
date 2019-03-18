@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,7 +15,7 @@ import javax.annotation.Nullable;
 
 public class UIAnimations {
 
-    public static void animateImageTAP(@Nullable Context context, @Nullable final ImageView view)
+    public static void animateImageTAP(Context context, final ImageView view)
     {
         if (context == null || view == null)
         {
@@ -41,7 +42,7 @@ public class UIAnimations {
         a.start();
     }
     
-    public static void animateButtonTAP(@Nullable Context context, @Nullable final Button view)
+    public static void animateButtonTAP(Context context, final Button view)
     {
         if (context == null || view == null)
         {
@@ -68,7 +69,7 @@ public class UIAnimations {
         a.start();
     }
     
-    public static void animateAlbumItemTAP(@Nullable Context context, @Nullable final View view)
+    public static void animateAlbumItemTAP(Context context, final View view)
     {
         if (context == null || view == null)
         {

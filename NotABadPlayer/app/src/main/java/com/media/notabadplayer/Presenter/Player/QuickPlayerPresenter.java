@@ -3,6 +3,7 @@ package com.media.notabadplayer.Presenter.Player;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -52,7 +53,19 @@ public class QuickPlayerPresenter implements BasePresenter
         
         if (playlist != null)
         {
-            _view.openPlaylistScreen(playlist);
+            if (playlist.isAlbumPlaylist())
+            {
+                AudioAlbum album = playlist.getAlbum(AudioPlayer.getShared().getAudioInfo());
+                
+                if (album != null)
+                {
+                    _view.openAlbumScreen(album);
+                }
+            }
+            else
+            {
+                _view.openPlaylistScreen(playlist);
+            }
         }
     }
 

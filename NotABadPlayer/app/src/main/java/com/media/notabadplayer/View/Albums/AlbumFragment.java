@@ -81,7 +81,7 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     }
     
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_album, container, false);
         
@@ -135,6 +135,13 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
         _tableAdapter = new AlbumListAdapter(getContext(), songs);
+        _table.setAdapter(_tableAdapter);
+    }
+    
+    @Override
+    public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
+    {
+        _tableAdapter = new AlbumListAdapter(getContext(), playlist, sortTracks);
         _table.setAdapter(_tableAdapter);
     }
     

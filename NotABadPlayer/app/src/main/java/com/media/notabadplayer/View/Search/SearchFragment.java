@@ -61,7 +61,7 @@ public class SearchFragment extends Fragment implements BaseView
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_search, container, false);
         
@@ -171,6 +171,12 @@ public class SearchFragment extends Fragment implements BaseView
 
     @Override
     public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
+    {
+
+    }
+
+    @Override
+    public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
     {
 
     }

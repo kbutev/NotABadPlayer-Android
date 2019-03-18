@@ -11,6 +11,7 @@ public class AudioTrack implements Serializable {
     public final @NonNull String title;
     public final @NonNull String artist;
     public final @NonNull String albumTitle;
+    public final @NonNull String albumID;
     public final @NonNull String artCover;
     public final @NonNull String trackNum;
     public final double durationInSeconds;
@@ -22,6 +23,7 @@ public class AudioTrack implements Serializable {
                       @NonNull String title,
                       @NonNull String artist,
                       @NonNull String albumTitle,
+                      @NonNull String albumID,
                       @NonNull String artCover,
                       int trackNum, 
                       double durationInSeconds,
@@ -31,10 +33,26 @@ public class AudioTrack implements Serializable {
         this.title = title;
         this.artist = artist;
         this.albumTitle = albumTitle;
+        this.albumID = albumID;
         this.artCover = artCover;
         this.trackNum = String.valueOf(trackNum);
         this.durationInSeconds = durationInSeconds;
         this.duration = secondsToString(durationInSeconds);
+        this.source = source;
+    }
+
+    public AudioTrack(@NonNull AudioTrack originalTrack,
+                      @NonNull AudioTrackSource source)
+    {
+        this.filePath = originalTrack.filePath;
+        this.title = originalTrack.title;
+        this.artist = originalTrack.artist;
+        this.albumTitle = originalTrack.albumTitle;
+        this.albumID = originalTrack.albumID;
+        this.artCover = originalTrack.artCover;
+        this.trackNum = String.valueOf(originalTrack.trackNum);
+        this.durationInSeconds = originalTrack.durationInSeconds;
+        this.duration = secondsToString(originalTrack.durationInSeconds);
         this.source = source;
     }
     

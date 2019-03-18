@@ -18,7 +18,7 @@ public class AudioInfo {
     private ArrayList<AudioAlbum> _albums = new  ArrayList<>();
     private HashMap<String, ArrayList<AudioTrack>> _albumSongs = new HashMap<>();
     
-    public AudioInfo(Context context)
+    public AudioInfo(@NonNull Context context)
     {
         _context = context;
     }
@@ -71,7 +71,7 @@ public class AudioInfo {
         return _albums;
     }
     
-    synchronized public AudioAlbum getAlbumByID(String identifier)
+    synchronized public AudioAlbum getAlbumByID(@NonNull String identifier)
     {
         ArrayList<AudioAlbum> albums = getAlbums();
         
@@ -86,7 +86,7 @@ public class AudioInfo {
         return null;
     }
     
-    synchronized public @NonNull ArrayList<AudioTrack> getAlbumTracks(AudioAlbum album)
+    synchronized public @NonNull ArrayList<AudioTrack> getAlbumTracks(@NonNull AudioAlbum album)
     {
         if (!_albumSongs.containsKey(album.albumID))
         {
@@ -152,10 +152,11 @@ public class AudioInfo {
                             title,
                             artist,
                             albumTitle,
+                            album.albumID,
                             album.albumCover,
                             trackNum, 
                             duration,
-                            AudioTrackSource.create(album)));
+                            AudioTrackSource.createAlbumSource(album.albumID)));
         }
 
         cursor.close();
@@ -163,7 +164,7 @@ public class AudioInfo {
         return albumTracks;
     }
     
-    synchronized public @NonNull ArrayList<AudioTrack> searchForTracks(String query)
+    synchronized public @NonNull ArrayList<AudioTrack> searchForTracks(@NonNull String query)
     {
         ArrayList<AudioTrack> albumTracks = new ArrayList<>();
         
@@ -203,7 +204,7 @@ public class AudioInfo {
         int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
         int artistColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
         int albumTitleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-        int albumID = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+        int albumIDColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
         int trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
         int durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
         
@@ -215,18 +216,19 @@ public class AudioInfo {
             String albumTitle = cursor.getString(albumTitleColumn);
             int trackNum = cursor.getInt(trackNumColumn);
             double duration = cursor.getLong(durationColumn) / 1000.0;
-            String albumCover = "";
-            AudioAlbum album = getAlbumByID(cursor.getString(albumID));
-            albumCover = album.albumCover;
+            String albumID = cursor.getString(albumIDColumn);
+            AudioAlbum album = getAlbumByID(albumID);
+            String albumCover = album.albumCover;
             
             albumTracks.add(new AudioTrack(filePath,
                             title, 
                             artist, 
                             albumTitle,
-                            albumCover, 
+                            albumID,
+                            albumCover,
                             trackNum,
                             duration,
-                            AudioTrackSource.create(album)));
+                            AudioTrackSource.createAlbumSource(album.albumID)));
         }
 
         cursor.close();
@@ -234,7 +236,7 @@ public class AudioInfo {
         return albumTracks;
     }
 
-    synchronized public AudioTrack findTrackByPath(Uri path)
+    synchronized public AudioTrack findTrackByPath(@NonNull Uri path)
     {
         String projection[] = {
                 MediaStore.Audio.Media.DATA,
@@ -262,7 +264,7 @@ public class AudioInfo {
         int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
         int artistColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
         int albumTitleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-        int albumID = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+        int albumIDColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
         int trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
         int durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
         
@@ -272,9 +274,9 @@ public class AudioInfo {
         String albumTitle = cursor.getString(albumTitleColumn);
         int trackNum = cursor.getInt(trackNumColumn);
         double duration = cursor.getLong(durationColumn) / 1000.0;
-        String albumCover = "";
-        AudioAlbum album = getAlbumByID(cursor.getString(albumID));
-        albumCover = album.albumCover;
+        String albumId = cursor.getString(albumIDColumn);
+        AudioAlbum album = getAlbumByID(albumId);
+        String albumCover = album.albumCover;
         
         cursor.close();
         
@@ -282,9 +284,10 @@ public class AudioInfo {
                               title,
                               artist,
                               albumTitle,
+                              albumId,
                               albumCover,
                               trackNum,
                               duration,
-                              AudioTrackSource.create(album));
+                              AudioTrackSource.createAlbumSource(album.albumID));
     }
 }

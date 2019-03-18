@@ -3,6 +3,7 @@ package com.media.notabadplayer.View.Albums;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,19 +23,19 @@ public class GridSideIndexingView extends View {
     private Paint _paint;
     private String[] _sections;
 
-    public GridSideIndexingView(Context context)
+    public GridSideIndexingView(@NonNull Context context)
     {
         super(context);
         init();
     }
 
-    public GridSideIndexingView(Context context, AttributeSet attrs)
+    public GridSideIndexingView(@NonNull Context context, AttributeSet attrs)
     {
         super(context, attrs);
         init();
     }
 
-    public GridSideIndexingView(Context context, AttributeSet attrs, int defStyle) 
+    public GridSideIndexingView(@NonNull Context context, AttributeSet attrs, int defStyle) 
     {
         super(context, attrs, defStyle);
         init();
