@@ -1,6 +1,9 @@
 package com.media.notabadplayer.Audio;
 
+import android.media.MediaRecorder;
 import android.support.annotation.NonNull;
+
+import com.media.notabadplayer.Storage.AudioInfo;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,35 +14,29 @@ import java.util.Random;
 
 public class AudioPlaylist implements Serializable
 {
-    private final String _name;
+    private final @NonNull String _name;
     
     private AudioPlayOrder _playOrder;
     
-    private ArrayList<AudioTrack> _tracks;
+    private @NonNull ArrayList<AudioTrack> _tracks;
     
     private boolean _playing;
-    private AudioTrack _playingTrack;
+    private @NonNull AudioTrack _playingTrack;
     private int _playingTrackPosition;
     
     transient private Random _random = new Random();
     
-    public AudioPlaylist(String name, AudioTrack track)
+    public AudioPlaylist(@NonNull String name, @NonNull AudioTrack track)
     {
-        _name = name;
-        _tracks = new ArrayList<>();
-        _tracks.add(track);
-        _playing = true;
-        _playingTrack = track;
-        _playingTrackPosition = 0;
-        _playOrder = AudioPlayOrder.FORWARDS;
+        this(name, trackAsAList(track), track);
     }
     
-    public AudioPlaylist(String name, ArrayList<AudioTrack> tracks) throws IllegalArgumentException
+    public AudioPlaylist(@NonNull String name, @NonNull ArrayList<AudioTrack> tracks) throws IllegalArgumentException
     {
         this(name, tracks, null);
     }
     
-    public AudioPlaylist(String name, ArrayList<AudioTrack> tracks, AudioTrack playingTrack) throws IllegalArgumentException
+    public AudioPlaylist(@NonNull String name, @NonNull ArrayList<AudioTrack> tracks, AudioTrack playingTrack) throws IllegalArgumentException
     {
         if (tracks.size() == 0)
         {
@@ -53,6 +50,17 @@ public class AudioPlaylist implements Serializable
         _playingTrackPosition = 0;
         _playOrder = AudioPlayOrder.FORWARDS;
         
+        // Set proper source value
+        boolean isAlbumList = isAlbumPlaylist();
+        _tracks = new ArrayList<>();
+        AudioTrack firstTrack = tracks.get(0);
+        
+        for (int e = 0; e < tracks.size(); e++)
+        {
+            AudioTrackSource source = isAlbumList ? AudioTrackSource.createAlbumSource(firstTrack.albumID) : AudioTrackSource.createPlaylistSource(this);
+            _tracks.add(new AudioTrack(tracks.get(e), source));
+        }
+        
         if (playingTrack != null)
         {
             for (int e = 0; e < _tracks.size(); e++)
@@ -65,6 +73,13 @@ public class AudioPlaylist implements Serializable
                 }
             }
         }
+    }
+    
+    private static ArrayList<AudioTrack> trackAsAList(@NonNull AudioTrack track)
+    {
+        ArrayList<AudioTrack> tracks = new ArrayList<>();
+        tracks.add(track);
+        return tracks;
     }
     
     public String getName()
@@ -107,6 +122,26 @@ public class AudioPlaylist implements Serializable
         return _playingTrack;
     }
 
+    public boolean isAlbumPlaylist()
+    {
+        return _name.equals(_tracks.get(0).albumTitle);
+    }
+    
+    public AudioAlbum getAlbum(@NonNull AudioInfo audioInfo)
+    {
+        for (int e = 0; e < _tracks.size(); e++)
+        {
+            AudioAlbum album = audioInfo.getAlbumByID(_tracks.get(e).albumID);
+            
+            if (album != null)
+            {
+                return album;
+            }
+        }
+        
+        return null;
+    }
+    
     public AudioTrack goToTrackBasedOnPlayOrder()
     {
         _playing = true;

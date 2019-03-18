@@ -20,8 +20,6 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -30,12 +28,33 @@ class AlbumListAdapter extends BaseAdapter
 {
     private Context _context;
     private ArrayList<AudioTrack> _tracks;
+    private String _playlistName;
+    private boolean _isPlaylist;
     
-    public AlbumListAdapter(@NonNull Context context, ArrayList<AudioTrack> tracks)
+    public AlbumListAdapter(@NonNull Context context, @NonNull ArrayList<AudioTrack> tracks)
     {
         this._context = context;
         this._tracks = tracks;
+        this._isPlaylist = false;
         sortTracks(GeneralStorage.getShared().getTrackSortingValue(_context));
+    }
+
+    public AlbumListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist)
+    {
+        this(context, playlist, false);
+    }
+
+    public AlbumListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist, boolean sortTracks)
+    {
+        this._context = context;
+        this._tracks = playlist.getTracks();
+        this._playlistName = playlist.getName();
+        this._isPlaylist = true;
+        
+        if (sortTracks)
+        {
+            sortTracks(GeneralStorage.getShared().getTrackSortingValue(_context));
+        }
     }
     
     public void sortTracks(AppSettings.TrackSorting trackSorting)
@@ -72,11 +91,11 @@ class AlbumListAdapter extends BaseAdapter
             TextView albumArtist = header.findViewById(R.id.albumArtist);
             TextView albumDescription = header.findViewById(R.id.albumDescription);
             
-            AudioTrack firstTrack = _tracks.get(0);
+            AudioTrack track = _tracks.get(0);
 
-            if (!firstTrack.artCover.isEmpty())
+            if (!track.artCover.isEmpty() && !_isPlaylist)
             {
-                String uri = Uri.decode(firstTrack.artCover);
+                String uri = Uri.decode(track.artCover);
                 
                 if (uri != null)
                 {
@@ -84,13 +103,17 @@ class AlbumListAdapter extends BaseAdapter
                     albumCover.setVisibility(View.VISIBLE);
                 }
             }
-
-            albumTitle.setText(firstTrack.albumTitle);
+            else
+            {
+                albumCover.setVisibility(View.GONE);
+            }
             
-            if (!firstTrack.artist.isEmpty())
+            albumTitle.setText(!_isPlaylist ? track.albumTitle : _playlistName);
+            
+            if (!track.artist.isEmpty() && !_isPlaylist)
             {
                 albumArtist.setVisibility(View.VISIBLE);
-                albumArtist.setText(firstTrack.artist);
+                albumArtist.setText(track.artist);
             }
             else
             {
@@ -115,7 +138,7 @@ class AlbumListAdapter extends BaseAdapter
         
         TextView title = checkNotNull((TextView)listItem.findViewById(R.id.title), "Base adapter is expecting a valid text view for position " + String.valueOf(position) + "/" + String.valueOf(_tracks.size()));
         
-        if (dataTitle == null || dataTitle.length() == 0)
+        if (dataTitle.length() == 0)
         {
             title.setText(R.string.title_unknown);
         }

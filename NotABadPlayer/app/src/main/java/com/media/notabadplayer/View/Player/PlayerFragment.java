@@ -118,7 +118,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_player, container, false);
         
@@ -475,6 +475,12 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
     @Override
     public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
+    {
+
+    }
+
+    @Override
+    public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
     {
 
     }

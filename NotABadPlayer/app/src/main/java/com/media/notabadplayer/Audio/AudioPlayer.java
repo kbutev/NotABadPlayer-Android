@@ -510,7 +510,7 @@ public class AudioPlayer {
         }
     }
     
-    public ArrayList<AudioTrack> getPlayHistory()
+    public @NonNull ArrayList<AudioTrack> getPlayHistory()
     {
         return _playHistory;
     }
@@ -535,7 +535,7 @@ public class AudioPlayer {
         
         _playHistory.remove(lastTrackIndex);
         
-        AudioPlaylist playlist = previousTrack.source.getSourcePlaylist(_audioInfo, previousTrack);
+        AudioPlaylist playlist = previousTrack.source.getSourcePlaylist(_application.getBaseContext(), _audioInfo, previousTrack);
         
         if (playlist == null)
         {

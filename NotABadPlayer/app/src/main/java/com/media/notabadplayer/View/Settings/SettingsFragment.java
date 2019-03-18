@@ -244,7 +244,7 @@ public class SettingsFragment extends Fragment implements BaseView
         _resetSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSettingsResetDialog();
+                showResetSettingsDialog();
             }
         });
     }
@@ -359,14 +359,14 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindEarphonesUnplug.setSelection(SettingsKeybindListAdapter.getCountForAction(EARPHONES_UNPLUG));
     }
     
-    private void openSettingsResetDialog()
+    private void showResetSettingsDialog()
     {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
-        builder1.setMessage("Reset settings to defaults?");
+        builder1.setMessage(R.string.settings_dialog_reset);
         builder1.setCancelable(true);
         
         builder1.setPositiveButton(
-                "Yes",
+                R.string.yes,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         _presenter.onAppSettingsReset();
@@ -374,7 +374,7 @@ public class SettingsFragment extends Fragment implements BaseView
                 });
         
         builder1.setNegativeButton(
-                "No",
+                R.string.no,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
@@ -410,6 +410,12 @@ public class SettingsFragment extends Fragment implements BaseView
 
     @Override
     public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
+    {
+
+    }
+
+    @Override
+    public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
     {
 
     }

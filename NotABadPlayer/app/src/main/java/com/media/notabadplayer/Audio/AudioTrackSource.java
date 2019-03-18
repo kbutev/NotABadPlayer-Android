@@ -1,36 +1,38 @@
 package com.media.notabadplayer.Audio;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 import com.media.notabadplayer.Storage.AudioInfo;
-
-import java.io.Serializable;
+import com.media.notabadplayer.Storage.GeneralStorage;
 
 public class AudioTrackSource implements Serializable
 {
-    public static final String PLAYLIST_PREFIX = "Playlist::";
-    
-    private final String value;
+    private final String _value;
+    private final boolean _isAlbumSource;
 
-    public static AudioTrackSource create(AudioAlbum album)
+    public static AudioTrackSource createAlbumSource(@NonNull String albumID)
     {
-        return new AudioTrackSource(album.albumID);
+        return new AudioTrackSource(albumID, true);
     }
     
-    public static AudioTrackSource create(AudioPlaylist playlist)
+    public static AudioTrackSource createPlaylistSource(@NonNull AudioPlaylist playlist)
     {
-        return new AudioTrackSource(PLAYLIST_PREFIX + playlist.getName());
+        return new AudioTrackSource(playlist.getName(), false);
     }
     
-    private AudioTrackSource(String value)
+    private AudioTrackSource(String value, boolean isAlbumSource)
     {
-        this.value = value;
+        this._value = value;
+        this._isAlbumSource = isAlbumSource;
     }
     
     public boolean isAlbum()
     {
-        return !value.startsWith(PLAYLIST_PREFIX);
+        return _isAlbumSource;
     }
     
     public boolean isPlaylist()
@@ -43,7 +45,7 @@ public class AudioTrackSource implements Serializable
         return true;
     }
     
-    public AudioPlaylist getSourcePlaylist(@NonNull AudioInfo audioInfo, @Nullable AudioTrack playingTrack)
+    public AudioPlaylist getSourcePlaylist(@NonNull Context context, @NonNull AudioInfo audioInfo, @Nullable AudioTrack playingTrack)
     {
         if (!isValid())
         {
@@ -52,13 +54,29 @@ public class AudioTrackSource implements Serializable
         
         if (isAlbum())
         {
-            AudioAlbum album = audioInfo.getAlbumByID(value);
+            AudioAlbum album = audioInfo.getAlbumByID(_value);
+            
+            if (album == null)
+            {
+                return null;
+            }
+            
             return new AudioPlaylist(album.albumTitle, audioInfo.getAlbumTracks(album), playingTrack);
         }
         
         if (isPlaylist())
         {
+            ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getPlaylists(context);
             
+            for (int e = 0; e < playlists.size(); e++)
+            {
+                if (_value.equals(playlists.get(e).getName()))
+                {
+                    return playlists.get(e);
+                }
+            }
+            
+            return null;
         }
         
         return null;

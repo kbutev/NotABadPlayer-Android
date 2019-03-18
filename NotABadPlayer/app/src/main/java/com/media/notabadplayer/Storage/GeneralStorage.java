@@ -38,12 +38,12 @@ public class GeneralStorage
         return singleton;
     }
     
-    private void firstTimeLaunch(Context context)
+    private void firstTimeLaunch(@NonNull Context context)
     {
         resetDefaultSettingsActions(context);
     }
     
-    synchronized public boolean isFirstApplicationLaunch(Context context)
+    synchronized public boolean isFirstApplicationLaunch(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         
@@ -61,7 +61,7 @@ public class GeneralStorage
         return firstTime;
     }
     
-    synchronized public void savePlayerState(Context context)
+    synchronized public void savePlayerState(@NonNull Context context)
     {
         AudioPlayer player = AudioPlayer.getShared();
         
@@ -91,13 +91,16 @@ public class GeneralStorage
         {
             return;
         }
-        
-        AudioPlaylist playlist = (AudioPlaylist)Serializing.deserializeObject(data);
-        
-        if (playlist == null)
+
+        Object result = Serializing.deserializeObject(data);
+
+        if (!(result instanceof AudioPlaylist))
         {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Could not restore player state, the stored data is invalid");
             return;
         }
+        
+        AudioPlaylist playlist = (AudioPlaylist)result;
         
         player.playPlaylist(playlist);
         
@@ -116,7 +119,7 @@ public class GeneralStorage
         player.pause();
     }
 
-    synchronized public void savePlayerPlayHistoryState(Context context)
+    synchronized public void savePlayerPlayHistoryState(@NonNull Context context)
     {
         AudioPlayer player = AudioPlayer.getShared();
 
@@ -146,17 +149,18 @@ public class GeneralStorage
             return;
         }
         
-        ArrayList<AudioTrack> playHistory = (ArrayList<AudioTrack>)Serializing.deserializeObject(data);
+        Object playHistory = Serializing.deserializeObject(data);
         
-        if (playHistory == null)
+        if (!(playHistory instanceof ArrayList))
         {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Could not restore player history state, the stored data is invalid");
             return;
         }
         
-        player.setPlayHistory(playHistory);
+        player.setPlayHistory((ArrayList<AudioTrack>)playHistory);
     }
 
-    synchronized public void saveSearchQuery(Context context, String searchQuery)
+    synchronized public void saveSearchQuery(@NonNull Context context, String searchQuery)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -166,14 +170,14 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public String retrieveSearchQuery(Context context)
+    synchronized public String retrieveSearchQuery(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         
         return preferences.getString("searchQuery", "");
     }
     
-    synchronized public void resetDefaultSettingsActions(Context context)
+    synchronized public void resetDefaultSettingsActions(@NonNull Context context)
     {
         savePlayerPlayedHistory(context, 20);
         saveAppThemeValue(context, AppSettings.AppTheme.LIGHT);
@@ -203,7 +207,7 @@ public class GeneralStorage
         saveCachingPolicyFlagForSettingsTab(context, false);
     }
     
-    synchronized public void saveSettingsAction(Context context, ApplicationInput input, ApplicationAction action)
+    synchronized public void saveSettingsAction(@NonNull Context context, ApplicationInput input, ApplicationAction action)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -215,7 +219,7 @@ public class GeneralStorage
         _keyBinds.put(input, action);
     }
     
-    synchronized public ApplicationAction getSettingsAction(Context context, ApplicationInput input)
+    synchronized public ApplicationAction getSettingsAction(@NonNull Context context, ApplicationInput input)
     {
         ApplicationAction cachedAction = _keyBinds.get(input);
         
@@ -240,13 +244,13 @@ public class GeneralStorage
         return ApplicationAction.DO_NOTHING;
     }
     
-    synchronized public int getPlayerPlayedHistoryCapacity(Context context)
+    synchronized public int getPlayerPlayedHistoryCapacity(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         return preferences.getInt("player_history_capacity", 1);
     }
     
-    synchronized public void savePlayerPlayedHistory(Context context, int value)
+    synchronized public void savePlayerPlayedHistory(@NonNull Context context, int value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -254,7 +258,38 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public AppSettings.AppTheme getAppThemeValue(Context context)
+    synchronized public ArrayList<AudioPlaylist> getPlaylists(@NonNull Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        
+        try {
+            Object result = Serializing.deserializeObject(preferences.getString("playlists", ""));
+            
+            if (!(result instanceof ArrayList))
+            {
+                Log.v(GeneralStorage.class.getCanonicalName(), "Could not deserialize playlists, the stored data is invalid");
+                return null;
+            }
+            
+            return (ArrayList<AudioPlaylist>)result;
+        }
+        catch (Exception e)
+        {
+            
+        }
+        
+        return null;
+    }
+
+    synchronized public void savePlaylists(@NonNull Context context, @NonNull ArrayList<AudioPlaylist> playlists)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("playlists", Serializing.serializeObject(playlists));
+        editor.apply();
+    }
+
+    synchronized public AppSettings.AppTheme getAppThemeValue(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         
@@ -269,7 +304,7 @@ public class GeneralStorage
         return AppSettings.AppTheme.LIGHT;
     }
 
-    synchronized public void saveAppThemeValue(Context context, AppSettings.AppTheme value)
+    synchronized public void saveAppThemeValue(@NonNull Context context, AppSettings.AppTheme value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -277,7 +312,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public AppSettings.AlbumSorting getAlbumSortingValue(Context context)
+    synchronized public AppSettings.AlbumSorting getAlbumSortingValue(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
 
@@ -292,7 +327,7 @@ public class GeneralStorage
         return AppSettings.AlbumSorting.TITLE;
     }
 
-    synchronized public void saveAlbumSortingValue(Context context, AppSettings.AlbumSorting value)
+    synchronized public void saveAlbumSortingValue(@NonNull Context context, AppSettings.AlbumSorting value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -300,7 +335,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public AppSettings.TrackSorting getTrackSortingValue(Context context)
+    synchronized public AppSettings.TrackSorting getTrackSortingValue(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
 
@@ -315,7 +350,7 @@ public class GeneralStorage
         return AppSettings.TrackSorting.TITLE;
     }
 
-    synchronized public void saveTrackSortingValue(Context context, AppSettings.TrackSorting value)
+    synchronized public void saveTrackSortingValue(@NonNull Context context, AppSettings.TrackSorting value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -323,7 +358,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public AppSettings.ShowStars getShowStarsValue(Context context)
+    synchronized public AppSettings.ShowStars getShowStarsValue(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
 
@@ -338,7 +373,7 @@ public class GeneralStorage
         return AppSettings.ShowStars.NO;
     }
 
-    synchronized public void saveShowStarsValue(Context context, AppSettings.ShowStars value)
+    synchronized public void saveShowStarsValue(@NonNull Context context, AppSettings.ShowStars value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -346,7 +381,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public AppSettings.ShowVolumeBar getShowVolumeBarValue(Context context)
+    synchronized public AppSettings.ShowVolumeBar getShowVolumeBarValue(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
 
@@ -361,7 +396,7 @@ public class GeneralStorage
         return AppSettings.ShowVolumeBar.NO;
     }
 
-    synchronized public void saveShowVolumeBarValue(Context context, AppSettings.ShowVolumeBar value)
+    synchronized public void saveShowVolumeBarValue(@NonNull Context context, AppSettings.ShowVolumeBar value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -369,13 +404,13 @@ public class GeneralStorage
         editor.apply();
     }
     
-    synchronized public boolean getCachingPolicyFlagForAlbumsTab(Context context)
+    synchronized public boolean getCachingPolicyFlagForAlbumsTab(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         return preferences.getBoolean("caching_policy_albums_tab", false);
     }
     
-    synchronized public void saveCachingPolicyFlagForAlbumsTab(Context context, boolean value)
+    synchronized public void saveCachingPolicyFlagForAlbumsTab(@NonNull Context context, boolean value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -383,13 +418,13 @@ public class GeneralStorage
         editor.apply();
     }
     
-    synchronized public boolean getCachingPolicyFlagForListsTab(Context context)
+    synchronized public boolean getCachingPolicyFlagForListsTab(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         return preferences.getBoolean("caching_policy_lists_tab", false);
     }
     
-    synchronized public void saveCachingPolicyFlagForListsTab(Context context, boolean value)
+    synchronized public void saveCachingPolicyFlagForListsTab(@NonNull Context context, boolean value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -397,13 +432,13 @@ public class GeneralStorage
         editor.apply();
     }
     
-    synchronized public boolean getCachingPolicyFlagForSearchTab(Context context)
+    synchronized public boolean getCachingPolicyFlagForSearchTab(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         return preferences.getBoolean("caching_policy_search_tab", false);
     }
     
-    synchronized public void saveCachingPolicyFlagForSearchTab(Context context, boolean value)
+    synchronized public void saveCachingPolicyFlagForSearchTab(@NonNull Context context, boolean value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -411,13 +446,13 @@ public class GeneralStorage
         editor.apply();
     }
     
-    synchronized public boolean getCachingPolicyFlagForSettingsTab(Context context)
+    synchronized public boolean getCachingPolicyFlagForSettingsTab(@NonNull Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         return preferences.getBoolean("caching_policy_settings_tab", false);
     }
     
-    synchronized public void saveCachingPolicyFlagForSettingsTab(Context context, boolean value)
+    synchronized public void saveCachingPolicyFlagForSettingsTab(@NonNull Context context, boolean value)
     {
         SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();

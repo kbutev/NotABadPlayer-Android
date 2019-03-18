@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void startAppWithTrack(Uri path)
     {
         AudioTrack track = _audioInfo.findTrackByPath(path);
-        AudioPlaylist playlist = track.source.getSourcePlaylist(_audioInfo, track);
+        AudioPlaylist playlist = track.source.getSourcePlaylist(this, _audioInfo, track);
         
         Intent intent = new Intent(this, PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -305,6 +305,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
     @Override
     public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
+    {
+
+    }
+
+    @Override
+    public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
     {
 
     }

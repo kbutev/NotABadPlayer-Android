@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Not Bad Player</string>
+    <string name="ok">Ok</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="title_albums">Albums</string>
     <string name="title_playlists">Lists</string>
     <string name="title_search">Search</string>
@@ -25,6 +28,9 @@
     <string name="playlist_done">Done</string>
     <string name="playlist_added_tracks">Added tracks</string>
     <string name="playlist_tracks">Tracks</string>
+    <string name="playlist_dialog_no_tracks">Please add at least one track</string>
+    <string name="playlist_dialog_invalid_name">Please enter a valid playlist name</string>
+    <string name="playlist_dialog_taken_name">Playlist name is already taken</string>
     
     <!-- Search tab -->
     <string name="search_hint">Search for track</string>
@@ -56,10 +62,11 @@
     <string name="settings_keybind_earphones_unplug">Earphones Unplug</string>
     <string name="settings_reset">Reset</string>
     <string name="settings_reset_button">Reset to defaults</string>
+    <string name="settings_dialog_reset">Reset settings to defaults?</string>
     
     <!-- About -->
     <string name="about">About</string>
     <string name="about_version">Version 1.0 (1)</string>
-    <string name="about_release_date">Released 2019.03.16</string>
+    <string name="about_release_date">Released 2019.03.18</string>
     <string name="about_credits">Programmed, designed &amp; tested by Kristiyan Butev</string>
 </resources>
