@@ -198,6 +198,11 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     
     private void updateUIState()
     {
+        if (_player.getPlaylist() == null)
+        {
+            return;
+        }
+        
         int currentPosition = _player.getPlayer().getCurrentPosition() / 1000;
         _mediaBar.setProgress(currentPosition);
         _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
