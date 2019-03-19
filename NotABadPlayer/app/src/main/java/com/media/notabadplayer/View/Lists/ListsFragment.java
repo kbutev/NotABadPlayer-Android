@@ -26,6 +26,7 @@ import com.media.notabadplayer.Presenter.Albums.AlbumPresenter;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.Albums.AlbumFragment;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.View.BaseView;
@@ -111,6 +112,7 @@ public class ListsFragment extends Fragment implements BaseView {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!_playlistsAdapter.isInEditMode())
                 {
+                    UIAnimations.animateAlbumItemTAP(getContext(), view);
                     openPlaylistScreen(_playlists.get(position));
                 }
             }
