@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.widget.GridView;
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.AudioTrackSource;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.Albums.AlbumPresenter;
 import com.media.notabadplayer.R;
@@ -105,11 +108,24 @@ public class AlbumsFragment extends Fragment implements BaseView
     @Override
     public void openAlbumScreen(@NonNull AudioAlbum album) 
     {
+        FragmentActivity a = getActivity();
+        FragmentManager manager = a.getSupportFragmentManager();
+
+        int backStackCount = manager.getBackStackEntryCount();
+        String newEntryName = AudioTrackSource.ALBUM_PREFIX + album.albumTitle;
+        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
+
+        // Do nothing, if the last entry name is equal to the new entry name
+        if (lastEntryName != null && lastEntryName.equals(newEntryName))
+        {
+            return;
+        }
+
         AlbumFragment f = AlbumFragment.newInstance();
         f.setPresenter(new AlbumPresenter(f, album));
-        
-        FragmentManager manager = getActivity().getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.mainLayout, f).addToBackStack(AlbumsFragment.class.getCanonicalName()).commit();
+
+        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, f);
+        transaction.addToBackStack(newEntryName).commit();
     }
 
     @Override
