@@ -71,11 +71,17 @@ public class AudioTrackSource implements Serializable
         {
             ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getPlaylists(context);
             
+            if (playlists == null)
+            {
+                return null;
+            }
+            
             for (int e = 0; e < playlists.size(); e++)
             {
                 if (_value.equals(playlists.get(e).getName()))
                 {
-                    return playlists.get(e);
+                    AudioPlaylist pl = playlists.get(e);
+                    return new AudioPlaylist(pl.getName(), pl.getTracks(), playingTrack);
                 }
             }
             
