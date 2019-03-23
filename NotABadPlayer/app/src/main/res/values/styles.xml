@@ -3,9 +3,85 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar"
         xmlns:tools="http://schemas.android.com/tools">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorTextPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme2" parent="Theme.AppCompat.NoActionBar"
+        xmlns:tools="http://schemas.android.com/tools">
+    </style>
+
+    <style name="PrimaryText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="Subtext" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/primarySubtext</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="TitleText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="ListItemText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="ListItemTextSelected" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/textSelected</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="ListItemSubtext" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/primarySubtext</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="ListItemSubtextSelected" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/textSelected</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="NavigationText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/navigationText</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="NavigationSubtext" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/navigationSubtext</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="NavigationTextSelected" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/textSelected</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="QuickPlayerText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/quickPlayerText</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="QuickPlayerSubtext" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/quickPlayerSubtext</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="GenericButtonText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/genericButtonText</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="TrackNumber" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/trackNumber</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="SettingsButtonText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/settingsButtonText</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:typeface">monospace</item>
     </style>
 </resources>

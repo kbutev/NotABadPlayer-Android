@@ -4,14 +4,15 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.support.annotation.NonNull;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.ImageViewCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.media.notabadplayer.R;
-
-import javax.annotation.Nullable;
 
 public class UIAnimations {
 
@@ -21,9 +22,9 @@ public class UIAnimations {
         {
             return;
         }
-
-        int colorFrom = context.getResources().getColor(R.color.animationImageTapStart);
-        int colorTo = context.getResources().getColor(R.color.animationImageTapEnd);
+        
+        int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
+        int colorTo = ImageViewCompat.getImageTintList(view).getDefaultColor();
 
         ValueAnimator a = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
 
@@ -49,8 +50,8 @@ public class UIAnimations {
             return;
         }
         
-        int colorFrom = context.getResources().getColor(R.color.animationButtonTapStart);
-        int colorTo = context.getResources().getColor(R.color.animationButtonTapEnd);
+        int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
+        int colorTo = ViewCompat.getBackgroundTintList(view).getDefaultColor();
         
         ValueAnimator a = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         
@@ -76,8 +77,15 @@ public class UIAnimations {
             return;
         }
         
-        int colorFrom = context.getResources().getColor(R.color.animationAlbumItemTapStart);
-        int colorTo = context.getResources().getColor(R.color.animationAlbumItemTapEnd);
+        Drawable background = view.getBackground();
+        
+        if (!(background instanceof ColorDrawable)) 
+        {
+            return;
+        }
+        
+        int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
+        int colorTo = ((ColorDrawable) background).getColor();
         
         ValueAnimator a = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         

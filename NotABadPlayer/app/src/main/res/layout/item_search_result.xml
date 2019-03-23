@@ -27,16 +27,14 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorSearchItemText"
-            android:textSize="18dp"
+            android:textAppearance="@style/ListItemText"
             android:singleLine="true"/>
 
         <TextView
             android:id="@+id/albumTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorSearchItemText"
-            android:textSize="14dp"
+            android:textAppearance="@style/ListItemText"
             android:textStyle="bold"
             android:singleLine="true"/>
 
@@ -48,8 +46,7 @@
             android:id="@+id/duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorSearchItemText"
-            android:textSize="14dp"
+            android:textAppearance="@style/ListItemSubtext"
             android:singleLine="true"/>
     </LinearLayout>
     

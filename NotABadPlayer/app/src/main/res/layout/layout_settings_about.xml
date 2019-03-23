@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="10dp"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp">
     
@@ -11,32 +13,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/about"
+        android:textAppearance="@style/TitleText"
         android:singleLine="true"
-        android:textColor="@color/colorTextPrimary"
-        android:textStyle="bold"
-        android:textSize="25dp"
         android:textAlignment="center"/>
     
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/about_version"
+        android:textAppearance="@style/PrimaryText"
         android:singleLine="true"
-        android:textColor="@color/colorTextPrimary"
         android:textAlignment="center"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/about_release_date"
+        android:textAppearance="@style/PrimaryText"
         android:singleLine="true"
-        android:textColor="@color/colorTextPrimary"
         android:textAlignment="center"/>
     
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/about_credits"
-        android:textColor="@color/colorTextPrimary"
+        android:textAppearance="@style/PrimaryText"
         android:textAlignment="center"/>
 </LinearLayout>

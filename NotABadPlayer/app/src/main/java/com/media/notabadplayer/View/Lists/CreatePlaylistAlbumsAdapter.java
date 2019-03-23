@@ -273,29 +273,30 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
             View listItem = convertView;
 
             AudioTrack track = _tracks.get(position);
+            boolean selected = hasSelectedItem(track);
             
             TextView title = listItem.findViewById(R.id.title);
             title.setText(track.title);
             
-            if (hasSelectedItem(track))
+            if (!selected)
             {
-                title.setTextColor(_context.getResources().getColor(R.color.colorPlaylistsEditSelectedText));
+                title.setTextAppearance(_context, R.style.ListItemText);
             }
             else
             {
-                title.setTextColor(_context.getResources().getColor(R.color.colorPlaylistsEditItemText));
+                title.setTextAppearance(_context, R.style.ListItemTextSelected);
             }
             
             TextView description = listItem.findViewById(R.id.description);
             description.setText(track.duration);
 
-            if (hasSelectedItem(track))
+            if (!selected)
             {
-                description.setTextColor(_context.getResources().getColor(R.color.colorPlaylistsEditSelectedText));
+                description.setTextAppearance(_context, R.style.ListItemSubtext);
             }
             else
             {
-                description.setTextColor(_context.getResources().getColor(R.color.colorPlaylistsEditItemSubText));
+                description.setTextAppearance(_context, R.style.ListItemSubtextSelected);
             }
 
             return listItem;

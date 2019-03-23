@@ -11,8 +11,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorSettingsKeybindItemSubText"
-        android:textSize="14dp"
+        android:textAppearance="@style/SettingsButtonText"
         android:singleLine="true"/>
 
 </LinearLayout>

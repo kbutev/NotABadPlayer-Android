@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="10dp"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp">
 
@@ -10,10 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/settings_keybinds"
+        android:textAppearance="@style/TitleText"
         android:singleLine="true"
-        android:textColor="@color/colorTextPrimary"
-        android:textStyle="bold"
-        android:textSize="25dp"
         android:textAlignment="center"/>
 
     <LinearLayout
@@ -25,8 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybinds_action"
-            android:singleLine="true"
-            android:textColor="@color/colorSettingsKeybindTipText"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="1dp"
             android:layout_height="wrap_content"
@@ -35,8 +36,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybinds_command"
-            android:singleLine="true"
-            android:textColor="@color/colorSettingsKeybindTipText"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
     </LinearLayout>
     
     <LinearLayout
@@ -48,8 +49,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_home"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="1dp"
             android:layout_height="wrap_content"
@@ -70,8 +71,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_player_volume_up"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -92,8 +93,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_player_volume_down"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -114,8 +115,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_player_recall"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -136,8 +137,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_player_prev"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -158,8 +159,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_player_next"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -180,8 +181,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_qplayer_volume_up"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -202,8 +203,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_qplayer_volume_down"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -224,8 +225,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_qplayer_prev"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -246,8 +247,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_qplayer_next"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -268,8 +269,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_keybind_earphones_unplug"
-            android:singleLine="true"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"

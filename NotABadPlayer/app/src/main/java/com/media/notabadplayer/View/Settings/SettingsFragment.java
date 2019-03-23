@@ -486,10 +486,12 @@ public class SettingsFragment extends Fragment implements BaseView
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
         {
-            View listItem = LayoutInflater.from(_context).inflate(R.layout.item_keybind_action, parent, false);
+            View listItem = LayoutInflater.from(_context).inflate(R.layout.item_settings_option, parent, false);
 
             TextView title = listItem.findViewById(R.id.title);
-            title.setText(_values.get(position));
+            String string = _values.get(position);
+            string = string.replaceAll("_", " ");
+            title.setText(string);
 
             return listItem;
         }

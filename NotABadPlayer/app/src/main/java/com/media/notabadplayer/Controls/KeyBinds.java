@@ -45,10 +45,10 @@ public class KeyBinds
             case PAUSE_OR_RESUME:
                 AudioPlayer.getShared().pauseOrResume();
                 break;
-            case NEXT_TRACK:
+            case NEXT:
                 AudioPlayer.getShared().playNext();
                 break;
-            case PREVIOUS_TRACK:
+            case PREVIOUS:
                 AudioPlayer.getShared().playPrevious();
                 break;
             case SHUFFLE:
@@ -63,28 +63,28 @@ public class KeyBinds
             case MUTE_OR_UNMUTE:
                 AudioPlayer.getShared().muteOrUnmute();
                 break;
-            case JUMP_FORWARDS_5:
+            case FORWARDS_5:
                 AudioPlayer.getShared().jumpForwards(5);
                 break;
-            case JUMP_FORWARDS_8:
+            case FORWARDS_8:
                 AudioPlayer.getShared().jumpForwards(8);
                 break;
-            case JUMP_FORWARDS_10:
+            case FORWARDS_10:
                 AudioPlayer.getShared().jumpForwards(10);
                 break;
-            case JUMP_FORWARDS_15:
+            case FORWARDS_15:
                 AudioPlayer.getShared().jumpForwards(15);
                 break;
-            case JUMP_BACKWARDS_5:
+            case BACKWARDS_5:
                 AudioPlayer.getShared().jumpBackwards(5);
                 break;
-            case JUMP_BACKWARDS_8:
+            case BACKWARDS_8:
                 AudioPlayer.getShared().jumpBackwards(8);
                 break;
-            case JUMP_BACKWARDS_10:
+            case BACKWARDS_10:
                 AudioPlayer.getShared().jumpBackwards(10);
                 break;
-            case JUMP_BACKWARDS_15:
+            case BACKWARDS_15:
                 AudioPlayer.getShared().jumpBackwards(15);
                 break;
             case CHANGE_PLAY_ORDER:
@@ -112,7 +112,7 @@ public class KeyBinds
                 }
                 
                 break;
-            case PREVIOUS_PLAYED_TRACK:
+            case RECALL:
                 AudioPlayer.getShared().playPreviousInPlayHistory();
                 break;
         }

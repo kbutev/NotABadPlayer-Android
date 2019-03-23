@@ -171,8 +171,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private void initUI()
     {
-        final Fragment fragment = this;
-        
         _layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
