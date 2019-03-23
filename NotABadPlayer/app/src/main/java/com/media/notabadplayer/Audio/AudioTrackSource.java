@@ -48,7 +48,7 @@ public class AudioTrackSource implements Serializable
         return true;
     }
     
-    public AudioPlaylist getSourcePlaylist(@NonNull Context context, @NonNull AudioInfo audioInfo, @Nullable AudioTrack playingTrack)
+    public @Nullable AudioPlaylist getSourcePlaylist(@NonNull Context context, @NonNull AudioInfo audioInfo, @Nullable AudioTrack playingTrack)
     {
         if (!isValid())
         {

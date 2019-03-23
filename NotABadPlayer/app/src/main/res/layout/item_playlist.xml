@@ -36,7 +36,7 @@
         android:layout_height="64dp" 
         android:visibility="gone"
         android:src="@drawable/remove"
-        android:tint="@color/genericButtonBackground"
+        android:tint="?genericButtonBackgroundColor"
         android:background="@null"/>
 
 </LinearLayout>

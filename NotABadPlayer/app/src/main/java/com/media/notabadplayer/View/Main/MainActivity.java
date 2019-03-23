@@ -7,13 +7,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioTrackSource;
+import com.media.notabadplayer.Presenter.Albums.AlbumPresenter;
 import com.media.notabadplayer.Presenter.Player.QuickPlayerPresenter;
 import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
@@ -29,6 +34,9 @@ import com.media.notabadplayer.Presenter.Search.SearchPresenter;
 import com.media.notabadplayer.Presenter.Settings.SettingsPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.AppThemeSetter;
+import com.media.notabadplayer.Utilities.Serializing;
+import com.media.notabadplayer.View.Albums.AlbumFragment;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -49,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private AudioInfo _audioInfo;
     private MainPresenter _presenter;
+
+    BottomNavigationView _navigation;
     
     private BaseView _currentTab;
     
@@ -74,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        // App theme
+        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue(this));
+        
         // Content
         setContentView(R.layout.activity_main);
         
@@ -88,8 +101,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // UI
         initUI();
         
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        _navigation = findViewById(R.id.navigation);
+        _navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         
         // Noise suppression
         _noiseSuppression = new AudioPlayerNoiseSuppression();
@@ -124,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         // Create quick player and it's presenter
         _quickPlayer = QuickPlayerFragment.newInstance();
-        _quickPlayer.setPresenter(new QuickPlayerPresenter(_quickPlayer));
+        _quickPlayer.setPresenter(new QuickPlayerPresenter(_quickPlayer, this));
         
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.quickPlayer, (Fragment)_quickPlayer).commit();
@@ -187,7 +200,13 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void refreshCurrentTab()
     {
         FragmentManager manager = getSupportFragmentManager();
+        
         manager.beginTransaction().replace(R.id.mainLayout, (Fragment)_currentTab).commit();
+        
+        while (manager.getBackStackEntryCount() > 0)
+        {
+            manager.popBackStackImmediate();
+        }
     }
     
     private void onTabItemSelected(int itemID)
@@ -226,15 +245,21 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
     }
 
-    private void startAppWithTrack(Uri path)
+    private void startAppWithTrack(@NonNull Uri path)
     {
         AudioTrack track = _audioInfo.findTrackByPath(path);
         AudioPlaylist playlist = track.source.getSourcePlaylist(this, _audioInfo, track);
         
+        if (playlist == null)
+        {
+            Log.v(MainActivity.class.getCanonicalName(), "Cannot start app with desired track: " + path.toString());
+            return;
+        }
+        
         Intent intent = new Intent(this, PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra("playlist", playlist);
+        intent.putExtra("playlist", Serializing.serializeObject(playlist));
         startActivity(intent);
         
         // Transition animation
@@ -287,14 +312,69 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void openAlbumScreen(@NonNull AudioAlbum album) {
+    public void openAlbumScreen(@NonNull AudioAlbum album)
+    {
+        if (_currentTabID != R.id.navigation_albums)
+        {
+            View view = _navigation.findViewById(R.id.navigation_albums);
+            view.performClick();
+        }
         
+        FragmentManager manager = getSupportFragmentManager();
+        
+        int backStackCount = manager.getBackStackEntryCount();
+        String newEntryName = AudioTrackSource.ALBUM_PREFIX + album.albumTitle;
+        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
+
+        // Do nothing, if the last entry name is equal to the new entry name
+        if (lastEntryName != null && lastEntryName.equals(newEntryName))
+        {
+            return;
+        }
+
+        while (manager.getBackStackEntryCount() > 0)
+        {
+            manager.popBackStackImmediate();
+        }
+
+        AlbumFragment f = AlbumFragment.newInstance();
+        AlbumPresenter presenter = new AlbumPresenter(f, album);
+        f.setPresenter(presenter);
+        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, f);
+        transaction.addToBackStack(newEntryName).commit();
     }
 
     @Override
     public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
+        if (_currentTabID != R.id.navigation_albums)
+        {
+            View view = _navigation.findViewById(R.id.navigation_albums);
+            view.performClick();
+        }
+        
+        FragmentManager manager = getSupportFragmentManager();
+        
+        int backStackCount = manager.getBackStackEntryCount();
+        String newEntryName = AudioTrackSource.PLAYLIST_PREFIX + playlist.getName();
+        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
 
+        // Do nothing, if the last entry name is equal to the new entry name
+        if (lastEntryName != null && lastEntryName.equals(newEntryName))
+        {
+            return;
+        }
+
+        while (manager.getBackStackEntryCount() > 0)
+        {
+            manager.popBackStackImmediate();
+        }
+
+        AlbumFragment f = AlbumFragment.newInstance();
+        AlbumPresenter presenter = new AlbumPresenter(f, playlist);
+        f.setPresenter(presenter);
+        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, f);
+        transaction.addToBackStack(newEntryName).commit();
     }
 
     @Override
@@ -337,6 +417,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     public void appThemeChanged(AppSettings.AppTheme appTheme)
     {
         Log.v(MainActivity.class.getSimpleName(), "App theme changed to " + appTheme.name());
+
+        AppThemeSetter.setTheme(this, appTheme);
         
         _currentTab.appThemeChanged(appTheme);
         _quickPlayer.appThemeChanged(appTheme);

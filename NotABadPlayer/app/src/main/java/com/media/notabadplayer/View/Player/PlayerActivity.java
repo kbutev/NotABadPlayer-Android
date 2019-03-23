@@ -2,6 +2,8 @@ package com.media.notabadplayer.View.Player;
 
 import java.util.ArrayList;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -21,6 +24,8 @@ import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Presenter.Player.PlayerPresenter;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.AppThemeSetter;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -38,6 +43,9 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // App theme
+        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue(this));
         
         // Content
         setContentView(R.layout.activity_player);
@@ -84,7 +92,18 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.playerBackground));
+            
+            View view = findViewById(android.R.id.content);
+            
+            if (view != null)
+            {
+                Drawable background = view.getBackground();
+
+                if (background instanceof ColorDrawable)
+                {
+                    window.setStatusBarColor(((ColorDrawable) background).getColor());
+                } 
+            }
         }
         
         overridePendingTransition(0, R.anim.player_slide_down);

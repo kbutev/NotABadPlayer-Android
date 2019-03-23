@@ -298,7 +298,7 @@ public class GeneralStorage
         } 
         catch (Exception e)
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read AppTheme value from storage");
+            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read AppThemeSetter value from storage");
         }
         
         return AppSettings.AppTheme.LIGHT;

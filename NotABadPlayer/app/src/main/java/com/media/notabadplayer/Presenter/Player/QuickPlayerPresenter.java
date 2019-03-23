@@ -16,10 +16,12 @@ import com.media.notabadplayer.View.BaseView;
 public class QuickPlayerPresenter implements BasePresenter
 {
     private @NonNull BaseView _view;
+    private @NonNull BaseView _applicationRootView;
     
-    public QuickPlayerPresenter(@NonNull BaseView view)
+    public QuickPlayerPresenter(@NonNull BaseView view, @NonNull BaseView applicationRootView)
     {
         this._view = view;
+        this._applicationRootView = applicationRootView;
     }
     
     @Override
@@ -59,12 +61,12 @@ public class QuickPlayerPresenter implements BasePresenter
                 
                 if (album != null)
                 {
-                    _view.openAlbumScreen(album);
+                    _applicationRootView.openAlbumScreen(album);
                 }
             }
             else
             {
-                _view.openPlaylistScreen(playlist);
+                _applicationRootView.openPlaylistScreen(playlist);
             }
         }
     }

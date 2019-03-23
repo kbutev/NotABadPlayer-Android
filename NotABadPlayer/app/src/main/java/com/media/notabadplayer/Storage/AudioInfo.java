@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -71,7 +73,7 @@ public class AudioInfo {
         return _albums;
     }
     
-    synchronized public AudioAlbum getAlbumByID(@NonNull String identifier)
+    synchronized public @Nullable AudioAlbum getAlbumByID(@NonNull String identifier)
     {
         ArrayList<AudioAlbum> albums = getAlbums();
         
@@ -121,11 +123,9 @@ public class AudioInfo {
             selection = selection + " and album_id = " + album.albumID;
         }
         
-        String orderBy = null;
-        
         Cursor cursor = _context.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection, selection, null, orderBy);
+                projection, selection, null, null);
         
         if (cursor == null)
         {
@@ -218,6 +218,12 @@ public class AudioInfo {
             double duration = cursor.getLong(durationColumn) / 1000.0;
             String albumID = cursor.getString(albumIDColumn);
             AudioAlbum album = getAlbumByID(albumID);
+            
+            if (album == null)
+            {
+                continue;
+            }
+            
             String albumCover = album.albumCover;
             
             albumTracks.add(new AudioTrack(filePath,
@@ -276,6 +282,12 @@ public class AudioInfo {
         double duration = cursor.getLong(durationColumn) / 1000.0;
         String albumId = cursor.getString(albumIDColumn);
         AudioAlbum album = getAlbumByID(albumId);
+
+        if (album == null)
+        {
+            return null;
+        }
+        
         String albumCover = album.albumCover;
         
         cursor.close();

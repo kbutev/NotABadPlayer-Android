@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,8 @@ public class SettingsFragment extends Fragment implements BaseView
     
     private Button _resetSettingsButton;
     
+    private AppSettings.AppTheme _appTheme;
+    
     public SettingsFragment()
     {
 
@@ -114,6 +117,9 @@ public class SettingsFragment extends Fragment implements BaseView
         
         // Select correct values
         selectProperValues();
+        
+        // App theme retrieve and store
+        _appTheme = GeneralStorage.getShared().getAppThemeValue(getContext());
         
         return root;
     }
@@ -440,7 +446,21 @@ public class SettingsFragment extends Fragment implements BaseView
     @Override
     public void appThemeChanged(AppSettings.AppTheme appTheme)
     {
-
+        // Check if the fragment already have the correct app theme
+        if (_appTheme == GeneralStorage.getShared().getAppThemeValue(getContext()))
+        {
+            return;
+        }
+        
+        // Reload
+        Fragment fragment = this;
+        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.detach(fragment);
+        ft.attach(fragment);
+        ft.commit();
+        
+        // Retrieve and store again
+        _appTheme = GeneralStorage.getShared().getAppThemeValue(getContext());
     }
     
     @Override

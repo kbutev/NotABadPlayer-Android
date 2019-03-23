@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Color references -->
+    <attr name="primaryTextColor" format="reference|color"/>
+    <attr name="primarySubtextColor" format="reference|color"/>
+    <attr name="textSelectedColor" format="reference|color"/>
+    <attr name="navigationTextColor" format="reference|color"/>
+    <attr name="navigationSubtextColor" format="reference|color"/>
+    <attr name="playerTextColor" format="reference|color"/>
+    <attr name="playerSubtextColor" format="reference|color"/>
+    <attr name="playerTitleColor" format="reference|color"/>
+    <attr name="playerButtonsTintColor" format="reference|color"/>
+    <attr name="quickPlayerTextColor" format="reference|color"/>
+    <attr name="quickPlayerSubtextColor" format="reference|color"/>
+    <attr name="quickPlayerButtonsTintColor" format="reference|color"/>
+    <attr name="quickPlayerBorderColor" format="reference|color"/>
+    <attr name="trackNumberColor" format="reference|color"/>
+    <attr name="genericButtonTextColor" format="reference|color"/>
+    <attr name="settingsButtonTextColor" format="reference|color"/>
+    
+    <!-- Background references -->
+    <attr name="baseBackgroundColor" format="reference|color"/>
+    <attr name="navigationBackgroundColor" format="reference|color"/>
+    <attr name="quickPlayerBackgroundColor" format="reference|color"/>
+    <attr name="playerBackgroundColor" format="reference|color"/>
+    <attr name="genericButtonBackgroundColor" format="reference|color"/>
+    
+    <!-- Other references -->
+    <attr name="genericBorderBackgroundColor" format="reference|color"/>
+    <attr name="borderOutlineColor" format="reference|color"/>
+</resources>

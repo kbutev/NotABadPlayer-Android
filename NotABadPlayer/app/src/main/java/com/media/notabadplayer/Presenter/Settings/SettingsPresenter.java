@@ -73,6 +73,11 @@ public class SettingsPresenter implements BasePresenter
         
         _view.appSettingsReset();
         _applicationRootView.appSettingsReset();
+
+        AppSettings.AppTheme themeValue = GeneralStorage.getShared().getAppThemeValue(_context);
+
+        _view.appThemeChanged(themeValue);
+        _applicationRootView.appThemeChanged(themeValue);
     }
 
     @Override

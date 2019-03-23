@@ -1,86 +1,174 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar"
-        xmlns:tools="http://schemas.android.com/tools">
+    <!-- Themes -->
+    <style name="Light" parent="Theme.AppCompat.NoActionBar">
+        <item name="primaryTextColor">@color/primaryText</item>
+        <item name="primarySubtextColor">@color/primarySubtext</item>
+        <item name="textSelectedColor">@color/textSelected</item>
+        <item name="navigationTextColor">@color/navigationText</item>
+        <item name="navigationSubtextColor">@color/navigationSubtext</item>
+        <item name="playerTextColor">@color/playerText</item>
+        <item name="playerSubtextColor">@color/playerSubtext</item>
+        <item name="playerTitleColor">@color/playerTitle</item>
+        <item name="playerButtonsTintColor">@color/playerButtonsTint</item>
+        <item name="quickPlayerTextColor">@color/quickPlayerText</item>
+        <item name="quickPlayerSubtextColor">@color/quickPlayerSubtext</item>
+        <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="quickPlayerBorderColor">@color/quickPlayerBorder</item>
+        <item name="trackNumberColor">@color/trackNumber</item>
+        <item name="genericButtonTextColor">@color/genericButtonText</item>
+        <item name="settingsButtonTextColor">@color/settingsButtonText</item>
+        <item name="baseBackgroundColor">@color/baseBackground</item>
+        <item name="navigationBackgroundColor">@color/navigationBackground</item>
+        <item name="quickPlayerBackgroundColor">@color/quickPlayerBackground</item>
+        <item name="playerBackgroundColor">@color/playerBackground</item>
+        <item name="genericButtonBackgroundColor">@color/genericButtonBackground</item>
+        <item name="genericBorderBackgroundColor">@color/genericBorderBackground</item>
+        <item name="borderOutlineColor">@color/borderOutline</item>
+    </style>
+    <style name="Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="primaryTextColor">@color/primaryTextInverted</item>
+        <item name="primarySubtextColor">@color/primarySubtextInverted</item>
+        <item name="textSelectedColor">@color/textSelectedInverted</item>
+        <item name="navigationTextColor">@color/navigationTextInverted</item>
+        <item name="navigationSubtextColor">@color/navigationSubtextInverted</item>
+        <item name="playerTextColor">@color/playerTextInverted</item>
+        <item name="playerSubtextColor">@color/playerSubtextInverted</item>
+        <item name="playerTitleColor">@color/playerTitleInverted</item>
+        <item name="playerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="quickPlayerTextColor">@color/quickPlayerTextInverted</item>
+        <item name="quickPlayerSubtextColor">@color/quickPlayerSubtextInverted</item>
+        <item name="quickPlayerButtonsTintColor">@color/playerButtonsTint</item>
+        <item name="quickPlayerBorderColor">@color/quickPlayerBorderInverted</item>
+        <item name="trackNumberColor">@color/trackNumberInverted</item>
+        <item name="genericButtonTextColor">@color/genericButtonTextInverted</item>
+        <item name="settingsButtonTextColor">@color/settingsButtonTextInverted</item>
+        <item name="baseBackgroundColor">@color/baseBackgroundInverted</item>
+        <item name="navigationBackgroundColor">@color/navigationBackgroundInverted</item>
+        <item name="quickPlayerBackgroundColor">@color/quickPlayerBackgroundInverted</item>
+        <item name="playerBackgroundColor">@color/playerBackgroundInverted</item>
+        <item name="genericButtonBackgroundColor">@color/genericButtonBackgroundInverted</item>
+        <item name="genericBorderBackgroundColor">@color/genericBorderBackgroundInverted</item>
+        <item name="borderOutlineColor">@color/borderOutlineInverted</item>
+    </style>
+    <style name="Mix" parent="Theme.AppCompat.NoActionBar">
+        <item name="primaryTextColor">@color/primaryText</item>
+        <item name="primarySubtextColor">@color/primarySubtext</item>
+        <item name="textSelectedColor">@color/textSelected</item>
+        <item name="navigationTextColor">@color/navigationText</item>
+        <item name="navigationSubtextColor">@color/navigationSubtext</item>
+        <item name="playerTextColor">@color/playerTextInverted</item>
+        <item name="playerSubtextColor">@color/playerSubtextInverted</item>
+        <item name="playerTitleColor">@color/playerTitleInverted</item>
+        <item name="playerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="quickPlayerTextColor">@color/quickPlayerText</item>
+        <item name="quickPlayerSubtextColor">@color/quickPlayerSubtext</item>
+        <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="quickPlayerBorderColor">@color/quickPlayerBorder</item>
+        <item name="trackNumberColor">@color/trackNumber</item>
+        <item name="genericButtonTextColor">@color/genericButtonText</item>
+        <item name="settingsButtonTextColor">@color/settingsButtonText</item>
+        <item name="baseBackgroundColor">@color/baseBackground</item>
+        <item name="navigationBackgroundColor">@color/navigationBackground</item>
+        <item name="quickPlayerBackgroundColor">@color/quickPlayerBackground</item>
+        <item name="playerBackgroundColor">@color/playerBackground</item>
+        <item name="genericButtonBackgroundColor">@color/genericButtonBackground</item>
+        <item name="genericBorderBackgroundColor">@color/genericBorderBackground</item>
+        <item name="borderOutlineColor">@color/borderOutline</item>
     </style>
 
-    <style name="AppTheme2" parent="Theme.AppCompat.NoActionBar"
-        xmlns:tools="http://schemas.android.com/tools">
+    <!-- Text -->
+    <style name="BlackText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">#414141</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">monospace</item>
     </style>
-
     <style name="PrimaryText" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textColor">?primaryTextColor</item>
         <item name="android:textSize">12sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="Subtext" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/primarySubtext</item>
+        <item name="android:textColor">?primarySubtextColor</item>
         <item name="android:textSize">10sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="TitleText" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textColor">?primaryTextColor</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="ListItemText" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textColor">?primaryTextColor</item>
         <item name="android:textSize">12sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="ListItemTextSelected" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/textSelected</item>
+        <item name="android:textColor">?textSelectedColor</item>
         <item name="android:textSize">12sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="ListItemSubtext" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/primarySubtext</item>
+        <item name="android:textColor">?primarySubtextColor</item>
         <item name="android:textSize">12sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="ListItemSubtextSelected" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/textSelected</item>
+        <item name="android:textColor">?textSelectedColor</item>
         <item name="android:textSize">12sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="NavigationText" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/navigationText</item>
+        <item name="android:textColor">?navigationTextColor</item>
         <item name="android:textSize">12sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="NavigationSubtext" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/navigationSubtext</item>
+        <item name="android:textColor">?navigationSubtextColor</item>
         <item name="android:textSize">10sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="NavigationTextSelected" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/textSelected</item>
+        <item name="android:textColor">?textSelectedColor</item>
         <item name="android:textSize">12sp</item>
         <item name="android:typeface">monospace</item>
     </style>
+    <style name="PlayerText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">?playerTextColor</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="PlayerSubtext" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">?playerSubtextColor</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="PlayerTitleText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">?playerTitleColor</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="QuickPlayerText" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/quickPlayerText</item>
+        <item name="android:textColor">?quickPlayerTextColor</item>
         <item name="android:textSize">12sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="QuickPlayerSubtext" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/quickPlayerSubtext</item>
+        <item name="android:textColor">?quickPlayerSubtextColor</item>
         <item name="android:textSize">10sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="GenericButtonText" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/genericButtonText</item>
+        <item name="android:textColor">?genericButtonTextColor</item>
         <item name="android:textSize">14sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="TrackNumber" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/trackNumber</item>
+        <item name="android:textColor">?trackNumberColor</item>
         <item name="android:textSize">20sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="SettingsButtonText" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/settingsButtonText</item>
+        <item name="android:textColor">?settingsButtonTextColor</item>
         <item name="android:textSize">14sp</item>
         <item name="android:typeface">monospace</item>
     </style>

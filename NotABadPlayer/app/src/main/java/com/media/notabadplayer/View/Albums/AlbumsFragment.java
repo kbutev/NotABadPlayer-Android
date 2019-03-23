@@ -110,17 +110,9 @@ public class AlbumsFragment extends Fragment implements BaseView
     {
         FragmentActivity a = getActivity();
         FragmentManager manager = a.getSupportFragmentManager();
-
-        int backStackCount = manager.getBackStackEntryCount();
+        
         String newEntryName = AudioTrackSource.ALBUM_PREFIX + album.albumTitle;
-        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
-
-        // Do nothing, if the last entry name is equal to the new entry name
-        if (lastEntryName != null && lastEntryName.equals(newEntryName))
-        {
-            return;
-        }
-
+        
         AlbumFragment f = AlbumFragment.newInstance();
         f.setPresenter(new AlbumPresenter(f, album));
 

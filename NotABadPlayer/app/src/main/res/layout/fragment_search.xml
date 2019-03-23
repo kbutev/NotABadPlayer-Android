@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/baseBackground">
+    android:background="@drawable/background_base">
     
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,12 +17,13 @@
             android:layout_marginTop="3dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:paddingRight="5dp"
-            android:textAppearance="@style/PrimaryText"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textAppearance="@style/BlackText"
             android:textColor="@null"
             android:background="@drawable/search_field_border"
             android:hint="@string/search_hint"
-            android:textColorHint="@color/primarySubtext"
+            android:textColorHint="@color/grayText"
             android:inputType="textVisiblePassword"
             android:imeOptions="actionDone"/>
         <ImageButton

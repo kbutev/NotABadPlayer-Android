@@ -1,50 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Generic -->
+    <color name="black">#414141</color>
+    <color name="white">#ffffff</color>
     <color name="transparent">#00000000</color>
-    
     <color name="statusBarColor">#414141</color>
 
+    <color name="statusBarColorInverted">#414141</color>
+    
+    <!-- Background -->
     <color name="baseBackground">#ffffff</color>
     <color name="navigationBackground">#414141</color>
     <color name="quickPlayerBackground">#414141</color>
     <color name="playerBackground">#ffffff</color>
     <color name="genericButtonBackground">#414141</color>
-
     <color name="genericBorderBackground">#F8F7F5</color>
     <color name="borderOutline">#414141</color>
-
+    <color name="quickPlayerBorder">#00FFFFFF</color>
+    
+    <color name="baseBackgroundInverted">#414141</color>
+    <color name="navigationBackgroundInverted">#ffffff</color>
+    <color name="quickPlayerBackgroundInverted">#414141</color>
+    <color name="playerBackgroundInverted">#414141</color>
+    <color name="genericButtonBackgroundInverted">#ffffff</color>
+    <color name="genericBorderBackgroundInverted">#F8F7F5</color>
+    <color name="borderOutlineInverted">#414141</color>
+    <color name="quickPlayerBorderInverted">#FFFFFFFF</color>
+    
+    <!-- Text -->
+    <color name="blackText">#414141</color>
+    <color name="whiteText">#ffffff</color>
+    <color name="grayText">#6c6c6c</color>
     <color name="primaryText">#414141</color>
     <color name="primarySubtext">#6c6c6c</color>
     <color name="textSelected">#2196F3</color>
     <color name="navigationText">#ffffff</color>
     <color name="navigationSubtext">#ffffff</color>
+    <color name="playerText">#414141</color>
+    <color name="playerSubtext">#6c6c6c</color>
+    <color name="playerTitle">#414141</color>
     <color name="quickPlayerText">#ffffff</color>
     <color name="quickPlayerSubtext">#ffffff</color>
     <color name="trackNumber">#6c6c6c</color>
     <color name="genericButtonText">#ffffff</color>
     <color name="settingsButtonText">#2676d9</color>
 
-    <color name="playerButtons">#000000</color>
+    <color name="primaryTextInverted">#ffffff</color>
+    <color name="primarySubtextInverted">#FFEB3B</color>
+    <color name="textSelectedInverted">#2196F3</color>
+    <color name="navigationTextInverted">#414141</color>
+    <color name="navigationSubtextInverted">#FFEB3B</color>
+    <color name="playerTextInverted">#ffffff</color>
+    <color name="playerSubtextInverted">#FFEB3B</color>
+    <color name="playerTitleInverted">#ffffff</color>
+    <color name="quickPlayerTextInverted">#ffffff</color>
+    <color name="quickPlayerSubtextInverted">#FFEB3B</color>
+    <color name="trackNumberInverted">#E9E9E9</color>
+    <color name="genericButtonTextInverted">#000000</color>
+    <color name="settingsButtonTextInverted">#2676d9</color>
+
+    <!-- Buttons -->
+    <color name="playerButtonsTint">#000000</color>
+    <color name="quickPlayerButtonsTint">#ffffff</color>
+    
+    <!-- Seek bars -->
     <color name="playerBaseProgressBar">#6c6c6c</color>
     <color name="playerProgressBarThumb">#FFFFFF</color>
     <color name="playerProgressBarFill">#FFEB3B</color>
     <color name="playerProgressBarFillMid">#FFC107</color>
     <color name="playerProgressBarFillEnd">#FF9800</color>
-    
-    <color name="quickPlayerButtons">#ffffff</color>
+
     <color name="quickPlayerBaseProgressBar">#6c6c6c</color>
     <color name="quickPlayerProgressBarThumb">#FFFFFF</color>
     <color name="quickPlayerProgressBarFill">#CE7B00</color>
     <color name="quickPlayerProgressBarFillMid">#CE7B00</color>
     <color name="quickPlayerProgressBarFillEnd">#CE7B00</color>
-    
+
     <color name="volumeBarBaseProgressBar">#6c6c6c</color>
     <color name="volumeBarProgressBarThumb">#FFFFFF</color>
     <color name="volumeBarProgressBarFill">#2196F3</color>
     <color name="volumeBarProgressBarFillMid">#68BEFF</color>
     <color name="volumeBarProgressBarFillEnd">#2196F3</color>
 
+    <!-- Current track -->
     <color name="currentlyPlayingTrack">#8D2196F3</color>
-    
+
+    <!-- Effects -->
     <color name="animationSelectionEffect">#4CAF50</color>
 </resources>
