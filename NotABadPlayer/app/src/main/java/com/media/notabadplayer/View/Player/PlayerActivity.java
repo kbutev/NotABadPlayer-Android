@@ -1,12 +1,16 @@
 package com.media.notabadplayer.View.Player;
 
+import java.util.ArrayList;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
@@ -20,8 +24,6 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
-
-import java.util.ArrayList;
 
 import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
@@ -78,6 +80,13 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         super.finish();
 
         // Transition animation
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) 
+        {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.playerBackground));
+        }
+        
         overridePendingTransition(0, R.anim.player_slide_down);
     }
     

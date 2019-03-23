@@ -1,55 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorTransparent">#00000000</color>
+    <color name="transparent">#00000000</color>
     
-    <color name="colorBackgroundPrimary">#ffffff</color>
-    <color name="colorTextPrimary">#313131</color>
+    <color name="statusBarColor">#414141</color>
+
+    <color name="baseBackground">#ffffff</color>
+    <color name="navigationBackground">#414141</color>
+    <color name="quickPlayerBackground">#414141</color>
+    <color name="playerBackground">#ffffff</color>
+    <color name="genericButtonBackground">#414141</color>
+
+    <color name="genericBorderBackground">#F8F7F5</color>
+    <color name="borderOutline">#414141</color>
+
+    <color name="primaryText">#414141</color>
+    <color name="primarySubtext">#6c6c6c</color>
+    <color name="textSelected">#2196F3</color>
+    <color name="navigationText">#ffffff</color>
+    <color name="navigationSubtext">#ffffff</color>
+    <color name="quickPlayerText">#ffffff</color>
+    <color name="quickPlayerSubtext">#ffffff</color>
+    <color name="trackNumber">#6c6c6c</color>
+    <color name="genericButtonText">#ffffff</color>
+    <color name="settingsButtonText">#2676d9</color>
+
+    <color name="playerButtons">#000000</color>
+    <color name="playerBaseProgressBar">#6c6c6c</color>
+    <color name="playerProgressBarThumb">#FFFFFF</color>
+    <color name="playerProgressBarFill">#FFEB3B</color>
+    <color name="playerProgressBarFillMid">#FFC107</color>
+    <color name="playerProgressBarFillEnd">#FF9800</color>
     
-    <color name="colorOverlayBackground">#414141</color>
-    <color name="colorOverlayText">#ffffff</color>
-
-    <color name="colorBottomNavigationBackground">#414141</color>
-    <color name="colorBottomNavigationText">#2676d9</color>
-    <color name="colorBottomNavigationTextDeselected">#ffffff</color>
-
-    <color name="colorAlbumTitleText">#313131</color>
-    <color name="colorAlbumItemText">#313131</color>
-    <color name="colorAlbumItemTextSub">#9c9696</color>
-    <color name="colorAlbumItemPlayingBackground">#8ec1daf7</color>
-
-    <color name="colorPlaylistsText">#313131</color>
-    <color name="colorPlaylistsItemText">#313131</color>
-    <color name="colorPlaylistsItemSubText">#6c6c6c</color>
-    <color name="colorPlaylistsButtonText">#ffffff</color>
-
-    <color name="colorPlaylistsEditTitleText">#4CAF50</color>
-    <color name="colorPlaylistsEditText">#ffffff</color>
-    <color name="colorPlaylistsEditItemText">#ffffff</color>
-    <color name="colorPlaylistsEditItemSubText">#ffffff</color>
-    <color name="colorPlaylistsEditButtonText">#ffffff</color>
-    <color name="colorPlaylistsEditSelectedText">#2196F3</color>
+    <color name="quickPlayerButtons">#ffffff</color>
+    <color name="quickPlayerBaseProgressBar">#6c6c6c</color>
+    <color name="quickPlayerProgressBarThumb">#FFFFFF</color>
+    <color name="quickPlayerProgressBarFill">#CE7B00</color>
+    <color name="quickPlayerProgressBarFillMid">#CE7B00</color>
+    <color name="quickPlayerProgressBarFillEnd">#CE7B00</color>
     
-    <color name="colorSearchFieldText">#313131</color>
-    <color name="colorSearchFieldHint">#6e6c6c</color>
-    <color name="colorSearchItemText">#313131</color>
-    <color name="colorSearchItemSubText">#6c6c6c</color>
+    <color name="volumeBarBaseProgressBar">#6c6c6c</color>
+    <color name="volumeBarProgressBarThumb">#FFFFFF</color>
+    <color name="volumeBarProgressBarFill">#2196F3</color>
+    <color name="volumeBarProgressBarFillMid">#68BEFF</color>
+    <color name="volumeBarProgressBarFillEnd">#2196F3</color>
 
-    <color name="colorSettingsKeybindTipText">#3F51B5</color>
-    <color name="colorSettingsKeybindItemSubText">#2676d9</color>
+    <color name="currentlyPlayingTrack">#8D2196F3</color>
     
-    <color name="colorPrimaryDark">#00acd2</color>
-    <color name="colorAccent">#D81B60</color>
-
-    <color name="playerProgressBarThumbColor">#FFFFFF</color>
-    <color name="playerProgressBarColor">#FFC107</color>
-    <color name="volumeBarThumbColor">#FFFFFF</color>
-    <color name="volumeBarColor">#2196F3</color>
-    <color name="mediaButtons">#ffffff</color>
-
-    <color name="animationImageTapStart">#4CAF50</color>
-    <color name="animationImageTapEnd">#ffffff</color>
-    <color name="animationButtonTapStart">#4CAF50</color>
-    <color name="animationButtonTapEnd">#ffffff</color>
-    <color name="animationAlbumItemTapStart">#C1DAF7</color>
-    <color name="animationAlbumItemTapEnd">#ffffff</color>
+    <color name="animationSelectionEffect">#4CAF50</color>
 </resources>

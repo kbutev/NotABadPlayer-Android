@@ -192,14 +192,14 @@ public class GeneralStorage
         saveSettingsAction(context, ApplicationInput.PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
         saveSettingsAction(context, ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
         saveSettingsAction(context, ApplicationInput.PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
-        saveSettingsAction(context, ApplicationInput.PLAYER_RECALL, ApplicationAction.PREVIOUS_PLAYED_TRACK);
-        saveSettingsAction(context, ApplicationInput.PLAYER_NEXT_BUTTON, ApplicationAction.NEXT_TRACK);
-        saveSettingsAction(context, ApplicationInput.PLAYER_PREVIOUS_BUTTON, ApplicationAction.PREVIOUS_TRACK);
+        saveSettingsAction(context, ApplicationInput.PLAYER_RECALL, ApplicationAction.RECALL);
+        saveSettingsAction(context, ApplicationInput.PLAYER_NEXT_BUTTON, ApplicationAction.NEXT);
+        saveSettingsAction(context, ApplicationInput.PLAYER_PREVIOUS_BUTTON, ApplicationAction.PREVIOUS);
         saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
         saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
         saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
-        saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, ApplicationAction.JUMP_FORWARDS_15);
-        saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, ApplicationAction.JUMP_BACKWARDS_15);
+        saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, ApplicationAction.FORWARDS_15);
+        saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, ApplicationAction.BACKWARDS_15);
         
         saveCachingPolicyFlagForAlbumsTab(context, true);
         saveCachingPolicyFlagForListsTab(context, false);

@@ -84,7 +84,7 @@ class AlbumListAdapter extends BaseAdapter
         // Header (position = 0)
         if (position == 0)
         {
-            View header = LayoutInflater.from(_context).inflate(R.layout.header_album, parent, false);
+            View header = LayoutInflater.from(_context).inflate(R.layout.item_album_header, parent, false);
 
             ImageView albumCover = header.findViewById(R.id.albumCover);
             TextView albumTitle = header.findViewById(R.id.albumTitle);
@@ -130,7 +130,7 @@ class AlbumListAdapter extends BaseAdapter
 
         AudioTrack item = (AudioTrack) getItem(position);
         
-        View listItem = LayoutInflater.from(_context).inflate(R.layout.item_album_song, parent, false);
+        View listItem = LayoutInflater.from(_context).inflate(R.layout.item_album_track, parent, false);
         
         String dataTitle = item.title;
         String dataTrackNum = item.trackNum;
@@ -181,11 +181,11 @@ class AlbumListAdapter extends BaseAdapter
         
         if (!isPlayingTrack)
         {
-            listItem.setBackgroundColor(resources.getColor(R.color.colorTransparent));
+            listItem.setBackgroundColor(resources.getColor(R.color.transparent));
         }
         else
         {
-            listItem.setBackgroundColor(resources.getColor(R.color.colorAlbumItemPlayingBackground));
+            listItem.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
         }
         
         return listItem;

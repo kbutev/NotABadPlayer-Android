@@ -23,10 +23,8 @@
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
         android:singleLine="true"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:textColor="@color/colorAlbumTitleText"/>
+        android:textAppearance="@style/TitleText"
+        android:textAlignment="center"/>
 
     <Space
         android:layout_width="match_parent"
@@ -39,9 +37,8 @@
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
         android:singleLine="true"
-        android:textSize="15sp"
-        android:textAlignment="center"
-        android:textColor="@color/colorAlbumItemText"/>
+        android:textAppearance="@style/PrimaryText"
+        android:textAlignment="center"/>
 
     <Space
         android:layout_width="match_parent"
@@ -54,7 +51,6 @@
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
         android:singleLine="true"
-        android:textSize="15sp"
-        android:textAlignment="center"
-        android:textColor="@color/colorAlbumItemTextSub"/>
+        android:textAppearance="@style/Subtext"
+        android:textAlignment="center"/>
 </LinearLayout>

@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="102dp">
+    android:layout_height="102dp"
+    android:background="@color/quickPlayerBackground">
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,8 +41,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:maxWidth="200dp"
-                    android:textSize="14sp"
                     android:text="@string/nothing_playing"
+                    android:textAppearance="@style/QuickPlayerText"
                     android:singleLine="true"/>
                 
                 <LinearLayout
@@ -51,7 +52,7 @@
                         android:id="@+id/durationCurrent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
+                        android:textAppearance="@style/QuickPlayerSubtext"
                         android:text="@string/zero_timer"/>
                     <TextView
                         android:layout_width="wrap_content"
@@ -62,7 +63,7 @@
                         android:id="@+id/durationTotal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
+                        android:textAppearance="@style/QuickPlayerSubtext"
                         android:text="@string/zero_timer"
                         android:gravity="right"/>
                 </LinearLayout>
@@ -86,25 +87,25 @@
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/playlist"
-                    android:backgroundTint="@color/mediaButtons"/>
+                    app:backgroundTint="@color/quickPlayerButtons"/>
                 <Button
                     android:id="@+id/mediaButtonBack"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/media_previous"
-                    android:backgroundTint="@color/mediaButtons"/>
+                    app:backgroundTint="@color/quickPlayerButtons"/>
                 <Button
                     android:id="@+id/mediaButtonPlay"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/media_play"
-                    android:backgroundTint="@color/mediaButtons"/>
+                    app:backgroundTint="@color/quickPlayerButtons"/>
                 <Button
                     android:id="@+id/mediaButtonForward"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/media_next"
-                    android:backgroundTint="@color/mediaButtons"/>
+                    app:backgroundTint="@color/quickPlayerButtons"/>
                 <Space
                     android:layout_width="48dp"
                     android:layout_height="0dp" />
@@ -116,9 +117,11 @@
     <SeekBar
         android:id="@+id/mediaBar"
         android:layout_width="match_parent"
-        android:layout_height="12dp"
+        android:layout_height="10dp"
         android:layout_marginBottom="2dp"
         android:clickable="false"
+        android:progressDrawable="@drawable/qplayer_seek_bar"
+        android:thumb="@drawable/qplayer_seek_thumb"
         app:layout_constraintBottom_toBottomOf="parent">
     </SeekBar>
     

@@ -3,11 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/baseBackground">
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:orientation="horizontal"
         android:focusableInTouchMode="true">
         <Button
@@ -15,19 +16,22 @@
             android:layout_width="70dp"
             android:layout_height="48dp"
             android:text="@string/playlist_cancel"
-            android:textSize="12dp"
-            android:textColor="@color/colorPlaylistsEditButtonText"/>
+            android:textAppearance="@style/GenericButtonText"
+            android:background="@color/genericButtonBackground"/>
         <Space
             android:layout_width="10dp"
             android:layout_height="0dp" />
         <EditText
             android:id="@+id/playlistNameField"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:textColor="@color/colorPlaylistsEditText"
+            android:layout_height="40dp"
+            android:textAppearance="@style/PrimaryText"
+            android:textColor="@null"
+            android:background="@drawable/playlist_name_field_border"
             android:hint="@string/playlist_name"
+            android:textColorHint="@color/primarySubtext"
             android:layout_weight="0.33"
-            android:inputType="text"
+            android:inputType="textVisiblePassword"
             android:singleLine="true"/>
         <Space
             android:layout_width="10dp"
@@ -37,8 +41,8 @@
             android:layout_width="64dp"
             android:layout_height="48dp"
             android:text="@string/playlist_done"
-            android:textSize="12dp"
-            android:textColor="@color/colorPlaylistsEditButtonText"/>
+            android:textAppearance="@style/GenericButtonText"
+            android:background="@color/genericButtonBackground"/>
     </LinearLayout>
     
     <LinearLayout
@@ -51,8 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/playlist_added_tracks"
-            android:textColor="@color/colorPlaylistsEditTitleText"
-            android:textSize="25dp"/>
+            android:textAppearance="@style/TitleText"/>
 
         <Space
             android:layout_width="0dp"
@@ -67,8 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/playlist_tracks"
-            android:textColor="@color/colorPlaylistsEditTitleText"
-            android:textSize="25dp"/>
+            android:textAppearance="@style/TitleText"/>
         
         <Space
             android:layout_width="0dp"

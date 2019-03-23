@@ -56,7 +56,7 @@ public class SettingsKeybindListAdapter extends BaseAdapter
         // Item update
         ApplicationAction item = ApplicationAction.values()[position];
         
-        View listItem = LayoutInflater.from(_context).inflate(R.layout.item_keybind_action, parent, false);
+        View listItem = LayoutInflater.from(_context).inflate(R.layout.item_settings_option, parent, false);
         
         TextView title = listItem.findViewById(R.id.title);
         title.setText(item.name().replaceAll("_", " "));

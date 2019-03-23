@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/baseBackground">
     
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -12,13 +14,16 @@
             android:id="@+id/searchField"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="5dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:paddingRight="5dp"
-            android:textColor="@color/colorSearchFieldText"
+            android:textAppearance="@style/PrimaryText"
+            android:textColor="@null"
             android:background="@drawable/search_field_border"
             android:hint="@string/search_hint"
-            android:textColorHint="@color/colorSearchFieldHint"
-            android:inputType="textNoSuggestions"
+            android:textColorHint="@color/primarySubtext"
+            android:inputType="textVisiblePassword"
             android:imeOptions="actionDone"/>
         <ImageButton
             android:id="@+id/searchFieldClearButton"
@@ -41,9 +46,8 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:text="@string/search_results_tip"
+        android:textAppearance="@style/PrimaryText"
         android:singleLine="true"
-        android:textColor="@color/colorTextPrimary"
-        android:textStyle="bold"
         android:textAlignment="center"
         android:visibility="gone"/>
 

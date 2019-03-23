@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/baseBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/playlist_create"
-            android:textColor="@color/colorPlaylistsButtonText"/>
+            android:textAppearance="@style/GenericButtonText"
+            android:background="@color/genericButtonBackground"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -25,13 +27,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/playlist_delete"
-            android:textColor="@color/colorPlaylistsButtonText"/>
+            android:textAppearance="@style/GenericButtonText"
+            android:background="@color/genericButtonBackground"/>
         <Button
             android:id="@+id/donePlaylistButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/playlist_done"
-            android:textColor="@color/colorPlaylistsButtonText"
+            android:textAppearance="@style/GenericButtonText"
+            android:background="@color/genericButtonBackground"
             android:visibility="gone"/>
     </LinearLayout>
 
