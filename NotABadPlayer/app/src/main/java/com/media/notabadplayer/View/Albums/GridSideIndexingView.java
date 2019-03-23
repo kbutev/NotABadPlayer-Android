@@ -43,7 +43,6 @@ public class GridSideIndexingView extends View {
 
     private void init()
     {
-        setBackgroundColor(0x44FFFFFF);
         _paint = new Paint();
         _paint.setColor(0xFFA6A9AA);
         _paint.setTextSize(20);

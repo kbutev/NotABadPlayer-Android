@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="102dp"
-    android:background="@color/quickPlayerBackground">
+    android:background="@drawable/background_quickplayer">
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
+                        android:textAppearance="@style/QuickPlayerSubtext"
                         android:text="@string/timer_separator"/>
                     <TextView
                         android:id="@+id/durationTotal"
@@ -87,25 +87,25 @@
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/playlist"
-                    app:backgroundTint="@color/quickPlayerButtons"/>
+                    app:backgroundTint="?quickPlayerButtonsTintColor"/>
                 <Button
                     android:id="@+id/mediaButtonBack"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/media_previous"
-                    app:backgroundTint="@color/quickPlayerButtons"/>
+                    app:backgroundTint="?quickPlayerButtonsTintColor"/>
                 <Button
                     android:id="@+id/mediaButtonPlay"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/media_play"
-                    app:backgroundTint="@color/quickPlayerButtons"/>
+                    app:backgroundTint="?quickPlayerButtonsTintColor"/>
                 <Button
                     android:id="@+id/mediaButtonForward"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/media_next"
-                    app:backgroundTint="@color/quickPlayerButtons"/>
+                    app:backgroundTint="?quickPlayerButtonsTintColor"/>
                 <Space
                     android:layout_width="48dp"
                     android:layout_height="0dp" />

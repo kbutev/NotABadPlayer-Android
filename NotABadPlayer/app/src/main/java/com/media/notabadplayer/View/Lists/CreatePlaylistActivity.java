@@ -27,6 +27,7 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.AppThemeSetter;
 
 public class CreatePlaylistActivity extends AppCompatActivity
 {
@@ -46,6 +47,9 @@ public class CreatePlaylistActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // App theme
+        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue(this));
         
         // Content
         setContentView(R.layout.activity_create_playlist);

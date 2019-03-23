@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Player;
 
+import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,7 +9,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +20,6 @@ import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioTrackSource;
-import com.media.notabadplayer.Presenter.Albums.AlbumPresenter;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
@@ -31,11 +29,7 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
-import com.media.notabadplayer.View.Albums.AlbumFragment;
-import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.View.BaseView;
-
-import java.util.ArrayList;
 
 public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver {
     private boolean _resumedOnce = false;
@@ -282,57 +276,13 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     @Override
     public void openAlbumScreen(@NonNull AudioAlbum album)
     {
-        FragmentActivity a = getActivity();
-        FragmentManager manager = a.getSupportFragmentManager();
-
-        int backStackCount = manager.getBackStackEntryCount();
-        String newEntryName = AudioTrackSource.ALBUM_PREFIX + album.albumTitle;
-        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
-
-        // Do nothing, if the last entry name is equal to the new entry name
-        if (lastEntryName != null && lastEntryName.equals(newEntryName))
-        {
-            return;
-        }
-
-        while (manager.getBackStackEntryCount() > 0)
-        {
-            manager.popBackStackImmediate();
-        }
-
-        AlbumFragment f = AlbumFragment.newInstance();
-        AlbumPresenter presenter = new AlbumPresenter(f, album);
-        f.setPresenter(presenter);
-        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, f);
-        transaction.addToBackStack(newEntryName).commit();
+        
     }
 
     @Override
     public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
-        FragmentActivity a = getActivity();
-        FragmentManager manager = a.getSupportFragmentManager();
-
-        int backStackCount = manager.getBackStackEntryCount();
-        String newEntryName = AudioTrackSource.PLAYLIST_PREFIX + playlist.getName();
-        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
-
-        // Do nothing, if the last entry name is equal to the new entry name
-        if (lastEntryName != null && lastEntryName.equals(newEntryName))
-        {
-            return;
-        }
-
-        while (manager.getBackStackEntryCount() > 0)
-        {
-            manager.popBackStackImmediate();
-        }
-
-        AlbumFragment f = AlbumFragment.newInstance();
-        AlbumPresenter presenter = new AlbumPresenter(f, playlist);
-        f.setPresenter(presenter);
-        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, f);
-        transaction.addToBackStack(newEntryName).commit();
+        
     }
 
     @Override
@@ -411,7 +361,12 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     @Override
     public void appThemeChanged(AppSettings.AppTheme appTheme)
     {
-        
+        // Reload
+        Fragment fragment = this;
+        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.detach(fragment);
+        ft.attach(fragment);
+        ft.commit();
     }
 
     @Override

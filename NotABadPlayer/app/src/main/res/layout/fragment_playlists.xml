@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/baseBackground">
+    android:background="@drawable/background_base">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:text="@string/playlist_create"
             android:textAppearance="@style/GenericButtonText"
-            android:background="@color/genericButtonBackground"/>
+            android:background="@drawable/background_button"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -28,14 +28,14 @@
             android:layout_height="wrap_content"
             android:text="@string/playlist_delete"
             android:textAppearance="@style/GenericButtonText"
-            android:background="@color/genericButtonBackground"/>
+            android:background="@drawable/background_button"/>
         <Button
             android:id="@+id/donePlaylistButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/playlist_done"
             android:textAppearance="@style/GenericButtonText"
-            android:background="@color/genericButtonBackground"
+            android:background="@drawable/background_button"
             android:visibility="gone"/>
     </LinearLayout>
 

@@ -1,8 +1,81 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar"
-        xmlns:tools="http://schemas.android.com/tools">
+    <!-- Themes -->
+    <style name="Light" parent="Theme.AppCompat.NoActionBar">
         <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="primaryTextColor">@color/primaryText</item>
+        <item name="primarySubtextColor">@color/primarySubtext</item>
+        <item name="textSelectedColor">@color/textSelected</item>
+        <item name="navigationTextColor">@color/navigationText</item>
+        <item name="navigationSubtextColor">@color/navigationSubtext</item>
+        <item name="playerTextColor">@color/playerText</item>
+        <item name="playerSubtextColor">@color/playerSubtext</item>
+        <item name="playerTitleColor">@color/playerTitle</item>
+        <item name="playerButtonsTintColor">@color/playerButtonsTint</item>
+        <item name="quickPlayerTextColor">@color/quickPlayerText</item>
+        <item name="quickPlayerSubtextColor">@color/quickPlayerSubtext</item>
+        <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="quickPlayerBorderColor">@color/quickPlayerBorder</item>
+        <item name="trackNumberColor">@color/trackNumber</item>
+        <item name="genericButtonTextColor">@color/genericButtonText</item>
+        <item name="settingsButtonTextColor">@color/settingsButtonText</item>
+        <item name="baseBackgroundColor">@color/baseBackground</item>
+        <item name="navigationBackgroundColor">@color/navigationBackground</item>
+        <item name="quickPlayerBackgroundColor">@color/quickPlayerBackground</item>
+        <item name="playerBackgroundColor">@color/playerBackground</item>
+        <item name="genericButtonBackgroundColor">@color/genericButtonBackground</item>
+        <item name="genericBorderBackgroundColor">@color/genericBorderBackground</item>
+        <item name="borderOutlineColor">@color/borderOutline</item>
+    </style>
+    <style name="Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:statusBarColor">@color/statusBarColorInverted</item>
+        <item name="primaryTextColor">@color/primaryTextInverted</item>
+        <item name="primarySubtextColor">@color/primarySubtextInverted</item>
+        <item name="textSelectedColor">@color/textSelectedInverted</item>
+        <item name="navigationTextColor">@color/navigationTextInverted</item>
+        <item name="navigationSubtextColor">@color/navigationSubtextInverted</item>
+        <item name="playerTextColor">@color/playerTextInverted</item>
+        <item name="playerSubtextColor">@color/playerSubtextInverted</item>
+        <item name="playerTitleColor">@color/playerTitleInverted</item>
+        <item name="playerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="quickPlayerTextColor">@color/quickPlayerTextInverted</item>
+        <item name="quickPlayerSubtextColor">@color/quickPlayerSubtextInverted</item>
+        <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="quickPlayerBorderColor">@color/quickPlayerBorderInverted</item>
+        <item name="trackNumberColor">@color/trackNumberInverted</item>
+        <item name="genericButtonTextColor">@color/genericButtonTextInverted</item>
+        <item name="settingsButtonTextColor">@color/settingsButtonTextInverted</item>
+        <item name="baseBackgroundColor">@color/baseBackgroundInverted</item>
+        <item name="navigationBackgroundColor">@color/navigationBackgroundInverted</item>
+        <item name="quickPlayerBackgroundColor">@color/quickPlayerBackgroundInverted</item>
+        <item name="playerBackgroundColor">@color/playerBackgroundInverted</item>
+        <item name="genericButtonBackgroundColor">@color/genericButtonBackgroundInverted</item>
+        <item name="genericBorderBackgroundColor">@color/genericBorderBackgroundInverted</item>
+        <item name="borderOutlineColor">@color/borderOutlineInverted</item>
+    </style>
+    <style name="Mix" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="primaryTextColor">@color/primaryText</item>
+        <item name="primarySubtextColor">@color/primarySubtext</item>
+        <item name="textSelectedColor">@color/textSelected</item>
+        <item name="navigationTextColor">@color/navigationText</item>
+        <item name="navigationSubtextColor">@color/navigationSubtext</item>
+        <item name="playerTextColor">@color/playerTextInverted</item>
+        <item name="playerSubtextColor">@color/playerSubtextInverted</item>
+        <item name="playerTitleColor">@color/playerTitleInverted</item>
+        <item name="playerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="quickPlayerTextColor">@color/quickPlayerText</item>
+        <item name="quickPlayerSubtextColor">@color/quickPlayerSubtext</item>
+        <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="quickPlayerBorderColor">@color/quickPlayerBorder</item>
+        <item name="trackNumberColor">@color/trackNumber</item>
+        <item name="genericButtonTextColor">@color/genericButtonText</item>
+        <item name="settingsButtonTextColor">@color/settingsButtonText</item>
+        <item name="baseBackgroundColor">@color/baseBackground</item>
+        <item name="navigationBackgroundColor">@color/navigationBackground</item>
+        <item name="quickPlayerBackgroundColor">@color/quickPlayerBackground</item>
+        <item name="playerBackgroundColor">@color/playerBackgroundInverted</item>
+        <item name="genericButtonBackgroundColor">@color/genericButtonBackground</item>
+        <item name="genericBorderBackgroundColor">@color/genericBorderBackground</item>
+        <item name="borderOutlineColor">@color/borderOutline</item>
     </style>
 </resources>

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
-    android:background="@color/playerBackground">
+    android:background="@drawable/background_player">
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:src="@drawable/volume_icon"
-                android:tint="@color/playerButtons"/>
+                app:tint="?playerButtonsTintColor"/>
         </LinearLayout>
         <ImageView
             android:id="@+id/cover"
@@ -67,7 +67,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:src="@drawable/volume_icon"
-                android:tint="@color/playerButtons"/>
+                app:tint="?playerButtonsTintColor"/>
         </LinearLayout>
     </LinearLayout>
     
@@ -86,21 +86,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="24dp"
-            android:textAppearance="@style/TitleText"
+            android:textAppearance="@style/PlayerTitleText"
             android:singleLine="true"/>
         <TextView
             android:id="@+id/songAlbum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16dp"
-            android:textAppearance="@style/PrimaryText"
+            android:textAppearance="@style/PlayerText"
             android:singleLine="true"/>
         <TextView
             android:id="@+id/songArtist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14dp"
-            android:textAppearance="@style/Subtext"
+            android:textAppearance="@style/PlayerSubtext"
             android:singleLine="true"/>
         <LinearLayout
             android:id="@+id/stars"
@@ -176,7 +176,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/zero_timer"
-                android:textAppearance="@style/PrimaryText"
+                android:textAppearance="@style/PlayerText"
                 android:layout_weight="0.5"
                 android:layout_marginLeft="10dp"/>
             <TextView
@@ -184,7 +184,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/zero_timer"
-                android:textAppearance="@style/PrimaryText"
+                android:textAppearance="@style/PlayerText"
                 android:layout_weight="0.5"
                 android:gravity="right"
                 android:layout_marginRight="10dp"/>
@@ -205,7 +205,7 @@
                     android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:background="@drawable/media_recall"
-                    app:backgroundTint="@color/playerButtons"/>
+                    app:backgroundTint="?playerButtonsTintColor"/>
             </FrameLayout>
             <Button
                 android:id="@+id/mediaButtonBack"
@@ -213,21 +213,21 @@
                 android:layout_height="64dp"
                 android:layout_weight="0.2"
                 android:background="@drawable/media_previous"
-                app:backgroundTint="@color/playerButtons"/>
+                app:backgroundTint="?playerButtonsTintColor"/>
             <Button
                 android:id="@+id/mediaButtonPlay"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_weight="0.2"
                 android:background="@drawable/media_play"
-                app:backgroundTint="@color/playerButtons"/>
+                app:backgroundTint="?playerButtonsTintColor"/>
             <Button
                 android:id="@+id/mediaButtonForward"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_weight="0.2"
                 android:background="@drawable/media_next"
-                app:backgroundTint="@color/playerButtons"/>
+                app:backgroundTint="?playerButtonsTintColor"/>
             <FrameLayout
                 android:layout_width="64dp"
                 android:layout_height="64dp"
@@ -238,7 +238,7 @@
                     android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:background="@drawable/media_sort_repeat"
-                    app:backgroundTint="@color/playerButtons"/>
+                    app:backgroundTint="?playerButtonsTintColor"/>
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>

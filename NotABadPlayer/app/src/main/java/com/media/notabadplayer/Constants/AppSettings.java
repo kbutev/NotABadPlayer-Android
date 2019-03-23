@@ -3,7 +3,7 @@ package com.media.notabadplayer.Constants;
 public class AppSettings
 {
     public enum AppTheme {
-        LIGHT, DARK, GRAY
+        LIGHT, DARK, MIX
     }
     
     public enum AlbumSorting {

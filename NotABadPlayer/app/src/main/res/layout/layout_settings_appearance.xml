@@ -13,10 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/settings_appearance"
+        android:textAppearance="@style/TitleText"
         android:singleLine="true"
-        android:textColor="@color/primaryText"
-        android:textStyle="bold"
-        android:textSize="25dp"
         android:textAlignment="center"/>
 
     <LinearLayout
@@ -28,8 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_general_color"
-            android:singleLine="true"
-            android:textColor="@color/primaryText"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="1dp"
             android:layout_height="wrap_content"
@@ -50,8 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_album_sorting"
-            android:singleLine="true"
-            android:textColor="@color/primaryText"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="1dp"
             android:layout_height="wrap_content"
@@ -72,8 +70,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_track_sorting"
-            android:singleLine="true"
-            android:textColor="@color/primaryText"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="1dp"
             android:layout_height="wrap_content"
@@ -94,8 +92,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_volume_bar"
-            android:singleLine="true"
-            android:textColor="@color/primaryText"/>
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
         <Space
             android:layout_width="1dp"
             android:layout_height="wrap_content"
