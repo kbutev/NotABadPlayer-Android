@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         _currentTabID = R.id.navigation_search;
         _currentTab = SearchFragment.newInstance();
-        _currentTab.setPresenter(new SearchPresenter(_currentTab, _audioInfo));
+        _currentTab.setPresenter(new SearchPresenter(_currentTab, this, _audioInfo));
         refreshCurrentTab();
         
         if (GeneralStorage.getShared().getCachingPolicyFlagForSearchTab(this))

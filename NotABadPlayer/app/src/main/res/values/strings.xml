@@ -31,6 +31,10 @@
     <string name="playlist_dialog_no_tracks">Please add at least one track</string>
     <string name="playlist_dialog_invalid_name">Please enter a valid playlist name</string>
     <string name="playlist_dialog_taken_name">Playlist name is already taken</string>
+
+    <string name="playlist_name_recently_played">Recently Played</string>
+    <string name="playlist_name_previously_played">Previously Played</string>
+    <string name="playlist_name_search_results">Search Results</string>
     
     <!-- Search tab -->
     <string name="search_hint">Search for track</string>

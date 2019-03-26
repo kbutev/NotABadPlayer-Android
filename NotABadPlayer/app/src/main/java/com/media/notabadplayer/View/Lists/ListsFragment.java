@@ -135,7 +135,8 @@ public class ListsFragment extends Fragment implements BaseView {
         
         if (history.size() > 0)
         {
-            AudioPlaylist historyPlaylist = new AudioPlaylist("Recently played", history);
+            String playlistName = getResources().getString(R.string.playlist_name_recently_played);
+            AudioPlaylist historyPlaylist = new AudioPlaylist(playlistName, history);
             _playlists.add(0, historyPlaylist);
         }
         

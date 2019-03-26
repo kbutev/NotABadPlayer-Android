@@ -179,16 +179,13 @@ public class GeneralStorage
     
     synchronized public void resetDefaultSettingsActions(@NonNull Context context)
     {
-        savePlayerPlayedHistory(context, 20);
+        savePlayerPlayedHistory(context, 30);
         saveAppThemeValue(context, AppSettings.AppTheme.LIGHT);
         saveAlbumSortingValue(context, AppSettings.AlbumSorting.TITLE);
         saveTrackSortingValue(context, AppSettings.TrackSorting.TRACK_NUMBER);
         saveShowStarsValue(context, AppSettings.ShowStars.NO);
         saveShowVolumeBarValue(context, AppSettings.ShowVolumeBar.NO);
         
-        saveSettingsAction(context, ApplicationInput.HOME_BUTTON, ApplicationAction.DO_NOTHING);
-        saveSettingsAction(context, ApplicationInput.SCREEN_LOCK_BUTTON, ApplicationAction.DO_NOTHING);
-        saveSettingsAction(context, ApplicationInput.EARPHONES_UNPLUG, ApplicationAction.PAUSE);
         saveSettingsAction(context, ApplicationInput.PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
         saveSettingsAction(context, ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
         saveSettingsAction(context, ApplicationInput.PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
@@ -200,6 +197,7 @@ public class GeneralStorage
         saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
         saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, ApplicationAction.FORWARDS_15);
         saveSettingsAction(context, ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, ApplicationAction.BACKWARDS_15);
+        saveSettingsAction(context, ApplicationInput.EARPHONES_UNPLUG, ApplicationAction.PAUSE);
         
         saveCachingPolicyFlagForAlbumsTab(context, true);
         saveCachingPolicyFlagForListsTab(context, false);
