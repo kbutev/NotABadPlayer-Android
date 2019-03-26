@@ -46,8 +46,6 @@ public class SettingsFragment extends Fragment implements BaseView
     private Spinner _showVolumeBarPicker;
     private SettingsListAdapter _showVolumeBarAdapter;
     
-    private Spinner _keybindHome;
-    private SettingsKeybindListAdapter _keybindHomeAdapter;
     private Spinner _keybindPlayerVU;
     private SettingsKeybindListAdapter _keybindPlayerVUAdapter;
     private Spinner _keybindPlayerVD;
@@ -99,7 +97,6 @@ public class SettingsFragment extends Fragment implements BaseView
         _albumSortingPicker = root.findViewById(R.id.albumSortingPicker);
         _trackSortingPicker = root.findViewById(R.id.trackSortingPicker);
         _showVolumeBarPicker = root.findViewById(R.id.showVolumeBarPicker);
-        _keybindHome = root.findViewById(R.id.keybindHome);
         _keybindPlayerVU = root.findViewById(R.id.keybindPlayerVU);
         _keybindPlayerVD = root.findViewById(R.id.keybindPlayerVD);
         _keybindPlayerNext = root.findViewById(R.id.keybindPlayerNext);
@@ -202,10 +199,6 @@ public class SettingsFragment extends Fragment implements BaseView
         });
         
         // Keybinds pickers
-        _keybindHomeAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindHome.setAdapter(_keybindHomeAdapter);
-        setKeybindsOnItemSelectedListener(_keybindHome, ApplicationInput.HOME_BUTTON);
-        
         _keybindPlayerVUAdapter = new SettingsKeybindListAdapter(getContext());
         _keybindPlayerVU.setAdapter(_keybindPlayerVUAdapter);
         setKeybindsOnItemSelectedListener(_keybindPlayerVU, ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
@@ -331,9 +324,6 @@ public class SettingsFragment extends Fragment implements BaseView
     
     private void selectProperKeybinds()
     {
-        ApplicationAction HOME_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.HOME_BUTTON);
-        _keybindHome.setSelection(SettingsKeybindListAdapter.getCountForAction(HOME_BUTTON));
-        
         ApplicationAction PLAYER_VOLUME_UP_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
         _keybindPlayerVU.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_VOLUME_UP_BUTTON));
         

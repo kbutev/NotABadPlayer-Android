@@ -4,8 +4,10 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
@@ -18,12 +20,14 @@ import java.util.ArrayList;
 public class SearchPresenter implements BasePresenter
 {
     @NonNull private BaseView _view;
+    @NonNull private Context _context;
     @NonNull private AudioInfo _audioInfo;
     private ArrayList<AudioTrack> _searchResults = new ArrayList<>();
     
-    public SearchPresenter(@NonNull BaseView view, @NonNull AudioInfo audioInfo)
+    public SearchPresenter(@NonNull BaseView view, @NonNull Context context, @NonNull AudioInfo audioInfo)
     {
         _view = view;
+        _context = context;
         _audioInfo = audioInfo;
     }
     
@@ -66,7 +70,14 @@ public class SearchPresenter implements BasePresenter
     @Override
     public void onSearchResultClick(int index)
     {
-        AudioPlaylist playlist = new AudioPlaylist("Search Results", _searchResults);
+        if (index >= _searchResults.size())
+        {
+            Log.v(SearchPresenter.class.getCanonicalName(), "Invalid clicked search index");
+            return;
+        }
+        
+        String playlistName = _context.getResources().getString(R.string.playlist_name_search_results);
+        AudioPlaylist playlist = new AudioPlaylist(playlistName, _searchResults, _searchResults.get(index));
         
         _view.openPlayerScreen(playlist);
     }

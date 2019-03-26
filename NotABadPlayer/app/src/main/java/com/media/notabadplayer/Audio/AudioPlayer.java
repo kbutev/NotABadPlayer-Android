@@ -13,6 +13,7 @@ import android.support.v4.math.MathUtils;
 import android.util.Log;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
+import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Storage.GeneralStorage;
 
@@ -539,7 +540,8 @@ public class AudioPlayer {
         
         if (playlist == null)
         {
-            playlist = new AudioPlaylist("Previously played", previousTrack);
+            String playlistName = _application.getResources().getString(R.string.playlist_name_previously_played);
+            playlist = new AudioPlaylist(playlistName, previousTrack);
         }
         
         if (_playlist != null)
