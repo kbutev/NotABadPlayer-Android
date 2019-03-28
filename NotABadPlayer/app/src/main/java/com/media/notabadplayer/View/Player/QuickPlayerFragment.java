@@ -32,6 +32,8 @@ import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver {
+    private static int MEDIA_BAR_MAX_VALUE = 100;
+    
     private boolean _resumedOnce = false;
     
     AudioPlayer _player = AudioPlayer.getShared();
@@ -82,6 +84,9 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             _resumedOnce = true;
 
             _presenter.start();
+            
+            // Start player looper
+            startLooping();
         }
         
         if (AudioPlayer.getShared().hasPlaylist())
@@ -135,6 +140,8 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             }
         });
         
+        _mediaBar.setMax(MEDIA_BAR_MAX_VALUE);
+        _mediaBar.setProgress(1); // Set to a non-zero value, to prevent weird UI drawable glitch
         _mediaBar.setEnabled(false);
         
         _buttonPlay.setOnClickListener(new View.OnClickListener() {
@@ -168,8 +175,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
                 _presenter.onOpenPlaylistButtonClick(getContext());
             }
         });
-
-        startLooping();
         
         updatePlayButtonState();
     }
@@ -197,8 +202,20 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             return;
         }
         
-        int currentPosition = _player.getPlayer().getCurrentPosition() / 1000;
-        _mediaBar.setProgress(currentPosition);
+        if (getActivity() == null)
+        {
+            return;
+        }
+        
+        if (!getActivity().hasWindowFocus())
+        {
+            return;
+        }
+
+        double duration = _player.getDurationMSec();
+        double currentPosition = _player.getCurrentPositionMSec();
+        double newPosition = (currentPosition / duration) * MEDIA_BAR_MAX_VALUE;
+        _mediaBar.setProgress((int)newPosition);
         _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
     }
 
@@ -216,7 +233,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             }
 
             _labelTitle.setText(playingTrack.title);
-            _mediaBar.setMax((int) playingTrack.durationInSeconds);
             _labelDurationTotal.setText(playingTrack.duration);
             
             updatePlayButtonState();

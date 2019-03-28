@@ -95,6 +95,9 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             _resumedOnce = true;
             
             _presenter.start();
+            
+            // Start player looper
+            startLooping();
         }
         
         // Save current audio state
@@ -205,6 +208,8 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             }
         });
         
+        _mediaBar.setMax(MEDIA_BAR_MAX_VALUE);
+        _mediaBar.setProgress(1); // Set to a non-zero value, to prevent weird UI drawable glitch
         _mediaBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -275,9 +280,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                 saveCurrentAudioState();
             }
         });
-        
-        // Player looper
-        startLooping();
         
         // Update play button state
         updatePlayButtonState();
@@ -352,7 +354,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             _labelTitle.setText(playingTrack.title);
             _labelAlbum.setText(playingTrack.albumTitle);
             _labelArtist.setText(playingTrack.artist);
-            _mediaBar.setMax(MEDIA_BAR_MAX_VALUE);
             _labelDurationTotal.setText(playingTrack.duration);
             
             updatePlayButtonState();
