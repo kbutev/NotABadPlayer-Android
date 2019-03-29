@@ -209,7 +209,9 @@ public class ListsFragment extends Fragment implements BaseView {
         FragmentActivity a = getActivity();
         FragmentManager manager = a.getSupportFragmentManager();
         
-        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, f);
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
+        transaction.replace(R.id.mainLayout, f);
         transaction.addToBackStack(AlbumsFragment.class.getCanonicalName()).commit();
     }
 

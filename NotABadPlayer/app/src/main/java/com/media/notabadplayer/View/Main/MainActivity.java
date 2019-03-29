@@ -200,15 +200,16 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void refreshCurrentTab()
     {
         FragmentManager manager = getSupportFragmentManager();
-        
-        manager.beginTransaction().replace(R.id.mainLayout, (Fragment)_currentTab).commit();
-        
+
         while (manager.getBackStackEntryCount() > 0)
         {
             manager.popBackStackImmediate();
         }
+
+        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, (Fragment)_currentTab);
+        transaction.commit();
     }
-    
+
     private void onTabItemSelected(int itemID)
     {
         // If already selected, do nothing
@@ -340,7 +341,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         AlbumFragment f = AlbumFragment.newInstance();
         AlbumPresenter presenter = new AlbumPresenter(f, album);
         f.setPresenter(presenter);
-        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, f);
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
+        transaction.replace(R.id.mainLayout, f);
         transaction.addToBackStack(newEntryName).commit();
     }
 
@@ -373,7 +376,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         AlbumFragment f = AlbumFragment.newInstance();
         AlbumPresenter presenter = new AlbumPresenter(f, playlist);
         f.setPresenter(presenter);
-        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, f);
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
+        transaction.replace(R.id.mainLayout, f);
         transaction.addToBackStack(newEntryName).commit();
     }
 
