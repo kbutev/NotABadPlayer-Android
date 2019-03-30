@@ -1,6 +1,5 @@
 package com.media.notabadplayer.Audio;
 
-import android.media.MediaRecorder;
 import android.support.annotation.NonNull;
 
 import com.media.notabadplayer.Storage.AudioInfo;
@@ -24,7 +23,7 @@ public class AudioPlaylist implements Serializable
     private @NonNull AudioTrack _playingTrack;
     private int _playingTrackPosition;
     
-    transient private Random _random = new Random();
+    transient private Random _random;
     
     public AudioPlaylist(@NonNull String name, @NonNull AudioTrack track)
     {
@@ -73,6 +72,8 @@ public class AudioPlaylist implements Serializable
                 }
             }
         }
+
+        _random = new Random();
     }
     
     private static ArrayList<AudioTrack> trackAsAList(@NonNull AudioTrack track)
@@ -242,7 +243,6 @@ public class AudioPlaylist implements Serializable
         in.defaultReadObject();
         
         AudioTrack playingTrack = _playingTrack;
-        _playingTrack = null;
         
         for (AudioTrack track : _tracks)
         {
@@ -253,5 +253,6 @@ public class AudioPlaylist implements Serializable
             }
         }
         
+        _random = new Random();
     }
 }
