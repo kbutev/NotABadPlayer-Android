@@ -9,6 +9,10 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ImageViewCompat;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -24,6 +28,12 @@ public class UIAnimations {
         }
         
         int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
+        
+        if (ImageViewCompat.getImageTintList(view) == null)
+        {
+            return;
+        }
+        
         int colorTo = ImageViewCompat.getImageTintList(view).getDefaultColor();
 
         ValueAnimator a = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -77,7 +87,7 @@ public class UIAnimations {
             return;
         }
         
-        Drawable background = view.getBackground();
+        final Drawable background = view.getBackground();
         
         if (!(background instanceof ColorDrawable)) 
         {
@@ -87,9 +97,11 @@ public class UIAnimations {
         int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
         int colorTo = ((ColorDrawable) background).getColor();
         
-        ValueAnimator a = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        ValueAnimator a = new ValueAnimator();
+        a.setIntValues(colorFrom, colorTo);
+        a.setEvaluator(new ArgbEvaluator());
         
-        a.setDuration(400);
+        a.setDuration(300);
         
         view.setBackgroundColor(colorFrom);
 
@@ -102,5 +114,31 @@ public class UIAnimations {
         });
 
         a.start();
+    }
+
+    public static void animateViewFadeIn(Context context, final View view)
+    {
+        if (context == null || view == null)
+        {
+            return;
+        }
+
+        Animation animation = new AlphaAnimation(0, 1);
+        animation.setInterpolator(new DecelerateInterpolator());
+        animation.setDuration(300);
+        view.setAnimation(animation);
+    }
+
+    public static void animateViewFadeOut(Context context, final View view)
+    {
+        if (context == null || view == null)
+        {
+            return;
+        }
+
+        Animation animation = new AlphaAnimation(1, 0);
+        animation.setInterpolator(new AccelerateInterpolator());
+        animation.setDuration(300);
+        view.setAnimation(animation);
     }
 }

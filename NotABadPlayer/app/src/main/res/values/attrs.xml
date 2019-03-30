@@ -14,6 +14,7 @@
     <attr name="quickPlayerSubtextColor" format="reference|color"/>
     <attr name="quickPlayerButtonsTintColor" format="reference|color"/>
     <attr name="quickPlayerBorderColor" format="reference|color"/>
+    <attr name="albumTitleHeaderTextColor" format="reference|color"/>
     <attr name="trackNumberColor" format="reference|color"/>
     <attr name="genericButtonTextColor" format="reference|color"/>
     <attr name="settingsButtonTextColor" format="reference|color"/>
@@ -24,6 +25,7 @@
     <attr name="quickPlayerBackgroundColor" format="reference|color"/>
     <attr name="playerBackgroundColor" format="reference|color"/>
     <attr name="genericButtonBackgroundColor" format="reference|color"/>
+    <attr name="albumTitleHeaderBackgroundColor" format="reference|color"/>
     
     <!-- Other references -->
     <attr name="genericBorderBackgroundColor" format="reference|color"/>

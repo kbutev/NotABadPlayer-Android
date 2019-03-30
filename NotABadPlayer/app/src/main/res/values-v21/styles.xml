@@ -15,6 +15,7 @@
         <item name="quickPlayerSubtextColor">@color/quickPlayerSubtext</item>
         <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
         <item name="quickPlayerBorderColor">@color/quickPlayerBorder</item>
+        <item name="albumTitleHeaderTextColor">@color/albumTitleHeaderText</item>
         <item name="trackNumberColor">@color/trackNumber</item>
         <item name="genericButtonTextColor">@color/genericButtonText</item>
         <item name="settingsButtonTextColor">@color/settingsButtonText</item>
@@ -24,6 +25,7 @@
         <item name="playerBackgroundColor">@color/playerBackground</item>
         <item name="genericButtonBackgroundColor">@color/genericButtonBackground</item>
         <item name="genericBorderBackgroundColor">@color/genericBorderBackground</item>
+        <item name="albumTitleHeaderBackgroundColor">@color/albumTitleHeaderBackground</item>
         <item name="borderOutlineColor">@color/borderOutline</item>
     </style>
     <style name="Dark" parent="Theme.AppCompat.NoActionBar">
@@ -41,6 +43,7 @@
         <item name="quickPlayerSubtextColor">@color/quickPlayerSubtextInverted</item>
         <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
         <item name="quickPlayerBorderColor">@color/quickPlayerBorderInverted</item>
+        <item name="albumTitleHeaderTextColor">@color/albumTitleHeaderTextInverted</item>
         <item name="trackNumberColor">@color/trackNumberInverted</item>
         <item name="genericButtonTextColor">@color/genericButtonTextInverted</item>
         <item name="settingsButtonTextColor">@color/settingsButtonTextInverted</item>
@@ -50,6 +53,7 @@
         <item name="playerBackgroundColor">@color/playerBackgroundInverted</item>
         <item name="genericButtonBackgroundColor">@color/genericButtonBackgroundInverted</item>
         <item name="genericBorderBackgroundColor">@color/genericBorderBackgroundInverted</item>
+        <item name="albumTitleHeaderBackgroundColor">@color/albumTitleHeaderBackgroundInverted</item>
         <item name="borderOutlineColor">@color/borderOutlineInverted</item>
     </style>
     <style name="Mix" parent="Theme.AppCompat.NoActionBar">
@@ -67,6 +71,7 @@
         <item name="quickPlayerSubtextColor">@color/quickPlayerSubtext</item>
         <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
         <item name="quickPlayerBorderColor">@color/quickPlayerBorder</item>
+        <item name="albumTitleHeaderTextColor">@color/albumTitleHeaderText</item>
         <item name="trackNumberColor">@color/trackNumber</item>
         <item name="genericButtonTextColor">@color/genericButtonText</item>
         <item name="settingsButtonTextColor">@color/settingsButtonText</item>
@@ -76,6 +81,7 @@
         <item name="playerBackgroundColor">@color/playerBackgroundInverted</item>
         <item name="genericButtonBackgroundColor">@color/genericButtonBackground</item>
         <item name="genericBorderBackgroundColor">@color/genericBorderBackground</item>
+        <item name="albumTitleHeaderBackgroundColor">@color/albumTitleHeaderBackground</item>
         <item name="borderOutlineColor">@color/borderOutline</item>
     </style>
 </resources>

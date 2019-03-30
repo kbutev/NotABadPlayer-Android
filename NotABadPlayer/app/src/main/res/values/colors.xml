@@ -17,6 +17,7 @@
     <color name="genericBorderBackground">#F8F7F5</color>
     <color name="borderOutline">#414141</color>
     <color name="quickPlayerBorder">#00FFFFFF</color>
+    <color name="albumTitleHeaderBackground">#414141</color>
     
     <color name="baseBackgroundInverted">#414141</color>
     <color name="navigationBackgroundInverted">#ffffff</color>
@@ -26,6 +27,7 @@
     <color name="genericBorderBackgroundInverted">#F8F7F5</color>
     <color name="borderOutlineInverted">#414141</color>
     <color name="quickPlayerBorderInverted">#FFFFFFFF</color>
+    <color name="albumTitleHeaderBackgroundInverted">#F8F7F5</color>
     
     <!-- Text -->
     <color name="blackText">#414141</color>
@@ -41,6 +43,7 @@
     <color name="playerTitle">#414141</color>
     <color name="quickPlayerText">#ffffff</color>
     <color name="quickPlayerSubtext">#ffffff</color>
+    <color name="albumTitleHeaderText">#ffffff</color>
     <color name="trackNumber">#6c6c6c</color>
     <color name="genericButtonText">#ffffff</color>
     <color name="settingsButtonText">#2676d9</color>
@@ -55,6 +58,7 @@
     <color name="playerTitleInverted">#ffffff</color>
     <color name="quickPlayerTextInverted">#ffffff</color>
     <color name="quickPlayerSubtextInverted">#FFEB3B</color>
+    <color name="albumTitleHeaderTextInverted">#000000</color>
     <color name="trackNumberInverted">#E9E9E9</color>
     <color name="genericButtonTextInverted">#000000</color>
     <color name="settingsButtonTextInverted">#2676d9</color>

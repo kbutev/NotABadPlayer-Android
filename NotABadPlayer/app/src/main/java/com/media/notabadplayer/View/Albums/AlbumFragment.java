@@ -3,15 +3,17 @@ package com.media.notabadplayer.View.Albums;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlayer;
@@ -37,6 +39,11 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     private GridView _table;
     private AlbumListAdapter _tableAdapter;
     private Parcelable _tableState;
+    
+    private TextView _albumTitleHeader;
+    
+    private Runnable _runnable;
+    private Handler _handler = new Handler();
     
     public AlbumFragment()
     {
@@ -67,8 +74,10 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
         {
             _table.onRestoreInstanceState(_tableState);
         }
-
+        
         _table.invalidateViews();
+
+        startLooping();
     }
 
     @Override
@@ -88,6 +97,8 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
         
         _table = root.findViewById(R.id.albumSongsGrid);
 
+        _albumTitleHeader = root.findViewById(R.id.albumTitleHeader);
+
         initUI();
         
         return root;
@@ -106,6 +117,63 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
                 }
             }
         });
+    }
+
+    private void updateUIState()
+    {
+        if (_tableAdapter == null)
+        {
+            return;
+        }
+        
+        if (_tableAdapter.isHeaderVisible(_table))
+        {
+            if (_albumTitleHeader.getVisibility() != View.GONE)
+            {
+                _albumTitleHeader.setVisibility(View.GONE);
+                UIAnimations.animateViewFadeOut(getContext(), _albumTitleHeader);
+            }
+        }
+        else
+        {
+            if (_albumTitleHeader.getVisibility() != View.VISIBLE)
+            {
+                _albumTitleHeader.setVisibility(View.VISIBLE);
+                UIAnimations.animateViewFadeIn(getContext(), _albumTitleHeader);
+            }
+        }
+    }
+
+    private void startLooping()
+    {
+        if (getActivity() == null)
+        {
+            return;
+        }
+
+        _runnable = new Runnable() {
+            @Override
+            public void run() {
+                loop();
+            }
+        };
+
+        getActivity().runOnUiThread(_runnable);
+    }
+
+    private void loop()
+    {
+        FragmentActivity a = getActivity();
+
+        if (a != null)
+        {
+            if (a.hasWindowFocus())
+            {
+                updateUIState();
+            }
+
+            _handler.postDelayed(_runnable, 200);
+        }
     }
     
     @Override
@@ -135,8 +203,12 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     @Override
     public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
+        // Table update
         _tableAdapter = new AlbumListAdapter(getContext(), songs);
         _table.setAdapter(_tableAdapter);
+
+        // Update album title header
+        _albumTitleHeader.setText(songs.get(0).albumTitle);
         
         // Scroll down to the currently playing track
         AudioPlaylist audioPlaylist = AudioPlayer.getShared().getPlaylist();
@@ -157,9 +229,13 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     @Override
     public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
     {
+        // Table update
         _tableAdapter = new AlbumListAdapter(getContext(), playlist, sortTracks);
         _table.setAdapter(_tableAdapter);
 
+        // Update album title header
+        _albumTitleHeader.setText(playlist.getName());
+        
         // Scroll down to the currently playing track
         AudioPlaylist audioPlaylist = AudioPlayer.getShared().getPlaylist();
 
