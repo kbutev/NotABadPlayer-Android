@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Albums;
 
+import java.util.ArrayList;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,8 +21,6 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.MediaSorting;
-
-import java.util.ArrayList;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -38,12 +38,7 @@ class AlbumListAdapter extends BaseAdapter
         this._isPlaylist = false;
         sortTracks(GeneralStorage.getShared().getTrackSortingValue(_context));
     }
-
-    public AlbumListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist)
-    {
-        this(context, playlist, false);
-    }
-
+    
     public AlbumListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist, boolean sortTracks)
     {
         this._context = context;
@@ -75,6 +70,11 @@ class AlbumListAdapter extends BaseAdapter
     public long getItemId(int position)
     {
         return position;
+    }
+    
+    public boolean isHeaderVisible(@NonNull GridView view)
+    {
+        return view.getFirstVisiblePosition() == 0;
     }
     
     @NonNull

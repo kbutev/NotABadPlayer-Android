@@ -13,4 +13,16 @@
         android:verticalSpacing="1dp"
         android:gravity="center"/>
 
+    <TextView
+        android:id="@+id/albumTitleHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="2dp"
+        android:paddingLeft="5dp"
+        android:paddingBottom="2dp"
+        android:textAppearance="@style/AlbumTitleHeader"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:background="?albumTitleHeaderBackgroundColor"/>
+
 </RelativeLayout>
