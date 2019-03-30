@@ -71,6 +71,6 @@
     <!-- About -->
     <string name="about">About</string>
     <string name="about_version">Version 1.0 (1)</string>
-    <string name="about_release_date">Released 2019.03.29</string>
+    <string name="about_release_date">Released 2019.03.30</string>
     <string name="about_credits">Programmed, designed &amp; tested by Kristiyan Butev</string>
 </resources>
