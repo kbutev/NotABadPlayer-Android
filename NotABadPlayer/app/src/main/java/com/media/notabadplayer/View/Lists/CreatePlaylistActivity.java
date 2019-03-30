@@ -289,8 +289,8 @@ public class CreatePlaylistActivity extends AppCompatActivity
 
         builder1.setPositiveButton(R.string.ok, null);
 
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
+        AlertDialog alert1 = builder1.create();
+        alert1.show();
     }
     
     private void showInvalidNameDialog()
@@ -301,8 +301,8 @@ public class CreatePlaylistActivity extends AppCompatActivity
 
         builder1.setPositiveButton(R.string.ok, null);
 
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
+        AlertDialog alert1 = builder1.create();
+        alert1.show();
     }
 
     private void showNameTakenDialog()
@@ -313,8 +313,8 @@ public class CreatePlaylistActivity extends AppCompatActivity
 
         builder1.setPositiveButton(R.string.ok, null);
 
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
+        AlertDialog alert1 = builder1.create();
+        alert1.show();
     }
 
     private void quit()

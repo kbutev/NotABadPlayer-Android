@@ -377,8 +377,8 @@ public class SettingsFragment extends Fragment implements BaseView
                     }
                 });
         
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
+        AlertDialog alert1 = builder1.create();
+        alert1.show();
     }
     
     @Override

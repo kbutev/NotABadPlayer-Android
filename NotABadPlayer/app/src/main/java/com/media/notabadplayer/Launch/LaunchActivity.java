@@ -1,12 +1,15 @@
 package com.media.notabadplayer.Launch;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -55,6 +58,18 @@ public class LaunchActivity extends AppCompatActivity {
         super.onDestroy();
     }
     
+    private void startPlayerApp()
+    {
+        if (!_launchedFromFile)
+        {
+            openMainScreen();
+        }
+        else
+        {
+            startAppWithTrack(_launchedFromFileUri);
+        }
+    }
+    
     private void openMainScreen()
     {
         Log.v(LaunchActivity.class.getCanonicalName(), "Launching player default way...");
@@ -83,8 +98,17 @@ public class LaunchActivity extends AppCompatActivity {
     public void requestPermissionForReadExtertalStorage()
     {
         try {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+            }
+            else
+            {
+                startPlayerApp();
+            }
         } catch (Exception e) {
             Log.v(LaunchActivity.class.getCanonicalName(), "Cannot request permission for read external storage: " + e.toString());
             finish();
@@ -98,18 +122,24 @@ public class LaunchActivity extends AppCompatActivity {
         if (requestCode == PERMISSION_REQUEST_READ_EXTERNAL_STORAGE
                 && grantResults.length == 1 
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (!_launchedFromFile)
-            {
-                openMainScreen();
-            }
-            else
-            {
-                startAppWithTrack(_launchedFromFileUri);
-            }
+            startPlayerApp();
         }
         else
         {
-            requestPermissionForReadExtertalStorage();
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+            builder1.setMessage(R.string.error_need_storage_permission);
+            builder1.setCancelable(true);
+
+            builder1.setPositiveButton(
+                    R.string.ok,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    });
+
+            AlertDialog alert1 = builder1.create();
+            alert1.show();
         }
     }
 }

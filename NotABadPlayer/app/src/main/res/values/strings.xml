@@ -73,4 +73,7 @@
     <string name="about_version">Version 1.0 (1)</string>
     <string name="about_release_date">Released 2019.03.30</string>
     <string name="about_credits">Programmed, designed &amp; tested by Kristiyan Butev</string>
+    
+    <!-- Errors -->
+    <string name="error_need_storage_permission">You cannot use the player without giving read storage permissions!</string>
 </resources>
