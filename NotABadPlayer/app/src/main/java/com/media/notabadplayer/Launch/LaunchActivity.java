@@ -57,7 +57,7 @@ public class LaunchActivity extends AppCompatActivity {
     
     private void openMainScreen()
     {
-        Log.v("LaunchActivity", "Launching player default way...");
+        Log.v(LaunchActivity.class.getCanonicalName(), "Launching player default way...");
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -69,7 +69,7 @@ public class LaunchActivity extends AppCompatActivity {
     
     private void startAppWithTrack(Uri path)
     {
-        Log.v("LaunchActivity", "Launching player with initial track...");
+        Log.v(LaunchActivity.class.getCanonicalName(), "Launching player with initial track...");
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -86,7 +86,7 @@ public class LaunchActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
         } catch (Exception e) {
-            Log.v("LaunchActivity", "Cannot request permission for read external storage: " + e.toString());
+            Log.v(LaunchActivity.class.getCanonicalName(), "Cannot request permission for read external storage: " + e.toString());
             finish();
         }
     }

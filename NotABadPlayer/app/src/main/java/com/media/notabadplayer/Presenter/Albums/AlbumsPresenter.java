@@ -32,7 +32,7 @@ public class AlbumsPresenter implements BasePresenter {
     {
         AudioAlbum a = _audioInfo.getAlbums().get(index);
         
-        Log.v("AlbumsPresenter", "Open '" + a.albumTitle + "' album");
+        Log.v(AlbumsPresenter.class.getCanonicalName(), "Open '" + a.albumTitle + "' album");
         _view.openAlbumScreen(a);
     }
 
