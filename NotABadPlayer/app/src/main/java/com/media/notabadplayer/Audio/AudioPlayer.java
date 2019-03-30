@@ -166,14 +166,8 @@ public class AudioPlayer {
         {
             return;
         }
-        
-        if (previousTrack != null)
-        {
-            if (!previousTrack.equals(newTrack))
-            {
-                addTrackToPlayHistory(previousTrack);
-            }
-        }
+
+        addTrackToPlayHistory(newTrack);
         
         Uri path = Uri.parse(Uri.decode(newTrack.filePath));
         
@@ -525,16 +519,14 @@ public class AudioPlayer {
     {
         stop();
         
-        if (_playHistory.size() == 0)
+        if (_playHistory.size() <= 1)
         {
             return;
         }
         
-        int lastTrackIndex = _playHistory.size()-1;
+        _playHistory.remove(_playHistory.size()-1);
         
-        AudioTrack previousTrack = _playHistory.get(lastTrackIndex);
-        
-        _playHistory.remove(lastTrackIndex);
+        AudioTrack previousTrack = _playHistory.get(_playHistory.size()-1);
         
         AudioPlaylist playlist = previousTrack.source.getSourcePlaylist(_application.getBaseContext(), _audioInfo, previousTrack);
         
