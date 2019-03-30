@@ -76,7 +76,7 @@ public class AlbumPresenter implements BasePresenter {
         AudioTrack clickedTrack = _songs.get(index);
         AudioPlaylist playlist = new AudioPlaylist(playlistName, _songs, clickedTrack);
         
-        Log.v("AlbumPresenter", "Play playlist with specific song " + clickedTrack.title);
+        Log.v(AlbumPresenter.class.getCanonicalName(), "Play playlist with specific song " + clickedTrack.title);
         
         _view.openPlayerScreen(playlist);
     }
