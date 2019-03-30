@@ -137,6 +137,21 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     {
         _tableAdapter = new AlbumListAdapter(getContext(), songs);
         _table.setAdapter(_tableAdapter);
+        
+        // Scroll down to the currently playing track
+        AudioPlaylist audioPlaylist = AudioPlayer.getShared().getPlaylist();
+        
+        if (audioPlaylist != null && audioPlaylist.getName().equals(songs.get(0).albumTitle))
+        {
+            AudioTrack playingTrack = audioPlaylist.getPlayingTrack();
+            
+            int index = songs.indexOf(playingTrack);
+            
+            if (index >= 0)
+            {
+                _table.setSelection(index);
+            }
+        }
     }
     
     @Override
@@ -144,6 +159,21 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     {
         _tableAdapter = new AlbumListAdapter(getContext(), playlist, sortTracks);
         _table.setAdapter(_tableAdapter);
+
+        // Scroll down to the currently playing track
+        AudioPlaylist audioPlaylist = AudioPlayer.getShared().getPlaylist();
+
+        if (audioPlaylist != null && audioPlaylist.getName().equals(playlist.getName()))
+        {
+            AudioTrack playingTrack = audioPlaylist.getPlayingTrack();
+
+            int index = playlist.getTracks().indexOf(playingTrack);
+
+            if (index >= 0)
+            {
+                _table.setSelection(index);
+            }
+        }
     }
     
     @Override
