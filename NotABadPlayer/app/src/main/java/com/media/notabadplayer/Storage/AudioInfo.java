@@ -25,12 +25,9 @@ public class AudioInfo {
         _context = context;
     }
     
-    synchronized private void load()
+    synchronized public void load()
     {
-        if (_albums.size() > 0)
-        {
-            return;
-        }
+        _albums.clear();
         
         Cursor cursor = _context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 null, null, null, null);

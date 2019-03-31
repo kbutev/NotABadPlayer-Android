@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _presenter = new MainPresenter(this);
         
         _audioInfo = new AudioInfo(this);
+        _audioInfo.load();
         
         // Audio Player initialization
         AudioPlayer.getShared().init(getApplication(), _audioInfo);

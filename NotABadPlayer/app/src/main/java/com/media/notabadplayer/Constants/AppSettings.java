@@ -7,11 +7,11 @@ public class AppSettings
     }
     
     public enum AlbumSorting {
-        TITLE, POPULARITY
+        TITLE
     }
     
     public enum TrackSorting {
-        TRACK_NUMBER, TITLE, POPULARITY, LONGEST, SHORTEST
+        TRACK_NUMBER, TITLE, LONGEST, SHORTEST
     }
     
     public enum ShowStars {

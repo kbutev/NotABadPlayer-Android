@@ -37,9 +37,6 @@ public class SettingsFragment extends Fragment implements BaseView
     private Spinner _themePicker;
     private SettingsListAdapter _themeAdapter;
 
-    private Spinner _albumSortingPicker;
-    private SettingsListAdapter _albumSortingAdapter;
-
     private Spinner _trackSortingPicker;
     private SettingsListAdapter _trackSortingAdapter;
 
@@ -94,7 +91,6 @@ public class SettingsFragment extends Fragment implements BaseView
 
         // Setup UI
         _themePicker = root.findViewById(R.id.themePicker);
-        _albumSortingPicker = root.findViewById(R.id.albumSortingPicker);
         _trackSortingPicker = root.findViewById(R.id.trackSortingPicker);
         _showVolumeBarPicker = root.findViewById(R.id.showVolumeBarPicker);
         _keybindPlayerVU = root.findViewById(R.id.keybindPlayerVU);
@@ -147,19 +143,6 @@ public class SettingsFragment extends Fragment implements BaseView
         {
             albumSortingValues.add(AppSettings.AlbumSorting.values()[e].name());
         }
-
-        _albumSortingAdapter = new SettingsListAdapter(getContext(), albumSortingValues);
-        _albumSortingPicker.setAdapter(_albumSortingAdapter);
-        _albumSortingPicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                AppSettings.AlbumSorting selectedValue = AppSettings.AlbumSorting.values()[position];
-                AppSettings.TrackSorting trackSorting = GeneralStorage.getShared().getTrackSortingValue(getContext());
-                _presenter.onAppSortingChange(selectedValue, trackSorting);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
 
         ArrayList<String> trackSortingValues = new ArrayList<>();
         for (int e = 0; e < AppSettings.TrackSorting.values().length; e++)
@@ -285,15 +268,7 @@ public class SettingsFragment extends Fragment implements BaseView
 
     private void selectProperAlbumSorting()
     {
-        AppSettings.AlbumSorting value = GeneralStorage.getShared().getAlbumSortingValue(getContext());
-
-        for (int e = 0; e < AppSettings.AlbumSorting.values().length; e++)
-        {
-            if (value == AppSettings.AlbumSorting.values()[e])
-            {
-                _albumSortingPicker.setSelection(e);
-            }
-        }
+        
     }
 
     private void selectProperTrackSorting()
