@@ -47,7 +47,7 @@ Design:
 
 # Features
 
-You can bind any kinds of user actions like making the next/previous buttons jump backwards and forwards.
+Bind all kinds of user actions like making the next/previous buttons jump backwards and forwards.
 
 3 app themes, different sorting options,optional volume bar on the player screen.
 
