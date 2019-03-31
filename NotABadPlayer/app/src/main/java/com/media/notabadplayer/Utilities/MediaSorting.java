@@ -19,9 +19,6 @@ public class MediaSorting {
             case TITLE:
                 sortTracksByTitle(tracks);
                 break;
-            case POPULARITY:
-                sortTracksByPopularity(tracks);
-                break;
             case LONGEST:
                 sortTracksByLength(tracks, true);
                 break;
@@ -37,9 +34,6 @@ public class MediaSorting {
         {
             case TITLE:
                 sortAlbumsByTitle(albums);
-                break;
-            case POPULARITY:
-                sortAlbumsByPopularity(albums);
                 break;
         }
     }
