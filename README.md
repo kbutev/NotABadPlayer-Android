@@ -37,9 +37,7 @@ Design:
 
 * Virtually no exceptions are thrown, the try-catch blocks usually just print errors/warnings to log
 
-* Storage is super simple, save and retrieve, no cache is used
-
-* Media storage is cached for CPU/energy efficiency
+* Media storage (the library, that is, the albums/tracks found on the device) is read with the Android API MediaStore and is cached for CPU/energy efficiency
 
 * Always single process app, if you open it from another Android app it opens a new window instead of adding an activity to the stack of the caller app
 
