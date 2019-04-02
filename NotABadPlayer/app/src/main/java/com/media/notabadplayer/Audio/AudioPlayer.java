@@ -1,10 +1,7 @@
 package com.media.notabadplayer.Audio;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -59,14 +56,24 @@ public class AudioPlayer {
         return _singleton;
     }
     
+    public boolean isInitialized()
+    {
+        return _application != null;
+    }
+    
     private Context getContext()
     {
-        return _application.getApplicationContext();
+        if (!isInitialized())
+        {
+            throw new UncheckedExecutionException(new Exception("AudioPlayer is not initialized"));
+        }
+        
+        return _application;
     }
     
     public @NonNull AudioInfo getAudioInfo() 
     {
-        if (_application == null)
+        if (!isInitialized())
         {
             throw new UncheckedExecutionException(new Exception("AudioPlayer is not initialized"));
         }

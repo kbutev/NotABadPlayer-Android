@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Launch.LaunchActivity;
 import com.media.notabadplayer.Presenter.Player.QuickPlayerPresenter;
 import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
 import com.media.notabadplayer.Storage.AudioInfo;
@@ -80,7 +81,18 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        // Never restore this activity, instead, restart app
+        if (savedInstanceState != null)
+        {
+            super.onCreate(null);
+            Intent intent = new Intent(this, LaunchActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        
+        super.onCreate(null);
         
         // App theme
         AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue(this));
@@ -95,7 +107,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _audioInfo.load();
         
         // Audio Player initialization
-        AudioPlayer.getShared().init(getApplication(), _audioInfo);
+        if (!AudioPlayer.getShared().isInitialized())
+        {
+            AudioPlayer.getShared().init(getApplication(), _audioInfo);
+        }
         
         // UI
         initUI();
@@ -125,7 +140,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     @Override
     protected void onDestroy()
     {
-        unregisterReceiver(_noiseSuppression);
+        if (_noiseSuppression != null)
+        {
+            unregisterReceiver(_noiseSuppression);
+        }
+        
         super.onDestroy();
     }
     

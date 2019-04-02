@@ -1,6 +1,8 @@
 package com.media.notabadplayer.View.Player;
 
 import java.util.ArrayList;
+
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -22,6 +24,7 @@ import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
+import com.media.notabadplayer.Launch.LaunchActivity;
 import com.media.notabadplayer.Presenter.Player.PlayerPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
@@ -42,7 +45,18 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        // Never restore this activity, instead, restart app
+        if (savedInstanceState != null)
+        {
+            super.onCreate(null);
+            Intent intent = new Intent(this, LaunchActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        
+        super.onCreate(null);
         
         // App theme
         AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue(this));
@@ -69,7 +83,11 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     @Override
     protected void onDestroy()
     {
-        unregisterReceiver(_noiseSuppression);
+        if (_noiseSuppression != null)
+        {
+            unregisterReceiver(_noiseSuppression);
+        }
+        
         super.onDestroy();
     }
     

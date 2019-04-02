@@ -34,8 +34,6 @@ import com.media.notabadplayer.View.BaseView;
 public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver {
     private static int MEDIA_BAR_MAX_VALUE = 100;
     
-    private boolean _resumedOnce = false;
-    
     AudioPlayer _player = AudioPlayer.getShared();
     
     private BasePresenter _presenter;
@@ -73,21 +71,16 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
     
     @Override
-    public void onResume()
+    public void onStart()
     {
-        super.onResume();
-        
-        _player.attachObserver(this);
-        
-        if (!_resumedOnce)
-        {
-            _resumedOnce = true;
+        super.onStart();
 
-            _presenter.start();
-            
-            // Start player looper
-            startLooping();
-        }
+        _player.attachObserver(this);
+
+        _presenter.start();
+
+        // Start player looper
+        startLooping();
         
         if (AudioPlayer.getShared().hasPlaylist())
         {
