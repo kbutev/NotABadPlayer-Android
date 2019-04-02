@@ -41,7 +41,9 @@ Design:
 
 * Always single process app, if you open it from another Android app it opens a new window instead of adding an activity to the stack of the caller app
 
-* Supports one orientation only: portrait, onCreate is almost never called twice
+* Simple lifecycle for the components of the app: for activities/fragments, onCreate() is never called twice; AudioPlayer and the AudioInfo (the cache for the media library) are initialized once
+
+* Supports one orientation only: portrait
 
 # Features
 
