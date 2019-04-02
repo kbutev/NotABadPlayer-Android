@@ -39,8 +39,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     private static float SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED = 95;
     private static float SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED = 300;
     
-    private boolean _resumedOnce = false;
-
     private BasePresenter _presenter;
 
     AudioPlayer _player = AudioPlayer.getShared();
@@ -84,21 +82,16 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public void onResume()
+    public void onStart()
     {
-        super.onResume();
-        
+        super.onStart();
+
         _player.attachObserver(this);
-        
-        if (!_resumedOnce)
-        {
-            _resumedOnce = true;
-            
-            _presenter.start();
-            
-            // Start player looper
-            startLooping();
-        }
+
+        _presenter.start();
+
+        // Start player looper
+        startLooping();
         
         // Save current audio state
         saveCurrentAudioState();

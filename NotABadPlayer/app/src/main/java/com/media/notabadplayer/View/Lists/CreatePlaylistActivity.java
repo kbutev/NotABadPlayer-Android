@@ -1,6 +1,7 @@
 package com.media.notabadplayer.View.Lists;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Launch.LaunchActivity;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AppThemeSetter;
@@ -46,7 +48,18 @@ public class CreatePlaylistActivity extends AppCompatActivity
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        // Never restore this activity, instead, restart app
+        if (savedInstanceState != null)
+        {
+            super.onCreate(null);
+            Intent intent = new Intent(this, LaunchActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        
+        super.onCreate(null);
         
         // App theme
         AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue(this));

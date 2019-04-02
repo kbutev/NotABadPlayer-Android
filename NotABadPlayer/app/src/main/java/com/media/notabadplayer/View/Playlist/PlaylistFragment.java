@@ -66,9 +66,9 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
     
     @Override
-    public void onResume()
+    public void onStart()
     {
-        super.onResume();
+        super.onStart();
         
         _player.attachObserver(this);
         

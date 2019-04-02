@@ -38,8 +38,6 @@ import java.util.ArrayList;
 
 public class SearchFragment extends Fragment implements BaseView
 {
-    private boolean _resumedOnce = false;
-    
     private BasePresenter _presenter;
     
     private EditText _searchField;
@@ -82,24 +80,19 @@ public class SearchFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void onResume()
+    public void onStart()
     {
-        super.onResume();
-        
-        if (!_resumedOnce)
+        super.onStart();
+
+        _presenter.start();
+
+        // Retrieve saved search query, if there is one
+        String searchQuery = GeneralStorage.getShared().retrieveSearchQuery(getContext());
+
+        if (!_searchField.getText().toString().equals(searchQuery))
         {
-            _resumedOnce = true;
-            
-            _presenter.start();
-
-            // Retrieve saved search query, if there is one
-            String searchQuery = GeneralStorage.getShared().retrieveSearchQuery(getContext());
-
-            if (!_searchField.getText().toString().equals(searchQuery))
-            {
-                _searchField.setText(searchQuery);
-                _presenter.onSearchQuery(_searchField.getText().toString());
-            }
+            _searchField.setText(searchQuery);
+            _presenter.onSearchQuery(_searchField.getText().toString());
         }
         
         if (_searchResultsAdapter != null)

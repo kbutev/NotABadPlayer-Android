@@ -52,9 +52,9 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void onResume()
+    public void onStart()
     { 
-        super.onResume();
+        super.onStart();
         
         _presenter.start();
         
