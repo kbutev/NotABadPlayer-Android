@@ -141,7 +141,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void openAlbumScreen(@NonNull AudioAlbum album)
+    public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
 
     }

@@ -455,7 +455,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void openAlbumScreen(@NonNull AudioAlbum album) 
+    public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
 
     }

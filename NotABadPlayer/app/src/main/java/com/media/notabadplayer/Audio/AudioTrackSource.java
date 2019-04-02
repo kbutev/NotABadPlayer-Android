@@ -11,9 +11,6 @@ import com.media.notabadplayer.Storage.GeneralStorage;
 
 public class AudioTrackSource implements Serializable
 {
-    public static final String ALBUM_PREFIX = "album:";
-    public static final String PLAYLIST_PREFIX = "playlist:";
-
     private final String _value;
     private final boolean _isAlbumSource;
 

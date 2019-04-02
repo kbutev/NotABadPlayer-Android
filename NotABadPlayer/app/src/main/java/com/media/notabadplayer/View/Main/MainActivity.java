@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Audio.AudioTrackSource;
-import com.media.notabadplayer.Presenter.Albums.AlbumPresenter;
 import com.media.notabadplayer.Presenter.Player.QuickPlayerPresenter;
+import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
 import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
@@ -36,13 +34,13 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AppThemeSetter;
 import com.media.notabadplayer.Utilities.Serializing;
-import com.media.notabadplayer.View.Albums.AlbumFragment;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
 import com.media.notabadplayer.View.Lists.ListsFragment;
+import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
 
@@ -314,18 +312,23 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void openAlbumScreen(@NonNull AudioAlbum album)
+    public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
-        if (_currentTabID != R.id.navigation_albums)
+        // When not on the settings tab, let the view handle the operation
+        if (_currentTabID != R.id.navigation_settings)
         {
-            View view = _navigation.findViewById(R.id.navigation_albums);
-            view.performClick();
+            _currentTab.openPlaylistScreen(album);
+            return;
         }
-        
+
+        // When on the settings tab, navigate to the albums tab, and then open the playlist fragment
+        View view = _navigation.findViewById(R.id.navigation_albums);
+        view.performClick();
+
         FragmentManager manager = getSupportFragmentManager();
-        
+
         int backStackCount = manager.getBackStackEntryCount();
-        String newEntryName = AudioTrackSource.ALBUM_PREFIX + album.albumTitle;
+        String newEntryName = album.albumTitle;
         String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
 
         // Do nothing, if the last entry name is equal to the new entry name
@@ -339,8 +342,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             manager.popBackStackImmediate();
         }
 
-        AlbumFragment f = AlbumFragment.newInstance();
-        AlbumPresenter presenter = new AlbumPresenter(f, album);
+        PlaylistFragment f = PlaylistFragment.newInstance();
+        PlaylistPresenter presenter = new PlaylistPresenter(f, album);
         f.setPresenter(presenter);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
@@ -351,16 +354,21 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     @Override
     public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
-        if (_currentTabID != R.id.navigation_albums)
+        // When not on the settings tab, let the view handle the operation
+        if (_currentTabID != R.id.navigation_settings)
         {
-            View view = _navigation.findViewById(R.id.navigation_albums);
-            view.performClick();
+            _currentTab.openPlaylistScreen(playlist);
+            return;
         }
-        
+
+        // When on the settings tab, navigate to the albums tab, and then open the playlist fragment
+        View view = _navigation.findViewById(R.id.navigation_albums);
+        view.performClick();
+
         FragmentManager manager = getSupportFragmentManager();
-        
+
         int backStackCount = manager.getBackStackEntryCount();
-        String newEntryName = AudioTrackSource.PLAYLIST_PREFIX + playlist.getName();
+        String newEntryName = playlist.getName();
         String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
 
         // Do nothing, if the last entry name is equal to the new entry name
@@ -374,8 +382,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             manager.popBackStackImmediate();
         }
 
-        AlbumFragment f = AlbumFragment.newInstance();
-        AlbumPresenter presenter = new AlbumPresenter(f, playlist);
+        PlaylistFragment f = PlaylistFragment.newInstance();
+        PlaylistPresenter presenter = new PlaylistPresenter(f, playlist);
         f.setPresenter(presenter);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);

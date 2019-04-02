@@ -290,7 +290,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void openAlbumScreen(@NonNull AudioAlbum album)
+    public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
         
     }
