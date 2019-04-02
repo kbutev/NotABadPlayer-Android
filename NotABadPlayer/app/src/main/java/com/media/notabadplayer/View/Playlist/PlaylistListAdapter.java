@@ -1,4 +1,4 @@
-package com.media.notabadplayer.View.Albums;
+package com.media.notabadplayer.View.Playlist;
 
 import java.util.ArrayList;
 import android.content.Context;
@@ -24,14 +24,14 @@ import com.media.notabadplayer.Utilities.MediaSorting;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-class AlbumListAdapter extends BaseAdapter
+class PlaylistListAdapter extends BaseAdapter
 {
     private Context _context;
     private ArrayList<AudioTrack> _tracks;
     private String _playlistName;
     private boolean _isPlaylist;
     
-    public AlbumListAdapter(@NonNull Context context, @NonNull ArrayList<AudioTrack> tracks)
+    public PlaylistListAdapter(@NonNull Context context, @NonNull ArrayList<AudioTrack> tracks)
     {
         this._context = context;
         this._tracks = tracks;
@@ -39,7 +39,7 @@ class AlbumListAdapter extends BaseAdapter
         sortTracks(GeneralStorage.getShared().getTrackSortingValue(_context));
     }
     
-    public AlbumListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist, boolean sortTracks)
+    public PlaylistListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist, boolean sortTracks)
     {
         this._context = context;
         this._tracks = playlist.getTracks();

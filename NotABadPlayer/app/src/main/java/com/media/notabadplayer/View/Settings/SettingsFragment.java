@@ -363,7 +363,7 @@ public class SettingsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openAlbumScreen(@NonNull AudioAlbum album) {
+    public void openPlaylistScreen(@NonNull AudioAlbum album) {
         
     }
 

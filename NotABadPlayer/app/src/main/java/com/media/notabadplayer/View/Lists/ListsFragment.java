@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import java.util.ArrayList;
 import com.google.common.base.Function;
@@ -23,12 +22,12 @@ import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Presenter.Albums.AlbumPresenter;
+import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.UIAnimations;
-import com.media.notabadplayer.View.Albums.AlbumFragment;
+import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.View.BaseView;
 
@@ -197,22 +196,37 @@ public class ListsFragment extends Fragment implements BaseView {
     }
 
     @Override
-    public void openAlbumScreen(@NonNull AudioAlbum album) {
-        
-    }
-
-    @Override
-    public void openPlaylistScreen(@NonNull AudioPlaylist playlist) 
+    public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
-        AlbumFragment f = AlbumFragment.newInstance();
-        f.setPresenter(new AlbumPresenter(f, playlist));
         FragmentActivity a = getActivity();
         FragmentManager manager = a.getSupportFragmentManager();
-        
+
+        String newEntryName = album.albumTitle;
+
+        PlaylistFragment f = PlaylistFragment.newInstance();
+        f.setPresenter(new PlaylistPresenter(f, album));
+
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
         transaction.replace(R.id.mainLayout, f);
-        transaction.addToBackStack(AlbumsFragment.class.getCanonicalName()).commit();
+        transaction.addToBackStack(newEntryName).commit();
+    }
+
+    @Override
+    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    {
+        FragmentActivity a = getActivity();
+        FragmentManager manager = a.getSupportFragmentManager();
+
+        String newEntryName = playlist.getName();
+
+        PlaylistFragment f = PlaylistFragment.newInstance();
+        f.setPresenter(new PlaylistPresenter(f, playlist));
+
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
+        transaction.replace(R.id.mainLayout, f);
+        transaction.addToBackStack(newEntryName).commit();
     }
 
     @Override

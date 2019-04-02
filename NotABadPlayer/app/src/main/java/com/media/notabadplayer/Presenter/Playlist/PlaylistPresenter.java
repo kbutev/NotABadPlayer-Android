@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Presenter.Albums;
+package com.media.notabadplayer.Presenter.Playlist;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -16,7 +16,7 @@ import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
 
-public class AlbumPresenter implements BasePresenter {
+public class PlaylistPresenter implements BasePresenter {
     private @NonNull BaseView _view;
     
     private final @Nullable AudioAlbum _album;
@@ -24,14 +24,14 @@ public class AlbumPresenter implements BasePresenter {
     
     private @NonNull ArrayList<AudioTrack> _songs = new ArrayList<>();
     
-    public AlbumPresenter(@NonNull BaseView view, @NonNull AudioAlbum album)
+    public PlaylistPresenter(@NonNull BaseView view, @NonNull AudioAlbum album)
     {
         _view = view;
         _album = album;
         _playlist = null;
     }
 
-    public AlbumPresenter(@NonNull BaseView view, @NonNull AudioPlaylist playlist)
+    public PlaylistPresenter(@NonNull BaseView view, @NonNull AudioPlaylist playlist)
     {
         _view = view;
         _album = null;
@@ -76,7 +76,7 @@ public class AlbumPresenter implements BasePresenter {
         AudioTrack clickedTrack = _songs.get(index);
         AudioPlaylist playlist = new AudioPlaylist(playlistName, _songs, clickedTrack);
         
-        Log.v(AlbumPresenter.class.getCanonicalName(), "Play playlist with specific song " + clickedTrack.title);
+        Log.v(PlaylistPresenter.class.getCanonicalName(), "Play playlist with specific song " + clickedTrack.title);
         
         _view.openPlayerScreen(playlist);
     }

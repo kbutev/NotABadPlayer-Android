@@ -61,7 +61,7 @@ public class QuickPlayerPresenter implements BasePresenter
                 
                 if (album != null)
                 {
-                    _applicationRootView.openAlbumScreen(album);
+                    _applicationRootView.openPlaylistScreen(album);
                 }
             }
             else

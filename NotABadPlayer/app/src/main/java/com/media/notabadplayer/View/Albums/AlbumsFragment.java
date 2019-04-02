@@ -18,10 +18,11 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Audio.AudioTrackSource;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Presenter.Albums.AlbumPresenter;
+import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
 import java.util.ArrayList;
 
@@ -106,15 +107,15 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openAlbumScreen(@NonNull AudioAlbum album) 
+    public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
         FragmentActivity a = getActivity();
         FragmentManager manager = a.getSupportFragmentManager();
         
-        String newEntryName = AudioTrackSource.ALBUM_PREFIX + album.albumTitle;
+        String newEntryName = album.albumTitle;
         
-        AlbumFragment f = AlbumFragment.newInstance();
-        f.setPresenter(new AlbumPresenter(f, album));
+        PlaylistFragment f = PlaylistFragment.newInstance();
+        f.setPresenter(new PlaylistPresenter(f, album));
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);

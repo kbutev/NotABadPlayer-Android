@@ -1,4 +1,4 @@
-package com.media.notabadplayer.View.Albums;
+package com.media.notabadplayer.View.Playlist;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,9 @@ import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.AudioTrackSource;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
@@ -30,14 +34,14 @@ import com.media.notabadplayer.View.Player.PlayerActivity;
 
 import java.util.ArrayList;
 
-public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObserver
+public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
     AudioPlayer _player = AudioPlayer.getShared();
     
     private BasePresenter _presenter;
     
     private GridView _table;
-    private AlbumListAdapter _tableAdapter;
+    private PlaylistListAdapter _tableAdapter;
     private Parcelable _tableState;
     
     private TextView _albumTitleHeader;
@@ -45,14 +49,14 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     private Runnable _runnable;
     private Handler _handler = new Handler();
     
-    public AlbumFragment()
+    public PlaylistFragment()
     {
         
     }
     
-    public static AlbumFragment newInstance()
+    public static PlaylistFragment newInstance()
     {
-        return new AlbumFragment();
+        return new PlaylistFragment();
     }
     
     @Override
@@ -183,15 +187,15 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     }
     
     @Override
-    public void openAlbumScreen(@NonNull AudioAlbum album) 
+    public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
-        
+
     }
     
     @Override
     public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
-        
+
     }
     
     @Override
@@ -204,7 +208,7 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
         // Table update
-        _tableAdapter = new AlbumListAdapter(getContext(), songs);
+        _tableAdapter = new PlaylistListAdapter(getContext(), songs);
         _table.setAdapter(_tableAdapter);
 
         // Update album title header
@@ -230,7 +234,7 @@ public class AlbumFragment extends Fragment implements BaseView, AudioPlayerObse
     public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
     {
         // Table update
-        _tableAdapter = new AlbumListAdapter(getContext(), playlist, sortTracks);
+        _tableAdapter = new PlaylistListAdapter(getContext(), playlist, sortTracks);
         _table.setAdapter(_tableAdapter);
 
         // Update album title header
