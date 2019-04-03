@@ -51,7 +51,7 @@ Bind all kinds of user actions like making the next/previous buttons jump backwa
 
 3 app themes, different sorting options,optional volume bar on the player screen.
 
-CPU & energy effecient, but memory inefficient.
+CPU & energy efficient.
 
 Includes standart player features like creating playlists, searching for tracks, controlling the audio player even when not on the player screen (a quick player is available, attached to the bottom of the screen).
 
