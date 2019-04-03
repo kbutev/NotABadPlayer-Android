@@ -126,7 +126,18 @@ public class AlbumsFragment extends Fragment implements BaseView
     @Override
     public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
+        FragmentActivity a = getActivity();
+        FragmentManager manager = a.getSupportFragmentManager();
 
+        String newEntryName = playlist.getName();
+
+        PlaylistFragment f = PlaylistFragment.newInstance();
+        f.setPresenter(new PlaylistPresenter(f, playlist));
+
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
+        transaction.replace(R.id.mainLayout, f);
+        transaction.addToBackStack(newEntryName).commit();
     }
     
     @Override

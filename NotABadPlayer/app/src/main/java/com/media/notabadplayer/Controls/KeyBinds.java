@@ -97,6 +97,9 @@ public class KeyBinds
                     switch (order)
                     {
                         case FORWARDS:
+                            playlist.setPlayOrder(AudioPlayOrder.FORWARDS_REPEAT);
+                            break;
+                        case FORWARDS_REPEAT:
                             playlist.setPlayOrder(AudioPlayOrder.ONCE_FOREVER);
                             break;
                         case ONCE_FOREVER:

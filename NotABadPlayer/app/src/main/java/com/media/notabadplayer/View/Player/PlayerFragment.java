@@ -312,8 +312,11 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                 case FORWARDS:
                     _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards);
                     break;
+                case FORWARDS_REPEAT:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards_repeat);
+                    break;
                 case ONCE_FOREVER:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_repeat);
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_repeat_forever);
                     break;
                 case SHUFFLE:
                     _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_shuffle);
