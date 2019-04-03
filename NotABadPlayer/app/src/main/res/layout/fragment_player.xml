@@ -237,7 +237,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/media_sort_repeat"
+                    android:background="@drawable/media_sort_forwards_repeat"
                     app:backgroundTint="?playerButtonsTintColor"/>
             </FrameLayout>
         </LinearLayout>
