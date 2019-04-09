@@ -40,7 +40,7 @@ public class AlbumsFragment extends Fragment implements BaseView
         
     }
     
-    public static AlbumsFragment newInstance()
+    public static @NonNull AlbumsFragment newInstance()
     {
         return new AlbumsFragment();
     }

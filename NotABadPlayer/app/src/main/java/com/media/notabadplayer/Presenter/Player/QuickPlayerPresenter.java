@@ -74,7 +74,7 @@ public class QuickPlayerPresenter implements BasePresenter
     @Override
     public void onPlayOrderButtonClick(@NonNull Context context)
     {
-
+        KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
     }
 
     @Override
