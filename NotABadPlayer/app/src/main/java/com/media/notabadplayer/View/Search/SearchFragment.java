@@ -30,6 +30,7 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
+import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
@@ -58,12 +59,6 @@ public class SearchFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_search, container, false);
@@ -78,13 +73,19 @@ public class SearchFragment extends Fragment implements BaseView
         
         return root;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        _presenter.start();
+    }
     
     @Override
     public void onStart()
     {
         super.onStart();
-
-        _presenter.start();
 
         // Retrieve saved search query, if there is one
         String searchQuery = GeneralStorage.getShared().retrieveSearchQuery(getContext());
@@ -139,6 +140,7 @@ public class SearchFragment extends Fragment implements BaseView
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
+                UIAnimations.animateAlbumItemTAP(getContext(), view);
                 _presenter.onSearchResultClick(position);
             }
         });
@@ -155,9 +157,22 @@ public class SearchFragment extends Fragment implements BaseView
     {
         FragmentActivity a = getActivity();
         FragmentManager manager = a.getSupportFragmentManager();
+        int backStackCount = manager.getBackStackEntryCount();
 
         String newEntryName = album.albumTitle;
+        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
 
+        // Do nothing, if the last entry name is equal to the new entry name
+        if (lastEntryName != null && lastEntryName.equals(newEntryName))
+        {
+            return;
+        }
+
+        while (manager.getBackStackEntryCount() > 0)
+        {
+            manager.popBackStackImmediate();
+        }
+        
         PlaylistFragment f = PlaylistFragment.newInstance();
         f.setPresenter(new PlaylistPresenter(f, album));
 
@@ -172,9 +187,22 @@ public class SearchFragment extends Fragment implements BaseView
     {
         FragmentActivity a = getActivity();
         FragmentManager manager = a.getSupportFragmentManager();
+        int backStackCount = manager.getBackStackEntryCount();
 
         String newEntryName = playlist.getName();
+        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
 
+        // Do nothing, if the last entry name is equal to the new entry name
+        if (lastEntryName != null && lastEntryName.equals(newEntryName))
+        {
+            return;
+        }
+
+        while (manager.getBackStackEntryCount() > 0)
+        {
+            manager.popBackStackImmediate();
+        }
+        
         PlaylistFragment f = PlaylistFragment.newInstance();
         f.setPresenter(new PlaylistPresenter(f, playlist));
 

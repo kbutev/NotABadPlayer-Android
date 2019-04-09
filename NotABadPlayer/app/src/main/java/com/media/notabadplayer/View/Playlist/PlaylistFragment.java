@@ -58,21 +58,37 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     {
         return new PlaylistFragment();
     }
-    
+
     @Override
-    public void onCreate(Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_album, container, false);
+
+        _table = root.findViewById(R.id.albumSongsGrid);
+
+        _albumTitleHeader = root.findViewById(R.id.albumTitleHeader);
+
+        initUI();
+
+        return root;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
+        super.onActivityCreated(savedInstanceState);
+
+        _presenter.start();
+
+        _player.attachObserver(this);
+
+        startLooping();
     }
     
     @Override
     public void onStart()
     {
         super.onStart();
-        
-        _player.attachObserver(this);
-        
-        _presenter.start();
 
         if (_tableState != null)
         {
@@ -90,22 +106,14 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         _tableState = _table.onSaveInstanceState();
         
         super.onPause();
-        
-        _player.detachObserver(this);
     }
     
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_album, container, false);
-        
-        _table = root.findViewById(R.id.albumSongsGrid);
+    public void onDestroy()
+    {
+        super.onDestroy();
 
-        _albumTitleHeader = root.findViewById(R.id.albumTitleHeader);
-
-        initUI();
-        
-        return root;
+        _player.detachObserver(this);
     }
     
     private void initUI()

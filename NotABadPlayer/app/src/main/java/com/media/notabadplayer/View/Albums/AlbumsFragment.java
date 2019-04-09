@@ -46,37 +46,6 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-    
-    @Override
-    public void onStart()
-    { 
-        super.onStart();
-        
-        _presenter.start();
-        
-        if (_tableAdapter != null)
-        {
-            _table.setAdapter(_tableAdapter);
-        }
-        
-        if (_tableState != null)
-        {
-            _table.onRestoreInstanceState(_tableState);
-        }
-    }
-
-    @Override
-    public void onPause() 
-    {
-        _tableState = _table.onSaveInstanceState();
-        super.onPause();
-    }
-    
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_albums, container, false);
@@ -87,6 +56,37 @@ public class AlbumsFragment extends Fragment implements BaseView
         initUI();
         
         return root;
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        _presenter.start();
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        if (_tableAdapter != null)
+        {
+            _table.setAdapter(_tableAdapter);
+        }
+
+        if (_tableState != null)
+        {
+            _table.onRestoreInstanceState(_tableState);
+        }
+    }
+
+    @Override
+    public void onPause()
+    {
+        _tableState = _table.onSaveInstanceState();
+        super.onPause();
     }
     
     private void initUI()
@@ -111,8 +111,21 @@ public class AlbumsFragment extends Fragment implements BaseView
     {
         FragmentActivity a = getActivity();
         FragmentManager manager = a.getSupportFragmentManager();
+        int backStackCount = manager.getBackStackEntryCount();
         
         String newEntryName = album.albumTitle;
+        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
+
+        // Do nothing, if the last entry name is equal to the new entry name
+        if (lastEntryName != null && lastEntryName.equals(newEntryName))
+        {
+            return;
+        }
+
+        while (manager.getBackStackEntryCount() > 0)
+        {
+            manager.popBackStackImmediate();
+        }
         
         PlaylistFragment f = PlaylistFragment.newInstance();
         f.setPresenter(new PlaylistPresenter(f, album));
@@ -128,9 +141,22 @@ public class AlbumsFragment extends Fragment implements BaseView
     {
         FragmentActivity a = getActivity();
         FragmentManager manager = a.getSupportFragmentManager();
+        int backStackCount = manager.getBackStackEntryCount();
 
         String newEntryName = playlist.getName();
+        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
 
+        // Do nothing, if the last entry name is equal to the new entry name
+        if (lastEntryName != null && lastEntryName.equals(newEntryName))
+        {
+            return;
+        }
+
+        while (manager.getBackStackEntryCount() > 0)
+        {
+            manager.popBackStackImmediate();
+        }
+        
         PlaylistFragment f = PlaylistFragment.newInstance();
         f.setPresenter(new PlaylistPresenter(f, playlist));
 

@@ -70,8 +70,8 @@
     
     <!-- About -->
     <string name="about">About</string>
-    <string name="about_version">Version 1.1 (4)</string>
-    <string name="about_release_date">Released 2019.04.3</string>
+    <string name="about_version">Version 1.2 (5)</string>
+    <string name="about_release_date">Released 2019.04.9</string>
     <string name="about_credits">Programmed, designed &amp; tested by Kristiyan Butev</string>
     
     <!-- Errors -->

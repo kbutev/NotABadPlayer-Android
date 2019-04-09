@@ -61,45 +61,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     {
         return new QuickPlayerFragment();
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        
-        _presenter.start();
-    }
-    
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-        _player.attachObserver(this);
-
-        _presenter.start();
-
-        // Start player looper
-        startLooping();
-        
-        if (AudioPlayer.getShared().hasPlaylist())
-        {
-            updateMediaInfo(AudioPlayer.getShared().getPlaylist().getPlayingTrack());
-        }
-    }
-    
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-    }
-    
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        _player.detachObserver(this);
-    }
     
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -122,6 +83,36 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         initUI();
         
         return root;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        _presenter.start();
+
+        _player.attachObserver(this);
+
+        startLooping();
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        if (AudioPlayer.getShared().hasPlaylist())
+        {
+            updateMediaInfo(AudioPlayer.getShared().getPlaylist().getPlayingTrack());
+        }
+    }
+    
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        _player.detachObserver(this);
     }
     
     private void initUI()

@@ -1,6 +1,7 @@
 package com.media.notabadplayer.View.Search;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.R;
 
@@ -75,6 +78,32 @@ public class SearchListAdapter extends BaseAdapter
 
         TextView duration = listItem.findViewById(R.id.duration);
         duration.setText(item.duration);
+
+        // Select playing track
+        boolean isPlayingTrack = false;
+
+        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+
+        if (playlist != null)
+        {
+            AudioTrack track = playlist.getPlayingTrack();
+
+            if (track.equals(item))
+            {
+                isPlayingTrack = true;
+            }
+        }
+
+        Resources resources = parent.getResources();
+
+        if (!isPlayingTrack)
+        {
+            listItem.setBackgroundColor(resources.getColor(R.color.transparent));
+        }
+        else
+        {
+            listItem.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
+        }
         
         return listItem;
     }

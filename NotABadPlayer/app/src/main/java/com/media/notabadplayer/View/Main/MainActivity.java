@@ -339,14 +339,14 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             _currentTab.openPlaylistScreen(album);
             return;
         }
+        // ... or when on the settings tab, navigate to the albums tab, and then open the playlist fragment
 
-        // When on the settings tab, navigate to the albums tab, and then open the playlist fragment
         View view = _navigation.findViewById(R.id.navigation_albums);
         view.performClick();
 
         FragmentManager manager = getSupportFragmentManager();
-
         int backStackCount = manager.getBackStackEntryCount();
+        
         String newEntryName = album.albumTitle;
         String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
 
@@ -379,14 +379,14 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             _currentTab.openPlaylistScreen(playlist);
             return;
         }
-
-        // When on the settings tab, navigate to the albums tab, and then open the playlist fragment
+        // ... or when on the settings tab, navigate to the albums tab, and then open the playlist fragment
+        
         View view = _navigation.findViewById(R.id.navigation_albums);
         view.performClick();
 
         FragmentManager manager = getSupportFragmentManager();
-
         int backStackCount = manager.getBackStackEntryCount();
+        
         String newEntryName = playlist.getName();
         String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
 
