@@ -76,44 +76,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-    
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-        _player.attachObserver(this);
-
-        _presenter.start();
-
-        // Start player looper
-        startLooping();
-        
-        // Save current audio state
-        saveCurrentAudioState();
-    }
-    
-    @Override
-    public void onPause()
-    {
-       super.onPause();
-
-        // Save current audio state
-        saveCurrentAudioState();
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        _player.detachObserver(this);
-    }
-    
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_player, container, false);
@@ -163,6 +125,42 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         initUI();
         
         return root;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        _presenter.start();
+
+        _player.attachObserver(this);
+        
+        startLooping();
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        saveCurrentAudioState();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        saveCurrentAudioState();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        _player.detachObserver(this);
     }
     
     private void initUI()

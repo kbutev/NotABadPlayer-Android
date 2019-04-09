@@ -155,12 +155,12 @@
     </style>
     <style name="QuickPlayerText" parent="@android:style/TextAppearance.Medium">
         <item name="android:textColor">?quickPlayerTextColor</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
     <style name="QuickPlayerSubtext" parent="@android:style/TextAppearance.Medium">
         <item name="android:textColor">?quickPlayerSubtextColor</item>
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:typeface">monospace</item>
     </style>
     <style name="AlbumTitleHeader" parent="@android:style/TextAppearance.Medium">

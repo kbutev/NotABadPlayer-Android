@@ -49,13 +49,7 @@ public class ListsFragment extends Fragment implements BaseView {
     {
         return new ListsFragment();
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
+    
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -200,9 +194,22 @@ public class ListsFragment extends Fragment implements BaseView {
     {
         FragmentActivity a = getActivity();
         FragmentManager manager = a.getSupportFragmentManager();
+        int backStackCount = manager.getBackStackEntryCount();
 
         String newEntryName = album.albumTitle;
+        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
 
+        // Do nothing, if the last entry name is equal to the new entry name
+        if (lastEntryName != null && lastEntryName.equals(newEntryName))
+        {
+            return;
+        }
+
+        while (manager.getBackStackEntryCount() > 0)
+        {
+            manager.popBackStackImmediate();
+        }
+        
         PlaylistFragment f = PlaylistFragment.newInstance();
         f.setPresenter(new PlaylistPresenter(f, album));
 
@@ -217,8 +224,21 @@ public class ListsFragment extends Fragment implements BaseView {
     {
         FragmentActivity a = getActivity();
         FragmentManager manager = a.getSupportFragmentManager();
+        int backStackCount = manager.getBackStackEntryCount();
 
         String newEntryName = playlist.getName();
+        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
+
+        // Do nothing, if the last entry name is equal to the new entry name
+        if (lastEntryName != null && lastEntryName.equals(newEntryName))
+        {
+            return;
+        }
+
+        while (manager.getBackStackEntryCount() > 0)
+        {
+            manager.popBackStackImmediate();
+        }
 
         PlaylistFragment f = PlaylistFragment.newInstance();
         f.setPresenter(new PlaylistPresenter(f, playlist));
