@@ -19,6 +19,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
@@ -26,6 +27,7 @@ import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
@@ -50,14 +52,15 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     private Button _buttonBack;
     private Button _buttonPlay;
     private Button _buttonForward;
-    private Button _mediaButtonPlaylist;
+    private Button _buttonPlaylist;
+    private Button _buttonPlayOrder;
     
     public QuickPlayerFragment()
     {
 
     }
 
-    public static QuickPlayerFragment newInstance()
+    public static @NonNull QuickPlayerFragment newInstance()
     {
         return new QuickPlayerFragment();
     }
@@ -77,7 +80,8 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         _buttonBack = root.findViewById(R.id.mediaButtonBack);
         _buttonPlay = root.findViewById(R.id.mediaButtonPlay);
         _buttonForward = root.findViewById(R.id.mediaButtonForward);
-        _mediaButtonPlaylist = root.findViewById(R.id.mediaButtonPlaylist);
+        _buttonPlaylist = root.findViewById(R.id.mediaButtonPlaylist);
+        _buttonPlayOrder = root.findViewById(R.id.mediaButtonPlayOrder);
         
         // Init UI
         initUI();
@@ -151,12 +155,23 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
                 _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, getContext());
             }
         });
-        
-        _mediaButtonPlaylist.setOnClickListener(new View.OnClickListener() {
+
+        _buttonPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIAnimations.animateButtonTAP(getContext(), _mediaButtonPlaylist);
+                UIAnimations.animateButtonTAP(getContext(), _buttonPlaylist);
                 _presenter.onOpenPlaylistButtonClick(getContext());
+            }
+        });
+
+        _buttonPlayOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIAnimations.animateButtonTAP(getContext(), _buttonPlayOrder);
+                _presenter.onPlayOrderButtonClick(getContext());
+
+                // Save current audio state
+                saveCurrentAudioState();
             }
         });
         
@@ -201,6 +216,38 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         double newPosition = (currentPosition / duration) * MEDIA_BAR_MAX_VALUE;
         _mediaBar.setProgress((int)newPosition);
         _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
+
+        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+
+        if (playlist != null)
+        {
+            AudioPlayOrder order = playlist.getPlayOrder();
+
+            switch (order)
+            {
+                case FORWARDS:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards);
+                    break;
+                case FORWARDS_REPEAT:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards_repeat);
+                    break;
+                case ONCE_FOREVER:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_repeat_forever);
+                    break;
+                case SHUFFLE:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_shuffle);
+                    break;
+                default:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards);
+                    break;
+            }
+        }
+    }
+
+    private void saveCurrentAudioState()
+    {
+        GeneralStorage.getShared().savePlayerState(getContext());
+        GeneralStorage.getShared().savePlayerPlayHistoryState(getContext());
     }
 
     private void updateMediaInfo(AudioTrack playingTrack)

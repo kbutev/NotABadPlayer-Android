@@ -70,7 +70,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
     }
     
-    public static PlayerFragment newInstance()
+    public static @NonNull PlayerFragment newInstance()
     {
         return new PlayerFragment();
     }
