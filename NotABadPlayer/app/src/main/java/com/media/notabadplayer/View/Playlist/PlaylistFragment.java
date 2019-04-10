@@ -54,7 +54,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         
     }
     
-    public static PlaylistFragment newInstance()
+    public static @NonNull PlaylistFragment newInstance()
     {
         return new PlaylistFragment();
     }
@@ -96,8 +96,6 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         }
         
         _table.invalidateViews();
-
-        startLooping();
     }
 
     @Override

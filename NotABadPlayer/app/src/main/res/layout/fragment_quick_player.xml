@@ -32,15 +32,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
                 android:orientation="vertical">
                 
                 <TextView
                     android:id="@+id/labelTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:maxWidth="200dp"
                     android:text="@string/nothing_playing"
                     android:textAppearance="@style/QuickPlayerText"
                     android:singleLine="true"/>
@@ -85,30 +86,43 @@
                 <Button
                     android:id="@+id/mediaButtonPlaylist"
                     android:layout_width="48dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.2"
                     android:background="@drawable/playlist"
                     app:backgroundTint="?quickPlayerButtonsTintColor"/>
                 <Button
                     android:id="@+id/mediaButtonBack"
                     android:layout_width="64dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.2"
                     android:background="@drawable/media_previous"
                     app:backgroundTint="?quickPlayerButtonsTintColor"/>
                 <Button
                     android:id="@+id/mediaButtonPlay"
                     android:layout_width="64dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.2"
                     android:background="@drawable/media_play"
                     app:backgroundTint="?quickPlayerButtonsTintColor"/>
                 <Button
                     android:id="@+id/mediaButtonForward"
                     android:layout_width="64dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.2"
                     android:background="@drawable/media_next"
                     app:backgroundTint="?quickPlayerButtonsTintColor"/>
-                <Space
-                    android:layout_width="48dp"
-                    android:layout_height="0dp" />
+                <FrameLayout
+                    android:layout_width="64dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.2">
+                    <Button
+                        android:id="@+id/mediaButtonPlayOrder"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/media_sort_forwards_repeat"
+                        app:backgroundTint="?quickPlayerButtonsTintColor"/>
+                </FrameLayout>
             </LinearLayout>
         </LinearLayout>
         

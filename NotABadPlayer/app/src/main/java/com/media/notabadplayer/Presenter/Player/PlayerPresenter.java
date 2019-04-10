@@ -31,27 +31,48 @@ public class PlayerPresenter implements BasePresenter
     {
         AudioPlayer player = AudioPlayer.getShared();
         AudioPlaylist currentPlaylist = player.getPlaylist();
-        AudioTrack currentPlayingTrack = currentPlaylist != null ? currentPlaylist.getPlayingTrack() : null;
         
-        if (!_playlist.getPlayingTrack().equals(currentPlayingTrack))
+        if (currentPlaylist != null)
         {
-            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with " + String.valueOf(_playlist.size()) + " tracks");
+            String newPlaylistName = _playlist.getName();
+            String currentPlaylistName = currentPlaylist.getName();
 
-            player.playPlaylist(_playlist);
+            AudioTrack newTrack = _playlist.getPlayingTrack();
+            AudioTrack currentTrack = currentPlaylist.getPlayingTrack();
             
-            if (!player.isPlaying())
+            if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
             {
-                player.resume();
+                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with track " + _playlist.getPlayingTrack().title);
+
+                player.playPlaylist(_playlist);
+
+                if (!player.isPlaying())
+                {
+                    player.resume();
+                }
+
+                _view.openPlayerScreen(_playlist);
+
+                return;
             }
-            
-            _view.openPlayerScreen(_playlist);
-        }
-        else
-        {
-            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and continuing to listen to current song");
-            
+
+            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player without changing current audio player state");
+
             _view.openPlayerScreen(currentPlaylist);
+            
+            return;
         }
+
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with track " + _playlist.getPlayingTrack().title);
+
+        player.playPlaylist(_playlist);
+
+        if (!player.isPlaying())
+        {
+            player.resume();
+        }
+
+        _view.openPlayerScreen(_playlist);
     }
     
     @Override

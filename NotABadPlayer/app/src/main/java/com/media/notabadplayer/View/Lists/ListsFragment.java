@@ -45,7 +45,7 @@ public class ListsFragment extends Fragment implements BaseView {
 
     }
 
-    public static ListsFragment newInstance()
+    public static @NonNull ListsFragment newInstance()
     {
         return new ListsFragment();
     }

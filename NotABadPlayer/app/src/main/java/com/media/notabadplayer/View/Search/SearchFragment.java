@@ -53,7 +53,7 @@ public class SearchFragment extends Fragment implements BaseView
         
     }
     
-    public static SearchFragment newInstance()
+    public static @NonNull SearchFragment newInstance()
     {
         return new SearchFragment();
     }

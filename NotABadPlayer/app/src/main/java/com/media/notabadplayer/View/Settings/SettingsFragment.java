@@ -73,7 +73,7 @@ public class SettingsFragment extends Fragment implements BaseView
 
     }
 
-    public static SettingsFragment newInstance()
+    public static @NonNull SettingsFragment newInstance()
     {
         return new SettingsFragment();
     }
