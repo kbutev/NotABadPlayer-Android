@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -57,6 +58,18 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         }
         
         super.onCreate(null);
+
+        // Audio model - retrieve from intent
+        String intentData = getIntent().getStringExtra("playlist");
+        AudioPlaylist playlist = (AudioPlaylist) Serializing.deserializeObject(intentData);
+        
+        if (playlist == null)
+        {
+            Log.v(PlayerActivity.class.getCanonicalName(), "Error: player cannot start with a null playlist.");
+            
+            finish();
+            return;
+        }
         
         // App theme
         AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue(this));
@@ -66,10 +79,6 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         
         // UI
         initUI();
-        
-        // Audio model - retrieve from intent
-        String intentData = getIntent().getStringExtra("playlist");
-        AudioPlaylist playlist = (AudioPlaylist) Serializing.deserializeObject(intentData);
         
         // Presenter
         _presenter = new PlayerPresenter(_fragment, playlist);

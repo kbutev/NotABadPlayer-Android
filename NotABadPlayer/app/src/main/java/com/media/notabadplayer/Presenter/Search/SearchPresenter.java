@@ -72,7 +72,7 @@ public class SearchPresenter implements BasePresenter
     {
         if (index < 0 || index >= _searchResults.size())
         {
-            Log.v(SearchPresenter.class.getCanonicalName(), "Invalid clicked search index");
+            Log.v(SearchPresenter.class.getCanonicalName(), "Error: invalid clicked search index, out of bounds");
             return;
         }
         

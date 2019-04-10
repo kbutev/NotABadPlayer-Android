@@ -33,7 +33,7 @@ public class Serializing
         }
         catch (Exception e)
         {
-            Log.v(Serializing.class.getSimpleName(), "Cannot serialize object: " + e.toString());
+            Log.v(Serializing.class.getSimpleName(), "Error: cannot serialize object: " + e.toString());
         }
         
         return null;
@@ -60,7 +60,7 @@ public class Serializing
         }
         catch (Exception e)
         {
-            Log.v(Serializing.class.getSimpleName(), "Cannot deserialize object: " + e.toString());
+            Log.v(Serializing.class.getSimpleName(), "Error: cannot deserialize object: " + e.toString());
         }
         
         return null;

@@ -192,7 +192,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot play track: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play track: " + e.toString());
         }
     }
     
@@ -224,7 +224,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot resume: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot resume: " + e.toString());
         }
     }
 
@@ -246,7 +246,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot pause: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot pause: " + e.toString());
         }
     }
     
@@ -444,7 +444,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot seek to: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: player cannot seek to: " + e.toString());
         }
     }
     

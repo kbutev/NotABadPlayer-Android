@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         if (playlist == null)
         {
-            Log.v(MainActivity.class.getCanonicalName(), "Cannot start app with desired track: " + path.toString());
+            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with desired track: " + path.toString());
             return;
         }
         
