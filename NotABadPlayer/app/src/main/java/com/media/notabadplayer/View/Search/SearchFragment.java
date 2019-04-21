@@ -88,7 +88,7 @@ public class SearchFragment extends Fragment implements BaseView
         super.onStart();
 
         // Retrieve saved search query, if there is one
-        String searchQuery = GeneralStorage.getShared().retrieveSearchQuery(getContext());
+        String searchQuery = GeneralStorage.getShared().retrieveSearchQuery();
 
         if (!_searchField.getText().toString().equals(searchQuery))
         {
@@ -265,7 +265,7 @@ public class SearchFragment extends Fragment implements BaseView
         _searchResults.invalidateViews();
         
         // Save search query
-        GeneralStorage.getShared().saveSearchQuery(getContext(), searchQuery);
+        GeneralStorage.getShared().saveSearchQuery(searchQuery);
     }
 
     @Override

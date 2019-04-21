@@ -14,7 +14,7 @@ public class AudioPlayerNoiseSuppression extends BroadcastReceiver {
     public void onReceive(@NonNull Context context, Intent intent) {
         if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction()))
         {
-            KeyBinds.getShared().evaluateInput(context, ApplicationInput.EARPHONES_UNPLUG);
+            KeyBinds.getShared().evaluateInput(ApplicationInput.EARPHONES_UNPLUG);
         }
     }
 }

@@ -21,4 +21,28 @@ public class AppSettings
     public enum ShowVolumeBar {
         NO, LEFT_SIDE, RIGHT_SIDE
     }
+    
+    public enum CachingPolicies {
+        NO_CACHING, ALBUMS_ONLY, CACHE_ALL;
+        
+        public boolean cacheAlbumsTab()
+        {
+            return this == ALBUMS_ONLY || this == CACHE_ALL;
+        }
+
+        public boolean cacheListsTab()
+        {
+            return this == CACHE_ALL;
+        }
+
+        public boolean cacheSearchTab()
+        {
+            return this == CACHE_ALL;
+        }
+
+        public boolean cacheSettingsTab()
+        {
+            return this == CACHE_ALL;
+        }
+    }
 }

@@ -112,7 +112,7 @@ public class SettingsFragment extends Fragment implements BaseView
         selectProperValues();
         
         // App theme retrieve and store
-        _appTheme = GeneralStorage.getShared().getAppThemeValue(getContext());
+        _appTheme = GeneralStorage.getShared().getAppThemeValue();
         
         return root;
     }
@@ -156,7 +156,7 @@ public class SettingsFragment extends Fragment implements BaseView
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 AppSettings.TrackSorting selectedValue = AppSettings.TrackSorting.values()[position];
-                AppSettings.AlbumSorting albumSorting = GeneralStorage.getShared().getAlbumSortingValue(getContext());
+                AppSettings.AlbumSorting albumSorting = GeneralStorage.getShared().getAlbumSortingValue();
                 _presenter.onAppSortingChange(albumSorting, selectedValue);
             }
             @Override
@@ -255,7 +255,7 @@ public class SettingsFragment extends Fragment implements BaseView
     
     private void selectProperAppTheme()
     {
-        AppSettings.AppTheme value = GeneralStorage.getShared().getAppThemeValue(getContext());
+        AppSettings.AppTheme value = GeneralStorage.getShared().getAppThemeValue();
         
         for (int e = 0; e < AppSettings.AppTheme.values().length; e++)
         {
@@ -273,7 +273,7 @@ public class SettingsFragment extends Fragment implements BaseView
 
     private void selectProperTrackSorting()
     {
-        AppSettings.TrackSorting value = GeneralStorage.getShared().getTrackSortingValue(getContext());
+        AppSettings.TrackSorting value = GeneralStorage.getShared().getTrackSortingValue();
 
         for (int e = 0; e < AppSettings.TrackSorting.values().length; e++)
         {
@@ -286,7 +286,7 @@ public class SettingsFragment extends Fragment implements BaseView
 
     private void selectProperShowVolumeBarValue()
     {
-        AppSettings.ShowVolumeBar value = GeneralStorage.getShared().getShowVolumeBarValue(getContext());
+        AppSettings.ShowVolumeBar value = GeneralStorage.getShared().getShowVolumeBarValue();
 
         for (int e = 0; e < AppSettings.ShowVolumeBar.values().length; e++)
         {
@@ -299,34 +299,34 @@ public class SettingsFragment extends Fragment implements BaseView
     
     private void selectProperKeybinds()
     {
-        ApplicationAction PLAYER_VOLUME_UP_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
+        ApplicationAction PLAYER_VOLUME_UP_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
         _keybindPlayerVU.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_VOLUME_UP_BUTTON));
         
-        ApplicationAction PLAYER_VOLUME_DOWN_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON);
+        ApplicationAction PLAYER_VOLUME_DOWN_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON);
         _keybindPlayerVD.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_VOLUME_DOWN_BUTTON));
         
-        ApplicationAction PLAYER_NEXT_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.PLAYER_NEXT_BUTTON);
+        ApplicationAction PLAYER_NEXT_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_NEXT_BUTTON);
         _keybindPlayerNext.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_NEXT_BUTTON));
         
-        ApplicationAction PLAYER_PREVIOUS_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.PLAYER_PREVIOUS_BUTTON);
+        ApplicationAction PLAYER_PREVIOUS_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_PREVIOUS_BUTTON);
         _keybindPlayerPrev.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_PREVIOUS_BUTTON));
 
-        ApplicationAction PLAYER_RECALL = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.PLAYER_RECALL);
+        ApplicationAction PLAYER_RECALL = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_RECALL);
         _keybindPlayerRecall.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_RECALL));
         
-        ApplicationAction QUICK_PLAYER_VOLUME_UP_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
+        ApplicationAction QUICK_PLAYER_VOLUME_UP_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
         _keybindQPlayerVU.setSelection(SettingsKeybindListAdapter.getCountForAction(QUICK_PLAYER_VOLUME_UP_BUTTON));
 
-        ApplicationAction QUICK_PLAYER_VOLUME_DOWN_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
+        ApplicationAction QUICK_PLAYER_VOLUME_DOWN_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
         _keybindQPlayerVD.setSelection(SettingsKeybindListAdapter.getCountForAction(QUICK_PLAYER_VOLUME_DOWN_BUTTON));
 
-        ApplicationAction QUICK_PLAYER_NEXT_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
+        ApplicationAction QUICK_PLAYER_NEXT_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
         _keybindQPlayerNext.setSelection(SettingsKeybindListAdapter.getCountForAction(QUICK_PLAYER_NEXT_BUTTON));
 
-        ApplicationAction QUICK_PLAYER_PREVIOUS_BUTTON = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
+        ApplicationAction QUICK_PLAYER_PREVIOUS_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
         _keybindQPlayerPrev.setSelection(SettingsKeybindListAdapter.getCountForAction(QUICK_PLAYER_PREVIOUS_BUTTON));
 
-        ApplicationAction EARPHONES_UNPLUG = GeneralStorage.getShared().getSettingsAction(getContext(), ApplicationInput.EARPHONES_UNPLUG);
+        ApplicationAction EARPHONES_UNPLUG = GeneralStorage.getShared().getSettingsAction(ApplicationInput.EARPHONES_UNPLUG);
         _keybindEarphonesUnplug.setSelection(SettingsKeybindListAdapter.getCountForAction(EARPHONES_UNPLUG));
     }
     
@@ -412,7 +412,7 @@ public class SettingsFragment extends Fragment implements BaseView
     public void appThemeChanged(AppSettings.AppTheme appTheme)
     {
         // Check if the fragment already have the correct app theme
-        if (_appTheme == GeneralStorage.getShared().getAppThemeValue(getContext()))
+        if (_appTheme == GeneralStorage.getShared().getAppThemeValue())
         {
             return;
         }
@@ -425,7 +425,7 @@ public class SettingsFragment extends Fragment implements BaseView
         ft.commit();
         
         // Retrieve and store again
-        _appTheme = GeneralStorage.getShared().getAppThemeValue(getContext());
+        _appTheme = GeneralStorage.getShared().getAppThemeValue();
     }
     
     @Override

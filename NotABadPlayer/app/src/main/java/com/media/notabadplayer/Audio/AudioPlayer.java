@@ -533,7 +533,7 @@ public class AudioPlayer {
         
         AudioTrack previousTrack = _playHistory.get(_playHistory.size()-1);
         
-        AudioPlaylist playlist = previousTrack.source.getSourcePlaylist(_application.getBaseContext(), _audioInfo, previousTrack);
+        AudioPlaylist playlist = previousTrack.source.getSourcePlaylist(_audioInfo, previousTrack);
         
         if (playlist == null)
         {
@@ -566,7 +566,7 @@ public class AudioPlayer {
         _playHistory.add(newTrack);
         
         // Do not exceed the play history capacity
-        int capacity = GeneralStorage.getShared().getPlayerPlayedHistoryCapacity(_application);
+        int capacity = GeneralStorage.getShared().getPlayerPlayedHistoryCapacity();
         
         while (_playHistory.size() > capacity)
         {

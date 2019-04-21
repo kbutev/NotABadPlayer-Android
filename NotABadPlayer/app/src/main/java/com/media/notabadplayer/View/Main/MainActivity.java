@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         super.onCreate(null);
         
         // App theme
-        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue(this));
+        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue());
         
         // Content
         setContentView(R.layout.activity_main);
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
         refreshCurrentTab();
         
-        if (GeneralStorage.getShared().getCachingPolicyFlagForAlbumsTab(this))
+        if (GeneralStorage.getShared().getCachingPolicy().cacheAlbumsTab())
         {
             _cachedTabs.put(R.id.navigation_albums, _currentTab);
         }
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _currentTab = ListsFragment.newInstance();
         refreshCurrentTab();
         
-        if (GeneralStorage.getShared().getCachingPolicyFlagForListsTab(this))
+        if (GeneralStorage.getShared().getCachingPolicy().cacheListsTab())
         {
             _cachedTabs.put(R.id.navigation_albums, _currentTab);
         }
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _currentTab.setPresenter(new SearchPresenter(_currentTab, this, _audioInfo));
         refreshCurrentTab();
         
-        if (GeneralStorage.getShared().getCachingPolicyFlagForSearchTab(this))
+        if (GeneralStorage.getShared().getCachingPolicy().cacheSearchTab())
         {
             _cachedTabs.put(R.id.navigation_albums, _currentTab);
         }
@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _currentTab.setPresenter(new SettingsPresenter(_currentTab, this, this));
         refreshCurrentTab();
         
-        if (GeneralStorage.getShared().getCachingPolicyFlagForSettingsTab(this))
+        if (GeneralStorage.getShared().getCachingPolicy().cacheSettingsTab())
         {
             _cachedTabs.put(R.id.navigation_albums, _currentTab);
         }
@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void startAppWithTrack(@NonNull Uri path)
     {
         AudioTrack track = _audioInfo.findTrackByPath(path);
-        AudioPlaylist playlist = track.source.getSourcePlaylist(this, _audioInfo, track);
+        AudioPlaylist playlist = track.source.getSourcePlaylist(_audioInfo, track);
         
         if (playlist == null)
         {
@@ -295,13 +295,13 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
         {
-            KeyBinds.getShared().evaluateInput(this, ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
+            KeyBinds.getShared().evaluateInput(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
             return true;
         }
         
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
         {
-            KeyBinds.getShared().evaluateInput(this, ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
+            KeyBinds.getShared().evaluateInput(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
             return true;
         }
 

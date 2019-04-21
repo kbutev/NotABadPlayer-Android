@@ -29,18 +29,15 @@ public class LaunchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
 
-        boolean firstTimeLaunch = GeneralStorage.getShared().isFirstApplicationLaunch(this);
+        GeneralStorage.getShared().init(getApplication());
+
+        boolean firstTimeLaunch = GeneralStorage.getShared().isFirstApplicationLaunch();
         
         _launchedFromFile = Intent.ACTION_VIEW.equals(getIntent().getAction());
         
         if (_launchedFromFile)
         {
             _launchedFromFileUri = getIntent().getData();
-        }
-        
-        if (firstTimeLaunch)
-        {
-            GeneralStorage.getShared().resetDefaultSettingsActions(this);
         }
         
         requestPermissionForReadExtertalStorage();

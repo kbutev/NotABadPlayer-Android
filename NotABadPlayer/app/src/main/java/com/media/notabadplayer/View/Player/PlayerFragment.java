@@ -95,7 +95,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonForward = root.findViewById(R.id.mediaButtonForward);
         _buttonPlayOrder = root.findViewById(R.id.mediaButtonPlayOrder);
         
-        AppSettings.ShowVolumeBar showBarState = GeneralStorage.getShared().getShowVolumeBarValue(getContext());
+        AppSettings.ShowVolumeBar showBarState = GeneralStorage.getShared().getShowVolumeBarValue();
         
         if (showBarState == AppSettings.ShowVolumeBar.NO)
         {
@@ -230,7 +230,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonRecall);
-                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_RECALL, getContext());
+                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_RECALL);
             }
         });
         
@@ -239,7 +239,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             public void onClick(View v) {
 
                 UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
-                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_PLAY_BUTTON, getContext());
+                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_PLAY_BUTTON);
             }
         });
         
@@ -248,7 +248,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             public void onClick(View v) {
 
                 UIAnimations.animateButtonTAP(getContext(), _buttonBack);
-                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_PREVIOUS_BUTTON, getContext());
+                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_PREVIOUS_BUTTON);
             }
         });
         
@@ -257,7 +257,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             public void onClick(View v) {
 
                 UIAnimations.animateButtonTAP(getContext(), _buttonForward);
-                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_NEXT_BUTTON, getContext());
+                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_NEXT_BUTTON);
             }
         });
         
@@ -265,7 +265,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonPlayOrder);
-                _presenter.onPlayOrderButtonClick(getContext());
+                _presenter.onPlayOrderButtonClick();
                 
                 // Save current audio state
                 saveCurrentAudioState();
@@ -328,8 +328,8 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private void saveCurrentAudioState()
     {
-        GeneralStorage.getShared().savePlayerState(getContext());
-        GeneralStorage.getShared().savePlayerPlayHistoryState(getContext());
+        GeneralStorage.getShared().savePlayerState();
+        GeneralStorage.getShared().savePlayerPlayHistoryState();
     }
     
     private void updateMediaInfo(AudioTrack playingTrack)
