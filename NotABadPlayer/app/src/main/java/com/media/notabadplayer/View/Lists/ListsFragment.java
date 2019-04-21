@@ -123,7 +123,7 @@ public class ListsFragment extends Fragment implements BaseView {
             _playlists = new ArrayList<>();
         }
         
-        ArrayList<AudioTrack> history = AudioPlayer.getShared().getPlayHistory();
+        ArrayList<AudioTrack> history = AudioPlayer.getShared().playHistory.getPlayHistory();
         
         if (history.size() > 0)
         {

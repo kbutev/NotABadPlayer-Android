@@ -134,7 +134,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
         _presenter.start();
 
-        _player.attachObserver(this);
+        _player.observers.attach(this);
         
         startLooping();
     }
@@ -160,7 +160,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     {
         super.onDestroy();
 
-        _player.detachObserver(this);
+        _player.observers.detach(this);
     }
     
     private void initUI()

@@ -1,6 +1,7 @@
 package com.media.notabadplayer.Storage;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -50,7 +51,7 @@ public class GeneralStorage
     {
         ___context = context;
         
-        ___preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), context.MODE_PRIVATE);
+        ___preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
         
         detectFirstTimeLaunch();
 
@@ -233,7 +234,7 @@ public class GeneralStorage
 
         SharedPreferences.Editor editor = preferences.edit();
 
-        editor.putString("player_play_history", Serializing.serializeObject(player.getPlayHistory()));
+        editor.putString("player_play_history", Serializing.serializeObject(player.playHistory.getPlayHistory()));
         
         editor.apply();
     }
@@ -257,7 +258,7 @@ public class GeneralStorage
             return;
         }
         
-        player.setPlayHistory(playHistory);
+        player.playHistory.setList(playHistory);
     }
 
     synchronized public void saveSearchQuery(String searchQuery)

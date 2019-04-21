@@ -8,8 +8,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +20,7 @@ import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Audio.AudioTrackSource;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
@@ -80,7 +76,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
 
         _presenter.start();
 
-        _player.attachObserver(this);
+        _player.observers.attach(this);
 
         startLooping();
     }
@@ -111,7 +107,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     {
         super.onDestroy();
 
-        _player.detachObserver(this);
+        _player.observers.detach(this);
     }
     
     private void initUI()
