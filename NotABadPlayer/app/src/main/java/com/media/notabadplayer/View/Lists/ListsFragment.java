@@ -28,7 +28,6 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
-import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.View.BaseView;
 
 public class ListsFragment extends Fragment implements BaseView {
@@ -117,7 +116,7 @@ public class ListsFragment extends Fragment implements BaseView {
     
     private void updateListAdapters()
     {
-        _playlists = GeneralStorage.getShared().getPlaylists();
+        _playlists = GeneralStorage.getShared().getUserPlaylists();
 
         if (_playlists == null)
         {
@@ -176,7 +175,7 @@ public class ListsFragment extends Fragment implements BaseView {
 
                 playlists.remove(0);
                 
-                GeneralStorage.getShared().savePlaylists(playlists);
+                GeneralStorage.getShared().saveUserPlaylists(playlists);
             }
 
             _playlistsAdapter.notifyDataSetChanged();

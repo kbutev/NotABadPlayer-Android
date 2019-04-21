@@ -1,6 +1,5 @@
 package com.media.notabadplayer.Audio;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import java.io.Serializable;
@@ -55,7 +54,7 @@ public class AudioTrackSource implements Serializable
         
         if (isPlaylist())
         {
-            ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getPlaylists();
+            ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
             
             if (playlists == null)
             {

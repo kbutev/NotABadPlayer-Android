@@ -7,16 +7,11 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import java.util.ArrayList;
@@ -200,7 +195,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
             return;
         }
         
-        ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getPlaylists();
+        ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
         
         if (playlists == null)
         {
@@ -229,7 +224,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         // Successful save
         playlists.add(new AudioPlaylist(name, _playlistTracks));
 
-        GeneralStorage.getShared().savePlaylists(playlists);
+        GeneralStorage.getShared().saveUserPlaylists(playlists);
         
         quit();
     }
