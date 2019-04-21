@@ -112,20 +112,23 @@ public class GeneralStorage
         switch (preferencesVersion)
         {
             case "":
-                Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + currentVersion);
+                Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + "nil" + " to version " + currentVersion);
                 
                 Object result = Serializing.deserializeObject(preferences.getString("user_playlists", ""));
                 
-                ArrayList<AudioPlaylist> playlistsArray = objectToPlaylistsArray(result);
-
-                if (playlistsArray == null)
+                if (result != null)
                 {
-                    Log.v(GeneralStorage.class.getCanonicalName(), "Error: failed to migrate settings values, reseting settings to their default values");
-                    resetDefaultSettingsValues();
-                    break;
+                    ArrayList<AudioPlaylist> playlistsArray = objectToPlaylistsArray(result);
+
+                    if (playlistsArray == null)
+                    {
+                        Log.v(GeneralStorage.class.getCanonicalName(), "Error: failed to migrate settings values, reseting settings to their default values");
+                        resetDefaultSettingsValues();
+                        break;
+                    }
+
+                    saveUserPlaylists(playlistsArray);
                 }
-                
-                saveUserPlaylists(playlistsArray);
                 
                 Log.v(GeneralStorage.class.getCanonicalName(), "Successfully migrated settings values!");
 
@@ -196,7 +199,6 @@ public class GeneralStorage
 
         if (!(result instanceof AudioPlaylist))
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not restore player state, the stored data is invalid");
             return;
         }
         
@@ -252,7 +254,6 @@ public class GeneralStorage
         
         if (playHistory == null)
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not restore player history state, the stored data is invalid");
             return;
         }
         
