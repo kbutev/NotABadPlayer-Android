@@ -41,7 +41,7 @@ public class PlayerPresenter implements BasePresenter
             
             if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
             {
-                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with track " + _playlist.getPlayingTrack().title);
+                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist " + _playlist.getName() + " with track " + _playlist.getPlayingTrack().title);
 
                 player.playPlaylist(_playlist);
 
