@@ -96,8 +96,6 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         }
         
         _table.invalidateViews();
-
-        startLooping();
     }
 
     @Override
@@ -314,12 +312,6 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     public void onPlayerResume(AudioTrack track)
     {
         
-    }
-
-    @Override
-    public void onPlayerVolumeChanged()
-    {
-
     }
 
     @Override

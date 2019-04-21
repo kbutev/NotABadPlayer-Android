@@ -2,8 +2,6 @@ package com.media.notabadplayer.Audio;
 
 import android.support.annotation.NonNull;
 
-import com.media.notabadplayer.Storage.AudioInfo;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -20,14 +18,13 @@ public class AudioPlaylist implements Serializable
     private @NonNull ArrayList<AudioTrack> _tracks;
     
     private boolean _playing;
-    private @NonNull AudioTrack _playingTrack;
     private int _playingTrackPosition;
     
     transient private Random _random;
     
-    public AudioPlaylist(@NonNull String name, @NonNull AudioTrack track)
+    public AudioPlaylist(@NonNull String name, @NonNull AudioTrack startWithTrack) throws IllegalArgumentException
     {
-        this(name, trackAsAList(track), track);
+        this(name, trackAsAList(startWithTrack), startWithTrack);
     }
     
     public AudioPlaylist(@NonNull String name, @NonNull ArrayList<AudioTrack> tracks) throws IllegalArgumentException
@@ -35,7 +32,7 @@ public class AudioPlaylist implements Serializable
         this(name, tracks, null);
     }
     
-    public AudioPlaylist(@NonNull String name, @NonNull ArrayList<AudioTrack> tracks, AudioTrack playingTrack) throws IllegalArgumentException
+    public AudioPlaylist(@NonNull String name, @NonNull ArrayList<AudioTrack> tracks, AudioTrack startWithTrack) throws IllegalArgumentException
     {
         if (tracks.size() == 0)
         {
@@ -43,11 +40,10 @@ public class AudioPlaylist implements Serializable
         }
         
         _name = name;
+        _playOrder = AudioPlayOrder.FORWARDS;
         _tracks = tracks;
         _playing = true;
-        _playingTrack = tracks.get(0);
         _playingTrackPosition = 0;
-        _playOrder = AudioPlayOrder.FORWARDS;
         
         // Set proper source value
         boolean isAlbumList = isAlbumPlaylist();
@@ -56,18 +52,17 @@ public class AudioPlaylist implements Serializable
         
         for (int e = 0; e < tracks.size(); e++)
         {
-            AudioTrackSource source = isAlbumList ? AudioTrackSource.createAlbumSource(firstTrack.albumID) : AudioTrackSource.createPlaylistSource(this);
+            AudioTrackSource source = isAlbumList ? AudioTrackSource.createAlbumSource(firstTrack.albumID) : AudioTrackSource.createPlaylistSource(_name);
             _tracks.add(new AudioTrack(tracks.get(e), source));
         }
         
-        if (playingTrack != null)
+        if (startWithTrack != null)
         {
             for (int e = 0; e < _tracks.size(); e++)
             {
-                if (_tracks.get(e).equals(playingTrack))
+                if (_tracks.get(e).equals(startWithTrack))
                 {
                     _playingTrackPosition = e;
-                    _playingTrack = _tracks.get(e);
                     break;
                 }
             }
@@ -120,7 +115,7 @@ public class AudioPlaylist implements Serializable
     
     public @NonNull AudioTrack getPlayingTrack()
     {
-        return _playingTrack;
+        return _tracks.get(_playingTrackPosition);
     }
 
     public boolean isAlbumPlaylist()
@@ -165,7 +160,7 @@ public class AudioPlaylist implements Serializable
                 break;
         }
         
-        return _playingTrack;
+        return getPlayingTrack();
     }
 
     public AudioTrack goToNextPlayingTrack()
@@ -179,10 +174,9 @@ public class AudioPlaylist implements Serializable
         else
         {
             _playingTrackPosition++;
-            _playingTrack = _tracks.get(_playingTrackPosition);
         }
         
-        return _playingTrack;
+        return getPlayingTrack();
     }
 
     public AudioTrack goToNextPlayingTrackRepeat()
@@ -195,11 +189,10 @@ public class AudioPlaylist implements Serializable
         }
         else
         {
-            _playingTrack = _tracks.get(0);
             _playingTrackPosition = 0;
         }
         
-        return _playingTrack;
+        return getPlayingTrack();
     }
 
     public AudioTrack goToPreviousPlayingTrack()
@@ -208,17 +201,15 @@ public class AudioPlaylist implements Serializable
         
         if (_playingTrackPosition - 1 < 0)
         {
-            _playingTrack = _tracks.get(0);
             _playingTrackPosition = 0;
             _playing = false;
         }
         else
         {
             _playingTrackPosition--;
-            _playingTrack = _tracks.get(_playingTrackPosition);
         }
         
-        return _playingTrack;
+        return getPlayingTrack();
     }
     
     public AudioTrack goToTrackByShuffle()
@@ -228,9 +219,8 @@ public class AudioPlaylist implements Serializable
         int min = 0;
         int max = _tracks.size()-1;
         _playingTrackPosition = _random.nextInt((max - min) + 1) + min;
-        _playingTrack = _tracks.get(_playingTrackPosition);
         
-        return _playingTrack;
+        return getPlayingTrack();
     }
     
     private void writeObject(@NonNull ObjectOutputStream out) throws IOException
@@ -241,18 +231,7 @@ public class AudioPlaylist implements Serializable
     private void readObject(@NonNull ObjectInputStream in) throws IOException,ClassNotFoundException
     {
         in.defaultReadObject();
-        
-        AudioTrack playingTrack = _playingTrack;
-        
-        for (AudioTrack track : _tracks)
-        {
-            if (track.equals(playingTrack))
-            {
-                _playingTrack = track;
-                break;
-            }
-        }
-        
+
         _random = new Random();
     }
 }

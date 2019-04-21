@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Controls.ApplicationInput;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;

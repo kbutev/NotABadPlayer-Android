@@ -7,18 +7,16 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Storage.AudioInfo;
 
 import java.util.ArrayList;
 

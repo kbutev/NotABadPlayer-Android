@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Storage.GeneralStorage;
 
 public class AudioTrackSource implements Serializable
@@ -19,9 +18,9 @@ public class AudioTrackSource implements Serializable
         return new AudioTrackSource(albumID, true);
     }
     
-    public static AudioTrackSource createPlaylistSource(@NonNull AudioPlaylist playlist)
+    public static AudioTrackSource createPlaylistSource(@NonNull String playlistName)
     {
-        return new AudioTrackSource(playlist.getName(), false);
+        return new AudioTrackSource(playlistName, false);
     }
     
     private AudioTrackSource(String value, boolean isAlbumSource)
@@ -39,19 +38,9 @@ public class AudioTrackSource implements Serializable
     {
         return !isAlbum();
     }
-    
-    public boolean isValid()
-    {
-        return true;
-    }
-    
+
     public @Nullable AudioPlaylist getSourcePlaylist(@NonNull Context context, @NonNull AudioInfo audioInfo, @Nullable AudioTrack playingTrack)
     {
-        if (!isValid())
-        {
-            return null;
-        }
-        
         if (isAlbum())
         {
             AudioAlbum album = audioInfo.getAlbumByID(_value);

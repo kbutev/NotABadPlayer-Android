@@ -6,5 +6,4 @@ public interface AudioPlayerObserver {
     void onPlayerStop();
     void onPlayerPause(AudioTrack track);
     void onPlayerResume(AudioTrack track);
-    void onPlayerVolumeChanged();
 }

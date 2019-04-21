@@ -110,7 +110,7 @@ public class LaunchActivity extends AppCompatActivity {
                 startPlayerApp();
             }
         } catch (Exception e) {
-            Log.v(LaunchActivity.class.getCanonicalName(), "Cannot request permission for read external storage: " + e.toString());
+            Log.v(LaunchActivity.class.getCanonicalName(), "Error: cannot request permission for read external storage: " + e.toString());
             finish();
         }
     }

@@ -6,9 +6,9 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -72,7 +72,7 @@ public class SearchPresenter implements BasePresenter
     {
         if (index < 0 || index >= _searchResults.size())
         {
-            Log.v(SearchPresenter.class.getCanonicalName(), "Invalid clicked search index");
+            Log.v(SearchPresenter.class.getCanonicalName(), "Error: invalid clicked search index");
             return;
         }
         
