@@ -51,7 +51,7 @@ public class GeneralStorage
         
         ___preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), context.MODE_PRIVATE);
         
-        _firstTimeLaunch = ___preferences.getBoolean("firstTime", true);
+        detectFirstTimeLaunch();
     }
     
     private Application getContext()
@@ -76,9 +76,13 @@ public class GeneralStorage
     
     private void detectFirstTimeLaunch()
     {
-        if (isFirstApplicationLaunch())
+        this._firstTimeLaunch = getSharedPreferences().getBoolean("firstTime", true);
+        
+        if (this._firstTimeLaunch)
         {
-            _firstTimeLaunch = false;
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putBoolean("firstTime", true);
+            editor.apply();
             
             resetDefaultSettingsActions();
         }
