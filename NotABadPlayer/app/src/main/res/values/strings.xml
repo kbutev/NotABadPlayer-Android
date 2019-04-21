@@ -76,4 +76,7 @@
     
     <!-- Errors -->
     <string name="error_need_storage_permission">You cannot use the player without giving read storage permissions!</string>
+    
+    <!-- Storage version -->
+    <string name="storage_version">1.0</string>
 </resources>

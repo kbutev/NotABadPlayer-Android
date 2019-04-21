@@ -69,7 +69,7 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onAppSettingsReset() 
     {
-        GeneralStorage.getShared().resetDefaultSettingsActions();
+        GeneralStorage.getShared().resetDefaultSettingsValues();
         
         _view.appSettingsReset();
         _applicationRootView.appSettingsReset();

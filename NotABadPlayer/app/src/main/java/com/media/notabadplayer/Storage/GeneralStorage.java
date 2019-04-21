@@ -13,6 +13,7 @@ import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.Serializing;
 
 import java.util.ArrayList;
@@ -52,6 +53,8 @@ public class GeneralStorage
         ___preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), context.MODE_PRIVATE);
         
         detectFirstTimeLaunch();
+
+        detectVersionChange();
     }
     
     private Application getContext()
@@ -80,17 +83,84 @@ public class GeneralStorage
         
         if (this._firstTimeLaunch)
         {
+            Log.v(GeneralStorage.class.getCanonicalName(), "First time launching the program! Setting app settings to their default values");
+            
             SharedPreferences.Editor editor = getSharedPreferences().edit();
             editor.putBoolean("firstTime", true);
             editor.apply();
             
-            resetDefaultSettingsActions();
+            resetDefaultSettingsValues();
+        }
+    }
+    
+    private void detectVersionChange()
+    {
+        Application context = getContext();
+        
+        String preferencesVersion = retrieveStorageVersion();
+        String currentVersion = context.getResources().getString(R.string.storage_version);
+        
+        if (preferencesVersion.equals(currentVersion))
+        {
+            return;
+        }
+
+        SharedPreferences preferences = getSharedPreferences();
+        
+        saveStorageVersion(currentVersion);
+        
+        switch (preferencesVersion)
+        {
+            case "":
+                Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + currentVersion);
+                
+                Object result = Serializing.deserializeObject(preferences.getString("user_playlists", ""));
+                
+                ArrayList<AudioPlaylist> playlistsArray = objectToPlaylistsArray(result);
+
+                if (playlistsArray == null)
+                {
+                    Log.v(GeneralStorage.class.getCanonicalName(), "Error: failed to migrate settings values, reseting settings to their default values");
+                    resetDefaultSettingsValues();
+                    break;
+                }
+                
+                saveUserPlaylists(playlistsArray);
+                
+                Log.v(GeneralStorage.class.getCanonicalName(), "Successfully migrated settings values!");
+
+                break;
+            case "1.0":
+                Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + currentVersion);
+
+                Log.v(GeneralStorage.class.getCanonicalName(), "Successfully migrated settings values!");
+                
+                break;
+            default:
+                Log.v(GeneralStorage.class.getCanonicalName(), "Error: found an unknown storage version recorded on the device storage, reseting settings to their default values");
+                resetDefaultSettingsValues();
+                break;
         }
     }
     
     synchronized public boolean isFirstApplicationLaunch()
     {
         return _firstTimeLaunch;
+    }
+
+    private void saveStorageVersion(@NonNull String version)
+    {
+        SharedPreferences preferences = getSharedPreferences();
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putString("storage_version", version);
+
+        editor.apply();
+    }
+
+    private @NonNull String retrieveStorageVersion()
+    {
+        return getSharedPreferences().getString("storage_version", "");
     }
     
     synchronized public void savePlayerState()
@@ -178,15 +248,15 @@ public class GeneralStorage
             return;
         }
         
-        Object playHistory = Serializing.deserializeObject(data);
+        ArrayList<AudioTrack> playHistory = objectToTracksArray(Serializing.deserializeObject(data));
         
-        if (!(playHistory instanceof ArrayList))
+        if (playHistory == null)
         {
             Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not restore player history state, the stored data is invalid");
             return;
         }
         
-        player.setPlayHistory((ArrayList<AudioTrack>)playHistory);
+        player.setPlayHistory(playHistory);
     }
 
     synchronized public void saveSearchQuery(String searchQuery)
@@ -204,9 +274,9 @@ public class GeneralStorage
         return getSharedPreferences().getString("searchQuery", "");
     }
     
-    synchronized public void resetDefaultSettingsActions()
+    synchronized public void resetDefaultSettingsValues()
     {
-        savePlayerPlayedHistory(30);
+        savePlayerPlayedHistory(50);
         saveAppThemeValue(AppSettings.AppTheme.LIGHT);
         saveAlbumSortingValue(AppSettings.AlbumSorting.TITLE);
         saveTrackSortingValue(AppSettings.TrackSorting.TRACK_NUMBER);
@@ -278,20 +348,22 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public ArrayList<AudioPlaylist> getPlaylists()
+    synchronized public ArrayList<AudioPlaylist> getUserPlaylists()
     {
         SharedPreferences preferences = getSharedPreferences();
         
         try {
-            Object result = Serializing.deserializeObject(preferences.getString("playlists", ""));
+            Object result = Serializing.deserializeObject(preferences.getString("user_playlists", ""));
             
-            if (!(result instanceof ArrayList))
+            ArrayList<AudioPlaylist> playlistsArray = objectToPlaylistsArray(result);
+
+            if (playlistsArray == null)
             {
-                Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not deserialize playlists, the stored data is invalid");
+                Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not deserialize user playlists");
                 return null;
             }
             
-            return (ArrayList<AudioPlaylist>)result;
+            return playlistsArray;
         }
         catch (Exception e)
         {
@@ -301,11 +373,11 @@ public class GeneralStorage
         return null;
     }
 
-    synchronized public void savePlaylists(@NonNull ArrayList<AudioPlaylist> playlists)
+    synchronized public void saveUserPlaylists(@NonNull ArrayList<AudioPlaylist> playlists)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("playlists", Serializing.serializeObject(playlists));
+        editor.putString("user_playlists", Serializing.serializeObject(playlists));
         editor.apply();
     }
 
@@ -445,5 +517,45 @@ public class GeneralStorage
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("caching_policy", value.name());
         editor.apply();
+    }
+    
+    public static ArrayList<AudioPlaylist> objectToPlaylistsArray(Object object)
+    {
+        if (object instanceof ArrayList)
+        {
+            ArrayList array = (ArrayList)object;
+            
+            if (array.size() > 0)
+            {
+                if (array.get(0) instanceof AudioPlaylist)
+                {
+                    @SuppressWarnings("unchecked")
+                    ArrayList<AudioPlaylist> playlistsArray = (ArrayList<AudioPlaylist>)object;
+                    return playlistsArray;
+                }
+            }
+        }
+        
+        return null;
+    }
+
+    public static ArrayList<AudioTrack> objectToTracksArray(Object object)
+    {
+        if (object instanceof ArrayList)
+        {
+            ArrayList array = (ArrayList)object;
+
+            if (array.size() > 0)
+            {
+                if (array.get(0) instanceof AudioTrack)
+                {
+                    @SuppressWarnings("unchecked")
+                    ArrayList<AudioTrack> tracksArray = (ArrayList<AudioTrack>)object;
+                    return tracksArray;
+                }
+            }
+        }
+
+        return null;
     }
 }
