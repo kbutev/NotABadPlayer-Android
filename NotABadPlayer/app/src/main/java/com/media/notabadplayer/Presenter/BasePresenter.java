@@ -1,6 +1,5 @@
 package com.media.notabadplayer.Presenter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.media.notabadplayer.Constants.AppSettings;
@@ -12,9 +11,9 @@ public interface BasePresenter {
     void onAlbumClick(int index);
     void onAlbumsItemClick(int index);
     
-    void onPlayerButtonClick(ApplicationInput input, @NonNull Context context);
-    void onPlayOrderButtonClick(@NonNull Context context);
-    void onOpenPlaylistButtonClick(@NonNull Context context);
+    void onPlayerButtonClick(ApplicationInput input);
+    void onPlayOrderButtonClick();
+    void onOpenPlaylistButtonClick();
     
     void onSearchResultClick(int index);
     void onSearchQuery(@NonNull String searchValue);

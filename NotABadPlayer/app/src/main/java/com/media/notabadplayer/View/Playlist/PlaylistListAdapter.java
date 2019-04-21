@@ -36,7 +36,7 @@ class PlaylistListAdapter extends BaseAdapter
         this._context = context;
         this._tracks = tracks;
         this._isPlaylist = false;
-        sortTracks(GeneralStorage.getShared().getTrackSortingValue(_context));
+        sortTracks(GeneralStorage.getShared().getTrackSortingValue());
     }
     
     public PlaylistListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist, boolean sortTracks)
@@ -48,7 +48,7 @@ class PlaylistListAdapter extends BaseAdapter
         
         if (sortTracks)
         {
-            sortTracks(GeneralStorage.getShared().getTrackSortingValue(_context));
+            sortTracks(GeneralStorage.getShared().getTrackSortingValue());
         }
     }
     

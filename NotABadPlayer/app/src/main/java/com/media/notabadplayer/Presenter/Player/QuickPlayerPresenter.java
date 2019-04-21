@@ -1,6 +1,5 @@
 package com.media.notabadplayer.Presenter.Player;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -43,13 +42,13 @@ public class QuickPlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onPlayerButtonClick(ApplicationInput input, @NonNull Context context)
+    public void onPlayerButtonClick(ApplicationInput input)
     {
-        KeyBinds.getShared().evaluateInput(context, input);
+        KeyBinds.getShared().evaluateInput(input);
     }
     
     @Override
-    public void onOpenPlaylistButtonClick(@NonNull Context context)
+    public void onOpenPlaylistButtonClick()
     {
         AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
         
@@ -72,7 +71,7 @@ public class QuickPlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onPlayOrderButtonClick(@NonNull Context context)
+    public void onPlayOrderButtonClick()
     {
         KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
     }

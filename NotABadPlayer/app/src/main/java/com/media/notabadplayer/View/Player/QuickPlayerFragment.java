@@ -136,7 +136,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
-                _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON, getContext());
+                _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON);
             }
         });
     
@@ -144,7 +144,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonBack);
-                _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, getContext());
+                _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
             }
         });
     
@@ -152,7 +152,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonForward);
-                _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, getContext());
+                _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
             }
         });
 
@@ -160,7 +160,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonPlaylist);
-                _presenter.onOpenPlaylistButtonClick(getContext());
+                _presenter.onOpenPlaylistButtonClick();
             }
         });
 
@@ -168,7 +168,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             @Override
             public void onClick(View v) {
                 UIAnimations.animateButtonTAP(getContext(), _buttonPlayOrder);
-                _presenter.onPlayOrderButtonClick(getContext());
+                _presenter.onPlayOrderButtonClick();
 
                 // Save current audio state
                 saveCurrentAudioState();
@@ -246,8 +246,8 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
     private void saveCurrentAudioState()
     {
-        GeneralStorage.getShared().savePlayerState(getContext());
-        GeneralStorage.getShared().savePlayerPlayHistoryState(getContext());
+        GeneralStorage.getShared().savePlayerState();
+        GeneralStorage.getShared().savePlayerPlayHistoryState();
     }
 
     private void updateMediaInfo(AudioTrack playingTrack)

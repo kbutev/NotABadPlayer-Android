@@ -1,6 +1,5 @@
 package com.media.notabadplayer.Presenter.Playlist;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -82,19 +81,19 @@ public class PlaylistPresenter implements BasePresenter {
     }
 
     @Override
-    public void onPlayerButtonClick(ApplicationInput input, @NonNull Context context)
+    public void onPlayerButtonClick(ApplicationInput input)
     {
 
     }
 
     @Override
-    public void onOpenPlaylistButtonClick(@NonNull Context context)
+    public void onOpenPlaylistButtonClick()
     {
 
     }
 
     @Override
-    public void onPlayOrderButtonClick(@NonNull Context context)
+    public void onPlayOrderButtonClick()
     {
 
     }

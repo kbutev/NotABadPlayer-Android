@@ -33,7 +33,7 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
         this._context = context;
         this._albums = albums;
         this._sideSelector = sideSelector;
-        sortAlbums(GeneralStorage.getShared().getAlbumSortingValue(_context));
+        sortAlbums(GeneralStorage.getShared().getAlbumSortingValue());
     }
 
     public void sortAlbums(AppSettings.AlbumSorting albumSorting)

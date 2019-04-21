@@ -39,7 +39,7 @@ public class AudioTrackSource implements Serializable
         return !isAlbum();
     }
 
-    public @Nullable AudioPlaylist getSourcePlaylist(@NonNull Context context, @NonNull AudioInfo audioInfo, @Nullable AudioTrack playingTrack)
+    public @Nullable AudioPlaylist getSourcePlaylist(@NonNull AudioInfo audioInfo, @Nullable AudioTrack playingTrack)
     {
         if (isAlbum())
         {
@@ -55,7 +55,7 @@ public class AudioTrackSource implements Serializable
         
         if (isPlaylist())
         {
-            ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getPlaylists(context);
+            ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getPlaylists();
             
             if (playlists == null)
             {

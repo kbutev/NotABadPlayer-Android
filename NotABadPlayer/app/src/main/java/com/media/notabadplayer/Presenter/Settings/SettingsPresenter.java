@@ -39,19 +39,19 @@ public class SettingsPresenter implements BasePresenter
     }
     
     @Override
-    public void onPlayerButtonClick(ApplicationInput input, @NonNull Context context) 
+    public void onPlayerButtonClick(ApplicationInput input) 
     {
         
     }
 
     @Override
-    public void onOpenPlaylistButtonClick(@NonNull Context context)
+    public void onOpenPlaylistButtonClick()
     {
 
     }
     
     @Override
-    public void onPlayOrderButtonClick(@NonNull Context context)
+    public void onPlayOrderButtonClick()
     {
         
     }
@@ -69,12 +69,12 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onAppSettingsReset() 
     {
-        GeneralStorage.getShared().resetDefaultSettingsActions(_context);
+        GeneralStorage.getShared().resetDefaultSettingsActions();
         
         _view.appSettingsReset();
         _applicationRootView.appSettingsReset();
 
-        AppSettings.AppTheme themeValue = GeneralStorage.getShared().getAppThemeValue(_context);
+        AppSettings.AppTheme themeValue = GeneralStorage.getShared().getAppThemeValue();
 
         _view.appThemeChanged(themeValue);
         _applicationRootView.appThemeChanged(themeValue);
@@ -82,12 +82,12 @@ public class SettingsPresenter implements BasePresenter
 
     @Override
     public void onAppThemeChange(AppSettings.AppTheme themeValue) {
-        if (themeValue == GeneralStorage.getShared().getAppThemeValue(_context))
+        if (themeValue == GeneralStorage.getShared().getAppThemeValue())
         {
             return;
         }
         
-        GeneralStorage.getShared().saveAppThemeValue(_context, themeValue);
+        GeneralStorage.getShared().saveAppThemeValue(themeValue);
         
         _view.appThemeChanged(themeValue);
         _applicationRootView.appThemeChanged(themeValue);
@@ -96,8 +96,8 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
     {
-        GeneralStorage.getShared().saveAlbumSortingValue(_context, albumSorting);
-        GeneralStorage.getShared().saveTrackSortingValue(_context, trackSorting);
+        GeneralStorage.getShared().saveAlbumSortingValue(albumSorting);
+        GeneralStorage.getShared().saveTrackSortingValue(trackSorting);
         
         _view.appSortingChanged(albumSorting, trackSorting);
         _applicationRootView.appSortingChanged(albumSorting, trackSorting);
@@ -106,8 +106,8 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
-        GeneralStorage.getShared().saveShowStarsValue(_context, showStars);
-        GeneralStorage.getShared().saveShowVolumeBarValue(_context, showVolumeBar);
+        GeneralStorage.getShared().saveShowStarsValue(showStars);
+        GeneralStorage.getShared().saveShowVolumeBarValue(showVolumeBar);
         
         _view.appAppearanceChanged(showStars, showVolumeBar);
         _applicationRootView.appAppearanceChanged(showStars, showVolumeBar);
@@ -116,6 +116,6 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onKeybindChange(ApplicationAction action, ApplicationInput input) 
     {
-        GeneralStorage.getShared().saveSettingsAction(_context, input, action);
+        GeneralStorage.getShared().saveSettingsAction(input, action);
     }
 }

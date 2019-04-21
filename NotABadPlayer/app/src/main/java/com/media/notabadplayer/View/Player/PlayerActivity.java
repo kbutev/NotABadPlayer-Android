@@ -72,7 +72,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         }
         
         // App theme
-        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue(this));
+        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue());
         
         // Content
         setContentView(R.layout.activity_player);
@@ -140,13 +140,13 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
         {
-            KeyBinds.getShared().evaluateInput(this, ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
+            KeyBinds.getShared().evaluateInput(ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
             return true;
         }
         
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
         {
-            KeyBinds.getShared().evaluateInput(this, ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON);
+            KeyBinds.getShared().evaluateInput(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON);
             return true;
         }
         

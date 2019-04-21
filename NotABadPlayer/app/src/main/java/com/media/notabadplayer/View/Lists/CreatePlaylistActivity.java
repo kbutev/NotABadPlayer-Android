@@ -62,7 +62,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         super.onCreate(null);
         
         // App theme
-        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue(this));
+        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue());
         
         // Content
         setContentView(R.layout.activity_create_playlist);
@@ -200,7 +200,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
             return;
         }
         
-        ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getPlaylists(this);
+        ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getPlaylists();
         
         if (playlists == null)
         {
@@ -229,7 +229,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         // Successful save
         playlists.add(new AudioPlaylist(name, _playlistTracks));
 
-        GeneralStorage.getShared().savePlaylists(this, playlists);
+        GeneralStorage.getShared().savePlaylists(playlists);
         
         quit();
     }

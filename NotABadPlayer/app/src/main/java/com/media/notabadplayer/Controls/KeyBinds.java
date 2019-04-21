@@ -22,9 +22,9 @@ public class KeyBinds
         return _singleton;
     }
     
-    public synchronized ApplicationAction evaluateInput(@NonNull Context context, ApplicationInput input)
+    public synchronized ApplicationAction evaluateInput(ApplicationInput input)
     {
-        return performAction(GeneralStorage.getShared().getSettingsAction(context, input));
+        return performAction(GeneralStorage.getShared().getSettingsAction(input));
     }
     
     public ApplicationAction performAction(ApplicationAction action)

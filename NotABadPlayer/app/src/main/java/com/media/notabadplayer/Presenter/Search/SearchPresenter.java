@@ -50,19 +50,19 @@ public class SearchPresenter implements BasePresenter
     }
 
     @Override
-    public void onPlayerButtonClick(ApplicationInput input, @NonNull Context context)
+    public void onPlayerButtonClick(ApplicationInput input)
     {
 
     }
 
     @Override
-    public void onOpenPlaylistButtonClick(@NonNull Context context)
+    public void onOpenPlaylistButtonClick()
     {
 
     }
 
     @Override
-    public void onPlayOrderButtonClick(@NonNull Context context)
+    public void onPlayOrderButtonClick()
     {
 
     }

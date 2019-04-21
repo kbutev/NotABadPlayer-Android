@@ -117,7 +117,7 @@ public class ListsFragment extends Fragment implements BaseView {
     
     private void updateListAdapters()
     {
-        _playlists = GeneralStorage.getShared().getPlaylists(getContext());
+        _playlists = GeneralStorage.getShared().getPlaylists();
 
         if (_playlists == null)
         {
@@ -176,7 +176,7 @@ public class ListsFragment extends Fragment implements BaseView {
 
                 playlists.remove(0);
                 
-                GeneralStorage.getShared().savePlaylists(getContext(), playlists);
+                GeneralStorage.getShared().savePlaylists(playlists);
             }
 
             _playlistsAdapter.notifyDataSetChanged();
