@@ -540,9 +540,9 @@ public class AudioPlayer {
                 return;
             }
 
-            _playHistory.remove(_playHistory.size()-1);
+            _playHistory.remove(0);
 
-            AudioTrack previousTrack = _playHistory.get(_playHistory.size()-1);
+            AudioTrack previousTrack = _playHistory.get(0);
 
             AudioPlaylist playlist = previousTrack.source.getSourcePlaylist(_audioInfo, previousTrack);
 
@@ -574,14 +574,14 @@ public class AudioPlayer {
                 }
             }
 
-            _playHistory.add(newTrack);
+            _playHistory.add(0, newTrack);
 
             // Do not exceed the play history capacity
             int capacity = GeneralStorage.getShared().getPlayerPlayedHistoryCapacity();
 
             while (_playHistory.size() > capacity)
             {
-                _playHistory.remove(0);
+                _playHistory.remove(_playHistory.size()-1);
             }
         }
     }
