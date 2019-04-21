@@ -1,8 +1,5 @@
 package com.media.notabadplayer.Controls;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioPlayOrder;
@@ -116,7 +113,7 @@ public class KeyBinds
                 
                 break;
             case RECALL:
-                AudioPlayer.getShared().playPreviousInPlayHistory();
+                AudioPlayer.getShared().playHistory.playPrevious();
                 break;
         }
         

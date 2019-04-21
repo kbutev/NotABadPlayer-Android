@@ -22,10 +22,9 @@ public class AudioPlayer {
     private Application _application;
     private AudioInfo _audioInfo;
     private AudioPlaylist _playlist;
-    
-    private ArrayList<AudioPlayerObserver> _observers;
-    
-    private ArrayList<AudioTrack> _playHistory = new ArrayList<>();
+     
+    public final Observers observers = new Observers();
+    public final PlayHistory playHistory = new PlayHistory();
     
     private boolean _muted;
     
@@ -35,12 +34,10 @@ public class AudioPlayer {
         _player.setOnCompletionListener(new android.media.MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(android.media.MediaPlayer mp) {
-                onFinish();
+                observers.onFinish();
                 playNextBasedOnPlayOrder();
             }
         });
-        
-        _observers = new ArrayList<>();
 
         _muted = false;
     }
@@ -80,31 +77,6 @@ public class AudioPlayer {
         return _audioInfo;
     }
     
-    private void onPlay(AudioTrack track)
-    {
-        for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPlay(track);}
-    }
-  
-    private void onFinish()
-    {
-        for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerFinish();}
-    }
-    
-    private void onStop()
-    {
-        for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerStop();}
-    }
-    
-    private void onResume(AudioTrack track)
-    {
-        for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerResume(track);}
-    }
-    
-    private void onPause(AudioTrack track)
-    {
-        for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPause(track);}
-    }
-    
     public final android.media.MediaPlayer getPlayer()
     {
         return _player;
@@ -119,21 +91,6 @@ public class AudioPlayer {
         
         _application = application;
         _audioInfo = audioInfo;
-    }
-    
-    public void attachObserver(AudioPlayerObserver observer)
-    {
-        if (_observers.contains(observer))
-        {
-            return;
-        }
-        
-        _observers.add(observer);
-    }
-    
-    public void detachObserver(AudioPlayerObserver observer)
-    {
-        _observers.remove(observer);
     }
     
     public boolean isPlaying()
@@ -172,7 +129,10 @@ public class AudioPlayer {
             return;
         }
 
-        addTrackToPlayHistory(newTrack);
+        if (usePlayHistory)
+        {
+            playHistory.addTrack(newTrack);
+        }
         
         Uri path = Uri.parse(Uri.decode(newTrack.filePath));
         
@@ -186,7 +146,7 @@ public class AudioPlayer {
             
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing track: " + newTrack.title);
             
-            onPlay(newTrack);
+            observers.onPlay(newTrack);
         }
         catch (Exception e)
         {
@@ -216,8 +176,8 @@ public class AudioPlayer {
             if (!_player.isPlaying())
             {
                 _player.start();
-                
-                onResume(_playlist.getPlayingTrack());
+
+                observers.onResume(_playlist.getPlayingTrack());
             }
         }
         catch (Exception e)
@@ -238,8 +198,8 @@ public class AudioPlayer {
             if (_player.isPlaying())
             {
                 _player.pause();
-                
-                onPause(_playlist.getPlayingTrack());
+
+                observers.onPause(_playlist.getPlayingTrack());
             }
         }
         catch (Exception e)
@@ -262,8 +222,8 @@ public class AudioPlayer {
             if (_player.isPlaying())
             {
                 _player.pause();
-                
-                onStop();
+
+                observers.onStop();
             }
         }
         catch (Exception e)
@@ -288,8 +248,8 @@ public class AudioPlayer {
             Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
             
             stop();
-            
-            onStop();
+
+            observers.onStop();
         }
         else
         {
@@ -315,8 +275,8 @@ public class AudioPlayer {
             Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, cannot go before first track");
 
             stop();
-            
-            onStop();
+
+            observers.onStop();
         }
         else
         {
@@ -343,7 +303,7 @@ public class AudioPlayer {
 
             stop();
 
-            onStop();
+            observers.onStop();
         }
         else
         {
@@ -510,67 +470,119 @@ public class AudioPlayer {
         }
     }
     
-    public @NonNull ArrayList<AudioTrack> getPlayHistory()
-    {
-        return _playHistory;
-    }
     
-    public void setPlayHistory(@NonNull ArrayList<AudioTrack> playHistory)
-    {
-        _playHistory = playHistory;
-    }
     
-    public void playPreviousInPlayHistory()
+    public class Observers
     {
-        stop();
+        private ArrayList<AudioPlayerObserver> _observers = new ArrayList<>();
         
-        if (_playHistory.size() <= 1)
+        public void attach(AudioPlayerObserver observer)
         {
-            return;
-        }
-        
-        _playHistory.remove(_playHistory.size()-1);
-        
-        AudioTrack previousTrack = _playHistory.get(_playHistory.size()-1);
-        
-        AudioPlaylist playlist = previousTrack.source.getSourcePlaylist(_audioInfo, previousTrack);
-        
-        if (playlist == null)
-        {
-            String playlistName = _application.getResources().getString(R.string.playlist_name_previously_played);
-            playlist = new AudioPlaylist(playlistName, previousTrack);
-        }
-        
-        if (_playlist != null)
-        {
-            playlist.setPlayOrder(_playlist.getPlayOrder());
-        }
-        
-        _playlist = null;
-        
-        playPlaylist(playlist);
-    }
-    
-    private void addTrackToPlayHistory(@NonNull AudioTrack newTrack)
-    {
-        // Make sure that the history tracks are unique
-        for (AudioTrack track : _playHistory)
-        {
-            if (track.equals(newTrack))
+            if (_observers.contains(observer))
             {
-                _playHistory.remove(track);
-                break;
+                return;
             }
+
+            _observers.add(observer);
         }
-        
-        _playHistory.add(newTrack);
-        
-        // Do not exceed the play history capacity
-        int capacity = GeneralStorage.getShared().getPlayerPlayedHistoryCapacity();
-        
-        while (_playHistory.size() > capacity)
+
+        public void detach(AudioPlayerObserver observer)
         {
-            _playHistory.remove(0);
+            _observers.remove(observer);
+        }
+
+        private void onPlay(AudioTrack track)
+        {
+            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPlay(track);}
+        }
+
+        private void onFinish()
+        {
+            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerFinish();}
+        }
+
+        private void onStop()
+        {
+            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerStop();}
+        }
+
+        private void onResume(AudioTrack track)
+        {
+            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerResume(track);}
+        }
+
+        private void onPause(AudioTrack track)
+        {
+            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPause(track);}
+        }
+    }
+
+    public class PlayHistory
+    {
+        private ArrayList<AudioTrack> _playHistory = new ArrayList<>();
+        
+        public @NonNull ArrayList<AudioTrack> getPlayHistory()
+        {
+            return _playHistory;
+        }
+
+        public void setList(@NonNull ArrayList<AudioTrack> playHistory)
+        {
+            _playHistory = playHistory;
+        }
+
+        public void playPrevious()
+        {
+            stop();
+
+            if (_playHistory.size() <= 1)
+            {
+                return;
+            }
+
+            _playHistory.remove(_playHistory.size()-1);
+
+            AudioTrack previousTrack = _playHistory.get(_playHistory.size()-1);
+
+            AudioPlaylist playlist = previousTrack.source.getSourcePlaylist(_audioInfo, previousTrack);
+
+            if (playlist == null)
+            {
+                String playlistName = _application.getResources().getString(R.string.playlist_name_previously_played);
+                playlist = new AudioPlaylist(playlistName, previousTrack);
+            }
+
+            if (_playlist != null)
+            {
+                playlist.setPlayOrder(_playlist.getPlayOrder());
+            }
+
+            _playlist = null;
+
+            playPlaylist(playlist);
+        }
+
+        private void addTrack(@NonNull AudioTrack newTrack)
+        {
+            // Make sure that the history tracks are unique
+            for (AudioTrack track : _playHistory)
+            {
+                if (track.equals(newTrack))
+                {
+                    _playHistory.remove(track);
+                    break;
+                }
+            }
+
+            _playHistory.add(newTrack);
+
+            // Do not exceed the play history capacity
+            int capacity = GeneralStorage.getShared().getPlayerPlayedHistoryCapacity();
+
+            while (_playHistory.size() > capacity)
+            {
+                _playHistory.remove(0);
+            }
         }
     }
 }

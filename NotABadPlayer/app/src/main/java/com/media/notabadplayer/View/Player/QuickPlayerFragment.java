@@ -96,7 +96,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
         _presenter.start();
 
-        _player.attachObserver(this);
+        _player.observers.attach(this);
 
         startLooping();
     }
@@ -116,7 +116,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     public void onDestroy()
     {
         super.onDestroy();
-        _player.detachObserver(this);
+        _player.observers.detach(this);
     }
     
     private void initUI()
