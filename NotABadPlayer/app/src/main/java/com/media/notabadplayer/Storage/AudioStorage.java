@@ -11,16 +11,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Audio.AudioTrackSource;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
-public class AudioInfo {
+public class AudioStorage implements AudioInfo {
     private Context _context;
     private ArrayList<AudioAlbum> _albums = new  ArrayList<>();
     private HashMap<String, ArrayList<AudioTrack>> _albumSongs = new HashMap<>();
     
-    public AudioInfo(@NonNull Context context)
+    public AudioStorage(@NonNull Context context)
     {
         _context = context;
     }
@@ -36,7 +37,7 @@ public class AudioInfo {
         {
             return;
         }
-        
+
         int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
         int artistColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
         int albumIdColumn = cursor.getColumnIndex(MediaStore.Audio.Albums._ID);

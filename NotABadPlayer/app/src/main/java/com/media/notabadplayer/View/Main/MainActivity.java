@@ -19,7 +19,7 @@ import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Launch.LaunchActivity;
 import com.media.notabadplayer.Presenter.Player.QuickPlayerPresenter;
 import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
-import com.media.notabadplayer.Storage.AudioInfo;
+import com.media.notabadplayer.Storage.AudioStorage;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.AudioPlaylist;
@@ -54,7 +54,7 @@ import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 public class MainActivity extends AppCompatActivity implements BaseView {
     static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
     
-    private AudioInfo _audioInfo;
+    private AudioStorage _audioInfo;
     private MainPresenter _presenter;
 
     BottomNavigationView _navigation;
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // Presenter, audio model
         _presenter = new MainPresenter(this);
         
-        _audioInfo = new AudioInfo(this);
+        _audioInfo = new AudioStorage(this);
         _audioInfo.load();
         
         // Audio Player initialization
@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         if (playlist == null)
         {
-            Log.v(MainActivity.class.getCanonicalName(), "Cannot start app with desired track: " + path.toString());
+            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with desired track: " + path.toString());
             return;
         }
         

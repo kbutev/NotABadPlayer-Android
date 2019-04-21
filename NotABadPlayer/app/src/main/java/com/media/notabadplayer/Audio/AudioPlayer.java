@@ -11,7 +11,6 @@ import android.util.Log;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Storage.AudioInfo;
 import com.media.notabadplayer.Storage.GeneralStorage;
 
 import java.util.ArrayList;
@@ -71,7 +70,7 @@ public class AudioPlayer {
         return _application;
     }
     
-    public @NonNull AudioInfo getAudioInfo() 
+    public @NonNull AudioInfo getAudioInfo()
     {
         if (!isInitialized())
         {
@@ -111,8 +110,7 @@ public class AudioPlayer {
         return _player;
     }
     
-    public void init(@NonNull Application application,
-                     @NonNull AudioInfo audioInfo)
+    public void init(@NonNull Application application, @NonNull AudioInfo audioInfo)
     {
         if (_application != null)
         {
@@ -192,7 +190,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot play track: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play track: " + e.toString());
         }
     }
     
@@ -224,7 +222,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot resume: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot resume: " + e.toString());
         }
     }
 
@@ -246,7 +244,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot pause: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot pause: " + e.toString());
         }
     }
     
@@ -444,7 +442,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Cannot seek to: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot seek to: " + e.toString());
         }
     }
     

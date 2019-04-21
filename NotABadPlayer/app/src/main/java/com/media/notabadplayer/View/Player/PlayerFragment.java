@@ -521,12 +521,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
     }
-    
-    @Override
-    public void onPlayerVolumeChanged()
-    {
-        
-    }
 
     @Override
     public void appSettingsReset()

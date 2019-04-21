@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
@@ -96,7 +97,7 @@ public class GeneralStorage
 
         if (!(result instanceof AudioPlaylist))
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Could not restore player state, the stored data is invalid");
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not restore player state, the stored data is invalid");
             return;
         }
         
@@ -153,7 +154,7 @@ public class GeneralStorage
         
         if (!(playHistory instanceof ArrayList))
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Could not restore player history state, the stored data is invalid");
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not restore player history state, the stored data is invalid");
             return;
         }
         
@@ -265,7 +266,7 @@ public class GeneralStorage
             
             if (!(result instanceof ArrayList))
             {
-                Log.v(GeneralStorage.class.getCanonicalName(), "Could not deserialize playlists, the stored data is invalid");
+                Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not deserialize playlists, the stored data is invalid");
                 return null;
             }
             
@@ -296,7 +297,7 @@ public class GeneralStorage
         } 
         catch (Exception e)
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read AppThemeSetter value from storage");
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read AppThemeSetter value from storage");
         }
         
         return AppSettings.AppTheme.LIGHT;
@@ -319,7 +320,7 @@ public class GeneralStorage
         }
         catch (Exception e)
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read AlbumSorting value from storage");
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read AlbumSorting value from storage");
         }
 
         return AppSettings.AlbumSorting.TITLE;
@@ -342,7 +343,7 @@ public class GeneralStorage
         }
         catch (Exception e)
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read TrackSorting value from storage");
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read TrackSorting value from storage");
         }
 
         return AppSettings.TrackSorting.TITLE;
@@ -365,7 +366,7 @@ public class GeneralStorage
         }
         catch (Exception e)
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read ShowStars value from storage");
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read ShowStars value from storage");
         }
 
         return AppSettings.ShowStars.NO;
@@ -388,7 +389,7 @@ public class GeneralStorage
         }
         catch (Exception e)
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Could not read ShowVolumeBar value from storage");
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read ShowVolumeBar value from storage");
         }
 
         return AppSettings.ShowVolumeBar.NO;

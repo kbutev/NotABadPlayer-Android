@@ -17,7 +17,6 @@ public class AudioTrack implements Serializable {
     public final double durationInSeconds;
     public final @NonNull String duration;
     public final @NonNull AudioTrackSource source;
-    public byte stars;
     
     public AudioTrack(@NonNull String filePath,
                       @NonNull String title,
