@@ -56,7 +56,7 @@ public class PlayerPresenter implements BasePresenter
             }
 
             Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player without changing current audio player state");
-
+            
             _view.openPlayerScreen(currentPlaylist);
             
             return;
@@ -64,6 +64,13 @@ public class PlayerPresenter implements BasePresenter
 
         Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with track " + _playlist.getPlayingTrack().title);
 
+        player.playPlaylist(_playlist);
+
+        if (!player.isPlaying())
+        {
+            player.resume();
+        }
+        
         _view.openPlayerScreen(_playlist);
     }
     
