@@ -22,7 +22,7 @@ public class AppSettings
         NO, LEFT_SIDE, RIGHT_SIDE
     }
     
-    public enum CachingPolicies {
+    public enum TabCachingPolicies {
         NO_CACHING, ALBUMS_ONLY, CACHE_ALL;
         
         public boolean cacheAlbumsTab()

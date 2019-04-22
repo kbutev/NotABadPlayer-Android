@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
-import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
@@ -98,7 +97,7 @@ public class GeneralStorage
     {
         Application context = getContext();
         
-        String preferencesVersion = retrieveStorageVersion();
+        String preferencesVersion = getStorageVersion();
         String currentVersion = context.getResources().getString(R.string.storage_version);
         
         if (preferencesVersion.equals(currentVersion))
@@ -146,6 +145,31 @@ public class GeneralStorage
                 break;
         }
     }
+
+    synchronized public void resetDefaultSettingsValues()
+    {
+        savePlayerPlayedHistoryCapacity(50);
+        saveAppThemeValue(AppSettings.AppTheme.LIGHT);
+        saveAlbumSortingValue(AppSettings.AlbumSorting.TITLE);
+        saveTrackSortingValue(AppSettings.TrackSorting.TRACK_NUMBER);
+        saveShowStarsValue(AppSettings.ShowStars.NO);
+        saveShowVolumeBarValue(AppSettings.ShowVolumeBar.NO);
+
+        saveSettingsAction(ApplicationInput.PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
+        saveSettingsAction(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
+        saveSettingsAction(ApplicationInput.PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
+        saveSettingsAction(ApplicationInput.PLAYER_RECALL, ApplicationAction.RECALL);
+        saveSettingsAction(ApplicationInput.PLAYER_NEXT_BUTTON, ApplicationAction.NEXT);
+        saveSettingsAction(ApplicationInput.PLAYER_PREVIOUS_BUTTON, ApplicationAction.PREVIOUS);
+        saveSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
+        saveSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
+        saveSettingsAction(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
+        saveSettingsAction(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, ApplicationAction.FORWARDS_15);
+        saveSettingsAction(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, ApplicationAction.BACKWARDS_15);
+        saveSettingsAction(ApplicationInput.EARPHONES_UNPLUG, ApplicationAction.PAUSE);
+
+        saveCachingPolicy(AppSettings.TabCachingPolicies.ALBUMS_ONLY);
+    }
     
     synchronized public boolean isFirstApplicationLaunch()
     {
@@ -162,7 +186,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    private @NonNull String retrieveStorageVersion()
+    private @NonNull String getStorageVersion()
     {
         return getSharedPreferences().getString("storage_version", "");
     }
@@ -184,7 +208,7 @@ public class GeneralStorage
         editor.apply();
     }
     
-    synchronized public void restorePlayerState(@NonNull Application application, @NonNull AudioInfo audioInfo)
+    synchronized public void restorePlayerState()
     {
         SharedPreferences preferences = getSharedPreferences();
         AudioPlayer player = AudioPlayer.getShared();
@@ -275,32 +299,7 @@ public class GeneralStorage
     {
         return getSharedPreferences().getString("searchQuery", "");
     }
-    
-    synchronized public void resetDefaultSettingsValues()
-    {
-        savePlayerPlayedHistory(50);
-        saveAppThemeValue(AppSettings.AppTheme.LIGHT);
-        saveAlbumSortingValue(AppSettings.AlbumSorting.TITLE);
-        saveTrackSortingValue(AppSettings.TrackSorting.TRACK_NUMBER);
-        saveShowStarsValue(AppSettings.ShowStars.NO);
-        saveShowVolumeBarValue(AppSettings.ShowVolumeBar.NO);
-        
-        saveSettingsAction(ApplicationInput.PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
-        saveSettingsAction(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
-        saveSettingsAction(ApplicationInput.PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
-        saveSettingsAction(ApplicationInput.PLAYER_RECALL, ApplicationAction.RECALL);
-        saveSettingsAction(ApplicationInput.PLAYER_NEXT_BUTTON, ApplicationAction.NEXT);
-        saveSettingsAction(ApplicationInput.PLAYER_PREVIOUS_BUTTON, ApplicationAction.PREVIOUS);
-        saveSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
-        saveSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
-        saveSettingsAction(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
-        saveSettingsAction(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, ApplicationAction.FORWARDS_15);
-        saveSettingsAction(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, ApplicationAction.BACKWARDS_15);
-        saveSettingsAction(ApplicationInput.EARPHONES_UNPLUG, ApplicationAction.PAUSE);
-        
-        saveCachingPolicy(AppSettings.CachingPolicies.ALBUMS_ONLY);
-    }
-    
+
     synchronized public void saveSettingsAction(ApplicationInput input, ApplicationAction action)
     {
         SharedPreferences preferences = getSharedPreferences();
@@ -342,7 +341,7 @@ public class GeneralStorage
         return getSharedPreferences().getInt("player_history_capacity", 1);
     }
     
-    synchronized public void savePlayerPlayedHistory(int value)
+    synchronized public void savePlayerPlayedHistoryCapacity(int value)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -498,22 +497,22 @@ public class GeneralStorage
         editor.apply();
     }
     
-    synchronized public AppSettings.CachingPolicies getCachingPolicy()
+    synchronized public AppSettings.TabCachingPolicies getCachingPolicy()
     {
         SharedPreferences preferences = getSharedPreferences();
 
         try {
-            return AppSettings.CachingPolicies.valueOf(preferences.getString("caching_policy", ""));
+            return AppSettings.TabCachingPolicies.valueOf(preferences.getString("caching_policy", ""));
         }
         catch (Exception e)
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read CachingPolicies value from storage");
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read TabCachingPolicies value from storage");
         }
 
-        return AppSettings.CachingPolicies.NO_CACHING;
+        return AppSettings.TabCachingPolicies.NO_CACHING;
     }
     
-    synchronized public void saveCachingPolicy(AppSettings.CachingPolicies value)
+    synchronized public void saveCachingPolicy(AppSettings.TabCachingPolicies value)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();

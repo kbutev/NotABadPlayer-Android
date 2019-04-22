@@ -531,6 +531,29 @@ public class AudioPlayer {
             _playHistory = playHistory;
         }
 
+        private void addTrack(@NonNull AudioTrack newTrack)
+        {
+            // Make sure that the history tracks are unique
+            for (AudioTrack track : _playHistory)
+            {
+                if (track.equals(newTrack))
+                {
+                    _playHistory.remove(track);
+                    break;
+                }
+            }
+
+            _playHistory.add(0, newTrack);
+
+            // Do not exceed the play history capacity
+            int capacity = GeneralStorage.getShared().getPlayerPlayedHistoryCapacity();
+
+            while (_playHistory.size() > capacity)
+            {
+                _playHistory.remove(_playHistory.size()-1);
+            }
+        }
+
         public void playPrevious()
         {
             stop();
@@ -560,29 +583,6 @@ public class AudioPlayer {
             _playlist = null;
 
             playPlaylist(playlist);
-        }
-
-        private void addTrack(@NonNull AudioTrack newTrack)
-        {
-            // Make sure that the history tracks are unique
-            for (AudioTrack track : _playHistory)
-            {
-                if (track.equals(newTrack))
-                {
-                    _playHistory.remove(track);
-                    break;
-                }
-            }
-
-            _playHistory.add(0, newTrack);
-
-            // Do not exceed the play history capacity
-            int capacity = GeneralStorage.getShared().getPlayerPlayedHistoryCapacity();
-
-            while (_playHistory.size() > capacity)
-            {
-                _playHistory.remove(_playHistory.size()-1);
-            }
         }
     }
 }
