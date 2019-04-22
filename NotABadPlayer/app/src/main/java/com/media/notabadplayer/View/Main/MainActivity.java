@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private void restoreAudioPlayerState()
     {
-        GeneralStorage.getShared().restorePlayerState(getApplication(), _audioInfo);
+        GeneralStorage.getShared().restorePlayerState();
         GeneralStorage.getShared().restorePlayerPlayHistoryState(getApplication());
     }
     
