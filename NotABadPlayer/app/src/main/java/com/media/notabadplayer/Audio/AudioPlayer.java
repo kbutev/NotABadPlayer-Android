@@ -56,23 +56,25 @@ public class AudioPlayer {
     {
         return _application != null;
     }
-    
-    private Context getContext()
+
+    private void checkIfPlayerIsInitialized()
     {
         if (!isInitialized())
         {
-            throw new UncheckedExecutionException(new Exception("AudioPlayer is not initialized"));
+            throw new UncheckedExecutionException(new Exception("AudioPlayer is not initialized, initialize() has never been called"));
         }
+    }
+
+    private Context getContext()
+    {
+        checkIfPlayerIsInitialized();
         
         return _application;
     }
     
     public @NonNull AudioInfo getAudioInfo()
     {
-        if (!isInitialized())
-        {
-            throw new UncheckedExecutionException(new Exception("AudioPlayer is not initialized"));
-        }
+        checkIfPlayerIsInitialized();
         
         return _audioInfo;
     }
@@ -82,11 +84,11 @@ public class AudioPlayer {
         return _player;
     }
     
-    public void init(@NonNull Application application, @NonNull AudioInfo audioInfo)
+    public void initialize(@NonNull Application application, @NonNull AudioInfo audioInfo)
     {
         if (_application != null)
         {
-            throw new UncheckedExecutionException(new Exception("Initializing AudioPlayer twice"));
+            throw new UncheckedExecutionException(new Exception("Must not call initialize() twice"));
         }
         
         _application = application;
@@ -107,23 +109,20 @@ public class AudioPlayer {
     
     public void playPlaylist(@NonNull AudioPlaylist playlist)
     {
-        if (_application == null)
-        {
-            throw new UncheckedExecutionException(new Exception("Audio player must be initialized before being used"));
-        }
-        
-        AudioTrack currentlyPlayingTrack = _playlist != null ? _playlist.getPlayingTrack() : null;
-        
+        checkIfPlayerIsInitialized();
+
         AudioPlayOrder order = _playlist != null ? _playlist.getPlayOrder() : playlist.getPlayOrder();
         
         _playlist = playlist;
         _playlist.setPlayOrder(order);
         
-        playTrack(currentlyPlayingTrack, _playlist.getPlayingTrack(), true);
+        playTrack(_playlist.getPlayingTrack(), true);
     }
     
-    private void playTrack(@Nullable AudioTrack previousTrack, @NonNull AudioTrack newTrack, boolean usePlayHistory)
+    private void playTrack(@NonNull AudioTrack newTrack, boolean usePlayHistory)
     {
+        checkIfPlayerIsInitialized();
+
         if (!hasPlaylist())
         {
             return;
@@ -156,6 +155,8 @@ public class AudioPlayer {
     
     public void resume()
     {
+        checkIfPlayerIsInitialized();
+
         if (!hasPlaylist())
         {
             return;
@@ -166,7 +167,7 @@ public class AudioPlayer {
         {
             AudioTrack currentTrack = _playlist.getPlayingTrack();
             
-            playTrack(currentTrack, currentTrack, false);
+            playTrack(currentTrack, false);
             
             return;
         }
@@ -188,6 +189,8 @@ public class AudioPlayer {
 
     public void pause()
     {
+        checkIfPlayerIsInitialized();
+
         if (!hasPlaylist())
         {
             return;
@@ -210,6 +213,8 @@ public class AudioPlayer {
     
     public void stop()
     {
+        checkIfPlayerIsInitialized();
+
         if (!hasPlaylist())
         {
             return;
@@ -231,105 +236,16 @@ public class AudioPlayer {
             
         }
     }
-    
-    public void playNext()
-    {
-        if (!hasPlaylist())
-        {
-            return;
-        }
-        
-        AudioTrack currentTrack = _playlist.getPlayingTrack();
-        
-        _playlist.goToNextPlayingTrack();
-        
-        if (!_playlist.isPlaying())
-        {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
-            
-            stop();
 
-            observers.onStop();
-        }
-        else
-        {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Play next track " + _playlist.getPlayingTrack().title);
-            
-            playTrack(currentTrack, _playlist.getPlayingTrack(), true);
-        }
-    }
-    
-    public void playPrevious()
-    {
-        if (!hasPlaylist())
-        {
-            return;
-        }
-        
-        AudioTrack currentTrack = _playlist.getPlayingTrack();
-        
-        _playlist.goToPreviousPlayingTrack();
-        
-        if (!_playlist.isPlaying())
-        {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, cannot go before first track");
-
-            stop();
-
-            observers.onStop();
-        }
-        else
-        {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Play previous track " + _playlist.getPlayingTrack().title);
-            
-            playTrack(currentTrack, _playlist.getPlayingTrack(), true);
-        }
-    }
-    
-    public void playNextBasedOnPlayOrder()
-    {
-        if (!hasPlaylist())
-        {
-            return;
-        }
-        
-        AudioTrack currentTrack = _playlist.getPlayingTrack();
-        
-        _playlist.goToTrackBasedOnPlayOrder();
-        
-        if (!_playlist.isPlaying())
-        {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
-
-            stop();
-
-            observers.onStop();
-        }
-        else
-        {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Play next track " + _playlist.getPlayingTrack().title);
-            
-            playTrack(currentTrack, _playlist.getPlayingTrack(), true);
-        }
-    }
-
-    public void shuffle()
-    {
-        if (!hasPlaylist())
-        {
-            return;
-        }
-        
-        _playlist.goToTrackByShuffle();
-    }
-    
     public void pauseOrResume()
     {
+        checkIfPlayerIsInitialized();
+
         if (!hasPlaylist())
         {
             return;
         }
-        
+
         if (!_player.isPlaying())
         {
             resume();
@@ -339,9 +255,119 @@ public class AudioPlayer {
             pause();
         }
     }
+    
+    public void playNext()
+    {
+        checkIfPlayerIsInitialized();
+
+        if (!hasPlaylist())
+        {
+            return;
+        }
+
+        _playlist.goToNextPlayingTrack();
+        
+        if (_playlist.isPlaying())
+        {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Playing next track...");
+
+            playTrack(_playlist.getPlayingTrack(), true);
+        }
+        else
+        {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
+
+            stop();
+
+            observers.onStop();
+        }
+    }
+    
+    public void playPrevious()
+    {
+        checkIfPlayerIsInitialized();
+
+        if (!hasPlaylist())
+        {
+            return;
+        }
+
+        _playlist.goToPreviousPlayingTrack();
+        
+        if (_playlist.isPlaying())
+        {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Playing previous track...");
+
+            playTrack(_playlist.getPlayingTrack(), true);
+        }
+        else
+        {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, cannot go before first track");
+
+            stop();
+
+            observers.onStop();
+        }
+    }
+    
+    public void playNextBasedOnPlayOrder()
+    {
+        checkIfPlayerIsInitialized();
+
+        if (!hasPlaylist())
+        {
+            return;
+        }
+
+        _playlist.goToTrackBasedOnPlayOrder();
+        
+        if (_playlist.isPlaying())
+        {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Playing next track based on play order...");
+
+            playTrack(_playlist.getPlayingTrack(), true);
+        }
+        else
+        {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
+
+            stop();
+
+            observers.onStop();
+        }
+    }
+
+    public void shuffle()
+    {
+        checkIfPlayerIsInitialized();
+
+        if (!hasPlaylist())
+        {
+            return;
+        }
+        
+        _playlist.goToTrackByShuffle();
+
+        if (_playlist.isPlaying())
+        {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Playing random track...");
+
+            playTrack(_playlist.getPlayingTrack(), true);
+        }
+        else
+        {
+            Log.v(AudioPlayer.class.getCanonicalName(), "Stop playing, got to last track");
+
+            stop();
+
+            observers.onStop();
+        }
+    }
 
     public void jumpBackwards(int msec)
     {
+        checkIfPlayerIsInitialized();
+
         if (!hasPlaylist())
         {
             return;
@@ -355,6 +381,8 @@ public class AudioPlayer {
 
     public void jumpForwards(int msec)
     {
+        checkIfPlayerIsInitialized();
+
         if (!hasPlaylist())
         {
             return;
@@ -368,16 +396,22 @@ public class AudioPlayer {
 
     public int getDurationMSec()
     {
+        checkIfPlayerIsInitialized();
+
         return _player.getDuration() / 1000;
     }
     
     public int getCurrentPositionMSec()
     {
+        checkIfPlayerIsInitialized();
+
         return _player.getCurrentPosition() / 1000;
     }
     
     public void seekTo(int msec)
     {
+        checkIfPlayerIsInitialized();
+
         if (!hasPlaylist())
         {
             return;
@@ -408,6 +442,8 @@ public class AudioPlayer {
     
     public int getVolume()
     {
+        checkIfPlayerIsInitialized();
+
         AudioManager manager = (AudioManager)getContext().getSystemService(Context.AUDIO_SERVICE);
         double max = manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         
@@ -417,6 +453,8 @@ public class AudioPlayer {
 
     public void setVolume(int volume)
     {
+        checkIfPlayerIsInitialized();
+
         if (volume < 0)
         {
             volume = 0;
@@ -434,6 +472,8 @@ public class AudioPlayer {
     
     public void volumeUp()
     {
+        checkIfPlayerIsInitialized();
+
         AudioManager manager = (AudioManager)getContext().getSystemService(Context.AUDIO_SERVICE);
         
         int currentVolume = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -445,6 +485,8 @@ public class AudioPlayer {
 
     public void volumeDown()
     {
+        checkIfPlayerIsInitialized();
+
         AudioManager manager = (AudioManager)getContext().getSystemService(Context.AUDIO_SERVICE);
         
         int currentVolume = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -456,22 +498,26 @@ public class AudioPlayer {
     
     public void muteOrUnmute()
     {
+        checkIfPlayerIsInitialized();
+
         if (!_muted)
         {
             _player.setVolume(0, 0);
             
             _muted = true;
+
+            Log.v(AudioPlayer.class.getCanonicalName(), "Mute");
         }
         else
         {
             _player.setVolume(1, 1);
             
             _muted = false;
+
+            Log.v(AudioPlayer.class.getCanonicalName(), "Unmute");
         }
     }
-    
-    
-    
+
     public class Observers
     {
         private ArrayList<AudioPlayerObserver> _observers = new ArrayList<>();

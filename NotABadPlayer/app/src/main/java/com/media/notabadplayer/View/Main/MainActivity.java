@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // Audio Player initialization
         if (!AudioPlayer.getShared().isInitialized())
         {
-            AudioPlayer.getShared().init(getApplication(), _audioInfo);
+            AudioPlayer.getShared().initialize(getApplication(), _audioInfo);
         }
         
         // UI

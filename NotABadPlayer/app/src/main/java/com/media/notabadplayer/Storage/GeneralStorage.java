@@ -61,7 +61,7 @@ public class GeneralStorage
     {
         if (___context == null)
         {
-            throw new UncheckedExecutionException(new Exception("GeneralStorage cannot be used before being initialized (call init())"));
+            throw new UncheckedExecutionException(new Exception("GeneralStorage cannot be used before being initialized, initialize() has never been called"));
         }
         
         return ___context;
@@ -71,7 +71,7 @@ public class GeneralStorage
     {
         if (___context == null)
         {
-            throw new UncheckedExecutionException(new Exception("GeneralStorage cannot be used before being initialized (call init())"));
+            throw new UncheckedExecutionException(new Exception("GeneralStorage cannot be used before being initialized, initialize() has never been called"));
         }
         
         return ___preferences;
@@ -86,7 +86,7 @@ public class GeneralStorage
             Log.v(GeneralStorage.class.getCanonicalName(), "First time launching the program! Setting app settings to their default values");
             
             SharedPreferences.Editor editor = getSharedPreferences().edit();
-            editor.putBoolean("firstTime", true);
+            editor.putBoolean("firstTime", false);
             editor.apply();
             
             resetDefaultSettingsValues();

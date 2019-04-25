@@ -138,7 +138,7 @@ public class AudioPlaylist implements Serializable
         return null;
     }
     
-    public AudioTrack goToTrackBasedOnPlayOrder()
+    public void goToTrackBasedOnPlayOrder()
     {
         _playing = true;
         
@@ -159,11 +159,9 @@ public class AudioPlaylist implements Serializable
                 goToTrackByShuffle();
                 break;
         }
-        
-        return getPlayingTrack();
     }
 
-    public AudioTrack goToNextPlayingTrack()
+    public void goToNextPlayingTrack()
     {
         _playing = true;
         
@@ -175,11 +173,9 @@ public class AudioPlaylist implements Serializable
         {
             _playingTrackPosition++;
         }
-        
-        return getPlayingTrack();
     }
 
-    public AudioTrack goToNextPlayingTrackRepeat()
+    public void goToNextPlayingTrackRepeat()
     {
         _playing = true;
         
@@ -191,11 +187,9 @@ public class AudioPlaylist implements Serializable
         {
             _playingTrackPosition = 0;
         }
-        
-        return getPlayingTrack();
     }
 
-    public AudioTrack goToPreviousPlayingTrack()
+    public void goToPreviousPlayingTrack()
     {
         _playing = true;
         
@@ -208,19 +202,15 @@ public class AudioPlaylist implements Serializable
         {
             _playingTrackPosition--;
         }
-        
-        return getPlayingTrack();
     }
     
-    public AudioTrack goToTrackByShuffle()
+    public void goToTrackByShuffle()
     {
         _playing = true;
         
         int min = 0;
         int max = _tracks.size()-1;
         _playingTrackPosition = _random.nextInt((max - min) + 1) + min;
-        
-        return getPlayingTrack();
     }
     
     private void writeObject(@NonNull ObjectOutputStream out) throws IOException
