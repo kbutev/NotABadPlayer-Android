@@ -31,7 +31,7 @@ presenter has "onEvent" type of methods, it looks messy, but surprisingly it get
 
 * So many empty interface methods of BaseView and BasePresenter... extremely slow and boring to write
 
-* The fragments are always the observers of the app (not the presenters), they observe the state of the audio player
+* The fragments are always the observers (not the presenters), they observe the state of the audio player
 
 Design:
 
