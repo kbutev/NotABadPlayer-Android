@@ -12,6 +12,9 @@ import java.util.ArrayList;
 
 public interface BaseView {
     void setPresenter(@NonNull BasePresenter presenter);
+
+    void enableInteraction();
+    void disableInteraction();
     
     void openPlaylistScreen(@NonNull AudioAlbum album);
     void openPlaylistScreen(@NonNull AudioPlaylist playlist);

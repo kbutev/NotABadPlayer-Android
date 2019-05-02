@@ -148,6 +148,12 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+    }
+
+    @Override
     public void onPause()
     {
         super.onPause();
@@ -229,6 +235,11 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonRecall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!_buttonRecall.isClickable())
+                {
+                    return;
+                }
+
                 UIAnimations.animateButtonTAP(getContext(), _buttonRecall);
                 _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_RECALL);
             }
@@ -237,6 +248,10 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!_buttonPlay.isClickable())
+                {
+                    return;
+                }
 
                 UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
                 _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_PLAY_BUTTON);
@@ -246,6 +261,10 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!_buttonBack.isClickable())
+                {
+                    return;
+                }
 
                 UIAnimations.animateButtonTAP(getContext(), _buttonBack);
                 _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_PREVIOUS_BUTTON);
@@ -255,6 +274,10 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!_buttonForward.isClickable())
+                {
+                    return;
+                }
 
                 UIAnimations.animateButtonTAP(getContext(), _buttonForward);
                 _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_NEXT_BUTTON);
@@ -264,6 +287,11 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonPlayOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!_buttonPlayOrder.isClickable())
+                {
+                    return;
+                }
+
                 UIAnimations.animateButtonTAP(getContext(), _buttonPlayOrder);
                 _presenter.onPlayOrderButtonClick();
                 
@@ -446,6 +474,28 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     @Override
     public void setPresenter(@NonNull BasePresenter presenter) {
         _presenter = presenter;
+    }
+
+    @Override
+    public void enableInteraction()
+    {
+        _buttonRecall.setClickable(true);
+        _buttonBack.setClickable(true);
+        _buttonForward.setClickable(true);
+        _buttonBack.setClickable(true);
+        _buttonPlay.setClickable(true);
+        _buttonPlayOrder.setClickable(true);
+    }
+
+    @Override
+    public void disableInteraction()
+    {
+        _buttonRecall.setClickable(false);
+        _buttonBack.setClickable(false);
+        _buttonForward.setClickable(false);
+        _buttonBack.setClickable(false);
+        _buttonPlay.setClickable(false);
+        _buttonPlayOrder.setClickable(false);
     }
 
     @Override

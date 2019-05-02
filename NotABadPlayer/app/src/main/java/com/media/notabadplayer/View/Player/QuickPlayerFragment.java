@@ -111,7 +111,23 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             updateMediaInfo(AudioPlayer.getShared().getPlaylist().getPlayingTrack());
         }
     }
-    
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        enableInteraction();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        disableInteraction();
+    }
+
     @Override
     public void onDestroy()
     {
@@ -135,40 +151,70 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         _buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
+                if (!_buttonPlay.isClickable())
+                {
+                    return;
+                }
+
                 _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON);
+
+                UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
             }
         });
     
         _buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIAnimations.animateButtonTAP(getContext(), _buttonBack);
+                if (!_buttonBack.isClickable())
+                {
+                    return;
+                }
+
                 _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
+
+                UIAnimations.animateButtonTAP(getContext(), _buttonBack);
             }
         });
     
         _buttonForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIAnimations.animateButtonTAP(getContext(), _buttonForward);
+                if (!_buttonForward.isClickable())
+                {
+                    return;
+                }
+
                 _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
+
+                UIAnimations.animateButtonTAP(getContext(), _buttonForward);
             }
         });
 
         _buttonPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIAnimations.animateButtonTAP(getContext(), _buttonPlaylist);
+                if (!_buttonPlaylist.isClickable())
+                {
+                    return;
+                }
+
                 _presenter.onOpenPlaylistButtonClick();
+
+                UIAnimations.animateButtonTAP(getContext(), _buttonPlaylist);
             }
         });
 
         _buttonPlayOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIAnimations.animateButtonTAP(getContext(), _buttonPlayOrder);
+                if (!_buttonPlayOrder.isClickable())
+                {
+                    return;
+                }
+
                 _presenter.onPlayOrderButtonClick();
+
+                UIAnimations.animateButtonTAP(getContext(), _buttonPlayOrder);
 
                 // Save current audio state
                 saveCurrentAudioState();
@@ -318,6 +364,28 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     public void setPresenter(@NonNull BasePresenter presenter)
     {
         _presenter = presenter;
+    }
+
+    @Override
+    public void enableInteraction()
+    {
+        _buttonPlaylist.setClickable(true);
+        _buttonBack.setClickable(true);
+        _buttonForward.setClickable(true);
+        _buttonBack.setClickable(true);
+        _buttonPlay.setClickable(true);
+        _buttonPlayOrder.setClickable(true);
+    }
+
+    @Override
+    public void disableInteraction()
+    {
+        _buttonPlaylist.setClickable(false);
+        _buttonBack.setClickable(false);
+        _buttonForward.setClickable(false);
+        _buttonBack.setClickable(false);
+        _buttonPlay.setClickable(false);
+        _buttonPlayOrder.setClickable(false);
     }
 
     @Override

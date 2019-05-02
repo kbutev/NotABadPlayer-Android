@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Albums;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -83,10 +84,21 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        enableInteraction();
+    }
+
+    @Override
     public void onPause()
     {
         _tableState = _table.onSaveInstanceState();
+
         super.onPause();
+
+        disableInteraction();
     }
     
     private void initUI()
@@ -95,6 +107,11 @@ public class AlbumsFragment extends Fragment implements BaseView
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
+                if (!_table.isClickable())
+                {
+                    return;
+                }
+
                 _presenter.onAlbumClick(position);
             }
         });
@@ -107,9 +124,27 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
+    public void enableInteraction()
+    {
+        _table.setClickable(true);
+    }
+
+    @Override
+    public void disableInteraction()
+    {
+        _table.setClickable(false);
+    }
+
+    @Override
     public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
         FragmentActivity a = getActivity();
+
+        if (a == null)
+        {
+            return;
+        }
+
         FragmentManager manager = a.getSupportFragmentManager();
         int backStackCount = manager.getBackStackEntryCount();
         
@@ -140,6 +175,12 @@ public class AlbumsFragment extends Fragment implements BaseView
     public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
         FragmentActivity a = getActivity();
+
+        if (a == null)
+        {
+            return;
+        }
+
         FragmentManager manager = a.getSupportFragmentManager();
         int backStackCount = manager.getBackStackEntryCount();
 
@@ -169,7 +210,14 @@ public class AlbumsFragment extends Fragment implements BaseView
     @Override
     public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
     {
-        _tableAdapter = new AlbumsTableAdapter(getContext(), albums, _tableSideSelector);
+        Context context = getContext();
+
+        if (context == null)
+        {
+            return;
+        }
+
+        _tableAdapter = new AlbumsTableAdapter(context, albums, _tableSideSelector);
         _table.setAdapter(_tableAdapter);
         
         ArrayList<String> titles = new ArrayList<>();
