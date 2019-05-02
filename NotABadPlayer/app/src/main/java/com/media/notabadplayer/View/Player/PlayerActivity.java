@@ -166,6 +166,18 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     {
         
     }
+
+    @Override
+    public void enableInteraction()
+    {
+
+    }
+
+    @Override
+    public void disableInteraction()
+    {
+
+    }
     
     @Override
     public void openPlaylistScreen(@NonNull AudioAlbum album)

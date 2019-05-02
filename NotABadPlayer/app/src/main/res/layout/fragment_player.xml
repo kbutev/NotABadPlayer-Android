@@ -60,7 +60,8 @@
                 android:layout_height="200dp"
                 android:layout_gravity="center"
                 android:progressDrawable="@drawable/volumebar_seek_bar"
-                android:thumb="@drawable/volumebar_seek_thumb"/>
+                android:thumb="@drawable/volumebar_seek_thumb"
+                android:background="@null"/>
             <ImageView
                 android:id="@+id/volumeBarRightIcon"
                 android:layout_width="24dp"

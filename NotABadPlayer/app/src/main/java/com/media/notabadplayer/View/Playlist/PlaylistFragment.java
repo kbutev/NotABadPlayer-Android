@@ -1,6 +1,7 @@
 package com.media.notabadplayer.View.Playlist;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -95,11 +96,21 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        enableInteraction();
+    }
+
+    @Override
     public void onPause()
     {
         _tableState = _table.onSaveInstanceState();
         
         super.onPause();
+
+        disableInteraction();
     }
     
     @Override
@@ -116,10 +127,16 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
+                if (!_table.isClickable())
+                {
+                    return;
+                }
+
                 if (position != 0)
                 {
-                    UIAnimations.animateAlbumItemTAP(getContext(), view);
                     _presenter.onAlbumsItemClick(position);
+
+                    UIAnimations.animateAlbumItemTAP(getContext(), view);
                 }
             }
         });
@@ -187,7 +204,19 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     {
         _presenter = presenter;
     }
-    
+
+    @Override
+    public void enableInteraction()
+    {
+        _table.setClickable(true);
+    }
+
+    @Override
+    public void disableInteraction()
+    {
+        _table.setClickable(false);
+    }
+
     @Override
     public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
@@ -209,8 +238,15 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     @Override
     public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
+        Context context = getContext();
+
+        if (context == null)
+        {
+            return;
+        }
+
         // Table update
-        _tableAdapter = new PlaylistListAdapter(getContext(), songs);
+        _tableAdapter = new PlaylistListAdapter(context, songs);
         _table.setAdapter(_tableAdapter);
 
         // Update album title header
@@ -235,8 +271,15 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     @Override
     public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
     {
+        Context context = getContext();
+
+        if (context == null)
+        {
+            return;
+        }
+
         // Table update
-        _tableAdapter = new PlaylistListAdapter(getContext(), playlist, sortTracks);
+        _tableAdapter = new PlaylistListAdapter(context, playlist, sortTracks);
         _table.setAdapter(_tableAdapter);
 
         // Update album title header

@@ -1,6 +1,7 @@
 package com.media.notabadplayer.View.Lists;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -69,8 +70,18 @@ public class ListsFragment extends Fragment implements BaseView {
     public void onResume()
     {
         super.onResume();
+
+        enableInteraction();
         
         updateListAdapters();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        disableInteraction();
     }
     
     private void initUI()
@@ -78,6 +89,11 @@ public class ListsFragment extends Fragment implements BaseView {
         _createPlaylistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!_createPlaylistButton.isClickable())
+                {
+                    return;
+                }
+
                 openCreatePlaylistScreen();
             }
         });
@@ -85,6 +101,11 @@ public class ListsFragment extends Fragment implements BaseView {
         _deletePlaylistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!_deletePlaylistButton.isClickable())
+                {
+                    return;
+                }
+
                 _playlistsAdapter.enterEditMode();
                 _deletePlaylistButton.setVisibility(View.GONE);
                 _donePlaylistButton.setVisibility(View.VISIBLE);
@@ -94,6 +115,11 @@ public class ListsFragment extends Fragment implements BaseView {
         _donePlaylistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!_donePlaylistButton.isClickable())
+                {
+                    return;
+                }
+
                 _playlistsAdapter.leaveEditMode();
                 _donePlaylistButton.setVisibility(View.GONE);
                 _deletePlaylistButton.setVisibility(View.VISIBLE);
@@ -103,6 +129,11 @@ public class ListsFragment extends Fragment implements BaseView {
         _playlistsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (!_playlistsList.isClickable())
+                {
+                    return;
+                }
+
                 if (!_playlistsAdapter.isInEditMode())
                 {
                     UIAnimations.animateAlbumItemTAP(getContext(), view);
@@ -116,6 +147,13 @@ public class ListsFragment extends Fragment implements BaseView {
     
     private void updateListAdapters()
     {
+        Context context = getContext();
+
+        if (context == null)
+        {
+            return;
+        }
+
         _playlists = GeneralStorage.getShared().getUserPlaylists();
 
         if (_playlists == null)
@@ -144,7 +182,7 @@ public class ListsFragment extends Fragment implements BaseView {
             }
         };
         
-        _playlistsAdapter = new PlaylistListAdapter(getContext(), _playlists, onRemoveButtonClick);
+        _playlistsAdapter = new PlaylistListAdapter(context, _playlists, onRemoveButtonClick);
         _playlistsList.setAdapter(_playlistsAdapter);
         _playlistsList.invalidateViews();
     }
@@ -189,9 +227,33 @@ public class ListsFragment extends Fragment implements BaseView {
     }
 
     @Override
+    public void enableInteraction()
+    {
+        _createPlaylistButton.setClickable(true);
+        _deletePlaylistButton.setClickable(true);
+        _donePlaylistButton.setClickable(true);
+        _playlistsList.setClickable(true);
+    }
+
+    @Override
+    public void disableInteraction()
+    {
+        _createPlaylistButton.setClickable(false);
+        _deletePlaylistButton.setClickable(false);
+        _donePlaylistButton.setClickable(false);
+        _playlistsList.setClickable(false);
+    }
+
+    @Override
     public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
         FragmentActivity a = getActivity();
+
+        if (a == null)
+        {
+            return;
+        }
+
         FragmentManager manager = a.getSupportFragmentManager();
         int backStackCount = manager.getBackStackEntryCount();
 
@@ -222,6 +284,12 @@ public class ListsFragment extends Fragment implements BaseView {
     public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
         FragmentActivity a = getActivity();
+
+        if (a == null)
+        {
+            return;
+        }
+
         FragmentManager manager = a.getSupportFragmentManager();
         int backStackCount = manager.getBackStackEntryCount();
 

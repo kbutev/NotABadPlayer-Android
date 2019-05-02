@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private BaseView _currentTab;
     
-    private int _currentTabID;
+    private int _currentTabID = 0;
     private Map<Integer, BaseView> _cachedTabs = new HashMap<>();
     
     private BaseView _quickPlayer;
@@ -135,6 +135,22 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         {
             restoreAudioPlayerState();
         }
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        enableInteraction();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        disableInteraction();
     }
     
     @Override
@@ -267,6 +283,13 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void startAppWithTrack(@NonNull Uri path)
     {
         AudioTrack track = _audioInfo.findTrackByPath(path);
+
+        if (track == null)
+        {
+            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with desired track: " + path.toString());
+            return;
+        }
+
         AudioPlaylist playlist = track.source.getSourcePlaylist(_audioInfo, track);
         
         if (playlist == null)
@@ -328,6 +351,18 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     public void setPresenter(@NonNull BasePresenter presenter)
     {
         
+    }
+
+    @Override
+    public void enableInteraction()
+    {
+
+    }
+
+    @Override
+    public void disableInteraction()
+    {
+
     }
 
     @Override

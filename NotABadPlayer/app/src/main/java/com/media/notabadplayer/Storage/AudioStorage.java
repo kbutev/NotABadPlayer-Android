@@ -25,8 +25,8 @@ public class AudioStorage implements AudioInfo {
     {
         _context = context;
     }
-    
-    synchronized public void load()
+
+    public void load()
     {
         _albums.clear();
         
@@ -57,7 +57,7 @@ public class AudioStorage implements AudioInfo {
         cursor.close();
     }
     
-    synchronized public @NonNull ArrayList<AudioAlbum> getAlbums()
+    public @NonNull ArrayList<AudioAlbum> getAlbums()
     {
         if (_albums.size() > 0)
         {
@@ -71,7 +71,7 @@ public class AudioStorage implements AudioInfo {
         return _albums;
     }
     
-    synchronized public @Nullable AudioAlbum getAlbumByID(@NonNull String identifier)
+    public @Nullable AudioAlbum getAlbumByID(@NonNull String identifier)
     {
         ArrayList<AudioAlbum> albums = getAlbums();
         
@@ -85,24 +85,15 @@ public class AudioStorage implements AudioInfo {
         
         return null;
     }
-    
+
     synchronized public @NonNull ArrayList<AudioTrack> getAlbumTracks(@NonNull AudioAlbum album)
     {
-        if (!_albumSongs.containsKey(album.albumID))
-        {
-            _albumSongs.put(album.albumID, new ArrayList<AudioTrack>());
-        }
-        else
+        if (_albumSongs.containsKey(album.albumID))
         {
             return _albumSongs.get(album.albumID);
         }
         
-        ArrayList<AudioTrack> albumTracks = _albumSongs.get(album.albumID);
-        
-        if (albumTracks == null)
-        {
-            return new ArrayList<>();
-        }
+        ArrayList<AudioTrack> albumTracks = new ArrayList<>();
         
         String projection[] = {
                 MediaStore.Audio.Media.DATA,
@@ -158,11 +149,13 @@ public class AudioStorage implements AudioInfo {
         }
 
         cursor.close();
+
+        _albumSongs.put(album.albumID, albumTracks);
         
         return albumTracks;
     }
     
-    synchronized public @NonNull ArrayList<AudioTrack> searchForTracks(@NonNull String query)
+    public @NonNull ArrayList<AudioTrack> searchForTracks(@NonNull String query)
     {
         ArrayList<AudioTrack> albumTracks = new ArrayList<>();
         
@@ -240,7 +233,7 @@ public class AudioStorage implements AudioInfo {
         return albumTracks;
     }
 
-    synchronized public AudioTrack findTrackByPath(@NonNull Uri path)
+    public AudioTrack findTrackByPath(@NonNull Uri path)
     {
         String projection[] = {
                 MediaStore.Audio.Media.DATA,

@@ -1,6 +1,7 @@
 package com.media.notabadplayer.View.Search;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -120,7 +121,7 @@ public class SearchFragment extends Fragment implements BaseView
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                if ((actionId & EditorInfo.IME_MASK_ACTION) != 0) 
+                if ((actionId & EditorInfo.IME_MASK_ACTION) != 0)
                 {
                     _presenter.onSearchQuery(_searchField.getText().toString());
                 }
@@ -132,6 +133,11 @@ public class SearchFragment extends Fragment implements BaseView
         _searchFieldClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!_searchFieldClearButton.isClickable())
+                {
+                    return;
+                }
+
                 _searchField.setText("");
             }
         });
@@ -140,6 +146,11 @@ public class SearchFragment extends Fragment implements BaseView
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
+                if (!_searchResults.isClickable())
+                {
+                    return;
+                }
+
                 UIAnimations.animateAlbumItemTAP(getContext(), view);
                 _presenter.onSearchResultClick(position);
             }
@@ -153,9 +164,29 @@ public class SearchFragment extends Fragment implements BaseView
     }
 
     @Override
+    public void enableInteraction()
+    {
+        _searchFieldClearButton.setClickable(true);
+        _searchResults.setClickable(true);
+    }
+
+    @Override
+    public void disableInteraction()
+    {
+        _searchFieldClearButton.setClickable(false);
+        _searchResults.setClickable(false);
+    }
+
+    @Override
     public void openPlaylistScreen(@NonNull AudioAlbum album)
     {
         FragmentActivity a = getActivity();
+
+        if (a == null)
+        {
+            return;
+        }
+
         FragmentManager manager = a.getSupportFragmentManager();
         int backStackCount = manager.getBackStackEntryCount();
 
@@ -186,6 +217,12 @@ public class SearchFragment extends Fragment implements BaseView
     public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
         FragmentActivity a = getActivity();
+
+        if (a == null)
+        {
+            return;
+        }
+
         FragmentManager manager = a.getSupportFragmentManager();
         int backStackCount = manager.getBackStackEntryCount();
 
@@ -249,6 +286,13 @@ public class SearchFragment extends Fragment implements BaseView
     @Override
     public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {
+        Context context = getContext();
+
+        if (context == null)
+        {
+            return;
+        }
+
         _searchTip.setVisibility(View.VISIBLE);
         
         if (songs.size() > 0)
@@ -260,7 +304,7 @@ public class SearchFragment extends Fragment implements BaseView
             _searchTip.setText(R.string.search_results_tip_no_results);
         }
 
-        _searchResultsAdapter = new SearchListAdapter(getContext(), songs);
+        _searchResultsAdapter = new SearchListAdapter(context, songs);
         _searchResults.setAdapter(_searchResultsAdapter);
         _searchResults.invalidateViews();
         

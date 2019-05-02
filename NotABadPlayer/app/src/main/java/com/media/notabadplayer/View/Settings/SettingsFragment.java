@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,9 +117,32 @@ public class SettingsFragment extends Fragment implements BaseView
         
         return root;
     }
-    
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        enableInteraction();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        disableInteraction();
+    }
+
     private void initUI()
     {
+        Context context = getContext();
+
+        if (context == null)
+        {
+            return;
+        }
+
         // Appearance pickers
         ArrayList<String> themeValues = new ArrayList<>();
         for (int e = 0; e < AppSettings.AppTheme.values().length; e++)
@@ -126,7 +150,7 @@ public class SettingsFragment extends Fragment implements BaseView
             themeValues.add(AppSettings.AppTheme.values()[e].name());
         }
         
-        _themeAdapter = new SettingsListAdapter(getContext(), themeValues);
+        _themeAdapter = new SettingsListAdapter(context, themeValues);
         _themePicker.setAdapter(_themeAdapter);
         _themePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -137,12 +161,6 @@ public class SettingsFragment extends Fragment implements BaseView
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
-
-        ArrayList<String> albumSortingValues = new ArrayList<>();
-        for (int e = 0; e < AppSettings.AlbumSorting.values().length; e++)
-        {
-            albumSortingValues.add(AppSettings.AlbumSorting.values()[e].name());
-        }
 
         ArrayList<String> trackSortingValues = new ArrayList<>();
         for (int e = 0; e < AppSettings.TrackSorting.values().length; e++)
@@ -226,6 +244,11 @@ public class SettingsFragment extends Fragment implements BaseView
         _resetSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!_resetSettingsButton.isClickable())
+                {
+                    return;
+                }
+
                 showResetSettingsDialog();
             }
         });
@@ -363,7 +386,20 @@ public class SettingsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioAlbum album) {
+    public void enableInteraction()
+    {
+        _resetSettingsButton.setClickable(true);
+    }
+
+    @Override
+    public void disableInteraction()
+    {
+        _resetSettingsButton.setClickable(false);
+    }
+
+    @Override
+    public void openPlaylistScreen(@NonNull AudioAlbum album)
+    {
         
     }
 
@@ -411,6 +447,13 @@ public class SettingsFragment extends Fragment implements BaseView
     @Override
     public void appThemeChanged(AppSettings.AppTheme appTheme)
     {
+        FragmentActivity a = getActivity();
+
+        if (a == null)
+        {
+            return;
+        }
+
         // Check if the fragment already have the correct app theme
         if (_appTheme == GeneralStorage.getShared().getAppThemeValue())
         {
