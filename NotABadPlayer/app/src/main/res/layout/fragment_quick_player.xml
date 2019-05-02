@@ -6,15 +6,16 @@
     android:layout_height="102dp"
     android:background="@drawable/background_quickplayer">
     
-    <LinearLayout
+    <com.media.notabadplayer.View.Player.QuickPlayerLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         android:paddingTop="1dp"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:gravity="bottom"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/header"
@@ -125,7 +126,7 @@
             </LinearLayout>
         </LinearLayout>
         
-    </LinearLayout>
+    </com.media.notabadplayer.View.Player.QuickPlayerLayout>
 
     <SeekBar
         android:id="@+id/mediaBar"
