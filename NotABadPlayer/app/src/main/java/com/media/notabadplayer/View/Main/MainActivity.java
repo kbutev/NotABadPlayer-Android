@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -170,7 +171,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
         
         // Create quick player and it's presenter
-        _quickPlayer = QuickPlayerFragment.newInstance();
+        QuickPlayerFragment quickPlayer = QuickPlayerFragment.newInstance();
+        _quickPlayer = quickPlayer;
         _quickPlayer.setPresenter(new QuickPlayerPresenter(_quickPlayer, this));
         
         FragmentManager manager = getSupportFragmentManager();

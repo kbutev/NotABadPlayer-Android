@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioPlayer;
@@ -33,6 +35,8 @@ import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+
 public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver {
     private static int MEDIA_BAR_MAX_VALUE = 100;
     
@@ -42,8 +46,8 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     
     private Runnable _runnable;
     private Handler _handler = new Handler();
-    
-    private View _header;
+
+    private QuickPlayerLayout _layout;
     private ImageView _imageCover;
     private TextView _labelTitle;
     private SeekBar _mediaBar;
@@ -71,7 +75,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         View root = inflater.inflate(R.layout.fragment_quick_player, container, false);
         
         // Setup UI
-        _header = root.findViewById(R.id.header);
+        _layout = root.findViewById(R.id.layout);
         _imageCover = root.findViewById(R.id.cover);
         _labelTitle = root.findViewById(R.id.labelTitle);
         _mediaBar = root.findViewById(R.id.mediaBar);
@@ -137,13 +141,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     
     private void initUI()
     {
-        _header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openPlayerScreen();
-            }
-        });
-        
         _mediaBar.setMax(MEDIA_BAR_MAX_VALUE);
         _mediaBar.setProgress(1); // Set to a non-zero value, to prevent weird UI drawable glitch
         _mediaBar.setEnabled(false);
@@ -218,6 +215,15 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
                 // Save current audio state
                 saveCurrentAudioState();
+            }
+        });
+
+        _layout.setSwipeUpCallback(new Function<Void, Void>() {
+            @NullableDecl
+            @Override
+            public Void apply(@NullableDecl Void input) {
+                swipeUp();
+                return null;
             }
         });
         
@@ -326,6 +332,11 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         {
             _buttonPlay.setBackgroundResource(R.drawable.media_play);
         }
+    }
+    
+    private void swipeUp()
+    {
+        openPlayerScreen();
     }
 
     private void startLooping()
