@@ -182,6 +182,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _presenter.start();
     }
     
+    private boolean isOnAnRootTab()
+    {
+        return getSupportFragmentManager().findFragmentById(R.id.mainLayout) == _currentTab;
+    }
+    
     private void selectAlbumsTab()
     {
         _currentTabID = R.id.navigation_albums;
@@ -248,9 +253,15 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
     private void onTabItemSelected(int itemID)
     {
-        // If already selected, do nothing
+        // If already selected, then try to go to the root tab
         if (_currentTabID == itemID)
         {
+            // Not on any of the first tabs? Go back
+            if (!isOnAnRootTab())
+            {
+                super.onBackPressed();
+            }
+            
             return;
         }
 
@@ -336,10 +347,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     @Override
     public void onBackPressed()
     {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.mainLayout);
-        
         // Not on any of the first tabs? Go back
-        if (currentFragment != _currentTab)
+        if (!isOnAnRootTab())
         {
             super.onBackPressed();
             return;
