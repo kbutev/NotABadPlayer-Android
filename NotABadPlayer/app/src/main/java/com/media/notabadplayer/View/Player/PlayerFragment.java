@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
@@ -30,14 +31,14 @@ import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+
 import java.util.ArrayList;
 
 public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
     private static int MEDIA_BAR_MAX_VALUE = 100;
     private static int VOLUME_BAR_MAX_VALUE = 100;
-    private static float SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED = 95;
-    private static float SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED = 300;
     
     private BasePresenter _presenter;
 
@@ -46,7 +47,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     private Runnable _runnable = null;
     private Handler _handler = new Handler();
     
-    private LinearLayout _layout;
+    private PlayerLayout _layout;
     private ImageView _imageCover;
     private SeekBar _volumeBar;
     private ImageView _volumeIcon;
@@ -61,9 +62,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     private Button _buttonPlay;
     private Button _buttonForward;
     private Button _buttonPlayOrder;
-    
-    private float _layoutTouchMotionLastXPosition = -1;
-    private float _layoutTouchMotionLastYPosition = -1;
     
     public PlayerFragment()
     {
@@ -171,13 +169,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private void initUI()
     {
-        _layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return updateSwipeDown(event);
-            }
-        });
-        
         _volumeBar.setMax(VOLUME_BAR_MAX_VALUE);
         _volumeBar.setProgress(AudioPlayer.getShared().getVolume());
         _volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -299,6 +290,15 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                 saveCurrentAudioState();
             }
         });
+
+        _layout.setSwipeDownCallback(new Function<Void, Void>() {
+            @NullableDecl
+            @Override
+            public Void apply(@NullableDecl Void input) {
+                swipeDown();
+                return null;
+            }
+        });
         
         // Update play button state
         updatePlayButtonState();
@@ -392,43 +392,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         {
             _buttonPlay.setBackgroundResource(R.drawable.media_play);
         }
-    }
-    
-    private boolean updateSwipeDown(MotionEvent event)
-    {
-        if (event.getAction() == MotionEvent.ACTION_MOVE)
-        {
-            float currentX = event.getX();
-            float currentY = event.getY();
-
-            if (_layoutTouchMotionLastYPosition == -1)
-            {
-                _layoutTouchMotionLastXPosition = currentX;
-                _layoutTouchMotionLastYPosition = currentY;
-                return false;
-            }
-            
-            float diffX = currentX - _layoutTouchMotionLastXPosition;
-            float diffY = currentY - _layoutTouchMotionLastYPosition;
-
-            if (Math.abs(diffY) > SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED &&
-                diffY > 0 &&
-                Math.abs(diffX) <= SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED)
-            {
-                _layoutTouchMotionLastXPosition = -1;
-                _layoutTouchMotionLastYPosition = -1;
-                swipeDown();
-                return true;
-            }
-        }
-        
-        if (event.getAction() == MotionEvent.ACTION_UP)
-        {
-            _layoutTouchMotionLastXPosition = -1;
-            _layoutTouchMotionLastYPosition = -1;
-        }
-        
-        return false;
     }
     
     private void swipeDown()

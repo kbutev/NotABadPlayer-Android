@@ -8,30 +8,30 @@ import android.widget.LinearLayout;
 
 import com.google.common.base.Function;
 
-public class QuickPlayerLayout extends LinearLayout
+public class PlayerLayout extends LinearLayout
 {
-    private static float SWIPE_UP_GESTURE_X_DISTANCE_REQUIRED = 95;
-    private static float SWIPE_UP_GESTURE_Y_DISTANCE_REQUIRED = 120;
+    private static float SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED = 95;
+    private static float SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED = 300;
 
-    private boolean _swipeUpEventFired = false;
+    private boolean _swipeDownEventFired = false;
     private float _layoutTouchMotionLastXPosition = -1;
     private float _layoutTouchMotionLastYPosition = -1;
-    
-    private Function<Void, Void> _swipeUpCallback = null;
-    
-    public QuickPlayerLayout(Context context) {
+
+    private Function<Void, Void> _swipeDownCallback = null;
+
+    public PlayerLayout(Context context) {
         super(context, null);
     }
 
-    public QuickPlayerLayout(Context context, @Nullable AttributeSet attrs) {
+    public PlayerLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setClickable(true);
         setFocusable(true);
     }
-    
-    public void setSwipeUpCallback(Function<Void, Void> callback)
+
+    public void setSwipeDownCallback(Function<Void, Void> callback)
     {
-        _swipeUpCallback = callback;
+        _swipeDownCallback = callback;
     }
 
     @Override
@@ -43,13 +43,13 @@ public class QuickPlayerLayout extends LinearLayout
             return super.dispatchTouchEvent(ev);
         }
 
-        boolean swipeUpEventFired = _swipeUpEventFired;
+        boolean swipeUpEventFired = _swipeDownEventFired;
 
         updateMotionState(ev);
 
-        if (swipeUpEventFired != _swipeUpEventFired)
+        if (swipeUpEventFired != _swipeDownEventFired)
         {
-            swipeUp();
+            swipeDown();
             return true;
         }
 
@@ -75,26 +75,26 @@ public class QuickPlayerLayout extends LinearLayout
         float diffX = currentX - _layoutTouchMotionLastXPosition;
         float diffY = currentY - _layoutTouchMotionLastYPosition;
 
-        if (Math.abs(diffY) > SWIPE_UP_GESTURE_Y_DISTANCE_REQUIRED &&
-                diffY < 0 &&
-                Math.abs(diffX) <= SWIPE_UP_GESTURE_X_DISTANCE_REQUIRED)
+        if (Math.abs(diffY) > SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED &&
+                diffY > 0 &&
+                Math.abs(diffX) <= SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED)
         {
-            _swipeUpEventFired = true;
+            _swipeDownEventFired = true;
         }
     }
-    
+
     public void resetMotionState()
     {
-        _swipeUpEventFired = false;
+        _swipeDownEventFired = false;
         _layoutTouchMotionLastXPosition = -1;
         _layoutTouchMotionLastYPosition = -1;
     }
 
-    public void swipeUp()
+    public void swipeDown()
     {
-        if (_swipeUpCallback != null)
+        if (_swipeDownCallback != null)
         {
-            _swipeUpCallback.apply(null);
+            _swipeDownCallback.apply(null);
         }
     }
 }
