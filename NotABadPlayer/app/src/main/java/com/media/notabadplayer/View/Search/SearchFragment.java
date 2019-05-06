@@ -109,10 +109,21 @@ public class SearchFragment extends Fragment implements BaseView
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        enableInteraction();
+    }
+
+    @Override
     public void onPause()
     {
         _searchResultsState = _searchResults.onSaveInstanceState();
+        
         super.onPause();
+        
+        disableInteraction();
     }
     
     private void initUI()
