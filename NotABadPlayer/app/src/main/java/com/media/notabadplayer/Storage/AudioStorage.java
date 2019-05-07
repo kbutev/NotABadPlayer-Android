@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,8 @@ public class AudioStorage implements AudioInfo {
 
     public void load()
     {
+        Log.v(AudioStorage.class.getCanonicalName(), "Loading albums from media store...");
+        
         _albums.clear();
         
         Cursor cursor = _context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
@@ -55,6 +58,8 @@ public class AudioStorage implements AudioInfo {
         }
         
         cursor.close();
+        
+        Log.v(AudioStorage.class.getCanonicalName(), "Successfully loaded " +  String.valueOf(_albums.size()) + " albums from media store.");
     }
     
     public @NonNull ArrayList<AudioAlbum> getAlbums()
