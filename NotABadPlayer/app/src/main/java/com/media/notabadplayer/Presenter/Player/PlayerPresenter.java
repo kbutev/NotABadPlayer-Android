@@ -38,10 +38,11 @@ public class PlayerPresenter implements BasePresenter
 
             AudioTrack newTrack = _playlist.getPlayingTrack();
             AudioTrack currentTrack = currentPlaylist.getPlayingTrack();
-            
+
+            // Change the audio player playlist to the presenter's playlist
             if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
             {
-                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist " + _playlist.getName() + " with track " + _playlist.getPlayingTrack().title);
+                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.title + "'");
 
                 player.playPlaylist(_playlist);
 
@@ -54,7 +55,8 @@ public class PlayerPresenter implements BasePresenter
 
                 return;
             }
-
+            
+            // Just open screen
             Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player without changing current audio player state");
             
             _view.updatePlayerScreen(currentPlaylist);
@@ -62,7 +64,8 @@ public class PlayerPresenter implements BasePresenter
             return;
         }
 
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing playlist with track " + _playlist.getPlayingTrack().title);
+        // Set audio player playlist for the first time and play its track
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + _playlist.getName() + "' with track '" + _playlist.getPlayingTrack().title + "'");
 
         player.playPlaylist(_playlist);
 
@@ -93,7 +96,7 @@ public class PlayerPresenter implements BasePresenter
         
         Log.v(PlayerPresenter.class.getCanonicalName(), "Perform KeyBinds action '" + action.name() + "' for input '" + input.name() + "'");
         
-        KeyBinds.getShared().evaluateInput(input);
+        KeyBinds.getShared().performAction(action);
     }
 
     @Override

@@ -211,6 +211,9 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                 double duration = _player.getDurationMSec();
                 double newPosition = progressD * duration;
                 _player.seekTo((int)newPosition);
+
+                // Reset the motion state of the layout, to prevent swipe left or right
+                _layout.resetMotionState();
             }
 
             @Override
