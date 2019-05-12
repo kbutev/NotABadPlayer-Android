@@ -109,6 +109,8 @@ public class GeneralStorage
         
         saveStorageVersion(currentVersion);
         
+        // Select old version and execute code to migrate the changes
+        // Example: Case "1.0" is code for old version "1.0" to migrate to current version
         switch (preferencesVersion)
         {
             case "":
@@ -135,7 +137,10 @@ public class GeneralStorage
                 break;
             case "1.0":
                 Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + currentVersion);
-
+                
+                saveSettingsAction(ApplicationInput.PLAYER_SWIPE_LEFT, ApplicationAction.PREVIOUS);
+                saveSettingsAction(ApplicationInput.PLAYER_SWIPE_RIGHT, ApplicationAction.NEXT);
+                
                 Log.v(GeneralStorage.class.getCanonicalName(), "Successfully migrated settings values!");
                 
                 break;
@@ -161,6 +166,8 @@ public class GeneralStorage
         saveSettingsAction(ApplicationInput.PLAYER_RECALL, ApplicationAction.RECALL);
         saveSettingsAction(ApplicationInput.PLAYER_NEXT_BUTTON, ApplicationAction.NEXT);
         saveSettingsAction(ApplicationInput.PLAYER_PREVIOUS_BUTTON, ApplicationAction.PREVIOUS);
+        saveSettingsAction(ApplicationInput.PLAYER_SWIPE_LEFT, ApplicationAction.PREVIOUS);
+        saveSettingsAction(ApplicationInput.PLAYER_SWIPE_RIGHT, ApplicationAction.NEXT);
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);

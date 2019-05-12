@@ -50,14 +50,14 @@ public class PlayerPresenter implements BasePresenter
                     player.resume();
                 }
 
-                _view.openPlayerScreen(_playlist);
+                _view.updatePlayerScreen(_playlist);
 
                 return;
             }
 
             Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player without changing current audio player state");
             
-            _view.openPlayerScreen(currentPlaylist);
+            _view.updatePlayerScreen(currentPlaylist);
             
             return;
         }
@@ -71,7 +71,7 @@ public class PlayerPresenter implements BasePresenter
             player.resume();
         }
         
-        _view.openPlayerScreen(_playlist);
+        _view.updatePlayerScreen(_playlist);
     }
     
     @Override
@@ -81,7 +81,7 @@ public class PlayerPresenter implements BasePresenter
     }
     
     @Override
-    public void onAlbumsItemClick(int index)
+    public void onPlaylistItemClick(int index)
     {
         
     }
@@ -89,6 +89,10 @@ public class PlayerPresenter implements BasePresenter
     @Override
     public void onPlayerButtonClick(ApplicationInput input)
     {
+        ApplicationAction action = KeyBinds.getShared().getActionForInput(input);
+        
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Perform KeyBinds action '" + action.name() + "' for input '" + input.name() + "'");
+        
         KeyBinds.getShared().evaluateInput(input);
     }
 
@@ -101,6 +105,8 @@ public class PlayerPresenter implements BasePresenter
     @Override
     public void onPlayOrderButtonClick()
     {
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Player input: change play order");
+        
         KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
     }
     

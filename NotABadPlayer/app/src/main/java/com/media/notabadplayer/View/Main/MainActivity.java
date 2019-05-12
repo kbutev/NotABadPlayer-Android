@@ -481,6 +481,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
+    public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
+    {
+
+    }
+
+    @Override
     public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {
 

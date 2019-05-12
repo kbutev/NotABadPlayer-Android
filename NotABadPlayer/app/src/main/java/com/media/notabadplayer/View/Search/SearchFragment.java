@@ -295,6 +295,12 @@ public class SearchFragment extends Fragment implements BaseView
     }
 
     @Override
+    public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
+    {
+
+    }
+
+    @Override
     public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {
         Context context = getContext();

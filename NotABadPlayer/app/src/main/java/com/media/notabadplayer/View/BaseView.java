@@ -24,6 +24,7 @@ public interface BaseView {
     void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks);
     
     void openPlayerScreen(@NonNull AudioPlaylist playlist);
+    void updatePlayerScreen(@NonNull AudioPlaylist playlist);
     
     void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs);
     

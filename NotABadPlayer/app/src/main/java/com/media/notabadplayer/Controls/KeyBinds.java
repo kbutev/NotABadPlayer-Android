@@ -1,5 +1,7 @@
 package com.media.notabadplayer.Controls;
 
+import android.util.Log;
+
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioPlayOrder;
@@ -19,9 +21,16 @@ public class KeyBinds
         return _singleton;
     }
     
-    public synchronized ApplicationAction evaluateInput(ApplicationInput input)
+    public ApplicationAction getActionForInput(ApplicationInput input)
     {
-        return performAction(GeneralStorage.getShared().getSettingsAction(input));
+        return GeneralStorage.getShared().getSettingsAction(input);
+    }
+    
+    public ApplicationAction evaluateInput(ApplicationInput input)
+    {
+        ApplicationAction action = getActionForInput(input);
+        
+        return performAction(action);
     }
     
     public ApplicationAction performAction(ApplicationAction action)

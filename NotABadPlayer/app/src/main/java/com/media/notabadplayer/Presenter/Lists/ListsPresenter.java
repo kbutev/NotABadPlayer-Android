@@ -30,7 +30,7 @@ public class ListsPresenter implements BasePresenter
     }
 
     @Override
-    public void onAlbumsItemClick(int index) 
+    public void onPlaylistItemClick(int index) 
     {
 
     }

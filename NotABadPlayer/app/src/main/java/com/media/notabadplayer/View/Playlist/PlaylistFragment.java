@@ -134,7 +134,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
 
                 if (position != 0)
                 {
-                    _presenter.onAlbumsItemClick(position);
+                    _presenter.onPlaylistItemClick(position);
 
                     UIAnimations.animateAlbumItemTAP(getContext(), view);
                 }
@@ -315,6 +315,12 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("playlist", Serializing.serializeObject(playlist));
         startActivity(intent);
+    }
+
+    @Override
+    public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
+    {
+
     }
     
     @Override

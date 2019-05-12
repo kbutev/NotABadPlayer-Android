@@ -10,13 +10,22 @@ import com.google.common.base.Function;
 
 public class PlayerLayout extends LinearLayout
 {
+    public enum SwipeAction {
+        None, Left, Right, Down
+    }
+    
     private static float SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED = 95;
-    private static float SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED = 300;
-
-    private boolean _swipeDownEventFired = false;
+    private static float SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED = 250;
+    
+    private static float SWIPE_HORIZONTAL_GESTURE_X_DISTANCE_REQUIRED = 200;
+    private static float SWIPE_HORIZONTAL_GESTURE_Y_DISTANCE_REQUIRED = 90;
+    
+    private boolean _swipeEventFired = false;
     private float _layoutTouchMotionLastXPosition = -1;
     private float _layoutTouchMotionLastYPosition = -1;
 
+    private Function<Void, Void> _swipeLeftCallback = null;
+    private Function<Void, Void> _swipeRightCallback = null;
     private Function<Void, Void> _swipeDownCallback = null;
 
     public PlayerLayout(Context context) {
@@ -27,6 +36,16 @@ public class PlayerLayout extends LinearLayout
         super(context, attrs);
         setClickable(true);
         setFocusable(true);
+    }
+
+    public void setSwipeLeftCallback(Function<Void, Void> callback)
+    {
+        _swipeLeftCallback = callback;
+    }
+
+    public void setSwipeRightCallback(Function<Void, Void> callback)
+    {
+        _swipeRightCallback = callback;
     }
 
     public void setSwipeDownCallback(Function<Void, Void> callback)
@@ -43,24 +62,36 @@ public class PlayerLayout extends LinearLayout
             return super.dispatchTouchEvent(ev);
         }
 
-        boolean swipeUpEventFired = _swipeDownEventFired;
+        boolean swipeEventFired = _swipeEventFired;
 
-        updateMotionState(ev);
+        SwipeAction result = updateMotionState(ev);
 
-        if (swipeUpEventFired != _swipeDownEventFired)
+        if (swipeEventFired != _swipeEventFired)
         {
-            swipeDown();
+            switch (result)
+            {
+                case Down:
+                    swipeDown();
+                    break;
+                case Left:
+                    swipeLeft();
+                    break;
+                case Right:
+                    swipeRight();
+                    break;
+            }
+            
             return true;
         }
 
         return super.dispatchTouchEvent(ev);
     }
     
-    public void updateMotionState(MotionEvent event)
+    public SwipeAction updateMotionState(MotionEvent event)
     {
         if (event.getAction() != MotionEvent.ACTION_MOVE)
         {
-            return;
+            return SwipeAction.None;
         }
 
         float currentX = event.getX();
@@ -75,19 +106,54 @@ public class PlayerLayout extends LinearLayout
         float diffX = currentX - _layoutTouchMotionLastXPosition;
         float diffY = currentY - _layoutTouchMotionLastYPosition;
 
-        if (Math.abs(diffY) > SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED &&
-                diffY > 0 &&
+        if (diffY > 0 &&
+                Math.abs(diffY) > SWIPE_DOWN_GESTURE_Y_DISTANCE_REQUIRED &&
                 Math.abs(diffX) <= SWIPE_DOWN_GESTURE_X_DISTANCE_REQUIRED)
         {
-            _swipeDownEventFired = true;
+            _swipeEventFired = true;
+            return SwipeAction.Down;
         }
+
+        if (diffX < 0 &&
+                Math.abs(diffY) <= SWIPE_HORIZONTAL_GESTURE_Y_DISTANCE_REQUIRED &&
+                Math.abs(diffX) > SWIPE_HORIZONTAL_GESTURE_X_DISTANCE_REQUIRED)
+        {
+            _swipeEventFired = true;
+            return SwipeAction.Left;
+        }
+
+        if (diffX > 0 &&
+                Math.abs(diffY) <= SWIPE_HORIZONTAL_GESTURE_Y_DISTANCE_REQUIRED &&
+                Math.abs(diffX) > SWIPE_HORIZONTAL_GESTURE_X_DISTANCE_REQUIRED)
+        {
+            _swipeEventFired = true;
+            return SwipeAction.Right;
+        }
+
+        return SwipeAction.None;
     }
 
     public void resetMotionState()
     {
-        _swipeDownEventFired = false;
+        _swipeEventFired = false;
         _layoutTouchMotionLastXPosition = -1;
         _layoutTouchMotionLastYPosition = -1;
+    }
+
+    public void swipeLeft()
+    {
+        if (_swipeLeftCallback != null)
+        {
+            _swipeLeftCallback.apply(null);
+        }
+    }
+
+    public void swipeRight()
+    {
+        if (_swipeRightCallback != null)
+        {
+            _swipeRightCallback.apply(null);
+        }
     }
 
     public void swipeDown()
