@@ -36,34 +36,23 @@ public class SettingsFragment extends Fragment implements BaseView
     private BasePresenter _presenter;
     
     private Spinner _themePicker;
-    private SettingsListAdapter _themeAdapter;
 
     private Spinner _trackSortingPicker;
-    private SettingsListAdapter _trackSortingAdapter;
 
     private Spinner _showVolumeBarPicker;
-    private SettingsListAdapter _showVolumeBarAdapter;
     
     private Spinner _keybindPlayerVU;
-    private SettingsKeybindListAdapter _keybindPlayerVUAdapter;
     private Spinner _keybindPlayerVD;
-    private SettingsKeybindListAdapter _keybindPlayerVDAdapter;
     private Spinner _keybindPlayerNext;
-    private SettingsKeybindListAdapter _keybindPlayerNextAdapter;
     private Spinner _keybindPlayerPrev;
-    private SettingsKeybindListAdapter _keybindPlayerPrevAdapter;
     private Spinner _keybindPlayerRecall;
-    private SettingsKeybindListAdapter _keybindPlayerRecallAdapter;
+    private Spinner _keybindPlayerSwipeLeft;
+    private Spinner _keybindPlayerSwipeRight;
     private Spinner _keybindQPlayerVU;
-    private SettingsKeybindListAdapter _keybindQPlayerVUAdapter;
     private Spinner _keybindQPlayerVD;
-    private SettingsKeybindListAdapter _keybindQPlayerVDAdapter;
     private Spinner _keybindQPlayerNext;
-    private SettingsKeybindListAdapter _keybindQPlayerNextAdapter;
     private Spinner _keybindQPlayerPrev;
-    private SettingsKeybindListAdapter _keybindQPlayerPrevAdapter;
     private Spinner _keybindEarphonesUnplug;
-    private SettingsKeybindListAdapter _keybindEarphonesUnplugAdapter;
     
     private Button _resetSettingsButton;
     
@@ -99,6 +88,8 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindPlayerNext = root.findViewById(R.id.keybindPlayerNext);
         _keybindPlayerPrev = root.findViewById(R.id.keybindPlayerPrev);
         _keybindPlayerRecall = root.findViewById(R.id.keybindPlayerPrevPlaylist);
+        _keybindPlayerSwipeLeft = root.findViewById(R.id.keybindPlayerSwipeLeft);
+        _keybindPlayerSwipeRight = root.findViewById(R.id.keybindPlayerSwipeRight);
         _keybindQPlayerVU = root.findViewById(R.id.keybindQPlayerVU);
         _keybindQPlayerVD = root.findViewById(R.id.keybindQPlayerVD);
         _keybindQPlayerNext = root.findViewById(R.id.keybindQPlayerNext);
@@ -149,9 +140,9 @@ public class SettingsFragment extends Fragment implements BaseView
         {
             themeValues.add(AppSettings.AppTheme.values()[e].name());
         }
-        
-        _themeAdapter = new SettingsListAdapter(context, themeValues);
-        _themePicker.setAdapter(_themeAdapter);
+
+        SettingsListAdapter themeAdapter = new SettingsListAdapter(context, themeValues);
+        _themePicker.setAdapter(themeAdapter);
         _themePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -167,9 +158,9 @@ public class SettingsFragment extends Fragment implements BaseView
         {
             trackSortingValues.add(AppSettings.TrackSorting.values()[e].name());
         }
-        
-        _trackSortingAdapter = new SettingsListAdapter(getContext(), trackSortingValues);
-        _trackSortingPicker.setAdapter(_trackSortingAdapter);
+
+        SettingsListAdapter trackSortingAdapter = new SettingsListAdapter(getContext(), trackSortingValues);
+        _trackSortingPicker.setAdapter(trackSortingAdapter);
         _trackSortingPicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -187,8 +178,8 @@ public class SettingsFragment extends Fragment implements BaseView
             showVolumeBarValues.add(AppSettings.ShowVolumeBar.values()[e].name());
         }
 
-        _showVolumeBarAdapter = new SettingsListAdapter(getContext(), showVolumeBarValues);
-        _showVolumeBarPicker.setAdapter(_showVolumeBarAdapter);
+        SettingsListAdapter showVolumeBarAdapter = new SettingsListAdapter(getContext(), showVolumeBarValues);
+        _showVolumeBarPicker.setAdapter(showVolumeBarAdapter);
         _showVolumeBarPicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -200,44 +191,52 @@ public class SettingsFragment extends Fragment implements BaseView
         });
         
         // Keybinds pickers
-        _keybindPlayerVUAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindPlayerVU.setAdapter(_keybindPlayerVUAdapter);
+        SettingsKeybindListAdapter keybindPlayerVUAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindPlayerVU.setAdapter(keybindPlayerVUAdapter);
         setKeybindsOnItemSelectedListener(_keybindPlayerVU, ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
-        
-        _keybindPlayerVDAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindPlayerVD.setAdapter(_keybindPlayerVDAdapter);
+
+        SettingsKeybindListAdapter keybindPlayerVDAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindPlayerVD.setAdapter(keybindPlayerVDAdapter);
         setKeybindsOnItemSelectedListener(_keybindPlayerVD, ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON);
-        
-        _keybindPlayerNextAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindPlayerNext.setAdapter(_keybindPlayerNextAdapter);
+
+        SettingsKeybindListAdapter keybindPlayerNextAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindPlayerNext.setAdapter(keybindPlayerNextAdapter);
         setKeybindsOnItemSelectedListener(_keybindPlayerNext, ApplicationInput.PLAYER_NEXT_BUTTON);
-        
-        _keybindPlayerPrevAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindPlayerPrev.setAdapter(_keybindPlayerPrevAdapter);
+
+        SettingsKeybindListAdapter keybindPlayerPrevAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindPlayerPrev.setAdapter(keybindPlayerPrevAdapter);
         setKeybindsOnItemSelectedListener(_keybindPlayerPrev, ApplicationInput.PLAYER_PREVIOUS_BUTTON);
 
-        _keybindPlayerRecallAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindPlayerRecall.setAdapter(_keybindPlayerRecallAdapter);
+        SettingsKeybindListAdapter keybindPlayerRecallAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindPlayerRecall.setAdapter(keybindPlayerRecallAdapter);
         setKeybindsOnItemSelectedListener(_keybindPlayerRecall, ApplicationInput.PLAYER_RECALL);
-        
-        _keybindQPlayerVUAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindQPlayerVU.setAdapter(_keybindQPlayerVUAdapter);
+
+        SettingsKeybindListAdapter keybindPlayerSwipeLeftAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindPlayerSwipeLeft.setAdapter(keybindPlayerSwipeLeftAdapter);
+        setKeybindsOnItemSelectedListener(_keybindPlayerSwipeLeft, ApplicationInput.PLAYER_SWIPE_LEFT);
+
+        SettingsKeybindListAdapter keybindPlayerSwipeRightAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindPlayerSwipeRight.setAdapter(keybindPlayerSwipeRightAdapter);
+        setKeybindsOnItemSelectedListener(_keybindPlayerSwipeRight, ApplicationInput.PLAYER_SWIPE_RIGHT);
+
+        SettingsKeybindListAdapter keybindQPlayerVUAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindQPlayerVU.setAdapter(keybindQPlayerVUAdapter);
         setKeybindsOnItemSelectedListener(_keybindQPlayerVU, ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
 
-        _keybindQPlayerVDAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindQPlayerVD.setAdapter(_keybindQPlayerVDAdapter);
+        SettingsKeybindListAdapter keybindQPlayerVDAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindQPlayerVD.setAdapter(keybindQPlayerVDAdapter);
         setKeybindsOnItemSelectedListener(_keybindQPlayerVD, ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
 
-        _keybindQPlayerNextAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindQPlayerNext.setAdapter(_keybindQPlayerNextAdapter);
+        SettingsKeybindListAdapter keybindQPlayerNextAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindQPlayerNext.setAdapter(keybindQPlayerNextAdapter);
         setKeybindsOnItemSelectedListener(_keybindQPlayerNext, ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
 
-        _keybindQPlayerPrevAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindQPlayerPrev.setAdapter(_keybindQPlayerPrevAdapter);
+        SettingsKeybindListAdapter keybindQPlayerPrevAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindQPlayerPrev.setAdapter(keybindQPlayerPrevAdapter);
         setKeybindsOnItemSelectedListener(_keybindQPlayerPrev, ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
 
-        _keybindEarphonesUnplugAdapter = new SettingsKeybindListAdapter(getContext());
-        _keybindEarphonesUnplug.setAdapter(_keybindEarphonesUnplugAdapter);
+        SettingsKeybindListAdapter keybindEarphonesUnplugAdapter = new SettingsKeybindListAdapter(getContext());
+        _keybindEarphonesUnplug.setAdapter(keybindEarphonesUnplugAdapter);
         setKeybindsOnItemSelectedListener(_keybindEarphonesUnplug, ApplicationInput.EARPHONES_UNPLUG);
         
         // Reset
@@ -336,6 +335,12 @@ public class SettingsFragment extends Fragment implements BaseView
 
         ApplicationAction PLAYER_RECALL = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_RECALL);
         _keybindPlayerRecall.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_RECALL));
+
+        ApplicationAction PLAYER_SWIPE_LEFT = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_SWIPE_LEFT);
+        _keybindPlayerSwipeLeft.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_SWIPE_LEFT));
+
+        ApplicationAction PLAYER_SWIPE_RIGHT = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_SWIPE_RIGHT);
+        _keybindPlayerSwipeRight.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_SWIPE_RIGHT));
         
         ApplicationAction QUICK_PLAYER_VOLUME_UP_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
         _keybindQPlayerVU.setSelection(SettingsKeybindListAdapter.getCountForAction(QUICK_PLAYER_VOLUME_UP_BUTTON));
@@ -432,6 +437,13 @@ public class SettingsFragment extends Fragment implements BaseView
     {
 
     }
+
+    @Override
+    public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
+    {
+        
+    }
+    
     @Override
     public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {

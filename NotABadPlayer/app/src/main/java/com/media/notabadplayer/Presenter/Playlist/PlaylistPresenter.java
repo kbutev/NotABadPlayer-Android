@@ -59,7 +59,7 @@ public class PlaylistPresenter implements BasePresenter {
     }
 
     @Override
-    public void onAlbumsItemClick(int index)
+    public void onPlaylistItemClick(int index)
     {
         // Index zero is the header - ignore
         if (index == 0)

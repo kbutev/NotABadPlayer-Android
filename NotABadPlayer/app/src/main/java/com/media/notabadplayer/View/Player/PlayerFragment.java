@@ -292,6 +292,24 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             }
         });
 
+        _layout.setSwipeLeftCallback(new Function<Void, Void>() {
+            @NullableDecl
+            @Override
+            public Void apply(@NullableDecl Void input) {
+                swipeLeft();
+                return null;
+            }
+        });
+
+        _layout.setSwipeRightCallback(new Function<Void, Void>() {
+            @NullableDecl
+            @Override
+            public Void apply(@NullableDecl Void input) {
+                swipeRight();
+                return null;
+            }
+        });
+        
         _layout.setSwipeDownCallback(new Function<Void, Void>() {
             @NullableDecl
             @Override
@@ -394,6 +412,16 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             _buttonPlay.setBackgroundResource(R.drawable.media_play);
         }
     }
+
+    private void swipeLeft()
+    {
+        _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_SWIPE_LEFT);
+    }
+
+    private void swipeRight()
+    {
+        _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_SWIPE_RIGHT);
+    }
     
     private void swipeDown()
     {
@@ -495,9 +523,15 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     @Override
     public void openPlayerScreen(@NonNull AudioPlaylist playlist) 
     {
-        updateMediaInfo(playlist.getPlayingTrack());
+        
     }
 
+    @Override
+    public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
+    {
+        updateMediaInfo(playlist.getPlayingTrack());
+    }
+    
     @Override
     public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
     {

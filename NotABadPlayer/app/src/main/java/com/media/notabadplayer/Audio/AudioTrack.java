@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Locale;
 
 public class AudioTrack implements Serializable {
     public final @NonNull String filePath;
@@ -68,57 +69,39 @@ public class AudioTrack implements Serializable {
         return false;
     }
     
-    public static String timeDescription(String pDescription, int pTime)
+    public static String secondsToString(double durationInSeconds) 
     {
-        final String preformatedTime = secondsToString(pTime);
-        final String timeForReturn = putTimeInXX(pDescription,preformatedTime);
-        return timeForReturn;
-    }
-    
-    public static String secondsToString(double pTime) 
-    {
-        final int time = (int)pTime;
+        final int time = (int)durationInSeconds;
         final int hr = time/60/60;
         final int min = (time - (hr*60*60)) / 60;
         final int sec = (time - (hr*60*60) - (min*60));
         
         if (hr == 0)
         {
-            final String strMin = placeZeroIfNeeded(min);
-            final String strSec = placeZeroIfNeeded(sec);
+            if (min < 10)
+            {
+                final String strMin = Integer.toString(min);
+                final String strSec = parseToStringWithLeadingZero(sec);
+                
+                return String.format("%s:%s", strMin, strSec);
+            }
+            
+            final String strMin = parseToStringWithLeadingZero(min);
+            final String strSec = parseToStringWithLeadingZero(sec);
 
             return String.format("%s:%s", strMin, strSec);
         }
         
-        final String strHr = placeZeroIfNeeded(hr);
-        final String strMin = placeZeroIfNeeded(min);
-        final String strSec = placeZeroIfNeeded(sec);
+        final String strHr = parseToStringWithLeadingZero(hr);
+        final String strMin = parseToStringWithLeadingZero(min);
+        final String strSec = parseToStringWithLeadingZero(sec);
 
         return String.format("%s:%s:%s", strHr, strMin, strSec);
     }
     
-    public static String placeZeroIfNeeded(int number) 
+    public static String parseToStringWithLeadingZero(int number) 
     {
-        return (number >= 10)? Integer.toString(number):String.format("0%s", Integer.toString(number));
-    }
-    
-    public static String putTimeInXX(String pDescription, String pTime)
-    {
-        String[] apartDescription = pDescription.split("XX");
-        
-        StringBuilder descriptionForReturn = new StringBuilder();
-        
-        for (int i = 0; i < apartDescription.length; i++)
-        {
-            descriptionForReturn.append(apartDescription[i]);
-            
-            if (i == 0) 
-            {
-                descriptionForReturn.append(pTime);
-            }
-        }
-        
-        return descriptionForReturn.toString();
+        return String.format(Locale.getDefault(), "%02d", number);
     }
     
     private void writeObject(@NonNull ObjectOutputStream out) throws IOException 

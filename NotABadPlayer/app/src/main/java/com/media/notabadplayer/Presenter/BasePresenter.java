@@ -9,7 +9,7 @@ public interface BasePresenter {
     void start();
     
     void onAlbumClick(int index);
-    void onAlbumsItemClick(int index);
+    void onPlaylistItemClick(int index);
     
     void onPlayerButtonClick(ApplicationInput input);
     void onPlayOrderButtonClick();

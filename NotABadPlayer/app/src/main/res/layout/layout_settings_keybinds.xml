@@ -158,6 +158,50 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/settings_keybind_player_swipe_left"
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Spinner
+            android:id="@+id/keybindPlayerSwipeLeft"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/settings_item_border"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_keybind_player_swipe_right"
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"/>
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Spinner
+            android:id="@+id/keybindPlayerSwipeRight"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/settings_item_border"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/settings_keybind_qplayer_volume_up"
             android:textAppearance="@style/PrimaryText"
             android:singleLine="true"/>
