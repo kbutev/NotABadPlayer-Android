@@ -324,54 +324,45 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         
         // Update play button state
         updatePlayButtonState();
+        
+        // Update play order button state
+        updatePlayOrderButtonState();
     }
-    
-    private void updateUIState()
+
+    public void updateUIState(@NonNull AudioTrack track)
     {
-        // Current volume
+        updateMediaInfo(track);
+        updateSoftUIState();
+    }
+
+    public void updateSoftUIState()
+    {
+        // Seek bar update
+        double duration = _player.getDurationMSec();
+        double currentPosition = _player.getCurrentPositionMSec();
+        double newMediaBarPosition = (currentPosition / duration) * MEDIA_BAR_MAX_VALUE;
+        
+        if (_mediaBar.getProgress() != (int)newMediaBarPosition)
+        {
+            _mediaBar.setProgress((int)newMediaBarPosition);
+        }
+        
+        _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
+
+        // Play order button update
+        updatePlayOrderButtonState();
+
+        // Volume bar update
         if (_volumeBar.getVisibility() == View.VISIBLE)
         {
             int currentVolume = AudioPlayer.getShared().getVolume();
             int progress = _volumeBar.getProgress();
-            
+
             if (currentVolume != progress)
             {
                 _volumeBar.setProgress(currentVolume);
-                
+
                 UIAnimations.animateImageTAP(getContext(), _volumeIcon);
-            }
-        }
-        
-        // Current position
-        double duration = _player.getDurationMSec();
-        double currentPosition = _player.getCurrentPositionMSec();
-        double newPosition = (currentPosition / duration) * MEDIA_BAR_MAX_VALUE;
-        _mediaBar.setProgress((int)newPosition);
-        _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
-        
-        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
-        
-        if (playlist != null)
-        {
-            AudioPlayOrder order = playlist.getPlayOrder();
-            
-            switch (order)
-            {
-                case FORWARDS:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards);
-                    break;
-                case FORWARDS_REPEAT:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards_repeat);
-                    break;
-                case ONCE_FOREVER:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_repeat_forever);
-                    break;
-                case SHUFFLE:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_shuffle);
-                    break;
-                default:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards);
-                    break;
             }
         }
     }
@@ -413,6 +404,35 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         else
         {
             _buttonPlay.setBackgroundResource(R.drawable.media_play);
+        }
+    }
+
+    private void updatePlayOrderButtonState()
+    {
+        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+
+        if (playlist != null)
+        {
+            AudioPlayOrder order = playlist.getPlayOrder();
+
+            switch (order)
+            {
+                case FORWARDS:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
+                    break;
+                case FORWARDS_REPEAT:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards_repeat);
+                    break;
+                case ONCE_FOREVER:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_repeat_forever);
+                    break;
+                case SHUFFLE:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_shuffle);
+                    break;
+                default:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
+                    break;
+            }
         }
     }
 
@@ -459,7 +479,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         {
             if (a.hasWindowFocus())
             {
-                updateUIState();
+                updateSoftUIState();
             }
             
             _handler.postDelayed(_runnable, 200);
@@ -544,33 +564,33 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     @Override
     public void onPlayerPlay(AudioTrack current)
     {
-        _buttonPlay.setBackgroundResource(R.drawable.media_pause);
-        
         updateMediaInfo(current);
+        updatePlayButtonState();
     }
     
     @Override
     public void onPlayerFinish()
     {
-        _buttonPlay.setBackgroundResource(R.drawable.media_play);
+        updatePlayButtonState();
     }
     
     @Override
     public void onPlayerStop()
     {
-        _buttonPlay.setBackgroundResource(R.drawable.media_play);
+        updatePlayButtonState();
     }
     
     @Override
     public void onPlayerPause(AudioTrack track)
     {
-        _buttonPlay.setBackgroundResource(R.drawable.media_play);
+
+        updatePlayButtonState();
     }
     
     @Override
     public void onPlayerResume(AudioTrack track)
     {
-        _buttonPlay.setBackgroundResource(R.drawable.media_pause);
+        updatePlayButtonState();
     }
 
     @Override

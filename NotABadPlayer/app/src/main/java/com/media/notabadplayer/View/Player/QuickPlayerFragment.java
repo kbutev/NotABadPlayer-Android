@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -246,7 +245,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         }
     }
     
-    private void updateUIState()
+    private void updateSoftUIState()
     {
         if (_player.getPlaylist() == null)
         {
@@ -263,37 +262,17 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             return;
         }
 
+        // Seek bar update
         double duration = _player.getDurationMSec();
         double currentPosition = _player.getCurrentPositionMSec();
         double newPosition = (currentPosition / duration) * MEDIA_BAR_MAX_VALUE;
+        
         _mediaBar.setProgress((int)newPosition);
+        
         _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
-
-        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
-
-        if (playlist != null)
-        {
-            AudioPlayOrder order = playlist.getPlayOrder();
-
-            switch (order)
-            {
-                case FORWARDS:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards);
-                    break;
-                case FORWARDS_REPEAT:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards_repeat);
-                    break;
-                case ONCE_FOREVER:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_repeat_forever);
-                    break;
-                case SHUFFLE:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_shuffle);
-                    break;
-                default:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_sort_forwards);
-                    break;
-            }
-        }
+        
+        // Play order button update
+        updatePlayOrderButtonState();
     }
 
     private void saveCurrentAudioState()
@@ -333,6 +312,35 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
             _buttonPlay.setBackgroundResource(R.drawable.media_play);
         }
     }
+
+    private void updatePlayOrderButtonState()
+    {
+        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+
+        if (playlist != null)
+        {
+            AudioPlayOrder order = playlist.getPlayOrder();
+
+            switch (order)
+            {
+                case FORWARDS:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
+                    break;
+                case FORWARDS_REPEAT:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards_repeat);
+                    break;
+                case ONCE_FOREVER:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_repeat_forever);
+                    break;
+                case SHUFFLE:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_shuffle);
+                    break;
+                default:
+                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
+                    break;
+            }
+        }
+    }
     
     private void swipeUp()
     {
@@ -364,7 +372,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         {
             if (a.hasWindowFocus())
             {
-                updateUIState();
+                updateSoftUIState();
             }
             
             _handler.postDelayed(_runnable, 200);
