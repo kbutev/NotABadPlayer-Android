@@ -35,7 +35,7 @@ presenter has "onEvent" type of methods, it looks messy, but surprisingly it get
 
 Design patterns:
 
-* Delegate - presenters and their views are delegates, both handling requests and forwarding them to each other, views are the responders to user input, who forward those events to the presenters, who, based on decision making, may or may not forward some action to their views
+* Delegate - presenters and their views are delegates, both handling requests and forwarding them to each other, views are the responders to user input, who forward those events to the presenters, who, based on decision making, may or may not forward an action to their views
 
 * Observer - some interface is updated trough a Looper singleton service, that notifies their observers when the timer elapses a specific interval; audio player notifies their observers when the audio state changes (start, pause, etc...)
 
@@ -57,7 +57,7 @@ General design:
 
 * Simple lifecycle for the components of the app: for activities/fragments. Fragments rely on onActivityCreate() to start their presenters and loopers (if they are any); AudioPlayer singleton is used to represent the player of the app and the AudioInfo singleton is used to represent the media library (audio albums and their tracks information)
 
-* No Services used. Supposedly one should be used for the audio player, just in case the app gets killed from low memory, but I find that unlikely to happen because of the low memory footprint of the app; not only that but I don't like the idea of the app being killed while the audio player keeps ringing in the background
+* No Android Services used. Supposedly one should be used for the audio player, just in case the app gets killed from low memory, but I find that unlikely to happen because of the low memory footprint of the app; not only that but I don't like the idea of the app being killed while the audio player keeps ringing in the background
 
 * Supports one orientation only: portrait
 
