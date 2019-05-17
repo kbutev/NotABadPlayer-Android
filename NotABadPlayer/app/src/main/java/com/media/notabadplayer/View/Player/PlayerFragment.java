@@ -2,10 +2,8 @@ package com.media.notabadplayer.View.Player;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +23,8 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.LooperService;
+import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -33,7 +33,7 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import java.util.ArrayList;
 
-public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver
+public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient
 {
     private static int MEDIA_BAR_MAX_VALUE = 100;
     private static int VOLUME_BAR_MAX_VALUE = 100;
@@ -41,9 +41,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     private BasePresenter _presenter;
 
     AudioPlayer _player = AudioPlayer.getShared();
-    
-    private Runnable _runnable = null;
-    private Handler _handler = new Handler();
     
     private PlayerLayout _layout;
     private ImageView _imageCover;
@@ -163,6 +160,8 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         super.onDestroy();
 
         _player.observers.detach(this);
+
+        stopLooping();
     }
     
     private void initUI()
@@ -453,39 +452,17 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             getActivity().finish();
         }
     }
-    
+
     private void startLooping()
     {
-        if (getActivity() == null)
-        {
-            return;
-        }
-        
-        _runnable = new Runnable() {
-            @Override
-            public void run() {
-                loop();
-            }
-        };
-        
-        getActivity().runOnUiThread(_runnable);
+        LooperService.getShared().subscribe(this);
     }
-    
-    private void loop()
+
+    private void stopLooping()
     {
-        FragmentActivity a = getActivity();
-        
-        if (a != null)
-        {
-            if (a.hasWindowFocus())
-            {
-                updateSoftUIState();
-            }
-            
-            _handler.postDelayed(_runnable, 200);
-        }
+        LooperService.getShared().unsubscribe(this);
     }
-    
+
     @Override
     public void setPresenter(@NonNull BasePresenter presenter) {
         _presenter = presenter;
@@ -615,5 +592,11 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
 
+    }
+
+    @Override
+    public void loop()
+    {
+        updateSoftUIState();
     }
 }

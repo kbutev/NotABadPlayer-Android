@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -23,6 +22,8 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.LooperService;
+import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
@@ -31,7 +32,7 @@ import com.media.notabadplayer.View.Player.PlayerActivity;
 
 import java.util.ArrayList;
 
-public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerObserver
+public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient
 {
     AudioPlayer _player = AudioPlayer.getShared();
     
@@ -42,9 +43,6 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     private Parcelable _tableState;
     
     private TextView _albumTitleHeader;
-    
-    private Runnable _runnable;
-    private Handler _handler = new Handler();
     
     public PlaylistFragment()
     {
@@ -119,6 +117,8 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         super.onDestroy();
 
         _player.observers.detach(this);
+
+        stopLooping();
     }
     
     private void initUI()
@@ -169,36 +169,14 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
 
     private void startLooping()
     {
-        if (getActivity() == null)
-        {
-            return;
-        }
-
-        _runnable = new Runnable() {
-            @Override
-            public void run() {
-                loop();
-            }
-        };
-
-        getActivity().runOnUiThread(_runnable);
+        LooperService.getShared().subscribe(this);
     }
 
-    private void loop()
+    private void stopLooping()
     {
-        FragmentActivity a = getActivity();
-
-        if (a != null)
-        {
-            if (a.hasWindowFocus())
-            {
-                updateUIState();
-            }
-
-            _handler.postDelayed(_runnable, 200);
-        }
+        LooperService.getShared().unsubscribe(this);
     }
-    
+
     @Override
     public void setPresenter(@NonNull BasePresenter presenter)
     {
@@ -387,5 +365,19 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
 
+    }
+
+    @Override
+    public void loop()
+    {
+        FragmentActivity a = getActivity();
+
+        if (a != null)
+        {
+            if (a.hasWindowFocus())
+            {
+                updateUIState();
+            }
+        }
     }
 }
