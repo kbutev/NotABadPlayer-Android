@@ -39,42 +39,23 @@ public class PlayerPresenter implements BasePresenter
             AudioTrack newTrack = _playlist.getPlayingTrack();
             AudioTrack currentTrack = currentPlaylist.getPlayingTrack();
 
-            // Change the audio player playlist to the presenter's playlist
+            // Current playing playlist or track does not match the state of the presenter's playlist?
             if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
             {
-                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.title + "'");
-
-                player.playPlaylist(_playlist);
-
-                if (!player.isPlaying())
-                {
-                    player.resume();
-                }
-
-                _view.updatePlayerScreen(_playlist);
+                // Change the audio player playlist to equal the presenter's playlist
+                playNew(_playlist);
 
                 return;
             }
             
             // Just open screen
-            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player without changing current audio player state");
-            
-            _view.updatePlayerScreen(currentPlaylist);
+            playContinue(currentPlaylist);
             
             return;
         }
 
         // Set audio player playlist for the first time and play its track
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + _playlist.getName() + "' with track '" + _playlist.getPlayingTrack().title + "'");
-
-        player.playPlaylist(_playlist);
-
-        if (!player.isPlaying())
-        {
-            player.resume();
-        }
-        
-        _view.updatePlayerScreen(_playlist);
+        playFirstTime(_playlist);
     }
     
     @Override
@@ -153,5 +134,36 @@ public class PlayerPresenter implements BasePresenter
     public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
     {
 
+    }
+
+    private void playFirstTime(@NonNull AudioPlaylist playlist)
+    {
+        playNew(playlist);
+    }
+
+    private void playContinue(@NonNull AudioPlaylist playlist)
+    {
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player without changing current audio player state");
+
+        _view.updatePlayerScreen(playlist);
+    }
+
+    private void playNew(@NonNull AudioPlaylist playlist)
+    {
+        String newPlaylistName = playlist.getName();
+        AudioTrack newTrack = playlist.getPlayingTrack();
+
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.title + "'");
+
+        AudioPlayer player = AudioPlayer.getShared();
+
+        player.playPlaylist(playlist);
+
+        if (!player.isPlaying())
+        {
+            player.resume();
+        }
+
+        _view.updatePlayerScreen(playlist);
     }
 }

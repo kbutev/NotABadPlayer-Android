@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +28,8 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.LooperService;
+import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
@@ -36,15 +37,12 @@ import com.media.notabadplayer.View.BaseView;
 
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
-public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver {
+public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient {
     private static int MEDIA_BAR_MAX_VALUE = 100;
     
     AudioPlayer _player = AudioPlayer.getShared();
     
     private BasePresenter _presenter;
-    
-    private Runnable _runnable;
-    private Handler _handler = new Handler();
 
     private QuickPlayerLayout _layout;
     private ImageView _imageCover;
@@ -135,7 +133,10 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     public void onDestroy()
     {
         super.onDestroy();
+
         _player.observers.detach(this);
+
+        stopLooping();
     }
     
     private void initUI()
@@ -349,34 +350,12 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
     private void startLooping()
     {
-        if (getActivity() == null)
-        {
-            return;
-        }
-
-        _runnable = new Runnable() {
-            @Override
-            public void run() {
-                loop();
-            }
-        };
-
-        getActivity().runOnUiThread(_runnable);
+        LooperService.getShared().subscribe(this);
     }
 
-    private void loop()
+    private void stopLooping()
     {
-        FragmentActivity a = getActivity();
-        
-        if (a != null)
-        {
-            if (a.hasWindowFocus())
-            {
-                updateSoftUIState();
-            }
-            
-            _handler.postDelayed(_runnable, 200);
-        }
+        LooperService.getShared().unsubscribe(this);
     }
 
     @Override
@@ -513,5 +492,19 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
 
+    }
+
+    @Override
+    public void loop()
+    {
+        FragmentActivity a = getActivity();
+
+        if (a != null)
+        {
+            if (a.hasWindowFocus())
+            {
+                updateSoftUIState();
+            }
+        }
     }
 }
