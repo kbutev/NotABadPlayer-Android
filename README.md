@@ -33,7 +33,19 @@ presenter has "onEvent" type of methods, it looks messy, but surprisingly it get
 
 * The fragments are always the observers (not the presenters), they observe the state of the audio player
 
-Design:
+Design patterns:
+
+* Delegate - presenters and their views are delegates, both handling requests and forwarding them to each other, views are the responders to user input, who forward those events to the presenters, who, based on decision making, may or may not forward some action to their views
+
+* Observer - some interface is updated trough a Looper singleton service, that notifies their observers when the timer elapses a specific interval; audio player notifies their observers when the audio state changes (start, pause, etc...)
+
+* Singleton - used to easily refer to services such as the Audio Player (a wrapper of the built in android player), the Looper (repeated interval update for its clients), and the user storage used to store general info such at the app settings
+
+* Decorator - the Audio Player wraps the android built in audio player - the Media Player
+
+* Command - keybind actions
+
+General design:
 
 * CPU and energy efficient, memory ineffecient since the audio information is retrieved once and reused when trying to use the audio player
 
