@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -41,7 +40,7 @@ import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
-import com.media.notabadplayer.View.Lists.ListsFragment;
+import com.media.notabadplayer.View.Lists.CreateListsFragment;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
@@ -203,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void selectListsTab()
     {
         _currentTabID = R.id.navigation_lists;
-        _currentTab = ListsFragment.newInstance();
+        _currentTab = CreateListsFragment.newInstance();
         refreshCurrentTab();
         
         if (GeneralStorage.getShared().getCachingPolicy().cacheListsTab())

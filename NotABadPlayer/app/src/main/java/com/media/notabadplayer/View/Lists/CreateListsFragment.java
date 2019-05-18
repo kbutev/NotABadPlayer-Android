@@ -31,23 +31,24 @@ import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.BaseView;
 
-public class ListsFragment extends Fragment implements BaseView {
+public class CreateListsFragment extends Fragment implements BaseView {
     private ArrayList<AudioPlaylist> _playlists;
     
     private Button _createPlaylistButton;
     private Button _deletePlaylistButton;
     private Button _donePlaylistButton;
     private ListView _playlistsList;
-    private PlaylistListAdapter _playlistsAdapter;
+    private CreateListAdapter _playlistsAdapter;
     
-    public ListsFragment()
+    public CreateListsFragment()
     {
 
     }
 
-    public static @NonNull ListsFragment newInstance()
+    public static @NonNull
+    CreateListsFragment newInstance()
     {
-        return new ListsFragment();
+        return new CreateListsFragment();
     }
     
     @Override
@@ -182,7 +183,7 @@ public class ListsFragment extends Fragment implements BaseView {
             }
         };
         
-        _playlistsAdapter = new PlaylistListAdapter(context, _playlists, onRemoveButtonClick);
+        _playlistsAdapter = new CreateListAdapter(context, _playlists, onRemoveButtonClick);
         _playlistsList.setAdapter(_playlistsAdapter);
         _playlistsList.invalidateViews();
     }

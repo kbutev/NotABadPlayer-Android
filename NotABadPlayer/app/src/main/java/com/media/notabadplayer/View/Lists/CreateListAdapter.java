@@ -18,7 +18,7 @@ import com.media.notabadplayer.R;
 
 import java.util.ArrayList;
 
-class PlaylistListAdapter extends BaseAdapter
+class CreateListAdapter extends BaseAdapter
 {
     private ArrayList<AudioPlaylist> _playlists;
 
@@ -28,9 +28,9 @@ class PlaylistListAdapter extends BaseAdapter
     
     private @NonNull Function<Integer, Void> _onRemoveButton;
 
-    public PlaylistListAdapter(@NonNull Context context,
-                               @NonNull ArrayList<AudioPlaylist> playlists,
-                               @NonNull Function<Integer, Void> onRemoveButton)
+    public CreateListAdapter(@NonNull Context context,
+                             @NonNull ArrayList<AudioPlaylist> playlists,
+                             @NonNull Function<Integer, Void> onRemoveButton)
     {
         this._playlists = playlists;
         this._context = context;
