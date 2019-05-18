@@ -495,6 +495,12 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
+    public void onPlayerErrorEncountered(@NonNull Exception error)
+    {
+
+    }
+
+    @Override
     public void loop()
     {
         FragmentActivity a = getActivity();

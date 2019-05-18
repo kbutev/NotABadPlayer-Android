@@ -1,9 +1,13 @@
 package com.media.notabadplayer.View.Player;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +27,7 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.LooperService;
 import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.UIAnimations;
@@ -592,6 +597,23 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
 
+    }
+
+    @Override
+    public void onPlayerErrorEncountered(@NonNull Exception error)
+    {
+        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                FragmentActivity a = getActivity();
+                
+                if (a != null)
+                {
+                    a.finish();
+                }
+            }
+        };
+        
+        AlertWindows.showAlert(getContext(), "Error", error.toString(), "Ok", action);
     }
 
     @Override

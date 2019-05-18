@@ -526,4 +526,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _currentTab.appAppearanceChanged(showStars, showVolumeBar);
         _quickPlayer.appAppearanceChanged(showStars, showVolumeBar);
     }
+
+    @Override
+    public void onPlayerErrorEncountered(@NonNull Exception error)
+    {
+
+    }
 }

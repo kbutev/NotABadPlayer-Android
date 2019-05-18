@@ -107,30 +107,33 @@ public class AudioPlayer {
     
     public boolean hasPlaylist() {return _playlist != null;}
     
-    public void playPlaylist(@NonNull AudioPlaylist playlist)
+    public void playPlaylist(@NonNull AudioPlaylist playlist) throws Exception
     {
         checkIfPlayerIsInitialized();
 
+        AudioPlaylist previousPlaylist = _playlist;
+        
         AudioPlayOrder order = _playlist != null ? _playlist.getPlayOrder() : playlist.getPlayOrder();
         
         _playlist = playlist;
         _playlist.setPlayOrder(order);
         
-        playTrack(_playlist.getPlayingTrack(), true);
+        try {
+            playTrack(_playlist.getPlayingTrack(), true);
+        } catch (Exception e) {
+            _playlist = previousPlaylist;
+            stop();
+            throw e;
+        }
     }
     
-    private void playTrack(@NonNull AudioTrack newTrack, boolean usePlayHistory)
+    private void playTrack(@NonNull AudioTrack newTrack, boolean usePlayHistory) throws Exception
     {
         checkIfPlayerIsInitialized();
 
         if (!hasPlaylist())
         {
             return;
-        }
-
-        if (usePlayHistory)
-        {
-            playHistory.addTrack(newTrack);
         }
         
         Uri path = Uri.parse(Uri.decode(newTrack.filePath));
@@ -142,15 +145,22 @@ public class AudioPlayer {
             _player.setDataSource(getContext(), path);
             _player.prepare();
             _player.start();
-            
-            Log.v(AudioPlayer.class.getCanonicalName(), "Playing track: " + newTrack.title);
-            
-            observers.onPlay(newTrack);
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play track: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play track, " + e.toString());
+            stop();
+            throw e;
         }
+        
+        Log.v(AudioPlayer.class.getCanonicalName(), "Playing track: " + newTrack.title);
+        
+        if (usePlayHistory)
+        {
+            playHistory.addTrack(newTrack);
+        }
+        
+        observers.onPlay(newTrack);
     }
     
     public void resume()
@@ -167,7 +177,11 @@ public class AudioPlayer {
         {
             AudioTrack currentTrack = _playlist.getPlayingTrack();
             
-            playTrack(currentTrack, false);
+            try {
+                playTrack(currentTrack, false);
+            } catch (Exception e) {
+                Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot resume, " + e.toString());
+            }
             
             return;
         }
@@ -183,7 +197,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot resume: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot resume, " + e.toString());
         }
     }
 
@@ -207,7 +221,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot pause: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot pause, " + e.toString());
         }
     }
     
@@ -271,7 +285,12 @@ public class AudioPlayer {
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing next track...");
 
-            playTrack(_playlist.getPlayingTrack(), true);
+            try {
+                playTrack(_playlist.getPlayingTrack(), true);
+            } catch (Exception e) {
+                Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play next, " + e.toString());
+                stop();
+            }
         }
         else
         {
@@ -298,7 +317,12 @@ public class AudioPlayer {
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing previous track...");
 
-            playTrack(_playlist.getPlayingTrack(), true);
+            try {
+                playTrack(_playlist.getPlayingTrack(), true);
+            } catch (Exception e) {
+                Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play previous, " + e.toString());
+                stop();
+            }
         }
         else
         {
@@ -325,7 +349,12 @@ public class AudioPlayer {
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing next track based on play order...");
 
-            playTrack(_playlist.getPlayingTrack(), true);
+            try {
+                playTrack(_playlist.getPlayingTrack(), true);
+            } catch (Exception e) {
+                Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play next based on play order, " + e.toString());
+                stop();
+            }
         }
         else
         {
@@ -351,8 +380,13 @@ public class AudioPlayer {
         if (_playlist.isPlaying())
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing random track...");
-
-            playTrack(_playlist.getPlayingTrack(), true);
+            
+            try {
+                playTrack(_playlist.getPlayingTrack(), true);
+            } catch (Exception e) {
+                Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play random, " + e.toString());
+                stop();
+            }
         }
         else
         {
@@ -436,7 +470,7 @@ public class AudioPlayer {
         }
         catch (Exception e)
         {
-            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot seek to: " + e.toString());
+            Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot seek to, " + e.toString());
         }
     }
     
@@ -625,10 +659,20 @@ public class AudioPlayer {
             {
                 playlist.setPlayOrder(_playlist.getPlayOrder());
             }
+            
+            AudioPlaylist previousPlaylist = _playlist;
 
             _playlist = null;
 
-            playPlaylist(playlist);
+            try {
+                playPlaylist(playlist);
+            } catch (Exception e) {
+                Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play previous from play history, " + e.toString());
+                
+                _playlist = previousPlaylist;
+                
+                stop();
+            }
         }
     }
 }

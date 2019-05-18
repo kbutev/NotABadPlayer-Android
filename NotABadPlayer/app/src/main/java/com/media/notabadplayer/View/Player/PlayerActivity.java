@@ -250,4 +250,10 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     {
 
     }
+
+    @Override
+    public void onPlayerErrorEncountered(@NonNull Exception error)
+    {
+
+    }
 }
