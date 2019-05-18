@@ -368,6 +368,12 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
+    public void onPlayerErrorEncountered(@NonNull Exception error)
+    {
+
+    }
+
+    @Override
     public void loop()
     {
         FragmentActivity a = getActivity();

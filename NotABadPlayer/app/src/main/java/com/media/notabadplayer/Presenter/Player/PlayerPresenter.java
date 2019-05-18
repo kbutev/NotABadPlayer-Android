@@ -157,7 +157,12 @@ public class PlayerPresenter implements BasePresenter
 
         AudioPlayer player = AudioPlayer.getShared();
 
-        player.playPlaylist(playlist);
+        try {
+            player.playPlaylist(playlist);
+        } catch (Exception e) {
+            _view.onPlayerErrorEncountered(e);
+            return;
+        }
 
         if (!player.isPlaying())
         {

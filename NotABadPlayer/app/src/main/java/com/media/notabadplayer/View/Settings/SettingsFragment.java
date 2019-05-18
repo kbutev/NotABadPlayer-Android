@@ -1,6 +1,5 @@
 package com.media.notabadplayer.View.Settings;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -27,6 +26,7 @@ import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Presenter.BasePresenter;
+import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
@@ -360,28 +360,13 @@ public class SettingsFragment extends Fragment implements BaseView
     
     private void showResetSettingsDialog()
     {
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
-        builder1.setMessage(R.string.settings_dialog_reset);
-        builder1.setCancelable(true);
+        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                _presenter.onAppSettingsReset();
+            }
+        };
         
-        builder1.setPositiveButton(
-                R.string.yes,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        _presenter.onAppSettingsReset();
-                    }
-                });
-        
-        builder1.setNegativeButton(
-                R.string.no,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        
-        AlertDialog alert1 = builder1.create();
-        alert1.show();
+        AlertWindows.showAlert(getContext(), 0, R.string.settings_dialog_reset, R.string.yes, action, R.string.no);
     }
     
     @Override
@@ -493,6 +478,12 @@ public class SettingsFragment extends Fragment implements BaseView
     public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
     {
 
+    }
+    
+    @Override
+    public void onPlayerErrorEncountered(@NonNull Exception error)
+    {
+        
     }
     
     class SettingsListAdapter extends BaseAdapter

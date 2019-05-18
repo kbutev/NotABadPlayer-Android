@@ -375,4 +375,10 @@ public class ListsFragment extends Fragment implements BaseView {
     {
 
     }
+
+    @Override
+    public void onPlayerErrorEncountered(@NonNull Exception error)
+    {
+
+    }
 }

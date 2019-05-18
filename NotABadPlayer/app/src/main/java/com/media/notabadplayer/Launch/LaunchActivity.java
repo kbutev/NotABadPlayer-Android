@@ -1,7 +1,6 @@
 package com.media.notabadplayer.Launch;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +14,7 @@ import android.util.Log;
 
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.View.Main.MainActivity;
 
 public class LaunchActivity extends AppCompatActivity {
@@ -123,20 +123,13 @@ public class LaunchActivity extends AppCompatActivity {
         }
         else
         {
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-            builder1.setMessage(R.string.error_need_storage_permission);
-            builder1.setCancelable(true);
-
-            builder1.setPositiveButton(
-                    R.string.ok,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            finish();
-                        }
-                    });
-
-            AlertDialog alert1 = builder1.create();
-            alert1.show();
+            DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    finish();
+                }
+            };
+            
+            AlertWindows.showAlert(this, 0, R.string.error_need_storage_permission, R.string.ok, action);
         }
     }
 }

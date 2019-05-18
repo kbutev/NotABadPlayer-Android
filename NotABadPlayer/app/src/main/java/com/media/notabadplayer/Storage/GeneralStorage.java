@@ -236,7 +236,12 @@ public class GeneralStorage
         
         AudioPlaylist playlist = (AudioPlaylist)result;
         
-        player.playPlaylist(playlist);
+        try {
+            player.playPlaylist(playlist);
+        } catch (Exception e) {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Cannot restore audio player state, " + e.toString());
+            return;
+        }
         
         AudioPlaylist newPlayerPlaylist = player.getPlaylist();
         

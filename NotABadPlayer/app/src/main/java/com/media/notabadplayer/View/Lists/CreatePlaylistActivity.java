@@ -1,6 +1,5 @@
 package com.media.notabadplayer.View.Lists;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +23,7 @@ import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Launch.LaunchActivity;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.AppThemeSetter;
 
 public class CreatePlaylistActivity extends AppCompatActivity
@@ -291,38 +291,17 @@ public class CreatePlaylistActivity extends AppCompatActivity
 
     private void showNoTracksDialog()
     {
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setMessage(R.string.playlist_dialog_no_tracks);
-        builder1.setCancelable(true);
-
-        builder1.setPositiveButton(R.string.ok, null);
-
-        AlertDialog alert1 = builder1.create();
-        alert1.show();
+        AlertWindows.showAlert(this, 0, R.string.playlist_dialog_no_tracks, R.string.ok, null);
     }
     
     private void showInvalidNameDialog()
     {
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setMessage(R.string.playlist_dialog_invalid_name);
-        builder1.setCancelable(true);
-
-        builder1.setPositiveButton(R.string.ok, null);
-
-        AlertDialog alert1 = builder1.create();
-        alert1.show();
+        AlertWindows.showAlert(this, 0, R.string.playlist_dialog_invalid_name, R.string.ok, null);
     }
 
     private void showNameTakenDialog()
     {
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setMessage(R.string.playlist_dialog_taken_name);
-        builder1.setCancelable(true);
-
-        builder1.setPositiveButton(R.string.ok, null);
-
-        AlertDialog alert1 = builder1.create();
-        alert1.show();
+        AlertWindows.showAlert(this, 0, R.string.playlist_dialog_taken_name, R.string.ok, null);
     }
 
     private void quit()

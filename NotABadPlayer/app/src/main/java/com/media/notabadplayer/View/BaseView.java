@@ -32,4 +32,6 @@ public interface BaseView {
     void appThemeChanged(AppSettings.AppTheme appTheme);
     void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting);
     void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar);
+    
+    void onPlayerErrorEncountered(@NonNull Exception error);
 }
