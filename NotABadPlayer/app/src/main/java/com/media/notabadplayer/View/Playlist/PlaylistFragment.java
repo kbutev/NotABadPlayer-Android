@@ -16,6 +16,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
@@ -335,6 +336,12 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     public void onPlayerResume(AudioTrack track)
     {
         
+    }
+
+    @Override
+    public void onPlayOrderChange(AudioPlayOrder order)
+    {
+
     }
 
     @Override

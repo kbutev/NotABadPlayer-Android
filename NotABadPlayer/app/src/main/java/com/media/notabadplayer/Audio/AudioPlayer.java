@@ -3,6 +3,7 @@ package com.media.notabadplayer.Audio;
 import android.app.Application;
 import android.content.Context;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ public class AudioPlayer {
     private Application _application;
     private AudioInfo _audioInfo;
     private AudioPlaylist _playlist;
+    private AudioPlayOrder _playOrder = AudioPlayOrder.FORWARDS;
      
     public final Observers observers = new Observers();
     public final PlayHistory playHistory = new PlayHistory();
@@ -36,6 +38,14 @@ public class AudioPlayer {
             public void onCompletion(android.media.MediaPlayer mp) {
                 observers.onFinish();
                 playNextBasedOnPlayOrder();
+            }
+        });
+        
+        _player.setOnErrorListener(new android.media.MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                observers.onFinish();
+                return true;
             }
         });
 
@@ -100,6 +110,11 @@ public class AudioPlayer {
         return _player.isPlaying();
     }
     
+    public boolean isCompletelyStopped()
+    {
+        return !_playlist.isPlaying();
+    }
+    
     public @Nullable AudioPlaylist getPlaylist()
     {
         return _playlist;
@@ -107,34 +122,43 @@ public class AudioPlayer {
     
     public boolean hasPlaylist() {return _playlist != null;}
     
+    public AudioPlayOrder getPlayOrder()
+    {
+        return _playOrder;
+    }
+    
+    public void setPlayOrder(AudioPlayOrder order)
+    {
+        _playOrder = order;
+        
+        observers.onPlayOrderChange(order);
+    }
+    
     public void playPlaylist(@NonNull AudioPlaylist playlist) throws Exception
     {
         checkIfPlayerIsInitialized();
 
-        AudioPlaylist previousPlaylist = _playlist;
-        
-        AudioPlayOrder order = _playlist != null ? _playlist.getPlayOrder() : playlist.getPlayOrder();
-        
-        _playlist = playlist;
-        _playlist.setPlayOrder(order);
+        AudioTrack previousTrack = _playlist != null ? _playlist.getPlayingTrack() : null;
         
         try {
-            playTrack(_playlist.getPlayingTrack(), true);
+            playTrack(playlist.getPlayingTrack(), previousTrack, true);
         } catch (Exception e) {
-            _playlist = previousPlaylist;
             stop();
             throw e;
         }
+
+        _playlist = playlist;
+        _playlist.playCurrent();
     }
-    
+
     private void playTrack(@NonNull AudioTrack newTrack, boolean usePlayHistory) throws Exception
     {
+        playTrack(newTrack, null, usePlayHistory);
+    }
+    
+    private void playTrack(@NonNull AudioTrack newTrack, AudioTrack previousTrack, boolean usePlayHistory) throws Exception
+    {
         checkIfPlayerIsInitialized();
-
-        if (!hasPlaylist())
-        {
-            return;
-        }
         
         Uri path = Uri.parse(Uri.decode(newTrack.filePath));
         
@@ -149,6 +173,21 @@ public class AudioPlayer {
         catch (Exception e)
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play track, " + e.toString());
+
+            if (previousTrack != null)
+            {
+                Uri pathOfPreviousTrack = Uri.parse(Uri.decode(previousTrack.filePath));
+
+                try {
+                    _player.reset();
+                    _player.setDataSource(getContext(), pathOfPreviousTrack);
+                    _player.prepare();
+                    _player.start();
+                } catch (Exception e2) {
+                    _playlist = null;
+                }
+            }
+            
             stop();
             throw e;
         }
@@ -173,7 +212,7 @@ public class AudioPlayer {
         }
         
         // Start, instead of resuming
-        if (!_playlist.isPlaying())
+        if (isCompletelyStopped())
         {
             AudioTrack currentTrack = _playlist.getPlayingTrack();
             
@@ -188,7 +227,7 @@ public class AudioPlayer {
         
         try
         {
-            if (!_player.isPlaying())
+            if (!isPlaying())
             {
                 _player.start();
 
@@ -212,7 +251,7 @@ public class AudioPlayer {
         
         try
         {
-            if (_player.isPlaying())
+            if (isPlaying())
             {
                 _player.pause();
 
@@ -238,7 +277,7 @@ public class AudioPlayer {
         {
             _player.seekTo(0);
             
-            if (_player.isPlaying())
+            if (isPlaying())
             {
                 _player.pause();
 
@@ -260,7 +299,7 @@ public class AudioPlayer {
             return;
         }
 
-        if (!_player.isPlaying())
+        if (!isPlaying())
         {
             resume();
         }
@@ -281,7 +320,7 @@ public class AudioPlayer {
 
         _playlist.goToNextPlayingTrack();
         
-        if (_playlist.isPlaying())
+        if (!isCompletelyStopped())
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing next track...");
 
@@ -313,7 +352,7 @@ public class AudioPlayer {
 
         _playlist.goToPreviousPlayingTrack();
         
-        if (_playlist.isPlaying())
+        if (!isCompletelyStopped())
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing previous track...");
 
@@ -343,9 +382,9 @@ public class AudioPlayer {
             return;
         }
 
-        _playlist.goToTrackBasedOnPlayOrder();
+        _playlist.goToTrackBasedOnPlayOrder(_playOrder);
         
-        if (_playlist.isPlaying())
+        if (!isCompletelyStopped())
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing next track based on play order...");
 
@@ -377,7 +416,7 @@ public class AudioPlayer {
         
         _playlist.goToTrackByShuffle();
 
-        if (_playlist.isPlaying())
+        if (!isCompletelyStopped())
         {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing random track...");
             
@@ -564,6 +603,8 @@ public class AudioPlayer {
             }
 
             _observers.add(observer);
+
+            fullyUpdateObserver(observer);
         }
 
         public void detach(AudioPlayerObserver observer)
@@ -571,6 +612,11 @@ public class AudioPlayer {
             _observers.remove(observer);
         }
 
+        public void fullyUpdateObserver(AudioPlayerObserver observer)
+        {
+            observer.onPlayOrderChange(_playOrder);
+        }
+        
         private void onPlay(AudioTrack track)
         {
             for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPlay(track);}
@@ -594,6 +640,11 @@ public class AudioPlayer {
         private void onPause(AudioTrack track)
         {
             for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPause(track);}
+        }
+
+        private void onPlayOrderChange(AudioPlayOrder order)
+        {
+            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayOrderChange(order);}
         }
     }
 
@@ -654,22 +705,11 @@ public class AudioPlayer {
                 String playlistName = _application.getResources().getString(R.string.playlist_name_previously_played);
                 playlist = new AudioPlaylist(playlistName, previousTrack);
             }
-
-            if (_playlist != null)
-            {
-                playlist.setPlayOrder(_playlist.getPlayOrder());
-            }
             
-            AudioPlaylist previousPlaylist = _playlist;
-
-            _playlist = null;
-
             try {
                 playPlaylist(playlist);
             } catch (Exception e) {
                 Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play previous from play history, " + e.toString());
-                
-                _playlist = previousPlaylist;
                 
                 stop();
             }
