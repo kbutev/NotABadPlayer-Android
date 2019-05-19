@@ -236,12 +236,14 @@ public class GeneralStorage
         }
 
         // Restore play order state
+        Log.v(GeneralStorage.class.getCanonicalName(), "Restoring audio player state...");
+        
         AudioPlayOrder playOrder;
         
         try {
             playOrder = AudioPlayOrder.valueOf(playOrderData);
         } catch (Exception e) {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Cannot restore audio player state, " + e.toString());
+            Log.v(GeneralStorage.class.getCanonicalName(), "Failed to restore audio player state, " + e.toString());
             return;
         }
         
@@ -260,7 +262,7 @@ public class GeneralStorage
         try {
             player.playPlaylist(playlist);
         } catch (Exception e) {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Cannot restore audio player state, " + e.toString());
+            Log.v(GeneralStorage.class.getCanonicalName(), "Failed to restore audio player state, " + e.toString());
             return;
         }
         
@@ -272,7 +274,7 @@ public class GeneralStorage
         player.pause();
         
         // Success
-        Log.v(GeneralStorage.class.getCanonicalName(), "Succesfully restored audio player state!");
+        Log.v(GeneralStorage.class.getCanonicalName(), "Successfully restored audio player state!");
     }
 
     synchronized public void savePlayerPlayHistoryState()
@@ -284,12 +286,14 @@ public class GeneralStorage
         {
             return;
         }
-
+        
         SharedPreferences.Editor editor = preferences.edit();
 
         editor.putString("player_play_history", Serializing.serializeObject(player.playHistory.getPlayHistory()));
         
         editor.apply();
+        
+        Log.v(GeneralStorage.class.getCanonicalName(), "Saved audio player state to storage.");
     }
 
     synchronized public void restorePlayerPlayHistoryState(@NonNull Application application)
