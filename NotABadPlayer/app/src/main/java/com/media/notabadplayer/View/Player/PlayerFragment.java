@@ -352,10 +352,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         }
         
         _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
-
-        // Play order button update
-        updatePlayOrderButtonState();
-
+        
         // Volume bar update
         if (_volumeBar.getVisibility() == View.VISIBLE)
         {
@@ -413,30 +410,25 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
     private void updatePlayOrderButtonState()
     {
-        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
-
-        if (playlist != null)
+        AudioPlayOrder order = AudioPlayer.getShared().getPlayOrder();
+        
+        switch (order)
         {
-            AudioPlayOrder order = playlist.getPlayOrder();
-
-            switch (order)
-            {
-                case FORWARDS:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
-                    break;
-                case FORWARDS_REPEAT:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards_repeat);
-                    break;
-                case ONCE_FOREVER:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_repeat_forever);
-                    break;
-                case SHUFFLE:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_shuffle);
-                    break;
-                default:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
-                    break;
-            }
+            case FORWARDS:
+                _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
+                break;
+            case FORWARDS_REPEAT:
+                _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards_repeat);
+                break;
+            case ONCE_FOREVER:
+                _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_repeat_forever);
+                break;
+            case SHUFFLE:
+                _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_shuffle);
+                break;
+            default:
+                _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
+                break;
         }
     }
 
@@ -576,6 +568,12 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
+    public void onPlayOrderChange(AudioPlayOrder order)
+    {
+        updatePlayOrderButtonState();
+    }
+
+    @Override
     public void appSettingsReset()
     {
 
@@ -613,7 +611,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             }
         };
         
-        AlertWindows.showAlert(getContext(), "Error", error.toString(), "Ok", action);
+        AlertWindows.showAlert(getContext(), R.string.error, R.string.error_invalid_file_play, R.string.ok, action);
     }
 
     @Override

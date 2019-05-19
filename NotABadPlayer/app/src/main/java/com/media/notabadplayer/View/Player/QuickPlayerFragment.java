@@ -271,9 +271,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         _mediaBar.setProgress((int)newPosition);
         
         _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
-        
-        // Play order button update
-        updatePlayOrderButtonState();
     }
 
     private void saveCurrentAudioState()
@@ -316,30 +313,25 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
     private void updatePlayOrderButtonState()
     {
-        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
-
-        if (playlist != null)
+        AudioPlayOrder order = AudioPlayer.getShared().getPlayOrder();
+        
+        switch (order)
         {
-            AudioPlayOrder order = playlist.getPlayOrder();
-
-            switch (order)
-            {
-                case FORWARDS:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
-                    break;
-                case FORWARDS_REPEAT:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards_repeat);
-                    break;
-                case ONCE_FOREVER:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_repeat_forever);
-                    break;
-                case SHUFFLE:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_shuffle);
-                    break;
-                default:
-                    _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
-                    break;
-            }
+            case FORWARDS:
+                _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
+                break;
+            case FORWARDS_REPEAT:
+                _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards_repeat);
+                break;
+            case ONCE_FOREVER:
+                _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_repeat_forever);
+                break;
+            case SHUFFLE:
+                _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_shuffle);
+                break;
+            default:
+                _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
+                break;
         }
     }
     
@@ -463,6 +455,12 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     public void onPlayerResume(AudioTrack track)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
+    }
+
+    @Override
+    public void onPlayOrderChange(AudioPlayOrder order)
+    {
+        updatePlayOrderButtonState();
     }
 
     @Override

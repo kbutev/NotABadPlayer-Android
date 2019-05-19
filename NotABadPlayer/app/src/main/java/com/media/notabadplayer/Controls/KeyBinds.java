@@ -94,30 +94,27 @@ public class KeyBinds
                 AudioPlayer.getShared().jumpBackwards(15);
                 break;
             case CHANGE_PLAY_ORDER:
-                AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+                AudioPlayer player = AudioPlayer.getShared();
+
+                AudioPlayOrder order = player.getPlayOrder();
                 
-                if (playlist != null)
+                switch (order)
                 {
-                    AudioPlayOrder order = playlist.getPlayOrder();
-                    
-                    switch (order)
-                    {
-                        case FORWARDS:
-                            playlist.setPlayOrder(AudioPlayOrder.FORWARDS_REPEAT);
-                            break;
-                        case FORWARDS_REPEAT:
-                            playlist.setPlayOrder(AudioPlayOrder.ONCE_FOREVER);
-                            break;
-                        case ONCE_FOREVER:
-                            playlist.setPlayOrder(AudioPlayOrder.SHUFFLE);
-                            break;
-                        case SHUFFLE:
-                            playlist.setPlayOrder(AudioPlayOrder.FORWARDS);
-                            break;
-                        default:
-                            playlist.setPlayOrder(AudioPlayOrder.FORWARDS);
-                            break;
-                    }
+                    case FORWARDS:
+                        player.setPlayOrder(AudioPlayOrder.FORWARDS_REPEAT);
+                        break;
+                    case FORWARDS_REPEAT:
+                        player.setPlayOrder(AudioPlayOrder.ONCE_FOREVER);
+                        break;
+                    case ONCE_FOREVER:
+                        player.setPlayOrder(AudioPlayOrder.SHUFFLE);
+                        break;
+                    case SHUFFLE:
+                        player.setPlayOrder(AudioPlayOrder.FORWARDS);
+                        break;
+                    default:
+                        player.setPlayOrder(AudioPlayOrder.FORWARDS);
+                        break;
                 }
                 
                 break;

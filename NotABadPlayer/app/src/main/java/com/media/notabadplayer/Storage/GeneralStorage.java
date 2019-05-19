@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
+import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
@@ -57,7 +58,7 @@ public class GeneralStorage
         detectVersionChange();
     }
     
-    private Application getContext()
+    private @NonNull Application getContext()
     {
         if (___context == null)
         {
@@ -67,7 +68,7 @@ public class GeneralStorage
         return ___context;
     }
     
-    private SharedPreferences getSharedPreferences()
+    private @NonNull SharedPreferences getSharedPreferences()
     {
         if (___context == null)
         {
@@ -109,46 +110,44 @@ public class GeneralStorage
         
         saveStorageVersion(currentVersion);
         
-        // Select old version and execute code to migrate the changes
-        // Example: Case "1.0" is code for old version "1.0" to migrate to current version
-        switch (preferencesVersion)
+        // Migrate from version to version, one by one
+        if (preferencesVersion.equals(""))
         {
-            case "":
-                Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + "nil" + " to version " + currentVersion);
-                
-                Object result = Serializing.deserializeObject(preferences.getString("user_playlists", ""));
-                
-                if (result != null)
+            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + "nil" + " to version " + currentVersion);
+            
+            Object result = Serializing.deserializeObject(preferences.getString("user_playlists", ""));
+            
+            if (result != null)
+            {
+                ArrayList<AudioPlaylist> playlistsArray = objectToPlaylistsArray(result);
+
+                if (playlistsArray != null)
                 {
-                    ArrayList<AudioPlaylist> playlistsArray = objectToPlaylistsArray(result);
-
-                    if (playlistsArray == null)
-                    {
-                        Log.v(GeneralStorage.class.getCanonicalName(), "Error: failed to migrate settings values, reseting settings to their default values");
-                        resetDefaultSettingsValues();
-                        break;
-                    }
-
                     saveUserPlaylists(playlistsArray);
                 }
-                
-                Log.v(GeneralStorage.class.getCanonicalName(), "Successfully migrated settings values!");
-
-                break;
-            case "1.0":
-                Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + currentVersion);
-                
-                saveSettingsAction(ApplicationInput.PLAYER_SWIPE_LEFT, ApplicationAction.PREVIOUS);
-                saveSettingsAction(ApplicationInput.PLAYER_SWIPE_RIGHT, ApplicationAction.NEXT);
-                
-                Log.v(GeneralStorage.class.getCanonicalName(), "Successfully migrated settings values!");
-                
-                break;
-            default:
-                Log.v(GeneralStorage.class.getCanonicalName(), "Error: found an unknown storage version recorded on the device storage, reseting settings to their default values");
-                resetDefaultSettingsValues();
-                break;
+            }
         }
+
+        if (preferencesVersion.equals("1.0"))
+        {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + currentVersion);
+            
+            saveSettingsAction(ApplicationInput.PLAYER_SWIPE_LEFT, ApplicationAction.PREVIOUS);
+            saveSettingsAction(ApplicationInput.PLAYER_SWIPE_RIGHT, ApplicationAction.NEXT);
+        }
+        
+        if (preferencesVersion.equals("1.1"))
+        {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + currentVersion);
+
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+
+            editor.putString("player_play_order", AudioPlayOrder.FORWARDS.name());
+
+            editor.apply();
+        }
+        
+        Log.v(GeneralStorage.class.getCanonicalName(), "Successfully migrated settings values!");
     }
 
     synchronized public void resetDefaultSettingsValues()
@@ -171,8 +170,8 @@ public class GeneralStorage
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
-        saveSettingsAction(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, ApplicationAction.FORWARDS_15);
-        saveSettingsAction(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, ApplicationAction.BACKWARDS_15);
+        saveSettingsAction(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, ApplicationAction.FORWARDS_8);
+        saveSettingsAction(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, ApplicationAction.BACKWARDS_8);
         saveSettingsAction(ApplicationInput.EARPHONES_UNPLUG, ApplicationAction.PAUSE);
 
         saveCachingPolicy(AppSettings.TabCachingPolicies.ALBUMS_ONLY);
@@ -195,7 +194,14 @@ public class GeneralStorage
 
     private @NonNull String getStorageVersion()
     {
-        return getSharedPreferences().getString("storage_version", "");
+        String storageVersion = getSharedPreferences().getString("storage_version", "");
+        
+        if (storageVersion == null)
+        {
+            return "";
+        }
+        
+        return storageVersion;
     }
     
     synchronized public void savePlayerState()
@@ -210,6 +216,7 @@ public class GeneralStorage
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         
         editor.putString("player_current_playlist", Serializing.serializeObject(player.getPlaylist()));
+        editor.putString("player_play_order", player.getPlayOrder().name());
         editor.putInt("player_current_position", player.getCurrentPositionMSec());
         
         editor.apply();
@@ -219,15 +226,29 @@ public class GeneralStorage
     {
         SharedPreferences preferences = getSharedPreferences();
         AudioPlayer player = AudioPlayer.getShared();
+
+        String playOrderData = preferences.getString("player_play_order", "");
+        String playlistData = preferences.getString("player_current_playlist", "");
         
-        String data = preferences.getString("player_current_playlist", "");
-        
-        if (data == null)
+        if (playlistData == null || playOrderData == null)
         {
             return;
         }
 
-        Object result = Serializing.deserializeObject(data);
+        // Restore play order state
+        AudioPlayOrder playOrder;
+        
+        try {
+            playOrder = AudioPlayOrder.valueOf(playOrderData);
+        } catch (Exception e) {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Cannot restore audio player state, " + e.toString());
+            return;
+        }
+        
+        player.setPlayOrder(playOrder);
+        
+        // Restore playlist
+        Object result = Serializing.deserializeObject(playlistData);
 
         if (!(result instanceof AudioPlaylist))
         {
@@ -243,19 +264,15 @@ public class GeneralStorage
             return;
         }
         
-        AudioPlaylist newPlayerPlaylist = player.getPlaylist();
-        
-        if (newPlayerPlaylist != null)
-        {
-            newPlayerPlaylist.setPlayOrder(playlist.getPlayOrder());
-        }
-        
         int positionMSec = preferences.getInt("player_current_position", 0);
         
         player.seekTo(positionMSec);
         
         // Always pause by default when restoring state from storage
         player.pause();
+        
+        // Success
+        Log.v(GeneralStorage.class.getCanonicalName(), "Succesfully restored audio player state!");
     }
 
     synchronized public void savePlayerPlayHistoryState()

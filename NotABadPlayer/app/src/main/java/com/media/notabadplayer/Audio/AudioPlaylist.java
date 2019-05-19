@@ -13,8 +13,6 @@ public class AudioPlaylist implements Serializable
 {
     private final @NonNull String _name;
     
-    private AudioPlayOrder _playOrder;
-    
     private @NonNull ArrayList<AudioTrack> _tracks;
     
     private boolean _playing;
@@ -40,9 +38,8 @@ public class AudioPlaylist implements Serializable
         }
         
         _name = name;
-        _playOrder = AudioPlayOrder.FORWARDS;
         _tracks = tracks;
-        _playing = true;
+        _playing = false;
         _playingTrackPosition = 0;
         
         // Set proper source value
@@ -98,16 +95,6 @@ public class AudioPlaylist implements Serializable
         return _tracks.get(index);
     }
     
-    public AudioPlayOrder getPlayOrder()
-    {
-        return _playOrder;
-    }
-    
-    public void setPlayOrder(AudioPlayOrder order)
-    {
-        _playOrder = order;
-    }
-    
     public boolean isPlaying()
     {
         return _playing;
@@ -138,11 +125,16 @@ public class AudioPlaylist implements Serializable
         return null;
     }
     
-    public void goToTrackBasedOnPlayOrder()
+    public void playCurrent()
+    {
+        _playing = true;
+    }
+    
+    public void goToTrackBasedOnPlayOrder(AudioPlayOrder playOrder)
     {
         _playing = true;
         
-        switch (_playOrder)
+        switch (playOrder)
         {
             case ONCE:
                 _playing = false;
@@ -221,7 +213,7 @@ public class AudioPlaylist implements Serializable
     private void readObject(@NonNull ObjectInputStream in) throws IOException,ClassNotFoundException
     {
         in.defaultReadObject();
-
+        
         _random = new Random();
     }
 }
