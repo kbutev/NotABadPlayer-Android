@@ -129,11 +129,12 @@
     <SeekBar
         android:id="@+id/mediaBar"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:clickable="false"
         android:progressDrawable="@drawable/qplayer_seek_bar"
         android:thumb="@drawable/qplayer_seek_thumb"
+        android:background="@null"
         app:layout_constraintBottom_toBottomOf="parent">
     </SeekBar>
     
