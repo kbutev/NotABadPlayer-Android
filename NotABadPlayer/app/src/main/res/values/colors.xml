@@ -70,15 +70,15 @@
     <!-- Seek bars -->
     <color name="playerBaseProgressBar">#6c6c6c</color>
     <color name="playerProgressBarThumb">#FFFFFF</color>
-    <color name="playerProgressBarFill">#FFEB3B</color>
-    <color name="playerProgressBarFillMid">#FFC107</color>
-    <color name="playerProgressBarFillEnd">#FF9800</color>
+    <color name="playerProgressBarFill">#CDDC39</color>
+    <color name="playerProgressBarFillMid">#B6C42D</color>
+    <color name="playerProgressBarFillEnd">#8BC34A</color>
 
     <color name="quickPlayerBaseProgressBar">#6c6c6c</color>
     <color name="quickPlayerProgressBarThumb">#FFFFFF</color>
-    <color name="quickPlayerProgressBarFill">#CE7B00</color>
-    <color name="quickPlayerProgressBarFillMid">#CE7B00</color>
-    <color name="quickPlayerProgressBarFillEnd">#CE7B00</color>
+    <color name="quickPlayerProgressBarFill">#FFEB3B</color>
+    <color name="quickPlayerProgressBarFillMid">#FFC107</color>
+    <color name="quickPlayerProgressBarFillEnd">#FF9800</color>
 
     <color name="volumeBarBaseProgressBar">#6c6c6c</color>
     <color name="volumeBarProgressBarThumb">#FFFFFF</color>

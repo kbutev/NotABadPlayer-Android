@@ -10,7 +10,7 @@
         android:startColor="@color/quickPlayerProgressBarThumb" />
 
     <size
-        android:width="15dp"
-        android:height="20dp" />
+        android:width="14dp"
+        android:height="16dp" />
 
 </shape>
