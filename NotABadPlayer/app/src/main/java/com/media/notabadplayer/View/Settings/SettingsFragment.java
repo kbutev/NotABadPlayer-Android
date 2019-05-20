@@ -53,6 +53,7 @@ public class SettingsFragment extends Fragment implements BaseView
     private Spinner _keybindQPlayerNext;
     private Spinner _keybindQPlayerPrev;
     private Spinner _keybindEarphonesUnplug;
+    private Spinner _keybindExternalPlay;
     
     private Button _resetSettingsButton;
     
@@ -95,6 +96,7 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindQPlayerNext = root.findViewById(R.id.keybindQPlayerNext);
         _keybindQPlayerPrev = root.findViewById(R.id.keybindQPlayerPrev);
         _keybindEarphonesUnplug = root.findViewById(R.id.keybindEarphonesUnplug);
+        _keybindExternalPlay = root.findViewById(R.id.keybindExternalPlay);
         _resetSettingsButton = root.findViewById(R.id.resetButton);
         
         // Init UI
@@ -239,6 +241,10 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindEarphonesUnplug.setAdapter(keybindEarphonesUnplugAdapter);
         setKeybindsOnItemSelectedListener(_keybindEarphonesUnplug, ApplicationInput.EARPHONES_UNPLUG);
         
+        SettingsKeybindListAdapter keybindEarphonesExternalPlay = new SettingsKeybindListAdapter(getContext());
+        _keybindExternalPlay.setAdapter(keybindEarphonesExternalPlay);
+        setKeybindsOnItemSelectedListener(_keybindExternalPlay, ApplicationInput.EXTERNAL_PLAY);
+        
         // Reset
         _resetSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -356,6 +362,9 @@ public class SettingsFragment extends Fragment implements BaseView
 
         ApplicationAction EARPHONES_UNPLUG = GeneralStorage.getShared().getSettingsAction(ApplicationInput.EARPHONES_UNPLUG);
         _keybindEarphonesUnplug.setSelection(SettingsKeybindListAdapter.getCountForAction(EARPHONES_UNPLUG));
+
+        ApplicationAction EXTERNAL_PLAY = GeneralStorage.getShared().getSettingsAction(ApplicationInput.EXTERNAL_PLAY);
+        _keybindExternalPlay.setSelection(SettingsKeybindListAdapter.getCountForAction(EXTERNAL_PLAY));
     }
     
     private void showResetSettingsDialog()

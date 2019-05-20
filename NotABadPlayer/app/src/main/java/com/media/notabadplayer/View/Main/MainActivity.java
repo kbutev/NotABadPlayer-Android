@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
+import static android.media.AudioManager.AUDIOFOCUS_GAIN;
 
 public class MainActivity extends AppCompatActivity implements BaseView {
     static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         // Noise suppression
         _noiseSuppression = new AudioPlayerNoiseSuppression();
-        registerReceiver(_noiseSuppression, new IntentFilter(ACTION_AUDIO_BECOMING_NOISY));
+        _noiseSuppression.start(this);
         
         // App launch track
         Uri path = getIntent().getParcelableExtra("launchTrackPath");

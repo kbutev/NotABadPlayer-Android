@@ -2,9 +2,8 @@ package com.media.notabadplayer.Controls;
 
 public enum ApplicationInput
 {
-    HOME_BUTTON,
-    SCREEN_LOCK_BUTTON,
     EARPHONES_UNPLUG,
+    EXTERNAL_PLAY,
     PLAYER_VOLUME_UP_BUTTON,
     PLAYER_VOLUME_DOWN_BUTTON,
     PLAYER_RECALL,
