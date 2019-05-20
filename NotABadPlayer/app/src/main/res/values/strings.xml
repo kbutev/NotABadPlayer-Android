@@ -66,6 +66,7 @@
     <string name="settings_keybind_qplayer_next">QPlayer Next</string>
     <string name="settings_keybind_qplayer_prev">QPlayer Previous</string>
     <string name="settings_keybind_earphones_unplug">Earphones Unplug</string>
+    <string name="settings_keybind_external_play">External Play</string>
     <string name="settings_reset">Reset</string>
     <string name="settings_reset_button">Reset to defaults</string>
     <string name="settings_dialog_reset">Reset settings to defaults?</string>
@@ -73,7 +74,7 @@
     <!-- About -->
     <string name="about">About</string>
     <string name="about_version">Version 1.5 (8)</string>
-    <string name="about_release_date">Released 2019.05.19</string>
+    <string name="about_release_date">Released 2019.05.20</string>
     <string name="about_credits">Programmed, designed &amp; tested by Kristiyan Butev</string>
     
     <!-- Errors -->

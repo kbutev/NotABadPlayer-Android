@@ -173,6 +173,7 @@ public class GeneralStorage
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON, ApplicationAction.FORWARDS_8);
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON, ApplicationAction.BACKWARDS_8);
         saveSettingsAction(ApplicationInput.EARPHONES_UNPLUG, ApplicationAction.PAUSE);
+        saveSettingsAction(ApplicationInput.EXTERNAL_PLAY, ApplicationAction.PAUSE);
 
         saveCachingPolicy(AppSettings.TabCachingPolicies.ALBUMS_ONLY);
     }
