@@ -101,48 +101,6 @@
             android:textSize="14dp"
             android:textAppearance="@style/PlayerSubtext"
             android:singleLine="true"/>
-        <LinearLayout
-            android:id="@+id/stars"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone">
-            <ImageButton
-                android:id="@+id/star1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/rating_star"
-                android:background="@null"
-                android:visibility="gone"/>
-            <ImageButton
-                android:id="@+id/star2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/rating_star"
-                android:background="@null"
-                android:visibility="gone"/>
-            <ImageButton
-                android:id="@+id/star3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/rating_star"
-                android:background="@null"
-                android:visibility="gone"/>
-            <ImageButton
-                android:id="@+id/star4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/rating_star"
-                android:background="@null"
-                android:visibility="gone"/>
-            <ImageButton
-                android:id="@+id/star5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/rating_star"
-                android:background="@null"
-                android:visibility="gone"/>
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -200,8 +158,8 @@
                 android:layout_weight="0.2">
                 <Button
                     android:id="@+id/mediaButtonRecall"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:background="@drawable/media_recall"
                     app:backgroundTint="?playerButtonsTintColor"/>
@@ -233,8 +191,8 @@
                 android:layout_weight="0.2">
                 <Button
                     android:id="@+id/mediaButtonPlayOrder"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:background="@drawable/media_order_forwards_repeat"
                     app:backgroundTint="?playerButtonsTintColor"/>
