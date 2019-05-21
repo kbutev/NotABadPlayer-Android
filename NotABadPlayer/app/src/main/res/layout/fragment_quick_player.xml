@@ -81,13 +81,18 @@
                 android:layout_marginRight="2dp"
                 android:orientation="horizontal"
                 android:gravity="center_horizontal">
-                <Button
-                    android:id="@+id/mediaButtonPlaylist"
-                    android:layout_width="48dp"
+                <FrameLayout
+                    android:layout_width="64dp"
                     android:layout_height="40dp"
-                    android:layout_weight="0.2"
-                    android:background="@drawable/playlist"
-                    app:backgroundTint="?quickPlayerButtonsTintColor"/>
+                    android:layout_weight="0.2">
+                    <Button
+                        android:id="@+id/mediaButtonPlaylist"
+                        android:layout_width="48dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/playlist"
+                        app:backgroundTint="?quickPlayerButtonsTintColor"/>
+                </FrameLayout>
                 <Button
                     android:id="@+id/mediaButtonBack"
                     android:layout_width="64dp"
