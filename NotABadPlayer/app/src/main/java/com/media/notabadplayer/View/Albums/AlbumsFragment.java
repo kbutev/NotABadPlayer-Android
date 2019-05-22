@@ -13,11 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Audio.AudioTrackSource;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
 import com.media.notabadplayer.R;
@@ -34,7 +34,8 @@ public class AlbumsFragment extends Fragment implements BaseView
     private GridView _table;
     private AlbumsTableAdapter _tableAdapter;
     private Parcelable _tableState;
-    private GridSideIndexingView _tableSideSelector;
+    private GridSideIndexingView _tableSideIndexingView;
+    private TextView _indexingTextCharacter;
     
     public AlbumsFragment()
     {
@@ -52,7 +53,8 @@ public class AlbumsFragment extends Fragment implements BaseView
         View root = inflater.inflate(R.layout.fragment_albums, container, false);
         
         _table = root.findViewById(R.id.primaryAreaGrid);
-        _tableSideSelector = root.findViewById(R.id.sideIndexing);
+        _tableSideIndexingView = root.findViewById(R.id.tableSideIndexingView);
+        _indexingTextCharacter = root.findViewById(R.id.indexingTextCharacter);
         
         initUI();
         
@@ -217,7 +219,7 @@ public class AlbumsFragment extends Fragment implements BaseView
             return;
         }
 
-        _tableAdapter = new AlbumsTableAdapter(context, albums, _tableSideSelector);
+        _tableAdapter = new AlbumsTableAdapter(context, albums, _tableSideIndexingView);
         _table.setAdapter(_tableAdapter);
         
         ArrayList<String> titles = new ArrayList<>();
@@ -227,8 +229,8 @@ public class AlbumsFragment extends Fragment implements BaseView
             titles.add(albums.get(e).albumTitle);
         }
         
-        _tableSideSelector.updateAlphabet(titles);
-        _tableSideSelector.setGridView(_table);
+        _tableSideIndexingView.updateAlphabet(titles);
+        _tableSideIndexingView.start(_table, _indexingTextCharacter);
     }
 
     @Override
