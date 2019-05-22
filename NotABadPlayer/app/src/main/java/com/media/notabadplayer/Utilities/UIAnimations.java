@@ -1,6 +1,8 @@
 package com.media.notabadplayer.Utilities;
 
+import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -123,10 +125,14 @@ public class UIAnimations {
             return;
         }
 
-        Animation animation = new AlphaAnimation(0, 1);
-        animation.setInterpolator(new DecelerateInterpolator());
-        animation.setDuration(300);
-        view.setAnimation(animation);
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0.0f, 1.0f);
+        fadeIn.setDuration(300);
+        
+        final AnimatorSet animationSet = new AnimatorSet();
+
+        animationSet.play(fadeIn);
+
+        animationSet.start();
     }
 
     public static void animateViewFadeOut(Context context, final View view)
@@ -135,10 +141,14 @@ public class UIAnimations {
         {
             return;
         }
+        
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(view, "alpha",  1.0f, 0.0f);
+        fadeOut.setDuration(500);
 
-        Animation animation = new AlphaAnimation(1, 0);
-        animation.setInterpolator(new AccelerateInterpolator());
-        animation.setDuration(300);
-        view.setAnimation(animation);
+        final AnimatorSet animationSet = new AnimatorSet();
+
+        animationSet.play(fadeOut);
+
+        animationSet.start();
     }
 }
