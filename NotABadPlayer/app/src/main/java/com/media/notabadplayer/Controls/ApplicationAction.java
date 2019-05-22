@@ -12,14 +12,14 @@ public enum ApplicationAction {
     VOLUME_UP,
     VOLUME_DOWN,
     MUTE_OR_UNMUTE,
-    FORWARDS_5,
     FORWARDS_8,
     FORWARDS_10,
     FORWARDS_15,
-    BACKWARDS_5,
+    FORWARDS_60,
     BACKWARDS_8,
     BACKWARDS_10,
     BACKWARDS_15,
+    BACKWARDS_60,
     CHANGE_PLAY_ORDER,
     RECALL
 }

@@ -32,12 +32,14 @@
         android:gravity="center">
         <TextView
             android:id="@+id/indexingTextCharacter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/ListItemText"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:textColor="@color/indexerCharText"
             android:textStyle="bold"
-            android:textSize="80sp"
-            android:alpha="0"/>
+            android:textSize="70sp"
+            android:textAlignment="center"
+            android:alpha="0"
+            android:background="?indexerCharBackgroundColor"/>
     </LinearLayout>
     
 </RelativeLayout >

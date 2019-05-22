@@ -16,6 +16,7 @@
         <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
         <item name="quickPlayerBorderColor">@color/quickPlayerBorder</item>
         <item name="albumTitleHeaderTextColor">@color/albumTitleHeaderText</item>
+        <item name="indexerCharBackgroundColor">@color/indexerCharBackground</item>
         <item name="trackNumberColor">@color/trackNumber</item>
         <item name="genericButtonTextColor">@color/genericButtonText</item>
         <item name="settingsButtonTextColor">@color/settingsButtonText</item>
@@ -44,6 +45,7 @@
         <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
         <item name="quickPlayerBorderColor">@color/quickPlayerBorderInverted</item>
         <item name="albumTitleHeaderTextColor">@color/albumTitleHeaderTextInverted</item>
+        <item name="indexerCharBackgroundColor">@color/indexerCharBackgroundInverted</item>
         <item name="trackNumberColor">@color/trackNumberInverted</item>
         <item name="genericButtonTextColor">@color/genericButtonTextInverted</item>
         <item name="settingsButtonTextColor">@color/settingsButtonTextInverted</item>
@@ -72,6 +74,7 @@
         <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>
         <item name="quickPlayerBorderColor">@color/quickPlayerBorder</item>
         <item name="albumTitleHeaderTextColor">@color/albumTitleHeaderText</item>
+        <item name="indexerCharBackgroundColor">@color/indexerCharBackground</item>
         <item name="trackNumberColor">@color/trackNumber</item>
         <item name="genericButtonTextColor">@color/genericButtonText</item>
         <item name="settingsButtonTextColor">@color/settingsButtonText</item>
