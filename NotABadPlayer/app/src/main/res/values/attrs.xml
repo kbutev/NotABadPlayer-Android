@@ -26,6 +26,7 @@
     <attr name="playerBackgroundColor" format="reference|color"/>
     <attr name="genericButtonBackgroundColor" format="reference|color"/>
     <attr name="albumTitleHeaderBackgroundColor" format="reference|color"/>
+    <attr name="indexerCharBackgroundColor" format="reference|color"/>
     
     <!-- Other references -->
     <attr name="genericBorderBackgroundColor" format="reference|color"/>

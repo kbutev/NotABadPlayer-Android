@@ -69,9 +69,6 @@ public class KeyBinds
             case MUTE_OR_UNMUTE:
                 AudioPlayer.getShared().muteOrUnmute();
                 break;
-            case FORWARDS_5:
-                AudioPlayer.getShared().jumpForwards(5);
-                break;
             case FORWARDS_8:
                 AudioPlayer.getShared().jumpForwards(8);
                 break;
@@ -81,8 +78,8 @@ public class KeyBinds
             case FORWARDS_15:
                 AudioPlayer.getShared().jumpForwards(15);
                 break;
-            case BACKWARDS_5:
-                AudioPlayer.getShared().jumpBackwards(5);
+            case FORWARDS_60:
+                AudioPlayer.getShared().jumpForwards(60);
                 break;
             case BACKWARDS_8:
                 AudioPlayer.getShared().jumpBackwards(8);
@@ -92,6 +89,9 @@ public class KeyBinds
                 break;
             case BACKWARDS_15:
                 AudioPlayer.getShared().jumpBackwards(15);
+                break;
+            case BACKWARDS_60:
+                AudioPlayer.getShared().jumpBackwards(60);
                 break;
             case CHANGE_PLAY_ORDER:
                 AudioPlayer player = AudioPlayer.getShared();
