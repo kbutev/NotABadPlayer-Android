@@ -1,7 +1,6 @@
 package com.media.notabadplayer.View.Main;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,7 +32,7 @@ import com.media.notabadplayer.Presenter.Search.SearchPresenter;
 import com.media.notabadplayer.Presenter.Settings.SettingsPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.Utilities.AppThemeSetter;
+import com.media.notabadplayer.Utilities.AppThemeUtility;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.Presenter.BasePresenter;
@@ -48,9 +47,6 @@ import com.media.notabadplayer.View.Settings.SettingsFragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
-import static android.media.AudioManager.AUDIOFOCUS_GAIN;
 
 public class MainActivity extends AppCompatActivity implements BaseView {
     static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
@@ -96,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         super.onCreate(null);
         
         // App theme
-        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue());
+        AppThemeUtility.setTheme(this, GeneralStorage.getShared().getAppThemeValue());
         
         // Content
         setContentView(R.layout.activity_main);
@@ -503,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         Log.v(MainActivity.class.getSimpleName(), "App theme changed to " + appTheme.name());
 
-        AppThemeSetter.setTheme(this, appTheme);
+        AppThemeUtility.setTheme(this, appTheme);
         
         _currentTab.appThemeChanged(appTheme);
         _quickPlayer.appThemeChanged(appTheme);

@@ -18,6 +18,7 @@
     <attr name="trackNumberColor" format="reference|color"/>
     <attr name="genericButtonTextColor" format="reference|color"/>
     <attr name="settingsButtonTextColor" format="reference|color"/>
+    <attr name="gridSideIndexingTextColor" format="reference|color"/>
     
     <!-- Background references -->
     <attr name="baseBackgroundColor" format="reference|color"/>

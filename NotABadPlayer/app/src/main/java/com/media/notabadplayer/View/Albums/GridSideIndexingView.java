@@ -5,12 +5,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.UIAnimations;
 
 import java.util.ArrayList;
@@ -32,29 +34,40 @@ public class GridSideIndexingView extends View {
     {
         super(context);
         _context = context;
-        init();
+        init(_context);
     }
 
     public GridSideIndexingView(@NonNull Context context, AttributeSet attrs)
     {
         super(context, attrs);
         _context = context;
-        init();
+        init(_context);
     }
 
     public GridSideIndexingView(@NonNull Context context, AttributeSet attrs, int defStyle) 
     {
         super(context, attrs, defStyle);
         _context = context;
-        init();
+        init(_context);
     }
 
-    private void init()
+    private void init(@NonNull Context context)
     {
         _paint = new Paint();
-        _paint.setColor(0xFFA6A9AA);
-        _paint.setTextSize(20);
-        _paint.setTextAlign(Paint.Align.CENTER);
+        
+        TypedValue outValue = new TypedValue();
+        
+        if (context.getTheme().resolveAttribute(R.attr.gridSideIndexingTextColor, outValue, true))
+        {
+            _paint.setColor(context.getResources().getColor(outValue.resourceId));
+        }
+        else
+        {
+            _paint.setColor(context.getResources().getColor(R.color.gridSideIndexingText));
+        }
+        
+        _paint.setTextSize(context.getResources().getDimension(R.dimen.gridSideIndexingTextSize));
+        _paint.setTextAlign(Paint.Align.LEFT);
     }
 
     public void start(@NonNull GridView list, @NonNull TextView textCharacter)
@@ -82,11 +95,16 @@ public class GridSideIndexingView extends View {
         
         for (int e = 0; e < titles.size(); e++)
         {
-            char firstChar = titles.get(e).charAt(0);
-
-            if (!_alphabet.contains(firstChar))
+            String title = titles.get(e);
+            
+            if (title.length() > 0)
             {
-                _alphabet.add(firstChar);
+                char firstChar = title.charAt(0);
+
+                if (!_alphabet.contains(firstChar))
+                {
+                    _alphabet.add(firstChar);
+                }
             }
         }
 

@@ -50,6 +50,7 @@
     <color name="trackNumber">#6c6c6c</color>
     <color name="genericButtonText">#ffffff</color>
     <color name="settingsButtonText">#2676d9</color>
+    <color name="gridSideIndexingText">#99686E79</color>
 
     <color name="primaryTextInverted">#ffffff</color>
     <color name="primarySubtextInverted">#FFEB3B</color>
@@ -65,6 +66,7 @@
     <color name="trackNumberInverted">#E9E9E9</color>
     <color name="genericButtonTextInverted">#000000</color>
     <color name="settingsButtonTextInverted">#2676d9</color>
+    <color name="gridSideIndexingTextInverted">#99FFFFFF</color>
 
     <!-- Buttons -->
     <color name="playerButtonsTint">#000000</color>
