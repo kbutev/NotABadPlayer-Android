@@ -20,6 +20,7 @@
         <item name="trackNumberColor">@color/trackNumber</item>
         <item name="genericButtonTextColor">@color/genericButtonText</item>
         <item name="settingsButtonTextColor">@color/settingsButtonText</item>
+        <item name="gridSideIndexingTextColor">@color/gridSideIndexingText</item>
         <item name="baseBackgroundColor">@color/baseBackground</item>
         <item name="navigationBackgroundColor">@color/navigationBackground</item>
         <item name="quickPlayerBackgroundColor">@color/quickPlayerBackground</item>
@@ -49,6 +50,7 @@
         <item name="trackNumberColor">@color/trackNumberInverted</item>
         <item name="genericButtonTextColor">@color/genericButtonTextInverted</item>
         <item name="settingsButtonTextColor">@color/settingsButtonTextInverted</item>
+        <item name="gridSideIndexingTextColor">@color/gridSideIndexingTextInverted</item>
         <item name="baseBackgroundColor">@color/baseBackgroundInverted</item>
         <item name="navigationBackgroundColor">@color/navigationBackgroundInverted</item>
         <item name="quickPlayerBackgroundColor">@color/quickPlayerBackgroundInverted</item>
@@ -78,6 +80,7 @@
         <item name="trackNumberColor">@color/trackNumber</item>
         <item name="genericButtonTextColor">@color/genericButtonText</item>
         <item name="settingsButtonTextColor">@color/settingsButtonText</item>
+        <item name="gridSideIndexingTextColor">@color/gridSideIndexingText</item>
         <item name="baseBackgroundColor">@color/baseBackground</item>
         <item name="navigationBackgroundColor">@color/navigationBackground</item>
         <item name="quickPlayerBackgroundColor">@color/quickPlayerBackground</item>

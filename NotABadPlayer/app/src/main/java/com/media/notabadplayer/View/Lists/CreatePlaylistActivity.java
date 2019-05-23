@@ -24,7 +24,7 @@ import com.media.notabadplayer.Launch.LaunchActivity;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
-import com.media.notabadplayer.Utilities.AppThemeSetter;
+import com.media.notabadplayer.Utilities.AppThemeUtility;
 
 public class CreatePlaylistActivity extends AppCompatActivity
 {
@@ -57,7 +57,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         super.onCreate(null);
         
         // App theme
-        AppThemeSetter.setTheme(this, GeneralStorage.getShared().getAppThemeValue());
+        AppThemeUtility.setTheme(this, GeneralStorage.getShared().getAppThemeValue());
         
         // Content
         setContentView(R.layout.activity_create_playlist);

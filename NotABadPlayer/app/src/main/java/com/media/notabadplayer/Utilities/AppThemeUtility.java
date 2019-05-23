@@ -5,7 +5,7 @@ import android.app.Activity;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
 
-public class AppThemeSetter
+public class AppThemeUtility
 {
     public static void setTheme(Activity activity, AppSettings.AppTheme theme)
     {
