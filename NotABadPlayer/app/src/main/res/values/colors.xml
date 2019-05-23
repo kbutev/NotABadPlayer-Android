@@ -46,7 +46,7 @@
     <color name="quickPlayerText">#ffffff</color>
     <color name="quickPlayerSubtext">#ffffff</color>
     <color name="albumTitleHeaderText">#ffffff</color>
-    <color name="indexerCharText">#FFC107</color>
+    <color name="indexerCharText">#FFEB3B</color>
     <color name="trackNumber">#6c6c6c</color>
     <color name="genericButtonText">#ffffff</color>
     <color name="settingsButtonText">#2676d9</color>
