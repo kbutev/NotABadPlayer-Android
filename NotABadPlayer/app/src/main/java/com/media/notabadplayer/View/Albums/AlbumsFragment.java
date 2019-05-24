@@ -240,7 +240,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
+    public void onPlaylistLoad(@NonNull AudioPlaylist playlist)
     {
         
     }

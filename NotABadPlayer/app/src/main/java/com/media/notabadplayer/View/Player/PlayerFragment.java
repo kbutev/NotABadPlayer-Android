@@ -512,7 +512,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
+    public void onPlaylistLoad(@NonNull AudioPlaylist playlist)
     {
 
     }

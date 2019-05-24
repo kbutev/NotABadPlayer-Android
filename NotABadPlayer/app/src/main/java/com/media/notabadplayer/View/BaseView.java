@@ -21,7 +21,7 @@ public interface BaseView {
     
     void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums);
     void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs);
-    void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks);
+    void onPlaylistLoad(@NonNull AudioPlaylist playlist);
     
     void openPlayerScreen(@NonNull AudioPlaylist playlist);
     void updatePlayerScreen(@NonNull AudioPlaylist playlist);
