@@ -248,7 +248,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
     
     @Override
-    public void onPlaylistLoad(@NonNull AudioPlaylist playlist, boolean sortTracks)
+    public void onPlaylistLoad(@NonNull AudioPlaylist playlist)
     {
         Context context = getContext();
 
@@ -258,7 +258,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         }
 
         // Table update
-        _tableAdapter = new PlaylistListAdapter(context, playlist, sortTracks);
+        _tableAdapter = new PlaylistListAdapter(context, playlist, false);
         _table.setAdapter(_tableAdapter);
 
         // Update album title header

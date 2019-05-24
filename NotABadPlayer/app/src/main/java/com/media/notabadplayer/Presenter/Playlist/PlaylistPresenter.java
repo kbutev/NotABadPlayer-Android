@@ -48,7 +48,7 @@ public class PlaylistPresenter implements BasePresenter {
         else
         {
             _songs = _playlist.getTracks();
-            _view.onPlaylistLoad(_playlist, false);
+            _view.onPlaylistLoad(_playlist);
         }
     }
 
