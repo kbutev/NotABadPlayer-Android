@@ -112,9 +112,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // UI
         initUI();
         
-        _navigation = findViewById(R.id.navigation);
-        _navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        
         // Noise suppression
         _noiseSuppression = new AudioPlayerNoiseSuppression();
         _noiseSuppression.start(this);
@@ -163,12 +160,14 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private void initUI()
     {
+        // Bottom navigation menu
+        _navigation = findViewById(R.id.navigation);
+        
         // Select default tab
         onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
         
         // Create quick player and it's presenter
-        QuickPlayerFragment quickPlayer = QuickPlayerFragment.newInstance();
-        _quickPlayer = quickPlayer;
+        _quickPlayer = QuickPlayerFragment.newInstance();
         _quickPlayer.setPresenter(new QuickPlayerPresenter(_quickPlayer, this));
         
         FragmentManager manager = getSupportFragmentManager();
@@ -176,6 +175,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         // Start presenter
         _presenter.start();
+        
+        // Set bottom navigation menu listener
+        _navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
     
     private boolean isOnAnRootTab()
