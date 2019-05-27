@@ -79,24 +79,24 @@ Portrait mode only.
 
 Albums screen (quick screen at the bottom)
 
-![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/1.jpg)
+![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/scrn1.jpg)
 
 Player screen
 
-![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/2.jpg)
+![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/scrn2.jpg)
 
 Playlist screen
 
-![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/3.jpg)
+![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/scrn3.jpg)
 
 Search screen
 
-![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/4.jpg)
+![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/scrn4.jpg)
 
 Settings screen - keybind options
 
-![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/8.jpg)
+![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/scrn5.jpg)
 
 Dark app theme
 
-![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/7.jpg)
+![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/scrn6.jpg)
