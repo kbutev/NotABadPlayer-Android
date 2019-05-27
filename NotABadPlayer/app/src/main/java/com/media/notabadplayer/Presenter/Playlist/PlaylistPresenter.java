@@ -16,6 +16,8 @@ import com.media.notabadplayer.View.BaseView;
 import java.util.ArrayList;
 
 public class PlaylistPresenter implements BasePresenter {
+    public static final boolean OPEN_PLAYER_ON_TRACK_PLAY = false;
+
     private @NonNull BaseView _view;
     
     private final @Nullable AudioAlbum _album;
@@ -53,7 +55,7 @@ public class PlaylistPresenter implements BasePresenter {
     }
 
     @Override
-    public void onAlbumClick(int index) 
+    public void onAlbumItemClick(int index)
     {
         
     }
@@ -66,18 +68,31 @@ public class PlaylistPresenter implements BasePresenter {
         {
             return;
         }
-        
-        String playlistName = _album != null ? _album.albumTitle : _playlist.getName();
-        
+
         // Index greater than zero is an song track
         index--;
-        
+
         AudioTrack clickedTrack = _songs.get(index);
-        AudioPlaylist playlist = new AudioPlaylist(playlistName, _songs, clickedTrack);
-        
-        Log.v(PlaylistPresenter.class.getCanonicalName(), "Play playlist with specific song " + clickedTrack.title);
-        
-        _view.openPlayerScreen(playlist);
+
+        if (OPEN_PLAYER_ON_TRACK_PLAY)
+        {
+            openPlayerScreen(clickedTrack);
+        }
+        else
+        {
+            playNewTrack(clickedTrack);
+        }
+    }
+
+    @Override
+    public void onOpenPlayer()
+    {
+        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
+
+        if (currentlyPlayingPlaylist != null)
+        {
+            _view.openPlaylistScreen(currentlyPlayingPlaylist);
+        }
     }
 
     @Override
@@ -138,5 +153,77 @@ public class PlaylistPresenter implements BasePresenter {
     public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
     {
 
+    }
+
+    private void openPlayerScreen(@Nullable AudioTrack clickedTrack)
+    {
+        String playlistName = _album != null ? _album.albumTitle : _playlist.getName();
+
+        AudioPlaylist playlist = new AudioPlaylist(playlistName, _songs, clickedTrack);
+
+        Log.v(PlaylistPresenter.class.getCanonicalName(), "Play playlist with specific song " + clickedTrack.title);
+
+        _view.openPlayerScreen(playlist);
+    }
+
+    private void playNewTrack(@Nullable AudioTrack clickedTrack)
+    {
+        String playlistName = _album != null ? _album.albumTitle : _playlist.getName();
+        AudioPlaylist playlist = new AudioPlaylist(playlistName, _songs, clickedTrack);
+
+        AudioPlayer player = AudioPlayer.getShared();
+        AudioPlaylist currentPlaylist = player.getPlaylist();
+
+        if (currentPlaylist != null)
+        {
+            String newPlaylistName = playlist.getName();
+            String currentPlaylistName = currentPlaylist.getName();
+
+            AudioTrack newTrack = playlist.getPlayingTrack();
+            AudioTrack currentTrack = currentPlaylist.getPlayingTrack();
+
+            // Current playing playlist or track does not match the state of the presenter's playlist?
+            if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
+            {
+                // Change the audio player playlist to equal the presenter's playlist
+                playNew(playlist);
+
+                return;
+            }
+
+            // Do nothing, track is already playing
+
+            return;
+        }
+
+        // Set audio player playlist for the first time and play its track
+        playFirstTime(playlist);
+    }
+
+    private void playFirstTime(@NonNull AudioPlaylist playlist)
+    {
+        playNew(playlist);
+    }
+
+    private void playNew(@NonNull AudioPlaylist playlist)
+    {
+        String newPlaylistName = playlist.getName();
+        AudioTrack newTrack = playlist.getPlayingTrack();
+
+        Log.v(PlaylistPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.title + "'");
+
+        AudioPlayer player = AudioPlayer.getShared();
+
+        try {
+            player.playPlaylist(playlist);
+        } catch (Exception e) {
+            _view.onPlayerErrorEncountered(e);
+            return;
+        }
+
+        if (!player.isPlaying())
+        {
+            player.resume();
+        }
     }
 }

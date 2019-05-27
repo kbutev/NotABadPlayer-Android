@@ -3,6 +3,8 @@ package com.media.notabadplayer.Presenter.Settings;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -29,13 +31,24 @@ public class SettingsPresenter implements BasePresenter
     }
 
     @Override
-    public void onAlbumClick(int index) {
+    public void onAlbumItemClick(int index) {
 
     }
 
     @Override
     public void onPlaylistItemClick(int index) {
 
+    }
+
+    @Override
+    public void onOpenPlayer()
+    {
+        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
+
+        if (currentlyPlayingPlaylist != null)
+        {
+            _view.openPlaylistScreen(currentlyPlayingPlaylist);
+        }
     }
     
     @Override

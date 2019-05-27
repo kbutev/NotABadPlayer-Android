@@ -229,23 +229,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         
         updatePlayButtonState();
     }
-    
-    private void openPlayerScreen()
-    {
-        Intent intent = new Intent(getActivity(), PlayerActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("playlist", Serializing.serializeObject(AudioPlayer.getShared().getPlaylist()));
-        startActivity(intent);
-        
-        // Transition animation
-        Activity a = getActivity();
-        
-        if (a != null)
-        {
-            a.overridePendingTransition(R.anim.player_slide_up, R.anim.player_slide_down);
-        }
-    }
-    
+
     private void updateSoftUIState()
     {
         if (_player.getPlaylist() == null)
@@ -337,7 +321,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     
     private void swipeUp()
     {
-        openPlayerScreen();
+        _presenter.onOpenPlayer();
     }
 
     private void startLooping()
@@ -387,7 +371,18 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     @Override
     public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
     {
-        
+        Intent intent = new Intent(getActivity(), PlayerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("playlist", Serializing.serializeObject(playlist));
+        startActivity(intent);
+
+        // Transition animation
+        Activity a = getActivity();
+
+        if (a != null)
+        {
+            a.overridePendingTransition(R.anim.player_slide_up, R.anim.player_slide_down);
+        }
     }
 
     @Override
