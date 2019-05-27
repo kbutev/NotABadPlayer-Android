@@ -22,13 +22,19 @@ public class MainPresenter implements BasePresenter {
     }
 
     @Override
-    public void onAlbumClick(int index)
+    public void onAlbumItemClick(int index)
     {
         
     }
 
     @Override
     public void onPlaylistItemClick(int index)
+    {
+
+    }
+
+    @Override
+    public void onOpenPlayer()
     {
 
     }

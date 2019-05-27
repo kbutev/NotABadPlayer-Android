@@ -59,7 +59,7 @@ public class PlayerPresenter implements BasePresenter
     }
     
     @Override
-    public void onAlbumClick(int index) 
+    public void onAlbumItemClick(int index)
     {
         
     }
@@ -68,6 +68,12 @@ public class PlayerPresenter implements BasePresenter
     public void onPlaylistItemClick(int index)
     {
         
+    }
+
+    @Override
+    public void onOpenPlayer()
+    {
+
     }
 
     @Override

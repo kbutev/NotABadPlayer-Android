@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.BasePresenter;
@@ -27,7 +29,7 @@ public class AlbumsPresenter implements BasePresenter {
     }
 
     @Override
-    public void onAlbumClick(int index) 
+    public void onAlbumItemClick(int index)
     {
         AudioAlbum a = _audioInfo.getAlbums().get(index);
         
@@ -39,6 +41,17 @@ public class AlbumsPresenter implements BasePresenter {
     public void onPlaylistItemClick(int index)
     {
 
+    }
+
+    @Override
+    public void onOpenPlayer()
+    {
+        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
+
+        if (currentlyPlayingPlaylist != null)
+        {
+            _view.openPlaylistScreen(currentlyPlayingPlaylist);
+        }
     }
 
     @Override

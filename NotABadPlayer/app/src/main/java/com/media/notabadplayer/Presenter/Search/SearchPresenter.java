@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Audio.AudioPlaylist;
@@ -38,7 +39,7 @@ public class SearchPresenter implements BasePresenter
     }
     
     @Override
-    public void onAlbumClick(int index) 
+    public void onAlbumItemClick(int index)
     {
 
     }
@@ -47,6 +48,17 @@ public class SearchPresenter implements BasePresenter
     public void onPlaylistItemClick(int index) 
     {
 
+    }
+
+    @Override
+    public void onOpenPlayer()
+    {
+        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
+
+        if (currentlyPlayingPlaylist != null)
+        {
+            _view.openPlaylistScreen(currentlyPlayingPlaylist);
+        }
     }
 
     @Override

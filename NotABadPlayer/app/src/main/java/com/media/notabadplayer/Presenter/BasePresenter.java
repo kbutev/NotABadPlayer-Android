@@ -8,8 +8,9 @@ import com.media.notabadplayer.Controls.ApplicationInput;
 public interface BasePresenter {
     void start();
     
-    void onAlbumClick(int index);
+    void onAlbumItemClick(int index);
     void onPlaylistItemClick(int index);
+    void onOpenPlayer();
     
     void onPlayerButtonClick(ApplicationInput input);
     void onPlayOrderButtonClick();

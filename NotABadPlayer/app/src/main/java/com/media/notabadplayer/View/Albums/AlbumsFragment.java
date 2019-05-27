@@ -114,7 +114,7 @@ public class AlbumsFragment extends Fragment implements BaseView
                     return;
                 }
 
-                _presenter.onAlbumClick(position);
+                _presenter.onAlbumItemClick(position);
             }
         });
     }

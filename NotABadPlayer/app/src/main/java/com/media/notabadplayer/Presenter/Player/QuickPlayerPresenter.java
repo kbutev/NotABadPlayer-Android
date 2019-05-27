@@ -30,7 +30,7 @@ public class QuickPlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onAlbumClick(int index) 
+    public void onAlbumItemClick(int index)
     {
 
     }
@@ -39,6 +39,19 @@ public class QuickPlayerPresenter implements BasePresenter
     public void onPlaylistItemClick(int index)
     {
 
+    }
+
+    @Override
+    public void onOpenPlayer()
+    {
+        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
+
+        if (currentlyPlayingPlaylist == null)
+        {
+            return;
+        }
+
+        _view.openPlaylistScreen(currentlyPlayingPlaylist);
     }
 
     @Override
