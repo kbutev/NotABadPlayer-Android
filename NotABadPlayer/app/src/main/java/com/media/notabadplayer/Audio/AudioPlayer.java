@@ -163,7 +163,7 @@ public class AudioPlayer {
         Uri path = Uri.parse(Uri.decode(newTrack.filePath));
         
         _player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
+        
         try {
             _player.reset();
             _player.setDataSource(getContext(), path);
@@ -208,20 +208,6 @@ public class AudioPlayer {
 
         if (!hasPlaylist())
         {
-            return;
-        }
-        
-        // Start, instead of resuming
-        if (isCompletelyStopped())
-        {
-            AudioTrack currentTrack = _playlist.getPlayingTrack();
-            
-            try {
-                playTrack(currentTrack, false);
-            } catch (Exception e) {
-                Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot resume, " + e.toString());
-            }
-            
             return;
         }
         
