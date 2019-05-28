@@ -1,7 +1,9 @@
 package com.media.notabadplayer.Presenter.Main;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Presenter.BasePresenter;
@@ -34,7 +36,7 @@ public class MainPresenter implements BasePresenter {
     }
 
     @Override
-    public void onOpenPlayer()
+    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
 
     }

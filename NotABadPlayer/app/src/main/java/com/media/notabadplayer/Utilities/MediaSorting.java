@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class MediaSorting {
-    public static void sortTracks(ArrayList<AudioTrack> tracks, AppSettings.TrackSorting sorting)
+    public static ArrayList<AudioTrack> sortTracks(ArrayList<AudioTrack> tracks, AppSettings.TrackSorting sorting)
     {
         switch (sorting)
         {
@@ -20,12 +20,14 @@ public class MediaSorting {
                 sortTracksByTitle(tracks);
                 break;
             case LONGEST:
-                sortTracksByLength(tracks, true);
+                sortTracksByLongest(tracks);
                 break;
             case SHORTEST:
-                sortTracksByLength(tracks, false);
+                sortTracksByShortest(tracks);
                 break;
         }
+
+        return tracks;
     }
 
     public static void sortAlbums(ArrayList<AudioAlbum> albums, AppSettings.AlbumSorting sorting)
@@ -58,35 +60,24 @@ public class MediaSorting {
         });
     }
 
-    public static void sortTracksByPopularity(ArrayList<AudioTrack> tracks)
+    public static void sortTracksByLongest(ArrayList<AudioTrack> tracks)
     {
         Collections.sort(tracks, new Comparator<AudioTrack>() {
             @Override
             public int compare(AudioTrack o1, AudioTrack o2) {
-                return 0;
+                return (int)(o2.durationInSeconds - o1.durationInSeconds);
             }
         });
     }
 
-    public static void sortTracksByLength(ArrayList<AudioTrack> tracks, boolean longest)
+    public static void sortTracksByShortest(ArrayList<AudioTrack> tracks)
     {
-        if (!longest)
-        {
-            Collections.sort(tracks, new Comparator<AudioTrack>() {
-                @Override
-                public int compare(AudioTrack o1, AudioTrack o2) {
-                    return (int)(o1.durationInSeconds - o2.durationInSeconds);
-                }
-            });
-        }
-        else {
-            Collections.sort(tracks, new Comparator<AudioTrack>() {
-                @Override
-                public int compare(AudioTrack o1, AudioTrack o2) {
-                    return (int)(o2.durationInSeconds - o1.durationInSeconds);
-                }
-            });
-        }
+        Collections.sort(tracks, new Comparator<AudioTrack>() {
+            @Override
+            public int compare(AudioTrack o1, AudioTrack o2) {
+                return (int)(o1.durationInSeconds - o2.durationInSeconds);
+            }
+        });
     }
     
     public static void sortAlbumsByTitle(ArrayList<AudioAlbum> albums)

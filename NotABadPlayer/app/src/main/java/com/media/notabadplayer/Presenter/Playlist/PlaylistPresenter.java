@@ -4,13 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Presenter.BasePresenter;
+import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
 
 import java.util.ArrayList;
@@ -19,39 +20,29 @@ public class PlaylistPresenter implements BasePresenter {
     public static final boolean OPEN_PLAYER_ON_TRACK_PLAY = false;
 
     private @NonNull BaseView _view;
-    
-    private final @Nullable AudioAlbum _album;
-    private final @Nullable AudioPlaylist _playlist;
-    
-    private @NonNull ArrayList<AudioTrack> _songs = new ArrayList<>();
-    
-    public PlaylistPresenter(@NonNull BaseView view, @NonNull AudioAlbum album)
-    {
-        _view = view;
-        _album = album;
-        _playlist = null;
-    }
 
-    public PlaylistPresenter(@NonNull BaseView view, @NonNull AudioPlaylist playlist)
+    private final @NonNull AudioPlaylist _playlist;
+
+    private @NonNull AudioInfo _audioInfo;
+    
+    public PlaylistPresenter(@NonNull BaseView view, @NonNull AudioPlaylist playlist, @NonNull AudioInfo audioInfo)
     {
         _view = view;
-        _album = null;
-        _playlist = playlist;
+
+        // Sort playlist
+        // Sort only playlists of type album
+        AppSettings.TrackSorting sorting = GeneralStorage.getShared().getTrackSortingValue();
+        AudioPlaylist sortedPlaylist = playlist.isAlbumPlaylist() ? playlist.sortedPlaylist(sorting) : playlist;
+
+        _playlist = sortedPlaylist;
+
+        _audioInfo = audioInfo;
     }
 
     @Override
     public void start()
     {
-        if (_album != null)
-        {
-            _songs = AudioPlayer.getShared().getAudioInfo().getAlbumTracks(_album);
-            _view.onAlbumSongsLoad(_songs);
-        }
-        else
-        {
-            _songs = _playlist.getTracks();
-            _view.onPlaylistLoad(_playlist);
-        }
+        _view.onPlaylistLoad(_playlist);
     }
 
     @Override
@@ -72,7 +63,9 @@ public class PlaylistPresenter implements BasePresenter {
         // Index greater than zero is an song track
         index--;
 
-        AudioTrack clickedTrack = _songs.get(index);
+        ArrayList<AudioTrack> tracks = _playlist.getTracks();
+
+        AudioTrack clickedTrack = tracks.get(index);
 
         if (OPEN_PLAYER_ON_TRACK_PLAY)
         {
@@ -85,13 +78,13 @@ public class PlaylistPresenter implements BasePresenter {
     }
 
     @Override
-    public void onOpenPlayer()
+    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
         AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
 
         if (currentlyPlayingPlaylist != null)
         {
-            _view.openPlaylistScreen(currentlyPlayingPlaylist);
+            _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist);
         }
     }
 
@@ -157,9 +150,9 @@ public class PlaylistPresenter implements BasePresenter {
 
     private void openPlayerScreen(@Nullable AudioTrack clickedTrack)
     {
-        String playlistName = _album != null ? _album.albumTitle : _playlist.getName();
-
-        AudioPlaylist playlist = new AudioPlaylist(playlistName, _songs, clickedTrack);
+        String playlistName = _playlist.getName();
+        ArrayList<AudioTrack> tracks = _playlist.getTracks();
+        AudioPlaylist playlist = new AudioPlaylist(playlistName, tracks, clickedTrack);
 
         Log.v(PlaylistPresenter.class.getCanonicalName(), "Play playlist with specific song " + clickedTrack.title);
 
@@ -168,8 +161,9 @@ public class PlaylistPresenter implements BasePresenter {
 
     private void playNewTrack(@Nullable AudioTrack clickedTrack)
     {
-        String playlistName = _album != null ? _album.albumTitle : _playlist.getName();
-        AudioPlaylist playlist = new AudioPlaylist(playlistName, _songs, clickedTrack);
+        String playlistName = _playlist.getName();
+        ArrayList<AudioTrack> tracks = _playlist.getTracks();
+        AudioPlaylist playlist = new AudioPlaylist(playlistName, tracks, clickedTrack);
 
         AudioPlayer player = AudioPlayer.getShared();
         AudioPlaylist currentPlaylist = player.getPlaylist();

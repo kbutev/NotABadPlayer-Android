@@ -27,29 +27,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class PlaylistListAdapter extends BaseAdapter
 {
     private Context _context;
-    private ArrayList<AudioTrack> _tracks;
     private String _playlistName;
+    private ArrayList<AudioTrack> _tracks;
     private boolean _isPlaylist;
     
-    public PlaylistListAdapter(@NonNull Context context, @NonNull ArrayList<AudioTrack> tracks)
+    public PlaylistListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist)
     {
         this._context = context;
-        this._tracks = tracks;
-        this._isPlaylist = false;
-        sortTracks(GeneralStorage.getShared().getTrackSortingValue());
-    }
-    
-    public PlaylistListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist, boolean sortTracks)
-    {
-        this._context = context;
-        this._tracks = playlist.getTracks();
         this._playlistName = playlist.getName();
-        this._isPlaylist = true;
-        
-        if (sortTracks)
-        {
-            sortTracks(GeneralStorage.getShared().getTrackSortingValue());
-        }
+        this._tracks = playlist.getTracks();
+        this._isPlaylist = false;
     }
     
     public void sortTracks(AppSettings.TrackSorting trackSorting)
@@ -108,7 +95,7 @@ class PlaylistListAdapter extends BaseAdapter
                 albumCover.setVisibility(View.GONE);
             }
             
-            albumTitle.setText(!_isPlaylist ? track.albumTitle : _playlistName);
+            albumTitle.setText(_playlistName);
             
             if (!track.artist.isEmpty() && !_isPlaylist)
             {

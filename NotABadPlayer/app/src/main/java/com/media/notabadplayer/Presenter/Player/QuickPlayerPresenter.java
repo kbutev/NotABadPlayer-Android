@@ -1,8 +1,10 @@
 package com.media.notabadplayer.Presenter.Player;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -16,11 +18,15 @@ public class QuickPlayerPresenter implements BasePresenter
 {
     private @NonNull BaseView _view;
     private @NonNull BaseView _applicationRootView;
-    
-    public QuickPlayerPresenter(@NonNull BaseView view, @NonNull BaseView applicationRootView)
+
+    private @NonNull AudioInfo _audioInfo;
+
+    public QuickPlayerPresenter(@NonNull BaseView view, @NonNull BaseView applicationRootView,
+                                @NonNull AudioInfo audioInfo)
     {
         this._view = view;
         this._applicationRootView = applicationRootView;
+        this._audioInfo = audioInfo;
     }
     
     @Override
@@ -42,7 +48,7 @@ public class QuickPlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onOpenPlayer()
+    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
         AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
 
@@ -51,7 +57,7 @@ public class QuickPlayerPresenter implements BasePresenter
             return;
         }
 
-        _view.openPlaylistScreen(currentlyPlayingPlaylist);
+        _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist);
     }
 
     @Override
@@ -67,19 +73,7 @@ public class QuickPlayerPresenter implements BasePresenter
         
         if (playlist != null)
         {
-            if (playlist.isAlbumPlaylist())
-            {
-                AudioAlbum album = playlist.getAlbum(AudioPlayer.getShared().getAudioInfo());
-                
-                if (album != null)
-                {
-                    _applicationRootView.openPlaylistScreen(album);
-                }
-            }
-            else
-            {
-                _applicationRootView.openPlaylistScreen(playlist);
-            }
+            _applicationRootView.openPlaylistScreen(_audioInfo, playlist);
         }
     }
 
