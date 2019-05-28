@@ -2,6 +2,9 @@ package com.media.notabadplayer.Audio;
 
 import android.support.annotation.NonNull;
 
+import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Utilities.MediaSorting;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,8 +32,18 @@ public class AudioPlaylist implements Serializable
     {
         this(name, tracks, null);
     }
-    
-    public AudioPlaylist(@NonNull String name, @NonNull ArrayList<AudioTrack> tracks, AudioTrack startWithTrack) throws IllegalArgumentException
+
+    public AudioPlaylist(@NonNull String name,
+                         @NonNull ArrayList<AudioTrack> tracks,
+                         AudioTrack startWithTrack,
+                         AppSettings.TrackSorting sorting) throws IllegalArgumentException
+    {
+        this(name, MediaSorting.sortTracks(tracks, sorting), startWithTrack);
+    }
+
+    public AudioPlaylist(@NonNull String name,
+                         @NonNull ArrayList<AudioTrack> tracks,
+                         AudioTrack startWithTrack) throws IllegalArgumentException
     {
         if (tracks.size() == 0)
         {
@@ -66,6 +79,11 @@ public class AudioPlaylist implements Serializable
         }
 
         _random = new Random();
+    }
+
+    public AudioPlaylist sortedPlaylist(AppSettings.TrackSorting sorting)
+    {
+        return new AudioPlaylist(getName(), getTracks(), getPlayingTrack(), sorting);
     }
     
     private static ArrayList<AudioTrack> trackAsAList(@NonNull AudioTrack track)

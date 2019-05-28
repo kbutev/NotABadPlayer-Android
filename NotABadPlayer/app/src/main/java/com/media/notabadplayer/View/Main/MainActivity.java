@@ -15,7 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Launch.LaunchActivity;
+import com.media.notabadplayer.Presenter.Lists.ListsPresenter;
 import com.media.notabadplayer.Presenter.Player.QuickPlayerPresenter;
 import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
 import com.media.notabadplayer.Storage.AudioStorage;
@@ -51,7 +53,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements BaseView {
     static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
     
-    private AudioStorage _audioInfo;
+    private AudioStorage _audioStorage;
     private MainPresenter _presenter;
 
     BottomNavigationView _navigation;
@@ -100,13 +102,13 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // Presenter, audio model
         _presenter = new MainPresenter(this);
         
-        _audioInfo = new AudioStorage(this);
-        _audioInfo.load();
+        _audioStorage = new AudioStorage(this);
+        _audioStorage.load();
         
         // Audio Player initialization
         if (!AudioPlayer.getShared().isInitialized())
         {
-            AudioPlayer.getShared().initialize(getApplication(), _audioInfo);
+            AudioPlayer.getShared().initialize(getApplication(), _audioStorage);
         }
         
         // UI
@@ -168,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         // Create quick player and it's presenter
         _quickPlayer = QuickPlayerFragment.newInstance();
-        _quickPlayer.setPresenter(new QuickPlayerPresenter(_quickPlayer, this));
+        _quickPlayer.setPresenter(new QuickPlayerPresenter(_quickPlayer, this, _audioStorage));
         
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.quickPlayer, (Fragment)_quickPlayer).commit();
@@ -189,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         _currentTabID = R.id.navigation_albums;
         _currentTab = AlbumsFragment.newInstance();
-        _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioInfo));
+        _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioStorage));
         refreshCurrentTab();
         
         if (GeneralStorage.getShared().getCachingPolicy().cacheAlbumsTab())
@@ -202,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         _currentTabID = R.id.navigation_lists;
         _currentTab = CreateListsFragment.newInstance();
+        _currentTab.setPresenter(new ListsPresenter(_currentTab, _audioStorage));
         refreshCurrentTab();
         
         if (GeneralStorage.getShared().getCachingPolicy().cacheListsTab())
@@ -214,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         _currentTabID = R.id.navigation_search;
         _currentTab = SearchFragment.newInstance();
-        _currentTab.setPresenter(new SearchPresenter(_currentTab, this, _audioInfo));
+        _currentTab.setPresenter(new SearchPresenter(_currentTab, this, _audioStorage));
         refreshCurrentTab();
         
         if (GeneralStorage.getShared().getCachingPolicy().cacheSearchTab())
@@ -227,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         _currentTabID = R.id.navigation_settings;
         _currentTab = SettingsFragment.newInstance();
-        _currentTab.setPresenter(new SettingsPresenter(_currentTab, this, this));
+        _currentTab.setPresenter(new SettingsPresenter(_currentTab, this, _audioStorage));
         refreshCurrentTab();
         
         if (GeneralStorage.getShared().getCachingPolicy().cacheSettingsTab())
@@ -293,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
     private void startAppWithTrack(@NonNull Uri path)
     {
-        AudioTrack track = _audioInfo.findTrackByPath(path);
+        AudioTrack track = _audioStorage.findTrackByPath(path);
 
         if (track == null)
         {
@@ -301,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             return;
         }
 
-        AudioPlaylist playlist = track.source.getSourcePlaylist(_audioInfo, track);
+        AudioPlaylist playlist = track.source.getSourcePlaylist(_audioStorage, track);
         
         if (playlist == null)
         {
@@ -375,52 +378,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioAlbum album)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
         // When not on the settings tab, let the view handle the operation
         if (_currentTabID != R.id.navigation_settings)
         {
-            _currentTab.openPlaylistScreen(album);
-            return;
-        }
-        // ... or when on the settings tab, navigate to the albums tab, and then open the playlist fragment
-
-        View view = _navigation.findViewById(R.id.navigation_albums);
-        view.performClick();
-
-        FragmentManager manager = getSupportFragmentManager();
-        int backStackCount = manager.getBackStackEntryCount();
-        
-        String newEntryName = album.albumTitle;
-        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
-
-        // Do nothing, if the last entry name is equal to the new entry name
-        if (lastEntryName != null && lastEntryName.equals(newEntryName))
-        {
-            return;
-        }
-
-        while (manager.getBackStackEntryCount() > 0)
-        {
-            manager.popBackStackImmediate();
-        }
-
-        PlaylistFragment f = PlaylistFragment.newInstance();
-        PlaylistPresenter presenter = new PlaylistPresenter(f, album);
-        f.setPresenter(presenter);
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
-        transaction.replace(R.id.mainLayout, f);
-        transaction.addToBackStack(newEntryName).commit();
-    }
-
-    @Override
-    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
-    {
-        // When not on the settings tab, let the view handle the operation
-        if (_currentTabID != R.id.navigation_settings)
-        {
-            _currentTab.openPlaylistScreen(playlist);
+            _currentTab.openPlaylistScreen(_audioStorage, playlist);
             return;
         }
         // ... or when on the settings tab, navigate to the albums tab, and then open the playlist fragment
@@ -446,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
 
         PlaylistFragment f = PlaylistFragment.newInstance();
-        PlaylistPresenter presenter = new PlaylistPresenter(f, playlist);
+        PlaylistPresenter presenter = new PlaylistPresenter(f, playlist, _audioStorage);
         f.setPresenter(presenter);
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
@@ -456,12 +419,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
     @Override
     public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
-    {
-
-    }
-
-    @Override
-    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
@@ -321,7 +322,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     
     private void swipeUp()
     {
-        _presenter.onOpenPlayer();
+        _presenter.onOpenPlayer(AudioPlayer.getShared().getPlaylist());
     }
 
     private void startLooping()
@@ -363,13 +364,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioAlbum album)
-    {
-        
-    }
-
-    @Override
-    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -387,12 +382,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
     @Override
     public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
-    {
-
-    }
-
-    @Override
-    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }

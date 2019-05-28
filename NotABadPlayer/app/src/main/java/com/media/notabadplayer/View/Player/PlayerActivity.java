@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
@@ -178,27 +179,15 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     {
 
     }
-    
-    @Override
-    public void openPlaylistScreen(@NonNull AudioAlbum album)
-    {
-
-    }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
 
     }
     
     @Override
     public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
-    {
-
-    }
-    
-    @Override
-    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }

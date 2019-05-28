@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -51,13 +52,13 @@ public class SearchPresenter implements BasePresenter
     }
 
     @Override
-    public void onOpenPlayer()
+    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
         AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
 
         if (currentlyPlayingPlaylist != null)
         {
-            _view.openPlaylistScreen(currentlyPlayingPlaylist);
+            _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist);
         }
     }
 

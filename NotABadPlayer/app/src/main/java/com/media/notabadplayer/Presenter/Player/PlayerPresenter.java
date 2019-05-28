@@ -1,6 +1,7 @@
 package com.media.notabadplayer.Presenter.Player;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioPlayer;
@@ -71,7 +72,7 @@ public class PlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onOpenPlayer()
+    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
 
     }

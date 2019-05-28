@@ -16,6 +16,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -138,43 +139,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioAlbum album)
-    {
-        FragmentActivity a = getActivity();
-
-        if (a == null)
-        {
-            return;
-        }
-
-        FragmentManager manager = a.getSupportFragmentManager();
-        int backStackCount = manager.getBackStackEntryCount();
-        
-        String newEntryName = album.albumTitle;
-        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
-
-        // Do nothing, if the last entry name is equal to the new entry name
-        if (lastEntryName != null && lastEntryName.equals(newEntryName))
-        {
-            return;
-        }
-
-        while (manager.getBackStackEntryCount() > 0)
-        {
-            manager.popBackStackImmediate();
-        }
-        
-        PlaylistFragment f = PlaylistFragment.newInstance();
-        f.setPresenter(new PlaylistPresenter(f, album));
-
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
-        transaction.replace(R.id.mainLayout, f);
-        transaction.addToBackStack(newEntryName).commit();
-    }
-
-    @Override
-    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
         FragmentActivity a = getActivity();
 
@@ -201,7 +166,7 @@ public class AlbumsFragment extends Fragment implements BaseView
         }
         
         PlaylistFragment f = PlaylistFragment.newInstance();
-        f.setPresenter(new PlaylistPresenter(f, playlist));
+        f.setPresenter(new PlaylistPresenter(f, playlist, audioInfo));
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
@@ -231,12 +196,6 @@ public class AlbumsFragment extends Fragment implements BaseView
         
         _tableSideIndexingView.updateAlphabet(titles);
         _tableSideIndexingView.start(_table, _indexingTextCharacter);
-    }
-
-    @Override
-    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
-    {
-
     }
 
     @Override

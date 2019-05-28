@@ -16,6 +16,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayOrder;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
@@ -197,13 +198,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioAlbum album)
-    {
-
-    }
-    
-    @Override
-    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
 
     }
@@ -213,40 +208,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     {
 
     }
-    
-    @Override
-    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
-    {
-        Context context = getContext();
 
-        if (context == null)
-        {
-            return;
-        }
-
-        // Table update
-        _tableAdapter = new PlaylistListAdapter(context, songs);
-        _table.setAdapter(_tableAdapter);
-
-        // Update album title header
-        _albumTitleHeader.setText(songs.get(0).albumTitle);
-        
-        // Scroll down to the currently playing track
-        AudioPlaylist audioPlaylist = AudioPlayer.getShared().getPlaylist();
-        
-        if (audioPlaylist != null && audioPlaylist.getName().equals(songs.get(0).albumTitle))
-        {
-            AudioTrack playingTrack = audioPlaylist.getPlayingTrack();
-            
-            int index = songs.indexOf(playingTrack);
-            
-            if (index >= 0)
-            {
-                _table.setSelection(index);
-            }
-        }
-    }
-    
     @Override
     public void onPlaylistLoad(@NonNull AudioPlaylist playlist)
     {
@@ -258,7 +220,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         }
 
         // Table update
-        _tableAdapter = new PlaylistListAdapter(context, playlist, false);
+        _tableAdapter = new PlaylistListAdapter(context, playlist);
         _table.setAdapter(_tableAdapter);
 
         // Update album title header

@@ -18,12 +18,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.AudioStorage;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.Utilities.AlertWindows;
@@ -397,25 +399,13 @@ public class SettingsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioAlbum album)
-    {
-        
-    }
-
-    @Override
-    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
         
     }
     
     @Override
     public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
-    {
-
-    }
-
-    @Override
-    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }

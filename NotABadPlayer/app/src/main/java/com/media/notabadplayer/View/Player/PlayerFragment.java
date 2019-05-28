@@ -1,7 +1,5 @@
 package com.media.notabadplayer.View.Player;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
@@ -488,25 +487,13 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioAlbum album)
-    {
-
-    }
-
-    @Override
-    public void openPlaylistScreen(@NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
 
     }
 
     @Override
     public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums) 
-    {
-
-    }
-
-    @Override
-    public void onAlbumSongsLoad(@NonNull ArrayList<AudioTrack> songs)
     {
 
     }

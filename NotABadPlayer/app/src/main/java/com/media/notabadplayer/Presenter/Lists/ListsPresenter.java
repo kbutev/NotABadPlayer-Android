@@ -1,22 +1,30 @@
 package com.media.notabadplayer.Presenter.Lists;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Presenter.BasePresenter;
+import com.media.notabadplayer.Storage.AudioStorage;
 import com.media.notabadplayer.View.BaseView;
 
 public class ListsPresenter implements BasePresenter
 {
     private @NonNull BaseView _view;
 
-    public ListsPresenter(@NonNull BaseView view)
+    private @NonNull AudioInfo _audioInfo;
+
+    public ListsPresenter(@NonNull BaseView view, @NonNull AudioInfo audioInfo)
     {
         _view = view;
+
+        _audioInfo = audioInfo;
     }
     
     @Override
@@ -38,13 +46,13 @@ public class ListsPresenter implements BasePresenter
     }
 
     @Override
-    public void onOpenPlayer()
+    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
-        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
-
-        if (currentlyPlayingPlaylist != null)
+        if (playlist != null)
         {
-            _view.openPlaylistScreen(currentlyPlayingPlaylist);
+            Log.v(ListsPresenter.class.getCanonicalName(), "Open player screen with playlist " + playlist.getName());
+
+            _view.openPlaylistScreen(_audioInfo, playlist);
         }
     }
 
