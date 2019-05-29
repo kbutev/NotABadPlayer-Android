@@ -246,7 +246,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
 
     }

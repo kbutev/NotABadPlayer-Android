@@ -21,6 +21,18 @@ public class AppSettings
     public enum ShowVolumeBar {
         NO, LEFT_SIDE, RIGHT_SIDE
     }
+
+    public enum OpenPlayerOnPlay {
+        NO, YES, PLAYLIST_ONLY, SEARCH_ONLY;
+
+        public boolean openForPlaylist() {
+            return this == YES || this == PLAYLIST_ONLY;
+        }
+
+        public boolean openForSearch() {
+            return this == YES || this == SEARCH_ONLY;
+        }
+    }
     
     public enum TabCachingPolicies {
         NO_CACHING, ALBUMS_ONLY, CACHE_ALL;

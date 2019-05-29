@@ -16,8 +16,6 @@ import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
 
 public class PlaylistPresenter implements BasePresenter {
-    public static final boolean OPEN_PLAYER_ON_TRACK_PLAY = false;
-
     private @NonNull BaseView _view;
 
     private final @NonNull AudioPlaylist _playlist;
@@ -66,7 +64,7 @@ public class PlaylistPresenter implements BasePresenter {
 
         AudioTrack clickedTrack = tracks.get(index);
 
-        if (OPEN_PLAYER_ON_TRACK_PLAY)
+        if (GeneralStorage.getShared().getOpenPlayerOnPlayValue().openForPlaylist())
         {
             openPlayerScreen(clickedTrack);
         }
@@ -136,7 +134,13 @@ public class PlaylistPresenter implements BasePresenter {
     }
 
     @Override
-    public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
+    {
+
+    }
+
+    @Override
+    public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
     {
 
     }

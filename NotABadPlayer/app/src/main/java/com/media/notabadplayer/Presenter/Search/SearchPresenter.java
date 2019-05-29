@@ -1,5 +1,6 @@
 package com.media.notabadplayer.Presenter.Search;
 
+import java.util.ArrayList;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,14 +16,11 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.BasePresenter;
+import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
-
-import java.util.ArrayList;
 
 public class SearchPresenter implements BasePresenter
 {
-    public static final boolean OPEN_PLAYER_ON_TRACK_PLAY = false;
-    
     @NonNull private BaseView _view;
     @NonNull private Context _context;
     @NonNull private AudioInfo _audioInfo;
@@ -92,8 +90,8 @@ public class SearchPresenter implements BasePresenter
         }
         
         AudioTrack clickedTrack = _searchResults.get(index);
-        
-        if (OPEN_PLAYER_ON_TRACK_PLAY)
+
+        if (GeneralStorage.getShared().getOpenPlayerOnPlayValue().openForSearch())
         {
             openPlayerScreen(clickedTrack);
         }
@@ -161,7 +159,13 @@ public class SearchPresenter implements BasePresenter
     }
 
     @Override
-    public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
+    {
+
+    }
+
+    @Override
+    public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
     {
 
     }
