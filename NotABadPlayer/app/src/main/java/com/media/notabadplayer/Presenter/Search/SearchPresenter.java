@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 public class SearchPresenter implements BasePresenter
 {
+    public static final boolean OPEN_PLAYER_ON_TRACK_PLAY = false;
+    
     @NonNull private BaseView _view;
     @NonNull private Context _context;
     @NonNull private AudioInfo _audioInfo;
@@ -89,10 +91,23 @@ public class SearchPresenter implements BasePresenter
             return;
         }
         
-        String playlistName = _context.getResources().getString(R.string.playlist_name_search_results);
-        AudioPlaylist playlist = new AudioPlaylist(playlistName, _searchResults, _searchResults.get(index));
+        AudioTrack clickedTrack = _searchResults.get(index);
         
-        _view.openPlayerScreen(playlist);
+        if (OPEN_PLAYER_ON_TRACK_PLAY)
+        {
+            openPlayerScreen(clickedTrack);
+        }
+        else
+        {
+            playNewTrack(clickedTrack);
+        }
+        
+        AudioPlaylist audioPlayerPlaylist = AudioPlayer.getShared().getPlaylist();
+        
+        if (audioPlayerPlaylist != null)
+        {
+            _view.updatePlayerScreen(audioPlayerPlaylist);
+        }
     }
     
     @Override
@@ -155,5 +170,76 @@ public class SearchPresenter implements BasePresenter
     public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
     {
         
+    }
+
+    private void openPlayerScreen(@NonNull AudioTrack clickedTrack)
+    {
+        String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
+        AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
+        
+        Log.v(SearchPresenter.class.getCanonicalName(), "Play playlist with specific song " + clickedTrack.title);
+        
+        _view.openPlayerScreen(searchPlaylist);
+    }
+
+    private void playNewTrack(@NonNull AudioTrack clickedTrack)
+    {
+        String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
+        AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
+        
+        AudioPlayer player = AudioPlayer.getShared();
+        AudioPlaylist currentPlaylist = player.getPlaylist();
+
+        if (currentPlaylist != null)
+        {
+            String newPlaylistName = searchPlaylist.getName();
+            String currentPlaylistName = currentPlaylist.getName();
+
+            AudioTrack newTrack = searchPlaylist.getPlayingTrack();
+            AudioTrack currentTrack = currentPlaylist.getPlayingTrack();
+
+            // Current playing playlist or track does not match the state of the presenter's playlist?
+            if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
+            {
+                // Change the audio player playlist to equal the presenter's playlist
+                playNew(searchPlaylist);
+
+                return;
+            }
+
+            // Do nothing, track is already playing
+
+            return;
+        }
+        
+        // Set audio player playlist for the first time and play its track
+        playFirstTime(searchPlaylist);
+    }
+
+    private void playFirstTime(@NonNull AudioPlaylist playlist)
+    {
+        playNew(playlist);
+    }
+
+    private void playNew(@NonNull AudioPlaylist playlist)
+    {
+        String newPlaylistName = playlist.getName();
+        AudioTrack newTrack = playlist.getPlayingTrack();
+
+        Log.v(SearchPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.title + "'");
+
+        AudioPlayer player = AudioPlayer.getShared();
+
+        try {
+            player.playPlaylist(playlist);
+        } catch (Exception e) {
+            _view.onPlayerErrorEncountered(e);
+            return;
+        }
+
+        if (!player.isPlaying())
+        {
+            player.resume();
+        }
     }
 }

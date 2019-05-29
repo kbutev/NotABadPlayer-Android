@@ -19,8 +19,8 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.MediaSorting;
+import com.media.notabadplayer.Utilities.UIAnimations;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -31,17 +31,14 @@ class PlaylistListAdapter extends BaseAdapter
     private ArrayList<AudioTrack> _tracks;
     private boolean _isPlaylist;
     
+    private View _currentlySelectedView = null;
+    
     public PlaylistListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist)
     {
         this._context = context;
         this._playlistName = playlist.getName();
         this._tracks = playlist.getTracks();
         this._isPlaylist = false;
-    }
-    
-    public void sortTracks(AppSettings.TrackSorting trackSorting)
-    {
-        MediaSorting.sortTracks(this._tracks, trackSorting);
     }
     
     public int getCount()
@@ -173,6 +170,7 @@ class PlaylistListAdapter extends BaseAdapter
         else
         {
             listItem.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
+            _currentlySelectedView = listItem;
         }
         
         return listItem;
@@ -191,5 +189,27 @@ class PlaylistListAdapter extends BaseAdapter
         String total_duration = _context.getResources().getString(R.string.total_duration);
         
         return String.valueOf(_tracks.size()) + " " + tracks + ", " + total_duration + " " + AudioTrack.secondsToString(totalDuration);
+    }
+    
+    public void selectItem(@NonNull View view)
+    {
+        deselectCurrentItem();
+        
+        view.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+        
+        _currentlySelectedView = view;
+        
+        UIAnimations.animateListTrackItemTAP(_context, _currentlySelectedView);
+    }
+    
+    public void deselectCurrentItem()
+    {
+        if (_currentlySelectedView != null)
+        {
+            UIAnimations.stop(_currentlySelectedView);
+            _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+        }
+
+        _currentlySelectedView = null;
     }
 }

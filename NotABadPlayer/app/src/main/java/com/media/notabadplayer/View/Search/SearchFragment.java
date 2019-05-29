@@ -24,6 +24,9 @@ import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayOrder;
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -39,15 +42,17 @@ import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
 import java.util.ArrayList;
 
-public class SearchFragment extends Fragment implements BaseView
+public class SearchFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
+    AudioPlayer _player = AudioPlayer.getShared();
+    
     private BasePresenter _presenter;
     
     private EditText _searchField;
     private ImageButton _searchFieldClearButton;
     private TextView _searchTip;
     private ListView _searchResults;
-    private ListAdapter _searchResultsAdapter;
+    private SearchListAdapter _searchResultsAdapter;
     private Parcelable _searchResultsState;
     
     public SearchFragment()
@@ -82,6 +87,8 @@ public class SearchFragment extends Fragment implements BaseView
         super.onActivityCreated(savedInstanceState);
 
         _presenter.start();
+        
+        _player.observers.attach(this);
     }
     
     @Override
@@ -126,6 +133,14 @@ public class SearchFragment extends Fragment implements BaseView
         
         disableInteraction();
     }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        _player.observers.detach(this);
+    }
     
     private void initUI()
     {
@@ -162,8 +177,9 @@ public class SearchFragment extends Fragment implements BaseView
                 {
                     return;
                 }
+                
+                _searchResultsAdapter.selectItem(view);
 
-                UIAnimations.animateAlbumItemTAP(getContext(), view);
                 _presenter.onSearchResultClick(position);
             }
         });
@@ -256,7 +272,7 @@ public class SearchFragment extends Fragment implements BaseView
     @Override
     public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
     {
-
+        
     }
 
     @Override
@@ -286,6 +302,42 @@ public class SearchFragment extends Fragment implements BaseView
         
         // Save search query
         GeneralStorage.getShared().saveSearchQuery(searchQuery);
+    }
+
+    @Override
+    public void onPlayerPlay(AudioTrack current)
+    {
+
+    }
+
+    @Override
+    public void onPlayerFinish()
+    {
+        _searchResults.invalidateViews();
+    }
+
+    @Override
+    public void onPlayerStop()
+    {
+
+    }
+
+    @Override
+    public void onPlayerPause(AudioTrack track)
+    {
+
+    }
+
+    @Override
+    public void onPlayerResume(AudioTrack track)
+    {
+
+    }
+
+    @Override
+    public void onPlayOrderChange(AudioPlayOrder order)
+    {
+
     }
 
     @Override

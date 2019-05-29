@@ -136,9 +136,9 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
 
                 if (position != 0)
                 {
+                    _tableAdapter.selectItem(view);
+                    
                     _presenter.onPlaylistItemClick(position);
-
-                    UIAnimations.animateAlbumItemTAP(getContext(), view);
                 }
             }
         });
@@ -273,15 +273,15 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     @Override
     public void onPlayerPlay(AudioTrack current)
     {
-        _table.invalidateViews();
+        
     }
-
+    
     @Override
     public void onPlayerFinish()
     {
-        
+        _table.invalidateViews();
     }
-
+    
     @Override
     public void onPlayerStop()
     {
@@ -321,13 +321,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     @Override
     public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
     {
-        _tableAdapter.sortTracks(trackSorting);
-        _table.invalidateViews();
         
-        if (_tableState != null)
-        {
-            _table.onRestoreInstanceState(_tableState);
-        }
     }
 
     @Override
