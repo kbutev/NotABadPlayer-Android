@@ -187,7 +187,6 @@ public class GeneralStorage
         saveAppThemeValue(AppSettings.AppTheme.LIGHT);
         saveAlbumSortingValue(AppSettings.AlbumSorting.TITLE);
         saveTrackSortingValue(AppSettings.TrackSorting.TRACK_NUMBER);
-        saveShowStarsValue(AppSettings.ShowStars.NO);
         saveShowVolumeBarValue(AppSettings.ShowVolumeBar.NO);
         saveOpenPlayerOnPlayValue(AppSettings.OpenPlayerOnPlay.NO);
 
@@ -516,30 +515,7 @@ public class GeneralStorage
         editor.putString("track_sorting", value.name());
         editor.apply();
     }
-
-    synchronized public AppSettings.ShowStars getShowStarsValue()
-    {
-        SharedPreferences preferences = getSharedPreferences();
-        
-        try {
-            return AppSettings.ShowStars.valueOf(preferences.getString("show_stars", ""));
-        }
-        catch (Exception e)
-        {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read ShowStars value from storage");
-        }
-
-        return AppSettings.ShowStars.NO;
-    }
-
-    synchronized public void saveShowStarsValue(AppSettings.ShowStars value)
-    {
-        SharedPreferences preferences = getSharedPreferences();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("show_stars", value.name());
-        editor.apply();
-    }
-
+    
     synchronized public AppSettings.ShowVolumeBar getShowVolumeBarValue()
     {
         SharedPreferences preferences = getSharedPreferences();
