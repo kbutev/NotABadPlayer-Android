@@ -188,8 +188,6 @@ public class SearchPresenter implements BasePresenter
 
     private void playNewTrack(@NonNull AudioTrack clickedTrack)
     {
-        Log.v(SearchPresenter.class.getCanonicalName(), "Play track '" + clickedTrack.title + "'");
-
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
         
@@ -208,7 +206,7 @@ public class SearchPresenter implements BasePresenter
             if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
             {
                 // Change the audio player playlist to equal the presenter's playlist
-                Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "'");
+                Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "' from playlist '" + newPlaylistName + "'");
                 playNew(searchPlaylist);
 
                 return;
@@ -231,11 +229,6 @@ public class SearchPresenter implements BasePresenter
 
     private void playNew(@NonNull AudioPlaylist playlist)
     {
-        String newPlaylistName = playlist.getName();
-        AudioTrack newTrack = playlist.getPlayingTrack();
-
-        Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "' from playlist '" + newPlaylistName + "'");
-        
         AudioPlayer player = AudioPlayer.getShared();
 
         try {
