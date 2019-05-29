@@ -1,5 +1,8 @@
 package com.media.notabadplayer.View.Main;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,17 +49,13 @@ import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 public class MainActivity extends AppCompatActivity implements BaseView {
     static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
     
     private AudioStorage _audioStorage;
     private MainPresenter _presenter;
 
-    BottomNavigationView _navigation;
+    private BottomNavigationView _navigation;
     
     private BaseView _currentTab;
     
@@ -158,6 +157,37 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
         
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
+        {
+            KeyBinds.getShared().evaluateInput(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
+            return true;
+        }
+
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
+        {
+            KeyBinds.getShared().evaluateInput(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        // Not on any of the first tabs? Go back
+        if (!isOnAnRootTab())
+        {
+            super.onBackPressed();
+            return;
+        }
+
+        // Currently on any of the first tabs? Send to background
+        moveTaskToBack(true);
     }
     
     private void initUI()
@@ -327,38 +357,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         GeneralStorage.getShared().restorePlayerState();
         GeneralStorage.getShared().restorePlayerPlayHistoryState(getApplication());
     }
-    
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP))
-        {
-            KeyBinds.getShared().evaluateInput(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
-            return true;
-        }
-        
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN))
-        {
-            KeyBinds.getShared().evaluateInput(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
-            return true;
-        }
 
-        return super.onKeyDown(keyCode, event);
-    }
-    
-    @Override
-    public void onBackPressed()
-    {
-        // Not on any of the first tabs? Go back
-        if (!isOnAnRootTab())
-        {
-            super.onBackPressed();
-            return;
-        }
-        
-        // Currently on any of the first tabs? Send to background
-        moveTaskToBack(true);
-    }
-    
     @Override
     public void setPresenter(@NonNull BasePresenter presenter)
     {

@@ -28,7 +28,6 @@ import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.BaseView;
 

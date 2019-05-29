@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Playlist;
 
+import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -31,8 +32,6 @@ import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
-
-import java.util.ArrayList;
 
 public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient
 {
@@ -156,7 +155,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
             if (_albumTitleHeader.getVisibility() != View.GONE)
             {
                 _albumTitleHeader.setVisibility(View.GONE);
-                UIAnimations.animateViewFadeOut(getContext(), _albumTitleHeader);
+                UIAnimations.getShared().animateFadeOut(getContext(), _albumTitleHeader);
             }
         }
         else
@@ -164,7 +163,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
             if (_albumTitleHeader.getVisibility() != View.VISIBLE)
             {
                 _albumTitleHeader.setVisibility(View.VISIBLE);
-                UIAnimations.animateViewFadeIn(getContext(), _albumTitleHeader);
+                UIAnimations.getShared().animateFadeIn(getContext(), _albumTitleHeader);
             }
         }
     }

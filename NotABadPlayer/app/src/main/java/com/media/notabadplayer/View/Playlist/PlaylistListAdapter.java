@@ -13,16 +13,13 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Utilities.MediaSorting;
 import com.media.notabadplayer.Utilities.UIAnimations;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 class PlaylistListAdapter extends BaseAdapter
 {
@@ -199,14 +196,14 @@ class PlaylistListAdapter extends BaseAdapter
         
         _currentlySelectedView = view;
         
-        UIAnimations.animateListTrackItemTAP(_context, _currentlySelectedView);
+        UIAnimations.getShared().listItemAnimations.animateTap(_context, _currentlySelectedView);
     }
     
     public void deselectCurrentItem()
     {
         if (_currentlySelectedView != null)
         {
-            UIAnimations.stop(_currentlySelectedView);
+            UIAnimations.getShared().listItemAnimations.endAll();
             _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
         }
 

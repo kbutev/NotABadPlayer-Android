@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -35,8 +36,6 @@ import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
-
-import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient {
     private static int MEDIA_BAR_MAX_VALUE = 100;
@@ -156,7 +155,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
                 _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON);
 
-                UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonPlay);
             }
         });
     
@@ -170,7 +169,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
                 _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
 
-                UIAnimations.animateButtonTAP(getContext(), _buttonBack);
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonBack);
             }
         });
     
@@ -184,7 +183,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
                 _presenter.onPlayerButtonClick(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
 
-                UIAnimations.animateButtonTAP(getContext(), _buttonForward);
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonForward);
             }
         });
 
@@ -198,7 +197,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
                 _presenter.onOpenPlaylistButtonClick();
 
-                UIAnimations.animateButtonTAP(getContext(), _buttonPlaylist);
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonPlaylist);
             }
         });
 
@@ -212,7 +211,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
                 _presenter.onPlayOrderButtonClick();
 
-                UIAnimations.animateButtonTAP(getContext(), _buttonPlayOrder);
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonPlayOrder);
 
                 // Save current audio state
                 saveCurrentAudioState();

@@ -44,18 +44,21 @@ public class PlayerPresenter implements BasePresenter
             if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
             {
                 // Change the audio player playlist to equal the presenter's playlist
+                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen and playing track '" + newTrack.title + "'");
                 playNew(_playlist);
 
                 return;
             }
             
             // Just open screen
+            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen with current audio player track '" + currentTrack.title + "'");
             playContinue(currentPlaylist);
             
             return;
         }
 
         // Set audio player playlist for the first time and play its track
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen for the first time and playing track '" + _playlist.getPlayingTrack().title + "'");
         playFirstTime(_playlist);
     }
     

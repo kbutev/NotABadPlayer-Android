@@ -71,7 +71,7 @@ CPU & energy efficient.
 
 Includes standart player features like creating playlists, searching for tracks, controlling the audio player even when not on the player screen (a quick player is available, attached to the bottom of the screen).
 
-Includes slighty more fancy features like jumping back to the previously played song, regardless to which album or list it belonged to.
+Includes slightly more fancy features like jumping back to the previously played song, regardless to which album or list it belonged to.
 
 Portrait mode only.
 

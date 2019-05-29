@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Settings;
 
+import java.util.ArrayList;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -25,13 +26,10 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Storage.AudioStorage;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.View.BaseView;
-
-import java.util.ArrayList;
 
 public class SettingsFragment extends Fragment implements BaseView
 {

@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View;
 
+import java.util.ArrayList;
 import android.support.annotation.NonNull;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -8,8 +9,6 @@ import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
-
-import java.util.ArrayList;
 
 public interface BaseView {
     void setPresenter(@NonNull BasePresenter presenter);

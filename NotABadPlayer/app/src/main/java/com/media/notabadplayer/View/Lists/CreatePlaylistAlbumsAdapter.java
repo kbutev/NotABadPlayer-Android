@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Lists;
 
+import java.util.ArrayList;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -17,8 +18,6 @@ import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.R;
-
-import java.util.ArrayList;
 
 public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 {

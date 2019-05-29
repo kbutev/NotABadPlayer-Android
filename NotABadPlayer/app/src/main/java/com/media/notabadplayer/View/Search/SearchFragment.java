@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Search;
 
+import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -35,12 +36,9 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
-import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
-
-import java.util.ArrayList;
 
 public class SearchFragment extends Fragment implements BaseView, AudioPlayerObserver
 {

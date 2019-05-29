@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Search;
 
+import java.util.ArrayList;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -17,8 +18,6 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.UIAnimations;
-
-import java.util.ArrayList;
 
 public class SearchListAdapter extends BaseAdapter
 {
@@ -120,14 +119,14 @@ public class SearchListAdapter extends BaseAdapter
 
         _currentlySelectedView = view;
 
-        UIAnimations.animateListTrackItemTAP(_context, _currentlySelectedView);
+        UIAnimations.getShared().listItemAnimations.animateTap(_context, _currentlySelectedView);
     }
 
     public void deselectCurrentItem()
     {
         if (_currentlySelectedView != null)
         {
-            UIAnimations.stop(_currentlySelectedView);
+            UIAnimations.getShared().listItemAnimations.endAll();
             _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
         }
 

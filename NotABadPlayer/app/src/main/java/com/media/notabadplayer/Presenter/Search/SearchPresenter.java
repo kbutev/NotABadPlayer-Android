@@ -177,13 +177,15 @@ public class SearchPresenter implements BasePresenter
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
         
-        Log.v(SearchPresenter.class.getCanonicalName(), "Play playlist with specific song " + clickedTrack.title);
+        Log.v(SearchPresenter.class.getCanonicalName(), "Opening player screen");
         
         _view.openPlayerScreen(searchPlaylist);
     }
 
     private void playNewTrack(@NonNull AudioTrack clickedTrack)
     {
+        Log.v(SearchPresenter.class.getCanonicalName(), "Play track '" + clickedTrack.title + "'");
+
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
         
@@ -202,6 +204,7 @@ public class SearchPresenter implements BasePresenter
             if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
             {
                 // Change the audio player playlist to equal the presenter's playlist
+                Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "'");
                 playNew(searchPlaylist);
 
                 return;
@@ -213,6 +216,7 @@ public class SearchPresenter implements BasePresenter
         }
         
         // Set audio player playlist for the first time and play its track
+        Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + searchPlaylist.getPlayingTrack().title + "' for the first time");
         playFirstTime(searchPlaylist);
     }
 
@@ -226,8 +230,8 @@ public class SearchPresenter implements BasePresenter
         String newPlaylistName = playlist.getName();
         AudioTrack newTrack = playlist.getPlayingTrack();
 
-        Log.v(SearchPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.title + "'");
-
+        Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "' from playlist '" + newPlaylistName + "'");
+        
         AudioPlayer player = AudioPlayer.getShared();
 
         try {

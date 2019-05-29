@@ -1,12 +1,12 @@
 package com.media.notabadplayer.Utilities;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Constants.AppSettings;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppSettings;
 
 public class MediaSorting {
     public static ArrayList<AudioTrack> sortTracks(ArrayList<AudioTrack> tracks, AppSettings.TrackSorting sorting)
