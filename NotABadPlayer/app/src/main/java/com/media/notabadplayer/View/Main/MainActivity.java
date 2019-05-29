@@ -146,6 +146,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         super.onPause();
 
         disableInteraction();
+        
+        // Every time the main activity pauses, save the player state
+        saveCurrentAudioState();
     }
     
     @Override
@@ -351,6 +354,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // Transition animation
         overridePendingTransition(0, 0);
     }
+
+    private void saveCurrentAudioState()
+    {
+        GeneralStorage.getShared().savePlayerState();
+        GeneralStorage.getShared().savePlayerPlayHistoryState();
+    }
     
     private void restoreAudioPlayerState()
     {
@@ -473,12 +482,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
         Log.v(MainActivity.class.getSimpleName(), "App appearance changed.");
         
-        _currentTab.appAppearanceChanged(showStars, showVolumeBar);
-        _quickPlayer.appAppearanceChanged(showStars, showVolumeBar);
+        _currentTab.onShowVolumeBarSettingChange(value);
+        _quickPlayer.onShowVolumeBarSettingChange(value);
     }
 
     @Override

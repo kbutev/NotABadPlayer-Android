@@ -324,7 +324,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
 
     }

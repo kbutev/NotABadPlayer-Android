@@ -111,9 +111,12 @@ public class GeneralStorage
         saveStorageVersion(currentVersion);
         
         // Migrate from version to version, one by one
+        // Migrate to 1.0
         if (preferencesVersion.equals(""))
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + "nil" + " to version " + currentVersion);
+            String version = "1.0";
+            
+            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from first version to version " + version);
             
             Object result = Serializing.deserializeObject(preferences.getString("user_playlists", ""));
             
@@ -126,25 +129,53 @@ public class GeneralStorage
                     saveUserPlaylists(playlistsArray);
                 }
             }
+
+            preferencesVersion = version;
         }
 
+        // Migrate to 1.1
         if (preferencesVersion.equals("1.0"))
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + currentVersion);
+            String version = "1.1";
+            
+            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + version);
             
             saveSettingsAction(ApplicationInput.PLAYER_SWIPE_LEFT, ApplicationAction.PREVIOUS);
             saveSettingsAction(ApplicationInput.PLAYER_SWIPE_RIGHT, ApplicationAction.NEXT);
+
+            preferencesVersion = version;
         }
-        
+
+        // Migrate to 1.2
         if (preferencesVersion.equals("1.1"))
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + currentVersion);
+            String version = "1.2";
+            
+            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + version);
 
             SharedPreferences.Editor editor = getSharedPreferences().edit();
 
             editor.putString("player_play_order", AudioPlayOrder.FORWARDS.name());
 
             editor.apply();
+
+            preferencesVersion = version;
+        }
+
+        // Migrate to 1.3
+        if (preferencesVersion.equals("1.2"))
+        {
+            String version = "1.3";
+            
+            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + version);
+
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+
+            editor.putString("open_player_on_play", AppSettings.OpenPlayerOnPlay.NO.name());
+
+            editor.apply();
+            
+            preferencesVersion = version;
         }
         
         Log.v(GeneralStorage.class.getCanonicalName(), "Successfully migrated settings values!");
@@ -158,6 +189,7 @@ public class GeneralStorage
         saveTrackSortingValue(AppSettings.TrackSorting.TRACK_NUMBER);
         saveShowStarsValue(AppSettings.ShowStars.NO);
         saveShowVolumeBarValue(AppSettings.ShowVolumeBar.NO);
+        saveOpenPlayerOnPlayValue(AppSettings.OpenPlayerOnPlay.NO);
 
         saveSettingsAction(ApplicationInput.PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
         saveSettingsAction(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
@@ -528,6 +560,29 @@ public class GeneralStorage
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("show_volume_bar", value.name());
+        editor.apply();
+    }
+
+    synchronized public AppSettings.OpenPlayerOnPlay getOpenPlayerOnPlayValue()
+    {
+        SharedPreferences preferences = getSharedPreferences();
+
+        try {
+            return AppSettings.OpenPlayerOnPlay.valueOf(preferences.getString("open_player_on_play", ""));
+        }
+        catch (Exception e)
+        {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read OpenPlayerOnPlay value from storage");
+        }
+
+        return AppSettings.OpenPlayerOnPlay.NO;
+    }
+
+    synchronized public void saveOpenPlayerOnPlayValue(AppSettings.OpenPlayerOnPlay value)
+    {
+        SharedPreferences preferences = getSharedPreferences();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("open_player_on_play", value.name());
         editor.apply();
     }
     

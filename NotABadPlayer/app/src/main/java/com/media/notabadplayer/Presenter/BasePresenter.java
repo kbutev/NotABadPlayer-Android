@@ -24,6 +24,7 @@ public interface BasePresenter {
     void onAppSettingsReset();
     void onAppThemeChange(AppSettings.AppTheme themeValue);
     void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting);
-    void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar);
+    void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar showVolumeBar);
+    void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value);
     void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input);
 }

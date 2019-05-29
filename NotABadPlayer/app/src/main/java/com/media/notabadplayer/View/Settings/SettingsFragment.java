@@ -36,10 +36,9 @@ public class SettingsFragment extends Fragment implements BaseView
     private BasePresenter _presenter;
     
     private Spinner _themePicker;
-
     private Spinner _trackSortingPicker;
-
     private Spinner _showVolumeBarPicker;
+    private Spinner _openPlayerOnPlayPicker;
     
     private Spinner _keybindPlayerVU;
     private Spinner _keybindPlayerVD;
@@ -84,6 +83,8 @@ public class SettingsFragment extends Fragment implements BaseView
         _themePicker = root.findViewById(R.id.themePicker);
         _trackSortingPicker = root.findViewById(R.id.trackSortingPicker);
         _showVolumeBarPicker = root.findViewById(R.id.showVolumeBarPicker);
+        _openPlayerOnPlayPicker = root.findViewById(R.id.openPlayerOnPlayPicker);
+        
         _keybindPlayerVU = root.findViewById(R.id.keybindPlayerVU);
         _keybindPlayerVD = root.findViewById(R.id.keybindPlayerVD);
         _keybindPlayerNext = root.findViewById(R.id.keybindPlayerNext);
@@ -186,7 +187,25 @@ public class SettingsFragment extends Fragment implements BaseView
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 AppSettings.ShowVolumeBar selectedValue = AppSettings.ShowVolumeBar.values()[position];
-                _presenter.onAppAppearanceChange(AppSettings.ShowStars.NO, selectedValue);
+                _presenter.onShowVolumeBarSettingChange(selectedValue);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        ArrayList<String> openPlayerOnPlayValues = new ArrayList<>();
+        for (int e = 0; e < AppSettings.OpenPlayerOnPlay.values().length; e++)
+        {
+            openPlayerOnPlayValues.add(AppSettings.OpenPlayerOnPlay.values()[e].name());
+        }
+
+        SettingsListAdapter openPlayOnPlayAdapter = new SettingsListAdapter(getContext(), openPlayerOnPlayValues);
+        _openPlayerOnPlayPicker.setAdapter(openPlayOnPlayAdapter);
+        _openPlayerOnPlayPicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                AppSettings.OpenPlayerOnPlay selectedValue = AppSettings.OpenPlayerOnPlay.values()[position];
+                _presenter.onOpenPlayerOnPlaySettingChange(selectedValue);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
@@ -278,6 +297,7 @@ public class SettingsFragment extends Fragment implements BaseView
         selectProperAlbumSorting();
         selectProperTrackSorting();
         selectProperShowVolumeBarValue();
+        selectProperOpenPlayerOnPlayValue();
         selectProperKeybinds();
     }
     
@@ -321,6 +341,19 @@ public class SettingsFragment extends Fragment implements BaseView
             if (value == AppSettings.ShowVolumeBar.values()[e])
             {
                 _showVolumeBarPicker.setSelection(e);
+            }
+        }
+    }
+
+    private void selectProperOpenPlayerOnPlayValue()
+    {
+        AppSettings.OpenPlayerOnPlay value = GeneralStorage.getShared().getOpenPlayerOnPlayValue();
+
+        for (int e = 0; e < AppSettings.OpenPlayerOnPlay.values().length; e++)
+        {
+            if (value == AppSettings.OpenPlayerOnPlay.values()[e])
+            {
+                _openPlayerOnPlayPicker.setSelection(e);
             }
         }
     }
@@ -472,7 +505,7 @@ public class SettingsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
 
     }

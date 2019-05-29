@@ -357,7 +357,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void appAppearanceChanged(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
 
     }

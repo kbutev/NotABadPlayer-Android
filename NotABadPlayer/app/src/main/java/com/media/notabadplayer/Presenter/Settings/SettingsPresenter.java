@@ -122,18 +122,26 @@ public class SettingsPresenter implements BasePresenter
     }
     
     @Override
-    public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
-        GeneralStorage.getShared().saveShowStarsValue(showStars);
-        GeneralStorage.getShared().saveShowVolumeBarValue(showVolumeBar);
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Store picked settings ShowVolumeBar value " + value.name());
         
-        _view.appAppearanceChanged(showStars, showVolumeBar);
-        _applicationRootView.appAppearanceChanged(showStars, showVolumeBar);
+        GeneralStorage.getShared().saveShowVolumeBarValue(value);
+    }
+
+    @Override
+    public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
+    {
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Store picked settings OpenPlayerOnPlay value " + value.name());
+        
+        GeneralStorage.getShared().saveOpenPlayerOnPlayValue(value);
     }
     
     @Override
     public void onKeybindChange(ApplicationAction action, ApplicationInput input) 
     {
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Store picked keybind value of action " + action.name() + " for input " + input.name());
+        
         GeneralStorage.getShared().saveSettingsAction(input, action);
     }
 }

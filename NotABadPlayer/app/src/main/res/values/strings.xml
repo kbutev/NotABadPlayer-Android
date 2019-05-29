@@ -48,6 +48,7 @@
     <string name="settings_track_sorting">Track Sorting</string>
     <string name="settings_stars">Show Stars</string>
     <string name="settings_volume_bar">Show Volume Bar</string>
+    <string name="settings_open_player_on_play">Play opens player</string>
     <string name="settings_keybinds">Key binds</string>
     <string name="settings_keybinds_action">Action</string>
     <string name="settings_keybinds_command">Command</string>
@@ -84,5 +85,5 @@
     <string name="error_invalid_file_play">Cannot play file.</string>
     
     <!-- Storage version -->
-    <string name="storage_version">1.2</string>
+    <string name="storage_version">1.3</string>
 </resources>

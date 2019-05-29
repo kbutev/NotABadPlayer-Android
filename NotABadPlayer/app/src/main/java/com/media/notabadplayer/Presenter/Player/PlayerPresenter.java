@@ -135,7 +135,13 @@ public class PlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onAppAppearanceChange(AppSettings.ShowStars showStars, AppSettings.ShowVolumeBar showVolumeBar)
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
+    {
+
+    }
+
+    @Override
+    public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
     {
 
     }
