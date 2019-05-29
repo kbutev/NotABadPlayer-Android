@@ -164,8 +164,6 @@ public class PlaylistPresenter implements BasePresenter {
 
     private void playNewTrack(@NonNull AudioTrack clickedTrack)
     {
-        Log.v(PlaylistPresenter.class.getCanonicalName(), "Play track '" + clickedTrack.title + "'");
-
         String playlistName = _playlist.getName();
         ArrayList<AudioTrack> tracks = _playlist.getTracks();
         AudioPlaylist playlistToPlay = new AudioPlaylist(playlistName, tracks, clickedTrack);
@@ -185,7 +183,7 @@ public class PlaylistPresenter implements BasePresenter {
             if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
             {
                 // Change the audio player playlist to equal the presenter's playlist
-                Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "'");
+                Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "' from playlist '" + newPlaylistName + "'");
                 playNew(playlistToPlay);
 
                 return;
@@ -197,7 +195,7 @@ public class PlaylistPresenter implements BasePresenter {
         }
 
         // Set audio player playlist for the first time and play its track
-        Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + _playlist.getPlayingTrack().title + "' for the first time");
+        Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + _playlist.getPlayingTrack().title + "' from playlist '" + _playlist.getName() + " for the first time");
         playFirstTime(playlistToPlay);
     }
 
@@ -208,11 +206,6 @@ public class PlaylistPresenter implements BasePresenter {
 
     private void playNew(@NonNull AudioPlaylist playlist)
     {
-        String newPlaylistName = playlist.getName();
-        AudioTrack newTrack = playlist.getPlayingTrack();
-
-        Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "' from playlist '" + newPlaylistName + "'");
-
         AudioPlayer player = AudioPlayer.getShared();
 
         try {
