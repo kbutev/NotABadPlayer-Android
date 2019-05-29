@@ -4,14 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.support.annotation.NonNull;
+import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
-
-import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
 public class AudioPlayerNoiseSuppression extends BroadcastReceiver implements AudioManager.OnAudioFocusChangeListener {
     

@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Lists;
 
+import java.util.ArrayList;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -15,8 +16,6 @@ import android.widget.TextView;
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.R;
-
-import java.util.ArrayList;
 
 class CreateListAdapter extends BaseAdapter
 {

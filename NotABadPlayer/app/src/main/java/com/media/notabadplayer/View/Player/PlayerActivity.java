@@ -1,7 +1,6 @@
 package com.media.notabadplayer.View.Player;
 
 import java.util.ArrayList;
-
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
@@ -17,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -34,8 +34,6 @@ import com.media.notabadplayer.Utilities.AppThemeUtility;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
-
-import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
 public class PlayerActivity extends AppCompatActivity implements BaseView
 {

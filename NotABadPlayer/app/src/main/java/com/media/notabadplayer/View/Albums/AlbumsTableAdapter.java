@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Albums;
 
+import java.util.ArrayList;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -11,16 +12,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.MediaSorting;
-
-import java.util.ArrayList;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
 {

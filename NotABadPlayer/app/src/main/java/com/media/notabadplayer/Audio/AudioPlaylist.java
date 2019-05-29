@@ -1,16 +1,15 @@
 package com.media.notabadplayer.Audio;
 
 import android.support.annotation.NonNull;
-
-import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Utilities.MediaSorting;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
+
+import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Utilities.MediaSorting;
 
 public class AudioPlaylist implements Serializable
 {

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
-
 import com.google.common.base.Function;
 
 public class QuickPlayerLayout extends LinearLayout

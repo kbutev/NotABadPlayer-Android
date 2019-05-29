@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import java.util.ArrayList;
 import com.google.common.base.Function;

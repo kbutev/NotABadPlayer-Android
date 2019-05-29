@@ -1,9 +1,8 @@
 package com.media.notabadplayer.Utilities;
 
+import java.util.ArrayList;
 import android.os.Handler;
 import android.os.Looper;
-
-import java.util.ArrayList;
 
 public class LooperService {
     public static int LOOPER_INTERVAL_MSEC = 100;

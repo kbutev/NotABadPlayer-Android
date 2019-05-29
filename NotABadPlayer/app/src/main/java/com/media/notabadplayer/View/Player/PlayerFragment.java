@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Player;
 
+import java.util.ArrayList;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -32,10 +34,6 @@ import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
-
-import org.checkerframework.checker.nullness.compatqual.NullableDecl;
-
-import java.util.ArrayList;
 
 public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient
 {
@@ -180,7 +178,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                     return;
                 }
 
-                UIAnimations.animateImageTAP(getContext(), _volumeIcon);
+                UIAnimations.getShared().imageAnimations.animateTap(getContext(), _volumeIcon);
                 
                 AudioPlayer.getShared().setVolume(progress);
                 _volumeBar.setProgress(progress);
@@ -238,7 +236,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                     return;
                 }
 
-                UIAnimations.animateButtonTAP(getContext(), _buttonRecall);
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonRecall);
                 _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_RECALL);
             }
         });
@@ -251,7 +249,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                     return;
                 }
 
-                UIAnimations.animateButtonTAP(getContext(), _buttonPlay);
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonPlay);
                 _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_PLAY_BUTTON);
             }
         });
@@ -264,7 +262,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                     return;
                 }
 
-                UIAnimations.animateButtonTAP(getContext(), _buttonBack);
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonBack);
                 _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_PREVIOUS_BUTTON);
             }
         });
@@ -277,7 +275,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                     return;
                 }
 
-                UIAnimations.animateButtonTAP(getContext(), _buttonForward);
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonForward);
                 _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_NEXT_BUTTON);
             }
         });
@@ -290,7 +288,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                     return;
                 }
 
-                UIAnimations.animateButtonTAP(getContext(), _buttonPlayOrder);
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonPlayOrder);
                 _presenter.onPlayOrderButtonClick();
                 
                 // Save current audio state
@@ -362,7 +360,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             {
                 _volumeBar.setProgress(currentVolume);
 
-                UIAnimations.animateImageTAP(getContext(), _volumeIcon);
+                UIAnimations.getShared().imageAnimations.animateTap(getContext(), _volumeIcon);
             }
         }
     }

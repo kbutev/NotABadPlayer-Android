@@ -3,7 +3,6 @@ package com.media.notabadplayer.Presenter.Player;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;

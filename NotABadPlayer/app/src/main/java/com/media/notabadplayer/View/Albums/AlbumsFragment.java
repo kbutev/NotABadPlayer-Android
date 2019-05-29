@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Albums;
 
+import java.util.ArrayList;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -25,8 +26,6 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
-
-import java.util.ArrayList;
 
 public class AlbumsFragment extends Fragment implements BaseView
 {

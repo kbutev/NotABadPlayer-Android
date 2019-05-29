@@ -5,23 +5,43 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ImageViewCompat;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.media.notabadplayer.R;
 
 public class UIAnimations {
-    public static void stop(final View view)
+    private static UIAnimations singleton;
+
+    public final ButtonAnimations buttonAnimations;
+    public final ImageAnimations imageAnimations;
+    public final ListItemAnimations listItemAnimations;
+
+    private UIAnimations()
+    {
+        buttonAnimations = new ButtonAnimations();
+        imageAnimations = new ImageAnimations();
+        listItemAnimations = new ListItemAnimations();
+    }
+
+    public static synchronized UIAnimations getShared()
+    {
+        if (singleton == null)
+        {
+            singleton = new UIAnimations();
+        }
+
+        return singleton;
+    }
+
+    public void stopAnimations(final View view)
     {
         view.clearAnimation();
         
@@ -30,110 +50,8 @@ public class UIAnimations {
             view.animate().cancel();
         }
     }
-    
-    public static void animateImageTAP(Context context, final ImageView view)
-    {
-        if (context == null || view == null)
-        {
-            return;
-        }
-        
-        int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
-        
-        if (ImageViewCompat.getImageTintList(view) == null)
-        {
-            return;
-        }
-        
-        int colorTo = ImageViewCompat.getImageTintList(view).getDefaultColor();
 
-        ValueAnimator a = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-
-        a.setDuration(500);
-
-        view.setColorFilter(colorFrom, PorterDuff.Mode.SRC_ATOP);
-
-        a.removeAllUpdateListeners();
-        
-        a.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
-        {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                view.setColorFilter((int)animator.getAnimatedValue(), PorterDuff.Mode.SRC_ATOP);
-            }
-        });
-
-        a.start();
-    }
-    
-    public static void animateButtonTAP(Context context, final Button view)
-    {
-        if (context == null || view == null)
-        {
-            return;
-        }
-        
-        int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
-        int colorTo = ViewCompat.getBackgroundTintList(view).getDefaultColor();
-        
-        ValueAnimator a = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        
-        a.setDuration(500);
-
-        view.getBackground().setColorFilter(colorFrom, PorterDuff.Mode.SRC_ATOP);
-
-        a.removeAllUpdateListeners();
-        
-        a.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
-        {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                view.getBackground().setColorFilter((int)animator.getAnimatedValue(), PorterDuff.Mode.SRC_ATOP);
-            }
-        });
-        
-        a.start();
-    }
-    
-    public static void animateListTrackItemTAP(Context context, final View view)
-    {
-        if (context == null || view == null)
-        {
-            return;
-        }
-        
-        final Drawable background = view.getBackground();
-        
-        if (!(background instanceof ColorDrawable)) 
-        {
-            return;
-        }
-        
-        int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
-        int colorTo = context.getResources().getColor(R.color.currentlyPlayingTrack);
-        
-        ValueAnimator a = new ValueAnimator();
-        a.setIntValues(colorFrom, colorTo);
-        a.setEvaluator(new ArgbEvaluator());
-        
-        a.setDuration(300);
-        
-        view.setBackgroundColor(colorFrom);
-
-        a.removeAllUpdateListeners();
-        
-        a.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
-        {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                view.setBackgroundColor((int)animator.getAnimatedValue());
-            }
-        });
-
-        a.start();
-    }
-
-    public static void animateViewFadeIn(Context context, final View view)
+    public void animateFadeIn(Context context, final View view)
     {
         if (context == null || view == null)
         {
@@ -142,7 +60,7 @@ public class UIAnimations {
 
         ObjectAnimator fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0.0f, 1.0f);
         fadeIn.setDuration(300);
-        
+
         final AnimatorSet animationSet = new AnimatorSet();
 
         animationSet.play(fadeIn);
@@ -150,13 +68,13 @@ public class UIAnimations {
         animationSet.start();
     }
 
-    public static void animateViewFadeOut(Context context, final View view)
+    public void animateFadeOut(Context context, final View view)
     {
         if (context == null || view == null)
         {
             return;
         }
-        
+
         ObjectAnimator fadeOut = ObjectAnimator.ofFloat(view, "alpha",  1.0f, 0.0f);
         fadeOut.setDuration(500);
 
@@ -165,5 +83,175 @@ public class UIAnimations {
         animationSet.play(fadeOut);
 
         animationSet.start();
+    }
+
+    public class ImageAnimations {
+        ValueAnimator animator = null;
+
+        public void animateTap(Context context, final ImageView view)
+        {
+            if (context == null || view == null)
+            {
+                return;
+            }
+
+            endAll();
+
+            int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
+
+            ColorStateList tintList = ImageViewCompat.getImageTintList(view);
+
+            if (tintList == null)
+            {
+                return;
+            }
+
+            int colorTo = tintList.getDefaultColor();
+
+            animator = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+
+            animator.setDuration(500);
+
+            view.setColorFilter(colorFrom, PorterDuff.Mode.SRC_ATOP);
+
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+            {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    view.setColorFilter((int)animator.getAnimatedValue(), PorterDuff.Mode.SRC_ATOP);
+                }
+            });
+
+            animator.start();
+        }
+
+        public void interruptAll()
+        {
+            if (animator != null)
+            {
+                animator.cancel();
+                animator = null;
+            }
+        }
+
+        public void endAll()
+        {
+            if (animator != null)
+            {
+                animator.end();
+                animator = null;
+            }
+        }
+    }
+
+    public class ButtonAnimations {
+        ValueAnimator animator = null;
+
+        public void animateTap(Context context, final Button view)
+        {
+            if (context == null || view == null)
+            {
+                return;
+            }
+
+            endAll();
+
+            int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
+            int colorTo = ViewCompat.getBackgroundTintList(view).getDefaultColor();
+
+            animator = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+
+            animator.setDuration(500);
+
+            view.getBackground().setColorFilter(colorFrom, PorterDuff.Mode.SRC_ATOP);
+
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+            {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    view.getBackground().setColorFilter((int)animator.getAnimatedValue(), PorterDuff.Mode.SRC_ATOP);
+                }
+            });
+
+            animator.start();
+        }
+
+        public void interruptAll()
+        {
+            if (animator != null)
+            {
+                animator.cancel();
+                animator = null;
+            }
+        }
+
+        public void endAll()
+        {
+            if (animator != null)
+            {
+                animator.end();
+                animator = null;
+            }
+        }
+    }
+
+    public class ListItemAnimations {
+        ValueAnimator animator = null;
+
+        public void animateTap(Context context, final View view)
+        {
+            if (context == null || view == null)
+            {
+                return;
+            }
+
+            final Drawable background = view.getBackground();
+
+            if (!(background instanceof ColorDrawable))
+            {
+                return;
+            }
+
+            endAll();
+
+            int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
+            int colorTo = context.getResources().getColor(R.color.currentlyPlayingTrack);
+
+            animator = new ValueAnimator();
+            animator.setIntValues(colorFrom, colorTo);
+            animator.setEvaluator(new ArgbEvaluator());
+
+            animator.setDuration(300);
+
+            view.setBackgroundColor(colorFrom);
+
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+            {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    view.setBackgroundColor((int)animator.getAnimatedValue());
+                }
+            });
+
+            animator.start();
+        }
+
+        public void interruptAll()
+        {
+            if (animator != null)
+            {
+                animator.cancel();
+                animator = null;
+            }
+        }
+
+        public void endAll()
+        {
+            if (animator != null)
+            {
+                animator.end();
+                animator = null;
+            }
+        }
     }
 }

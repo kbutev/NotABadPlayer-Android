@@ -1,5 +1,7 @@
 package com.media.notabadplayer.View.Albums;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -14,9 +16,6 @@ import android.widget.TextView;
 
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.UIAnimations;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class GridSideIndexingView extends View {
     public static final int BOTTOM_PADDING = 10;
@@ -194,6 +193,6 @@ public class GridSideIndexingView extends View {
     
     public void fadeOutTextCharacter()
     {
-        UIAnimations.animateViewFadeOut(_context, _indexingTextCharacter);
+        UIAnimations.getShared().animateFadeOut(_context, _indexingTextCharacter);
     }
 }
