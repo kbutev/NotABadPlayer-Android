@@ -16,6 +16,7 @@ import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.UIAnimations;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,8 @@ public class SearchListAdapter extends BaseAdapter
 {
     private Context _context;
     private ArrayList<AudioTrack> _tracks;
+
+    private View _currentlySelectedView = null;
     
     public SearchListAdapter(@NonNull Context context, ArrayList<AudioTrack> tracks)
     {
@@ -103,8 +106,31 @@ public class SearchListAdapter extends BaseAdapter
         else
         {
             listItem.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
+            _currentlySelectedView = listItem;
         }
         
         return listItem;
+    }
+
+    public void selectItem(@NonNull View view)
+    {
+        deselectCurrentItem();
+
+        view.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+
+        _currentlySelectedView = view;
+
+        UIAnimations.animateListTrackItemTAP(_context, _currentlySelectedView);
+    }
+
+    public void deselectCurrentItem()
+    {
+        if (_currentlySelectedView != null)
+        {
+            UIAnimations.stop(_currentlySelectedView);
+            _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+        }
+
+        _currentlySelectedView = null;
     }
 }

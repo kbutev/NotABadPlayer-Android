@@ -21,7 +21,16 @@ import android.widget.ImageView;
 import com.media.notabadplayer.R;
 
 public class UIAnimations {
-
+    public static void stop(final View view)
+    {
+        view.clearAnimation();
+        
+        if (view.animate() != null)
+        {
+            view.animate().cancel();
+        }
+    }
+    
     public static void animateImageTAP(Context context, final ImageView view)
     {
         if (context == null || view == null)
@@ -44,6 +53,8 @@ public class UIAnimations {
 
         view.setColorFilter(colorFrom, PorterDuff.Mode.SRC_ATOP);
 
+        a.removeAllUpdateListeners();
+        
         a.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
         {
             @Override
@@ -70,6 +81,8 @@ public class UIAnimations {
         a.setDuration(500);
 
         view.getBackground().setColorFilter(colorFrom, PorterDuff.Mode.SRC_ATOP);
+
+        a.removeAllUpdateListeners();
         
         a.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
         {
@@ -82,7 +95,7 @@ public class UIAnimations {
         a.start();
     }
     
-    public static void animateAlbumItemTAP(Context context, final View view)
+    public static void animateListTrackItemTAP(Context context, final View view)
     {
         if (context == null || view == null)
         {
@@ -97,7 +110,7 @@ public class UIAnimations {
         }
         
         int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
-        int colorTo = ((ColorDrawable) background).getColor();
+        int colorTo = context.getResources().getColor(R.color.currentlyPlayingTrack);
         
         ValueAnimator a = new ValueAnimator();
         a.setIntValues(colorFrom, colorTo);
@@ -107,6 +120,8 @@ public class UIAnimations {
         
         view.setBackgroundColor(colorFrom);
 
+        a.removeAllUpdateListeners();
+        
         a.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
         {
             @Override

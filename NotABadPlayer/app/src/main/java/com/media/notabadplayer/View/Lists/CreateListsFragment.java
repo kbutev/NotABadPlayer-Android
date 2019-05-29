@@ -139,8 +139,6 @@ public class CreateListsFragment extends Fragment implements BaseView {
 
                 if (!_playlistsAdapter.isInEditMode())
                 {
-                    UIAnimations.animateAlbumItemTAP(getContext(), view);
-
                     _presenter.onOpenPlayer(_playlists.get(position));
                 }
             }

@@ -163,24 +163,24 @@ public class PlaylistPresenter implements BasePresenter {
     {
         String playlistName = _playlist.getName();
         ArrayList<AudioTrack> tracks = _playlist.getTracks();
-        AudioPlaylist playlist = new AudioPlaylist(playlistName, tracks, clickedTrack);
+        AudioPlaylist playlistToPlay = new AudioPlaylist(playlistName, tracks, clickedTrack);
 
         AudioPlayer player = AudioPlayer.getShared();
         AudioPlaylist currentPlaylist = player.getPlaylist();
 
         if (currentPlaylist != null)
         {
-            String newPlaylistName = playlist.getName();
+            String newPlaylistName = playlistToPlay.getName();
             String currentPlaylistName = currentPlaylist.getName();
 
-            AudioTrack newTrack = playlist.getPlayingTrack();
+            AudioTrack newTrack = playlistToPlay.getPlayingTrack();
             AudioTrack currentTrack = currentPlaylist.getPlayingTrack();
 
             // Current playing playlist or track does not match the state of the presenter's playlist?
             if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
             {
                 // Change the audio player playlist to equal the presenter's playlist
-                playNew(playlist);
+                playNew(playlistToPlay);
 
                 return;
             }
@@ -191,7 +191,7 @@ public class PlaylistPresenter implements BasePresenter {
         }
 
         // Set audio player playlist for the first time and play its track
-        playFirstTime(playlist);
+        playFirstTime(playlistToPlay);
     }
 
     private void playFirstTime(@NonNull AudioPlaylist playlist)
