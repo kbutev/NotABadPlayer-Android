@@ -14,10 +14,6 @@ public class AppSettings
         TRACK_NUMBER, TITLE, LONGEST, SHORTEST
     }
     
-    public enum ShowStars {
-        YES, PLAYER_ONLY, TRACK_ONLY, NO
-    }
-    
     public enum ShowVolumeBar {
         NO, LEFT_SIDE, RIGHT_SIDE
     }

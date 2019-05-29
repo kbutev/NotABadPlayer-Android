@@ -35,7 +35,7 @@ class PlaylistListAdapter extends BaseAdapter
         this._context = context;
         this._playlistName = playlist.getName();
         this._tracks = playlist.getTracks();
-        this._isPlaylist = false;
+        this._isPlaylist = !playlist.isAlbumPlaylist();
     }
     
     public int getCount()
