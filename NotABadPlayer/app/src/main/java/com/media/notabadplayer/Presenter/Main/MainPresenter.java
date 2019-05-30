@@ -10,9 +10,15 @@ import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 public class MainPresenter implements BasePresenter {
-    private @NonNull BaseView _view;
+    private BaseView _view;
     
-    public MainPresenter(@NonNull BaseView view) 
+    public MainPresenter() 
+    {
+        
+    }
+
+    @Override
+    public void setView(@NonNull BaseView view)
     {
         _view = view;
     }
@@ -20,7 +26,10 @@ public class MainPresenter implements BasePresenter {
     @Override
     public void start()
     {
-        
+        if (_view == null)
+        {
+            throw new IllegalStateException("SettingsPresenter: view has not been set");
+        }
     }
 
     @Override
@@ -84,7 +93,7 @@ public class MainPresenter implements BasePresenter {
     }
     
     @Override
-    public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }

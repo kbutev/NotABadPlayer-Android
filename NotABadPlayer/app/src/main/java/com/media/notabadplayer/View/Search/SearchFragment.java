@@ -19,7 +19,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -58,9 +57,11 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
         
     }
     
-    public static @NonNull SearchFragment newInstance()
+    public static @NonNull SearchFragment newInstance(@NonNull BasePresenter presenter)
     {
-        return new SearchFragment();
+        SearchFragment fragment = new SearchFragment();
+        fragment._presenter = presenter;
+        return fragment;
     }
 
     @Override
@@ -184,12 +185,6 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public void setPresenter(@NonNull BasePresenter presenter)
-    {
-        _presenter = presenter;
-    }
-
-    @Override
     public void enableInteraction()
     {
         _searchFieldClearButton.setClickable(true);
@@ -230,13 +225,13 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
             manager.popBackStackImmediate();
         }
         
-        PlaylistFragment f = PlaylistFragment.newInstance();
-        f.setPresenter(new PlaylistPresenter(f, playlist, audioInfo));
+        BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo);
+        PlaylistFragment view = PlaylistFragment.newInstance(presenter);
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
         transaction.addToBackStack(newEntryName);
-        transaction.replace(R.id.mainLayout, f, newEntryName);
+        transaction.replace(R.id.mainLayout, view, newEntryName);
         transaction.commit();
     }
 
@@ -342,7 +337,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     @Override
     public void appSettingsReset()
     {
-
+        
     }
 
     @Override
@@ -352,7 +347,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }

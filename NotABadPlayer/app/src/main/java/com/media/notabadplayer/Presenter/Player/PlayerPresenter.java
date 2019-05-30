@@ -16,19 +16,28 @@ import com.media.notabadplayer.View.BaseView;
 
 public class PlayerPresenter implements BasePresenter
 {
-    private @NonNull BaseView _view;
+    private BaseView _view;
     private @NonNull AudioPlaylist _playlist;
     
-    public PlayerPresenter(@NonNull BaseView view, 
-                           @NonNull AudioPlaylist playlist)
+    public PlayerPresenter(@NonNull AudioPlaylist playlist)
+    {
+        _playlist = playlist;
+    }
+
+    @Override
+    public void setView(@NonNull BaseView view)
     {
         _view = view;
-        _playlist = playlist;
     }
     
     @Override
     public void start() 
     {
+        if (_view == null)
+        {
+            throw new IllegalStateException("SettingsPresenter: view has not been set");
+        }
+        
         AudioPlayer player = AudioPlayer.getShared();
         AudioPlaylist currentPlaylist = player.getPlaylist();
         
@@ -129,7 +138,7 @@ public class PlayerPresenter implements BasePresenter
     }
     
     @Override
-    public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }

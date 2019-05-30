@@ -15,24 +15,27 @@ import com.media.notabadplayer.View.BaseView;
 
 public class SettingsPresenter implements BasePresenter 
 {
-    private @NonNull BaseView _view;
-    private @NonNull BaseView _applicationRootView;
+    private BaseView _view;
 
     private @NonNull AudioInfo _audioInfo;
 
-    public SettingsPresenter(@NonNull BaseView view,
-                             @NonNull BaseView applicationRootView,
-                             @NonNull AudioInfo audioInfo)
+    public SettingsPresenter(@NonNull AudioInfo audioInfo)
+    {
+        _audioInfo = audioInfo;
+    }
+
+    @Override
+    public void setView(@NonNull BaseView view)
     {
         _view = view;
-        _applicationRootView = applicationRootView;
-
-        _audioInfo = audioInfo;
     }
     
     @Override
     public void start() {
-        
+        if (_view == null)
+        {
+            throw new IllegalStateException("SettingsPresenter: view has not been set");
+        }
     }
 
     @Override
@@ -90,12 +93,10 @@ public class SettingsPresenter implements BasePresenter
         GeneralStorage.getShared().resetDefaultSettingsValues();
         
         _view.appSettingsReset();
-        _applicationRootView.appSettingsReset();
 
         AppSettings.AppTheme themeValue = GeneralStorage.getShared().getAppThemeValue();
 
         _view.appThemeChanged(themeValue);
-        _applicationRootView.appThemeChanged(themeValue);
     }
 
     @Override
@@ -104,27 +105,28 @@ public class SettingsPresenter implements BasePresenter
         {
             return;
         }
+
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings AppTheme value " + themeValue.name());
         
         GeneralStorage.getShared().saveAppThemeValue(themeValue);
         
         _view.appThemeChanged(themeValue);
-        _applicationRootView.appThemeChanged(themeValue);
     }
     
     @Override
-    public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
-        GeneralStorage.getShared().saveAlbumSortingValue(albumSorting);
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings ShowVolumeBar value " + trackSorting.name());
+        
         GeneralStorage.getShared().saveTrackSortingValue(trackSorting);
         
-        _view.appSortingChanged(albumSorting, trackSorting);
-        _applicationRootView.appSortingChanged(albumSorting, trackSorting);
+        _view.appTrackSortingChanged(trackSorting);
     }
     
     @Override
     public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Store picked settings ShowVolumeBar value " + value.name());
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings ShowVolumeBar value " + value.name());
         
         GeneralStorage.getShared().saveShowVolumeBarValue(value);
     }
@@ -132,7 +134,7 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
     {
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Store picked settings OpenPlayerOnPlay value " + value.name());
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings OpenPlayerOnPlay value " + value.name());
         
         GeneralStorage.getShared().saveOpenPlayerOnPlayValue(value);
     }
@@ -140,7 +142,7 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onKeybindChange(ApplicationAction action, ApplicationInput input) 
     {
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Store picked keybind value of action " + action.name() + " for input " + input.name());
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked keybind value of action " + action.name() + " for input " + input.name());
         
         GeneralStorage.getShared().saveSettingsAction(input, action);
     }

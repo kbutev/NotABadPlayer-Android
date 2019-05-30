@@ -65,9 +65,11 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
     }
     
-    public static @NonNull PlayerFragment newInstance()
+    public static @NonNull PlayerFragment newInstance(@NonNull BasePresenter presenter)
     {
-        return new PlayerFragment();
+        PlayerFragment fragment = new PlayerFragment();
+        fragment._presenter = presenter;
+        return fragment;
     }
     
     @Override
@@ -458,11 +460,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void setPresenter(@NonNull BasePresenter presenter) {
-        _presenter = presenter;
-    }
-
-    @Override
     public void enableInteraction()
     {
         _buttonRecall.setClickable(true);
@@ -571,7 +568,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }

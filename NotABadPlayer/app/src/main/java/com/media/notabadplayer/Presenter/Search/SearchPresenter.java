@@ -21,22 +21,30 @@ import com.media.notabadplayer.View.BaseView;
 
 public class SearchPresenter implements BasePresenter
 {
-    @NonNull private BaseView _view;
-    @NonNull private Context _context;
-    @NonNull private AudioInfo _audioInfo;
+    private BaseView _view;
+    private @NonNull Context _context;
+    private @NonNull AudioInfo _audioInfo;
     private ArrayList<AudioTrack> _searchResults = new ArrayList<>();
     
-    public SearchPresenter(@NonNull BaseView view, @NonNull Context context, @NonNull AudioInfo audioInfo)
+    public SearchPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo)
     {
-        _view = view;
         _context = context;
         _audioInfo = audioInfo;
+    }
+
+    @Override
+    public void setView(@NonNull BaseView view)
+    {
+        _view = view;
     }
     
     @Override
     public void start() 
     {
-        
+        if (_view == null)
+        {
+            throw new IllegalStateException("SettingsPresenter: view has not been set");
+        }
     }
     
     @Override
@@ -153,7 +161,7 @@ public class SearchPresenter implements BasePresenter
     }
     
     @Override
-    public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
         
     }

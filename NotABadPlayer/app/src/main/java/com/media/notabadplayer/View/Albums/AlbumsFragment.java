@@ -42,9 +42,11 @@ public class AlbumsFragment extends Fragment implements BaseView
         
     }
     
-    public static @NonNull AlbumsFragment newInstance()
+    public static @NonNull AlbumsFragment newInstance(@NonNull BasePresenter presenter)
     {
-        return new AlbumsFragment();
+        AlbumsFragment fragment = new AlbumsFragment();
+        fragment._presenter = presenter;
+        return fragment;
     }
     
     @Override
@@ -120,12 +122,6 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void setPresenter(@NonNull BasePresenter presenter)
-    {
-        _presenter = presenter;
-    }
-
-    @Override
     public void enableInteraction()
     {
         _table.setClickable(true);
@@ -164,13 +160,14 @@ public class AlbumsFragment extends Fragment implements BaseView
             manager.popBackStackImmediate();
         }
         
-        PlaylistFragment f = PlaylistFragment.newInstance();
-        f.setPresenter(new PlaylistPresenter(f, playlist, audioInfo));
+        BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo);
+        PlaylistFragment view = PlaylistFragment.newInstance(presenter);
+        presenter.setView(view);
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
         transaction.addToBackStack(newEntryName);
-        transaction.replace(R.id.mainLayout, f, newEntryName);
+        transaction.replace(R.id.mainLayout, view, newEntryName);
         transaction.commit();
     }
     
@@ -235,15 +232,9 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
-        _tableAdapter.sortAlbums(albumSorting);
-        _table.invalidateViews();
         
-        if (_tableState != null)
-        {
-            _table.onRestoreInstanceState(_tableState);
-        }
     }
 
     @Override

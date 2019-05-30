@@ -15,23 +15,28 @@ import com.media.notabadplayer.View.BaseView;
 
 public class QuickPlayerPresenter implements BasePresenter
 {
-    private @NonNull BaseView _view;
-    private @NonNull BaseView _applicationRootView;
+    private BaseView _view;
 
     private @NonNull AudioInfo _audioInfo;
 
-    public QuickPlayerPresenter(@NonNull BaseView view, @NonNull BaseView applicationRootView,
-                                @NonNull AudioInfo audioInfo)
+    public QuickPlayerPresenter(@NonNull AudioInfo audioInfo)
     {
-        this._view = view;
-        this._applicationRootView = applicationRootView;
         this._audioInfo = audioInfo;
+    }
+
+    @Override
+    public void setView(@NonNull BaseView view)
+    {
+        _view = view;
     }
     
     @Override
     public void start() 
     {
-        
+        if (_view == null)
+        {
+            throw new IllegalStateException("SettingsPresenter: view has not been set");
+        }
     }
 
     @Override
@@ -56,7 +61,7 @@ public class QuickPlayerPresenter implements BasePresenter
             return;
         }
 
-        _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist);
+        _view.openPlayerScreen(currentlyPlayingPlaylist);
     }
 
     @Override
@@ -68,11 +73,11 @@ public class QuickPlayerPresenter implements BasePresenter
     @Override
     public void onOpenPlaylistButtonClick()
     {
-        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
         
-        if (playlist != null)
+        if (currentlyPlayingPlaylist != null)
         {
-            _applicationRootView.openPlaylistScreen(_audioInfo, playlist);
+            _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist);
         }
     }
 
@@ -107,7 +112,7 @@ public class QuickPlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting) 
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting) 
     {
 
     }

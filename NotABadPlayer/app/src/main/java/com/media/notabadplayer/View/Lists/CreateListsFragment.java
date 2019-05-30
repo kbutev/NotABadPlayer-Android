@@ -47,9 +47,11 @@ public class CreateListsFragment extends Fragment implements BaseView {
 
     }
 
-    public static @NonNull CreateListsFragment newInstance()
+    public static @NonNull CreateListsFragment newInstance(@NonNull BasePresenter presenter)
     {
-        return new CreateListsFragment();
+        CreateListsFragment fragment = new CreateListsFragment();
+        fragment._presenter = presenter;
+        return fragment;
     }
     
     @Override
@@ -222,12 +224,6 @@ public class CreateListsFragment extends Fragment implements BaseView {
     }
     
     @Override
-    public void setPresenter(@NonNull BasePresenter presenter)
-    {
-        _presenter = presenter;
-    }
-
-    @Override
     public void enableInteraction()
     {
         _createPlaylistButton.setClickable(true);
@@ -272,13 +268,14 @@ public class CreateListsFragment extends Fragment implements BaseView {
             manager.popBackStackImmediate();
         }
 
-        PlaylistFragment f = PlaylistFragment.newInstance();
-        f.setPresenter(new PlaylistPresenter(f, playlist, audioInfo));
+        BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo);
+        PlaylistFragment view = PlaylistFragment.newInstance(presenter);
+        presenter.setView(view);
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
         transaction.addToBackStack(newEntryName);
-        transaction.replace(R.id.mainLayout, f, newEntryName);
+        transaction.replace(R.id.mainLayout, view, newEntryName);
         transaction.commit();
     }
 
@@ -325,7 +322,7 @@ public class CreateListsFragment extends Fragment implements BaseView {
     }
 
     @Override
-    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }
