@@ -455,12 +455,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     @Override
     public void appThemeChanged(AppSettings.AppTheme appTheme)
     {
-        // Reload
-        Fragment fragment = this;
-        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.detach(fragment);
-        ft.attach(fragment);
-        ft.commit();
+
     }
 
     @Override
