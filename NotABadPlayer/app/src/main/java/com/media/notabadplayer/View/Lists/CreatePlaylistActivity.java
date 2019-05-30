@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Lists;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -190,6 +192,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
     {
         if (_playlist == null)
         {
+            hideKeyboard();
             showNoTracksDialog();
             return;
         }
@@ -303,8 +306,21 @@ public class CreatePlaylistActivity extends AppCompatActivity
         AlertWindows.showAlert(this, 0, R.string.playlist_dialog_taken_name, R.string.ok, null);
     }
 
+    private void hideKeyboard()
+    {
+        View view = this.getCurrentFocus();
+
+        if (view != null)
+        {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     private void quit()
     {
+        hideKeyboard();
+
         onBackPressed();
     }
 }

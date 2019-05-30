@@ -15,14 +15,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Launch.LaunchActivity;
 import com.media.notabadplayer.Presenter.Lists.ListsPresenter;
 import com.media.notabadplayer.Presenter.Player.QuickPlayerPresenter;
-import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
 import com.media.notabadplayer.Storage.AudioStorage;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
@@ -45,7 +43,6 @@ import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
 import com.media.notabadplayer.View.Lists.CreateListsFragment;
-import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
 
@@ -512,38 +509,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         if (_currentTabID != R.id.navigation_settings)
         {
             _currentTab.openPlaylistScreen(_audioStorage, playlist);
-            return;
         }
-        // ... or when on the settings tab, navigate to the albums tab, and then open the playlist fragment
-        
-        View view = _navigation.findViewById(R.id.navigation_albums);
-        view.performClick();
-
-        FragmentManager manager = getSupportFragmentManager();
-        int backStackCount = manager.getBackStackEntryCount();
-        
-        String newEntryName = playlist.getName();
-        String lastEntryName = backStackCount > 0 ? manager.getBackStackEntryAt(backStackCount-1).getName() : "";
-
-        // Do nothing, if the last entry name is equal to the new entry name
-        if (lastEntryName != null && lastEntryName.equals(newEntryName))
-        {
-            return;
-        }
-
-        while (manager.getBackStackEntryCount() > 0)
-        {
-            manager.popBackStackImmediate();
-        }
-
-        PlaylistFragment f = PlaylistFragment.newInstance();
-        PlaylistPresenter presenter = new PlaylistPresenter(f, playlist, _audioStorage);
-        f.setPresenter(presenter);
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
-        transaction.addToBackStack(newEntryName);
-        transaction.replace(R.id.mainLayout, f, newEntryName);
-        transaction.commit();
     }
 
     @Override
