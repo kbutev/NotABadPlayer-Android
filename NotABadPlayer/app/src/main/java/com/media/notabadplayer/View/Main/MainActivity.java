@@ -96,7 +96,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         setContentView(R.layout.activity_main);
         
         // Presenter, audio model
-        _presenter = new MainPresenter(this);
+        _presenter = new MainPresenter();
+        _presenter.setView(this);
         
         _audioStorage = new AudioStorage(this);
         _audioStorage.load();
@@ -199,11 +200,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
         
         // Create quick player and it's presenter
-        _quickPlayer = QuickPlayerFragment.newInstance();
-        _quickPlayer.setPresenter(new QuickPlayerPresenter(_quickPlayer, this, _audioStorage));
+        BasePresenter presenter = new QuickPlayerPresenter(_audioStorage);
+        _quickPlayer = QuickPlayerFragment.newInstance(presenter, this);
+        presenter.setView(_quickPlayer);
         
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.quickPlayer, (Fragment)_quickPlayer).commit();
+        manager.beginTransaction().replace(R.id.quickPlayer, _quickPlayer).commit();
         
         // Start presenter
         _presenter.start();
@@ -234,9 +236,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
 
         _currentTabID = R.id.navigation_albums;
-        _currentTab = AlbumsFragment.newInstance();
-        _currentTab.setPresenter(new AlbumsPresenter(_currentTab, _audioStorage));
-
+        
+        BasePresenter presenter = new AlbumsPresenter(_audioStorage);
+        _currentTab = AlbumsFragment.newInstance(presenter);
+        presenter.setView(_currentTab);
+        
         refreshCurrentTab();
     }
 
@@ -257,8 +261,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
 
         _currentTabID = R.id.navigation_lists;
-        _currentTab = CreateListsFragment.newInstance();
-        _currentTab.setPresenter(new ListsPresenter(_currentTab, _audioStorage));
+        
+        BasePresenter presenter = new ListsPresenter(_audioStorage);
+        _currentTab = CreateListsFragment.newInstance(presenter);
+        presenter.setView(_currentTab);
 
         refreshCurrentTab();
     }
@@ -280,9 +286,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
 
         _currentTabID = R.id.navigation_search;
-        _currentTab = SearchFragment.newInstance();
-        _currentTab.setPresenter(new SearchPresenter(_currentTab, this, _audioStorage));
-
+        
+        BasePresenter presenter = new SearchPresenter(this, _audioStorage);
+        _currentTab = SearchFragment.newInstance(presenter);
+        presenter.setView(_currentTab);
+        
         refreshCurrentTab();
     }
 
@@ -301,11 +309,13 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             restoreTabFromCache(cachedTab, R.id.navigation_settings);
             return;
         }
-
+        
         _currentTabID = R.id.navigation_settings;
-        _currentTab = SettingsFragment.newInstance();
-        _currentTab.setPresenter(new SettingsPresenter(_currentTab, this, _audioStorage));
-
+        
+        BasePresenter presenter = new SettingsPresenter( _audioStorage);
+        _currentTab = SettingsFragment.newInstance(presenter, this);
+        presenter.setView(_currentTab);
+        
         refreshCurrentTab();
     }
 
@@ -330,6 +340,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         // Quick player is hidden for the settings screen
         updateQuickPlayerVisibility();
+    }
+    
+    private void clearTabCache()
+    {
+        _cachedTabs.clear();
     }
 
     private void cacheCurrentTab()
@@ -485,12 +500,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void setPresenter(@NonNull BasePresenter presenter)
-    {
-        
-    }
-
-    @Override
     public void enableInteraction()
     {
 
@@ -545,7 +554,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     @Override
     public void appSettingsReset()
     {
+        Log.v(MainActivity.class.getSimpleName(), "App settings were reset");
 
+        clearTabCache();
     }
     
     @Override
@@ -553,27 +564,30 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         Log.v(MainActivity.class.getSimpleName(), "App theme changed to " + appTheme.name());
 
+        clearTabCache();
+
         AppThemeUtility.setTheme(this, appTheme);
         
-        _currentTab.appThemeChanged(appTheme);
         _quickPlayer.appThemeChanged(appTheme);
     }
     
     @Override
-    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
-        Log.v(MainActivity.class.getSimpleName(), "App sorting changed.");
+        Log.v(MainActivity.class.getSimpleName(), "App track sorting changed.");
+
+        clearTabCache();
         
-        _currentTab.appSortingChanged(albumSorting, trackSorting);
-        _quickPlayer.appSortingChanged(albumSorting, trackSorting);
+        _quickPlayer.appTrackSortingChanged(trackSorting);
     }
 
     @Override
     public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
         Log.v(MainActivity.class.getSimpleName(), "App appearance changed.");
+
+        clearTabCache();
         
-        _currentTab.onShowVolumeBarSettingChange(value);
         _quickPlayer.onShowVolumeBarSettingChange(value);
     }
 

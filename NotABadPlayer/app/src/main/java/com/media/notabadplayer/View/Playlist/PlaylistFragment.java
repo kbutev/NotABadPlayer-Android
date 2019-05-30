@@ -50,9 +50,11 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         
     }
     
-    public static @NonNull PlaylistFragment newInstance()
+    public static @NonNull PlaylistFragment newInstance(@NonNull BasePresenter presenter)
     {
-        return new PlaylistFragment();
+        PlaylistFragment fragment = new PlaylistFragment();
+        fragment._presenter = presenter;
+        return fragment;
     }
 
     @Override
@@ -176,12 +178,6 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     private void stopLooping()
     {
         LooperService.getShared().unsubscribe(this);
-    }
-
-    @Override
-    public void setPresenter(@NonNull BasePresenter presenter)
-    {
-        _presenter = presenter;
     }
 
     @Override
@@ -318,7 +314,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
         
     }

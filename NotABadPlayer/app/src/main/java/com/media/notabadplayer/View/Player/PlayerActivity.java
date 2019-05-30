@@ -77,11 +77,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         setContentView(R.layout.activity_player);
         
         // UI
-        initUI();
-        
-        // Presenter
-        _presenter = new PlayerPresenter(_fragment, playlist);
-        _fragment.setPresenter(_presenter);
+        initUI(playlist);
         
         // Noise suppression
         _noiseSuppression = new AudioPlayerNoiseSuppression();
@@ -152,18 +148,14 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         return super.onKeyDown(keyCode, event);
     }
     
-    private void initUI()
+    private void initUI(@NonNull AudioPlaylist playlist)
     {
-        _fragment = PlayerFragment.newInstance();
+        _presenter = new PlayerPresenter(playlist);
+        _fragment = PlayerFragment.newInstance(_presenter);
+        _presenter.setView(_fragment);
         
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.player, (Fragment)_fragment).commit();
-    }
-    
-    @Override
-    public void setPresenter(@NonNull BasePresenter presenter)
-    {
-        
     }
 
     @Override
@@ -227,7 +219,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }

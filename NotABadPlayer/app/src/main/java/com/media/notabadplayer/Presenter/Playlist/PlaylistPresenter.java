@@ -16,16 +16,14 @@ import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
 
 public class PlaylistPresenter implements BasePresenter {
-    private @NonNull BaseView _view;
+    private BaseView _view;
 
     private final @NonNull AudioPlaylist _playlist;
 
     private @NonNull AudioInfo _audioInfo;
     
-    public PlaylistPresenter(@NonNull BaseView view, @NonNull AudioPlaylist playlist, @NonNull AudioInfo audioInfo)
+    public PlaylistPresenter(@NonNull AudioPlaylist playlist, @NonNull AudioInfo audioInfo)
     {
-        _view = view;
-
         // Sort playlist
         // Sort only playlists of type album
         AppSettings.TrackSorting sorting = GeneralStorage.getShared().getTrackSortingValue();
@@ -37,8 +35,19 @@ public class PlaylistPresenter implements BasePresenter {
     }
 
     @Override
+    public void setView(@NonNull BaseView view)
+    {
+        _view = view;
+    }
+    
+    @Override
     public void start()
     {
+        if (_view == null)
+        {
+            throw new IllegalStateException("SettingsPresenter: view has not been set");
+        }
+        
         _view.onPlaylistLoad(_playlist);
     }
 
@@ -128,7 +137,7 @@ public class PlaylistPresenter implements BasePresenter {
     }
     
     @Override
-    public void onAppSortingChange(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }

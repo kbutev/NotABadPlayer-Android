@@ -34,6 +34,7 @@ import com.media.notabadplayer.View.BaseView;
 public class SettingsFragment extends Fragment implements BaseView
 {
     private BasePresenter _presenter;
+    private BaseView _rootView;
     
     private Spinner _themePicker;
     private Spinner _trackSortingPicker;
@@ -63,9 +64,12 @@ public class SettingsFragment extends Fragment implements BaseView
 
     }
 
-    public static @NonNull SettingsFragment newInstance()
+    public static @NonNull SettingsFragment newInstance(@NonNull BasePresenter presenter, @NonNull BaseView rootView)
     {
-        return new SettingsFragment();
+        SettingsFragment fragment = new SettingsFragment();
+        fragment._presenter = presenter;
+        fragment._rootView = rootView;
+        return fragment;
     }
 
     @Override
@@ -169,7 +173,7 @@ public class SettingsFragment extends Fragment implements BaseView
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 AppSettings.TrackSorting selectedValue = AppSettings.TrackSorting.values()[position];
                 AppSettings.AlbumSorting albumSorting = GeneralStorage.getShared().getAlbumSortingValue();
-                _presenter.onAppSortingChange(albumSorting, selectedValue);
+                _presenter.onAppTrackSortingChanged(selectedValue);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
@@ -412,12 +416,6 @@ public class SettingsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void setPresenter(@NonNull BasePresenter presenter)
-    {
-        _presenter = presenter;
-    }
-
-    @Override
     public void enableInteraction()
     {
         _resetSettingsButton.setClickable(true);
@@ -468,12 +466,26 @@ public class SettingsFragment extends Fragment implements BaseView
     @Override
     public void appSettingsReset()
     {
+        // Notify root view
+        if (_rootView != null)
+        {
+            _rootView.appSettingsReset();
+        }
+        
+        // Update self
         selectProperValues();
     }
     
     @Override
     public void appThemeChanged(AppSettings.AppTheme appTheme)
     {
+        // Notify root view
+        if (_rootView != null)
+        {
+            _rootView.appThemeChanged(appTheme);
+        }
+        
+        // Update self
         FragmentActivity a = getActivity();
 
         if (a == null)
@@ -499,9 +511,13 @@ public class SettingsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
-
+        // Notify root view
+        if (_rootView != null)
+        {
+            _rootView.appTrackSortingChanged(trackSorting);
+        }
     }
     
     @Override

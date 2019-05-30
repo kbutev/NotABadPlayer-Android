@@ -1,6 +1,7 @@
 package com.media.notabadplayer.View.Player;
 
 import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +43,8 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     AudioPlayer _player = AudioPlayer.getShared();
     
     private BasePresenter _presenter;
-
+    private BaseView _rootView;
+    
     private QuickPlayerLayout _layout;
     private ImageView _imageCover;
     private TextView _labelTitle;
@@ -60,10 +61,13 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     {
 
     }
-
-    public static @NonNull QuickPlayerFragment newInstance()
+    
+    public static @NonNull QuickPlayerFragment newInstance(@NonNull BasePresenter presenter, @NonNull BaseView rootView)
     {
-        return new QuickPlayerFragment();
+        QuickPlayerFragment fragment = new QuickPlayerFragment();
+        fragment._presenter = presenter;
+        fragment._rootView = rootView;
+        return fragment;
     }
     
     @Override
@@ -89,7 +93,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         
         return root;
     }
-
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -335,12 +339,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void setPresenter(@NonNull BasePresenter presenter)
-    {
-        _presenter = presenter;
-    }
-
-    @Override
     public void enableInteraction()
     {
         _buttonPlaylist.setClickable(true);
@@ -365,17 +363,10 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     @Override
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
-        Intent intent = new Intent(getActivity(), PlayerActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("playlist", Serializing.serializeObject(playlist));
-        startActivity(intent);
-
-        // Transition animation
-        Activity a = getActivity();
-
-        if (a != null)
+        if (_rootView != null)
         {
-            a.overridePendingTransition(R.anim.player_slide_up, R.anim.player_slide_down);
+            // Forward request to the application's root view
+            _rootView.openPlaylistScreen(audioInfo, playlist);
         }
     }
 
@@ -394,7 +385,18 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     @Override
     public void openPlayerScreen(@NonNull AudioPlaylist playlist)
     {
+        Intent intent = new Intent(getActivity(), PlayerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("playlist", Serializing.serializeObject(playlist));
+        startActivity(intent);
 
+        // Transition animation
+        Activity a = getActivity();
+        
+        if (a != null)
+        {
+            a.overridePendingTransition(R.anim.player_slide_up, R.anim.player_slide_down);
+        }
     }
 
     @Override
@@ -459,7 +461,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting)
+    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }

@@ -5,14 +5,11 @@ import android.support.annotation.NonNull;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 
 public interface BaseView {
-    void setPresenter(@NonNull BasePresenter presenter);
-
     void enableInteraction();
     void disableInteraction();
 
@@ -29,7 +26,7 @@ public interface BaseView {
     
     void appSettingsReset();
     void appThemeChanged(AppSettings.AppTheme appTheme);
-    void appSortingChanged(AppSettings.AlbumSorting albumSorting, AppSettings.TrackSorting trackSorting);
+    void appTrackSortingChanged(AppSettings.TrackSorting trackSorting);
     void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar showVolumeBar);
     
     void onPlayerErrorEncountered(@NonNull Exception error);
