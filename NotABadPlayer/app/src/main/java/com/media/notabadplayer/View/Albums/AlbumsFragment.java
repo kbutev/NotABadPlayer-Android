@@ -169,8 +169,9 @@ public class AlbumsFragment extends Fragment implements BaseView
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
-        transaction.replace(R.id.mainLayout, f);
-        transaction.addToBackStack(newEntryName).commit();
+        transaction.addToBackStack(newEntryName);
+        transaction.replace(R.id.mainLayout, f, newEntryName);
+        transaction.commit();
     }
     
     @Override

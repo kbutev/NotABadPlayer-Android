@@ -10,16 +10,22 @@
     <include layout="@layout/layout_navigation"/>
 
     <LinearLayout
-        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="80"
-        android:orientation="horizontal"/>
+        android:layout_weight="92"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/mainLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"/>
 
-    <LinearLayout
-        android:id="@+id/quickPlayer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" />
+        <LinearLayout
+            android:id="@+id/quickPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+    </LinearLayout>
     
 </LinearLayout>
