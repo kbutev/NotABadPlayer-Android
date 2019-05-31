@@ -198,6 +198,7 @@ public class GeneralStorage
         saveSettingsAction(ApplicationInput.PLAYER_PREVIOUS_BUTTON, ApplicationAction.PREVIOUS);
         saveSettingsAction(ApplicationInput.PLAYER_SWIPE_LEFT, ApplicationAction.PREVIOUS);
         saveSettingsAction(ApplicationInput.PLAYER_SWIPE_RIGHT, ApplicationAction.NEXT);
+        saveSettingsAction(ApplicationInput.PLAYER_VOLUME, ApplicationAction.MUTE_OR_UNMUTE);
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
         saveSettingsAction(ApplicationInput.QUICK_PLAYER_PLAY_BUTTON, ApplicationAction.PAUSE_OR_RESUME);
@@ -207,6 +208,8 @@ public class GeneralStorage
         saveSettingsAction(ApplicationInput.EXTERNAL_PLAY, ApplicationAction.PAUSE);
 
         saveCachingPolicy(AppSettings.TabCachingPolicies.ALBUMS_ONLY);
+        
+        AudioPlayer.getShared().unmute();
     }
     
     synchronized public boolean isFirstApplicationLaunch()

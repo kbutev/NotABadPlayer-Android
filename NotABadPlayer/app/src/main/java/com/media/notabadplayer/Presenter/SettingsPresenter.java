@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
@@ -128,6 +129,11 @@ public class SettingsPresenter implements BasePresenter
         Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings ShowVolumeBar value " + value.name());
         
         GeneralStorage.getShared().saveShowVolumeBarValue(value);
+
+        // Since the volume icon may no longer be visible after this change, always unmute & pause
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Setting ShowVolumeBar was changed, automatically unmuting and pausing player");
+        AudioPlayer.getShared().unmute();
+        AudioPlayer.getShared().pause();
     }
 
     @Override
@@ -144,5 +150,14 @@ public class SettingsPresenter implements BasePresenter
         Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked keybind value of action " + action.name() + " for input " + input.name());
         
         GeneralStorage.getShared().saveSettingsAction(input, action);
+        
+        // If the player volume keybind was changed, always unmute & pause
+        if (input == ApplicationInput.PLAYER_VOLUME)
+        {
+            Log.v(SettingsPresenter.class.getCanonicalName(), "Keybind PLAYER_VOLUME was changed, automatically unmuting and pausing player");
+            
+            AudioPlayer.getShared().unmute();
+            AudioPlayer.getShared().pause();
+        }
     }
 }

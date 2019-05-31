@@ -554,22 +554,47 @@ public class AudioPlayer {
         manager.setStreamVolume(AudioManager.STREAM_MUSIC, result,0);
     }
     
+    public boolean isMuted()
+    {
+        return _muted;
+    }
+    
     public void muteOrUnmute()
     {
         checkIfPlayerIsInitialized();
 
         if (!_muted)
         {
+            mute();
+        }
+        else
+        {
+            unmute();
+        }
+    }
+
+    public void mute()
+    {
+        checkIfPlayerIsInitialized();
+
+        if (!_muted)
+        {
             _player.setVolume(0, 0);
-            
+
             _muted = true;
 
             Log.v(AudioPlayer.class.getCanonicalName(), "Mute");
         }
-        else
+    }
+
+    public void unmute()
+    {
+        checkIfPlayerIsInitialized();
+
+        if (_muted)
         {
             _player.setVolume(1, 1);
-            
+
             _muted = false;
 
             Log.v(AudioPlayer.class.getCanonicalName(), "Unmute");

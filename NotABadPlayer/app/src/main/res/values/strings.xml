@@ -62,6 +62,7 @@
     <string name="settings_keybind_player_recall">Player Recall</string>
     <string name="settings_keybind_player_swipe_left">Player Swipe L</string>
     <string name="settings_keybind_player_swipe_right">Player Swipe R</string>
+    <string name="settings_keybind_player_volume">Player Speaker Icon</string>
     <string name="settings_keybind_qplayer_volume_up">QPlayer Volume Up</string>
     <string name="settings_keybind_qplayer_volume_down">QPlayer Volume Down</string>
     <string name="settings_keybind_qplayer_play">QPlayer Play</string>
