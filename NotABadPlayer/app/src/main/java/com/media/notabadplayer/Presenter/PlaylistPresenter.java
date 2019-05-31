@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Presenter.Playlist;
+package com.media.notabadplayer.Presenter;
 
 import java.util.ArrayList;
 import android.support.annotation.NonNull;
@@ -11,7 +11,6 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
-import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
 
@@ -60,16 +59,13 @@ public class PlaylistPresenter implements BasePresenter {
     @Override
     public void onPlaylistItemClick(int index)
     {
-        // Index zero is the header - ignore
-        if (index == 0)
+        ArrayList<AudioTrack> tracks = _playlist.getTracks();
+
+        if (index < 0 || index >= tracks.size())
         {
+            Log.v(PlaylistPresenter.class.getCanonicalName(), "Error: Invalid track list index, cannot respond to event properly");
             return;
         }
-
-        // Index greater than zero is an song track
-        index--;
-
-        ArrayList<AudioTrack> tracks = _playlist.getTracks();
 
         AudioTrack clickedTrack = tracks.get(index);
 

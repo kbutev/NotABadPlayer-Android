@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,7 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Launch.LaunchActivity;
-import com.media.notabadplayer.Presenter.Player.PlayerPresenter;
+import com.media.notabadplayer.Presenter.PlayerPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
@@ -201,7 +202,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
     {
 
     }

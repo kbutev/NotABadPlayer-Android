@@ -1,28 +1,29 @@
-package com.media.notabadplayer.Presenter.Albums;
+package com.media.notabadplayer.Presenter;
 
-import java.util.ArrayList;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Controls.ApplicationAction;
+import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
-public class AlbumsPresenter implements BasePresenter {
+public class QuickPlayerPresenter implements BasePresenter
+{
     private BaseView _view;
+
     private @NonNull AudioInfo _audioInfo;
 
-    public AlbumsPresenter(@NonNull AudioInfo audioInfo)
+    public QuickPlayerPresenter(@NonNull AudioInfo audioInfo)
     {
-        _audioInfo = audioInfo;
+        this._audioInfo = audioInfo;
     }
-    
+
     @Override
     public void setView(@NonNull BaseView view)
     {
@@ -30,28 +31,18 @@ public class AlbumsPresenter implements BasePresenter {
     }
     
     @Override
-    public void start()
+    public void start() 
     {
         if (_view == null)
         {
             throw new IllegalStateException("SettingsPresenter: view has not been set");
         }
-        
-        _view.onMediaAlbumsLoad(_audioInfo.getAlbums());
     }
 
     @Override
     public void onAlbumItemClick(int index)
     {
-        AudioAlbum album = _audioInfo.getAlbums().get(index);
-        
-        Log.v(AlbumsPresenter.class.getCanonicalName(), "Open '" + album.albumTitle + "' album");
 
-        ArrayList<AudioTrack> tracks = _audioInfo.getAlbumTracks(album);
-
-        AudioPlaylist playlist = new AudioPlaylist(album.albumTitle, tracks);
-
-        _view.openPlaylistScreen(_audioInfo, playlist);
     }
 
     @Override
@@ -63,30 +54,37 @@ public class AlbumsPresenter implements BasePresenter {
     @Override
     public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
-        if (playlist != null)
-        {
-            Log.v(AlbumsPresenter.class.getCanonicalName(), "Open player screen with playlist " + playlist.getName());
+        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
 
-            _view.openPlaylistScreen(_audioInfo, playlist);
+        if (currentlyPlayingPlaylist == null)
+        {
+            return;
         }
+
+        _view.openPlayerScreen(currentlyPlayingPlaylist);
     }
 
     @Override
     public void onPlayerButtonClick(ApplicationInput input)
     {
-
+        KeyBinds.getShared().evaluateInput(input);
     }
-
+    
     @Override
     public void onOpenPlaylistButtonClick()
     {
-
+        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
+        
+        if (currentlyPlayingPlaylist != null)
+        {
+            _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist);
+        }
     }
 
     @Override
     public void onPlayOrderButtonClick()
     {
-
+        KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
     }
 
     @Override
@@ -102,25 +100,25 @@ public class AlbumsPresenter implements BasePresenter {
     }
 
     @Override
-    public void onAppSettingsReset()
+    public void onAppSettingsReset() 
     {
 
     }
 
     @Override
-    public void onAppThemeChange(AppSettings.AppTheme themeValue)
-    {
-
-    }
-    
-    @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    public void onAppThemeChange(AppSettings.AppTheme themeValue) 
     {
 
     }
 
     @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting) 
+    {
+
+    }
+
+    @Override
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value) 
     {
 
     }
@@ -132,8 +130,7 @@ public class AlbumsPresenter implements BasePresenter {
     }
 
     @Override
-    public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
-    {
+    public void onKeybindChange(ApplicationAction action, ApplicationInput input) {
 
     }
 }
