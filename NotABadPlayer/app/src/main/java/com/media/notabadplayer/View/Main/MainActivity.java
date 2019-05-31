@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,8 +20,8 @@ import android.view.MenuItem;
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Launch.LaunchActivity;
-import com.media.notabadplayer.Presenter.Lists.ListsPresenter;
-import com.media.notabadplayer.Presenter.Player.QuickPlayerPresenter;
+import com.media.notabadplayer.Presenter.ListsPresenter;
+import com.media.notabadplayer.Presenter.QuickPlayerPresenter;
 import com.media.notabadplayer.Storage.AudioStorage;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
@@ -29,10 +30,10 @@ import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
-import com.media.notabadplayer.Presenter.Albums.AlbumsPresenter;
-import com.media.notabadplayer.Presenter.Main.MainPresenter;
-import com.media.notabadplayer.Presenter.Search.SearchPresenter;
-import com.media.notabadplayer.Presenter.Settings.SettingsPresenter;
+import com.media.notabadplayer.Presenter.AlbumsPresenter;
+import com.media.notabadplayer.Presenter.MainPresenter;
+import com.media.notabadplayer.Presenter.SearchPresenter;
+import com.media.notabadplayer.Presenter.SettingsPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
@@ -546,7 +547,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
     {
 
     }

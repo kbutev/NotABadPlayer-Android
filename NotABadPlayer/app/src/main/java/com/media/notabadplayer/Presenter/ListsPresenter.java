@@ -1,20 +1,25 @@
-package com.media.notabadplayer.Presenter.Main;
+package com.media.notabadplayer.Presenter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
-import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
-public class MainPresenter implements BasePresenter {
+public class ListsPresenter implements BasePresenter
+{
     private BaseView _view;
-    
-    public MainPresenter() 
+
+    private @NonNull AudioInfo _audioInfo;
+
+    public ListsPresenter(@NonNull AudioInfo audioInfo)
     {
-        
+        _audioInfo = audioInfo;
     }
 
     @Override
@@ -35,11 +40,11 @@ public class MainPresenter implements BasePresenter {
     @Override
     public void onAlbumItemClick(int index)
     {
-        
+
     }
 
     @Override
-    public void onPlaylistItemClick(int index)
+    public void onPlaylistItemClick(int index) 
     {
 
     }
@@ -47,7 +52,12 @@ public class MainPresenter implements BasePresenter {
     @Override
     public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
+        if (playlist != null)
+        {
+            Log.v(ListsPresenter.class.getCanonicalName(), "Open player screen with playlist " + playlist.getName());
 
+            _view.openPlaylistScreen(_audioInfo, playlist);
+        }
     }
 
     @Override
@@ -69,19 +79,19 @@ public class MainPresenter implements BasePresenter {
     }
 
     @Override
-    public void onSearchResultClick(int index)
+    public void onSearchResultClick(int index) 
     {
 
     }
 
     @Override
-    public void onSearchQuery(@NonNull String searchValue)
+    public void onSearchQuery(@NonNull String searchValue) 
     {
 
     }
 
     @Override
-    public void onAppSettingsReset() 
+    public void onAppSettingsReset()
     {
 
     }
@@ -91,7 +101,7 @@ public class MainPresenter implements BasePresenter {
     {
 
     }
-    
+
     @Override
     public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
@@ -99,7 +109,7 @@ public class MainPresenter implements BasePresenter {
     }
 
     @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value) 
     {
 
     }
@@ -111,7 +121,7 @@ public class MainPresenter implements BasePresenter {
     }
 
     @Override
-    public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
+    public void onKeybindChange(ApplicationAction action, ApplicationInput input) 
     {
 
     }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -30,9 +31,8 @@ import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
+import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -95,15 +95,6 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     {
         super.onStart();
 
-        // Retrieve saved search query, if there is one
-        String searchQuery = GeneralStorage.getShared().retrieveSearchQuery();
-
-        if (!_searchField.getText().toString().equals(searchQuery))
-        {
-            _searchField.setText(searchQuery);
-            _presenter.onSearchQuery(_searchField.getText().toString());
-        }
-        
         if (_searchResultsAdapter != null)
         {
             _searchResults.setAdapter(_searchResultsAdapter);
@@ -270,7 +261,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
     {
         Context context = getContext();
 
@@ -279,23 +270,29 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
             return;
         }
 
+        _searchField.setText(searchQuery);
+
         _searchTip.setVisibility(View.VISIBLE);
-        
-        if (songs.size() > 0)
+
+        if (searchTip != null)
         {
-            _searchTip.setText(String.valueOf(songs.size() + " " + getResources().getString(R.string.search_results_tip)));
+            _searchTip.setText(searchTip);
         }
         else
         {
-            _searchTip.setText(R.string.search_results_tip_no_results);
+            if (songs.size() > 0)
+            {
+                _searchTip.setText(String.valueOf(songs.size() + " " + getResources().getString(R.string.search_results_tip)));
+            }
+            else
+            {
+                _searchTip.setText(R.string.search_results_tip_no_results);
+            }
         }
 
         _searchResultsAdapter = new SearchListAdapter(context, songs);
         _searchResults.setAdapter(_searchResultsAdapter);
         _searchResults.invalidateViews();
-        
-        // Save search query
-        GeneralStorage.getShared().saveSearchQuery(searchQuery);
     }
 
     @Override

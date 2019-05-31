@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
@@ -135,7 +136,17 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
                     return;
                 }
 
-                if (position != 0)
+                // Index zero is reserved for the header
+                // Decrement the value and make sure its a valid index
+                // Index zero is the header - ignore
+                if (position == 0)
+                {
+                    return;
+                }
+
+                position--;
+
+                if (position >= 0)
                 {
                     _tableAdapter.selectItem(view);
                     
@@ -260,7 +271,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
     
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs) 
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
     {
         
     }

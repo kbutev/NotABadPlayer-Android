@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Presenter.Search;
+package com.media.notabadplayer.Presenter;
 
 import java.util.ArrayList;
 import android.content.Context;
@@ -15,7 +15,6 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
 
@@ -25,6 +24,7 @@ public class SearchPresenter implements BasePresenter
     private @NonNull Context _context;
     private @NonNull AudioInfo _audioInfo;
     private ArrayList<AudioTrack> _searchResults = new ArrayList<>();
+    private @Nullable String _lastSearchQuery = null;
     
     public SearchPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo)
     {
@@ -44,6 +44,14 @@ public class SearchPresenter implements BasePresenter
         if (_view == null)
         {
             throw new IllegalStateException("SettingsPresenter: view has not been set");
+        }
+
+        // Restore last search query from storage
+        String searchQuery = GeneralStorage.getShared().retrieveSearchQuery();
+
+        if (searchQuery != null && searchQuery.length() > 0)
+        {
+            onSearchQuery(searchQuery);
         }
     }
     
@@ -119,32 +127,46 @@ public class SearchPresenter implements BasePresenter
     @Override
     public void onSearchQuery(@NonNull String searchValue)
     {
-        if (searchValue.isEmpty())
+        // Skip if we already searched for this
+        if (_lastSearchQuery != null)
         {
-            return;
+            if (searchValue.equals(_lastSearchQuery))
+            {
+                return;
+            }
         }
         
-        final String searchQuery = searchValue.toLowerCase();
+        _lastSearchQuery = searchValue;
         
+        final String searchQuery = searchValue.toLowerCase();
+
+        // Save search query
+        GeneralStorage.getShared().saveSearchQuery(searchQuery);
+
+        // Start search process
+        _view.searchQueryResults(searchQuery, new ArrayList<AudioTrack>(), _context.getResources().getString(R.string.search_hint_searching));
+
+        // Use background thread to retrieve the search results
+        // Then, update the view on the main thread
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 _searchResults = _audioInfo.searchForTracks(searchQuery);
-                
+
                 Handler mainHandler = new Handler(Looper.getMainLooper());
-                
+
                 Runnable myRunnable = new Runnable() {
                     @Override
                     public void run()
                     {
-                        _view.searchQueryResults(searchQuery, _searchResults);
+                        _view.searchQueryResults(searchQuery, _searchResults, null);
                     }
                 };
-                
+
                 mainHandler.post(myRunnable);
             }
         });
-        
+
         thread.start();
     }
 

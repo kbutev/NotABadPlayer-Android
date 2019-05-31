@@ -2,6 +2,7 @@ package com.media.notabadplayer.View;
 
 import java.util.ArrayList;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -22,7 +23,7 @@ public interface BaseView {
     void openPlayerScreen(@NonNull AudioPlaylist playlist);
     void updatePlayerScreen(@NonNull AudioPlaylist playlist);
     
-    void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs);
+    void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip);
     
     void appSettingsReset();
     void appThemeChanged(AppSettings.AppTheme appTheme);

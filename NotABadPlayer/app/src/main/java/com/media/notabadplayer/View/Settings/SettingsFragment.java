@@ -458,7 +458,7 @@ public class SettingsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
     {
         
     }

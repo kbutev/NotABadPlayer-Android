@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Presenter.Settings;
+package com.media.notabadplayer.Presenter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,7 +10,6 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 public class SettingsPresenter implements BasePresenter 
