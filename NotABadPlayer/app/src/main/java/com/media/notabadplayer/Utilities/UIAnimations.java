@@ -9,6 +9,7 @@ import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ImageViewCompat;
 import android.view.View;
@@ -41,7 +42,7 @@ public class UIAnimations {
         return singleton;
     }
 
-    public void stopAnimations(final View view)
+    public void stopAnimations(final @Nullable View view)
     {
         view.clearAnimation();
         
@@ -51,7 +52,7 @@ public class UIAnimations {
         }
     }
 
-    public void animateFadeIn(Context context, final View view)
+    public void animateFadeIn(@Nullable Context context, final @Nullable View view)
     {
         if (context == null || view == null)
         {
@@ -68,7 +69,7 @@ public class UIAnimations {
         animationSet.start();
     }
 
-    public void animateFadeOut(Context context, final View view)
+    public void animateFadeOut(@Nullable Context context, final @Nullable View view)
     {
         if (context == null || view == null)
         {
@@ -88,7 +89,7 @@ public class UIAnimations {
     public class ImageAnimations {
         ValueAnimator animator = null;
 
-        public void animateTap(Context context, final ImageView view)
+        public void animateTap(@Nullable Context context, final @Nullable ImageView view)
         {
             if (context == null || view == null)
             {
@@ -147,7 +148,7 @@ public class UIAnimations {
     public class ButtonAnimations {
         ValueAnimator animator = null;
 
-        public void animateTap(Context context, final Button view)
+        public void animateTap(@Nullable Context context, final @Nullable Button view)
         {
             if (context == null || view == null)
             {
@@ -198,7 +199,7 @@ public class UIAnimations {
     public class ListItemAnimations {
         ValueAnimator animator = null;
 
-        public void animateTap(Context context, final View view)
+        public void animateTap(@Nullable Context context, final @Nullable View view)
         {
             if (context == null || view == null)
             {

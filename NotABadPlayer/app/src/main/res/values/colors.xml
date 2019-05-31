@@ -3,6 +3,10 @@
     <!-- Generic -->
     <color name="black">#414141</color>
     <color name="white">#ffffff</color>
+    <color name="red">#E02B2B</color>
+    <color name="blue">#03A9F4</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="green">#8BC34A</color>
     <color name="transparent">#00000000</color>
     <color name="statusBarColor">#414141</color>
 

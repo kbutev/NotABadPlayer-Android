@@ -1,7 +1,10 @@
 package com.media.notabadplayer.View.Player;
 
 import java.util.ArrayList;
+
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -43,7 +46,9 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private BasePresenter _presenter;
 
-    AudioPlayer _player = AudioPlayer.getShared();
+    @NonNull AudioPlayer _player = AudioPlayer.getShared();
+    
+    private boolean _playerIsMuted = false;
     
     private PlayerLayout _layout;
     private ImageView _imageCover;
@@ -171,6 +176,13 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private void initUI()
     {
+        Context context = getContext();
+        
+        if (context == null)
+        {
+            return;
+        }
+        
         _volumeBar.setMax(VOLUME_BAR_MAX_VALUE);
         _volumeBar.setProgress(AudioPlayer.getShared().getVolume());
         _volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -200,6 +212,30 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
             }
         });
+
+        _volumeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!_volumeIcon.isClickable())
+                {
+                    return;
+                }
+
+                UIAnimations.getShared().imageAnimations.animateTap(getContext(), _volumeIcon);
+                _presenter.onPlayerButtonClick(ApplicationInput.PLAYER_VOLUME);
+            }
+        });
+
+        _playerIsMuted = _player.isMuted();
+        
+        if (!_playerIsMuted)
+        {
+            _volumeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.volume_icon));
+        }
+        else
+        {
+            _volumeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.volume_icon_muted));
+        }
         
         _mediaBar.setMax(MEDIA_BAR_MAX_VALUE);
         _mediaBar.setProgress(1); // Set to a non-zero value, to prevent weird UI drawable glitch
@@ -353,10 +389,10 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         
         _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
         
-        // Volume bar update
+        // Volume bar & image update
         if (_volumeBar.getVisibility() == View.VISIBLE)
         {
-            int currentVolume = AudioPlayer.getShared().getVolume();
+            int currentVolume = _player.getVolume();
             int progress = _volumeBar.getProgress();
 
             if (currentVolume != progress)
@@ -364,6 +400,27 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
                 _volumeBar.setProgress(currentVolume);
 
                 UIAnimations.getShared().imageAnimations.animateTap(getContext(), _volumeIcon);
+            }
+
+            if (_player.isMuted() != _playerIsMuted)
+            {
+                _playerIsMuted = !_playerIsMuted;
+
+                Context context = getContext();
+                
+                if (context != null)
+                {
+                    Resources resources = context.getResources();
+
+                    if (!_playerIsMuted)
+                    {
+                        _volumeIcon.setImageDrawable(resources.getDrawable(R.drawable.volume_icon));
+                    }
+                    else
+                    {
+                        _volumeIcon.setImageDrawable(resources.getDrawable(R.drawable.volume_icon_muted));
+                    }
+                }
             }
         }
     }
@@ -469,6 +526,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonBack.setClickable(true);
         _buttonPlay.setClickable(true);
         _buttonPlayOrder.setClickable(true);
+        _volumeIcon.setClickable(true);
     }
 
     @Override
@@ -480,6 +538,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonBack.setClickable(false);
         _buttonPlay.setClickable(false);
         _buttonPlayOrder.setClickable(false);
+        _volumeIcon.setClickable(false);
     }
 
     @Override

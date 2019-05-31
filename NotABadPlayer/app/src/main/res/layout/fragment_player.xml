@@ -31,11 +31,13 @@
                 android:thumb="@drawable/volumebar_seek_thumb"/>
             <ImageView
                 android:id="@+id/volumeBarLeftIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:src="@drawable/volume_icon"
-                app:tint="?playerButtonsTintColor"/>
+                app:tint="?playerButtonsTintColor"
+                android:clickable="true"
+                android:focusable="true"/>
         </LinearLayout>
         <ImageView
             android:id="@+id/cover"
@@ -62,11 +64,13 @@
                 android:background="@null"/>
             <ImageView
                 android:id="@+id/volumeBarRightIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:src="@drawable/volume_icon"
-                app:tint="?playerButtonsTintColor"/>
+                app:tint="?playerButtonsTintColor"
+                android:clickable="true"
+                android:focusable="true"/>
         </LinearLayout>
     </LinearLayout>
     
