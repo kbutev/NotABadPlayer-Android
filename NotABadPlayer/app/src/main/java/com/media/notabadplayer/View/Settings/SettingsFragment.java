@@ -1,6 +1,8 @@
 package com.media.notabadplayer.View.Settings;
 
 import java.util.ArrayList;
+import java.util.Map;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -35,6 +37,8 @@ public class SettingsFragment extends Fragment implements BaseView
 {
     private BasePresenter _presenter;
     private BaseView _rootView;
+    
+    private boolean _pickersFullyInitialized = false;
     
     private Spinner _themePicker;
     private Spinner _trackSortingPicker;
@@ -108,13 +112,6 @@ public class SettingsFragment extends Fragment implements BaseView
         
         // Init UI
         initUI();
-
-        // Select correct values
-        selectProperValues();
-
-        // Setup user interaction for the picker views
-        // Do this after selectProperValues(), to prevent the callbacks from being fired
-        setupPickersCallbacks();
         
         // App theme retrieve and store
         _currentAppTheme = GeneralStorage.getShared().getAppThemeValue();
@@ -128,6 +125,19 @@ public class SettingsFragment extends Fragment implements BaseView
         super.onResume();
 
         enableInteraction();
+
+        // Finish initializing the pickers here
+        if (!_pickersFullyInitialized)
+        {
+            _pickersFullyInitialized = true;
+
+            // Select correct values
+            selectProperValues();
+
+            // Setup user interaction for the picker views
+            // Do this after selectProperValues(), to prevent the callbacks from being fired
+            setupPickersCallbacks();
+        }
     }
 
     @Override
@@ -413,46 +423,49 @@ public class SettingsFragment extends Fragment implements BaseView
     
     private void selectProperKeybinds()
     {
-        ApplicationAction PLAYER_VOLUME_UP_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
+        GeneralStorage storage = GeneralStorage.getShared();
+        Map<ApplicationInput, ApplicationAction> keybinds = storage.retrieveAllSettingsActionValues();
+        
+        ApplicationAction PLAYER_VOLUME_UP_BUTTON = keybinds.get(ApplicationInput.PLAYER_VOLUME_UP_BUTTON);
         _keybindPlayerVU.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_VOLUME_UP_BUTTON), false);
         
-        ApplicationAction PLAYER_VOLUME_DOWN_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON);
+        ApplicationAction PLAYER_VOLUME_DOWN_BUTTON = keybinds.get(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON);
         _keybindPlayerVD.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_VOLUME_DOWN_BUTTON), false);
         
-        ApplicationAction PLAYER_NEXT_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_NEXT_BUTTON);
+        ApplicationAction PLAYER_NEXT_BUTTON = keybinds.get(ApplicationInput.PLAYER_NEXT_BUTTON);
         _keybindPlayerNext.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_NEXT_BUTTON), false);
         
-        ApplicationAction PLAYER_PREVIOUS_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_PREVIOUS_BUTTON);
+        ApplicationAction PLAYER_PREVIOUS_BUTTON = keybinds.get(ApplicationInput.PLAYER_PREVIOUS_BUTTON);
         _keybindPlayerPrev.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_PREVIOUS_BUTTON), false);
 
-        ApplicationAction PLAYER_RECALL = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_RECALL);
+        ApplicationAction PLAYER_RECALL = keybinds.get(ApplicationInput.PLAYER_RECALL);
         _keybindPlayerRecall.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_RECALL), false);
 
-        ApplicationAction PLAYER_SWIPE_LEFT = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_SWIPE_LEFT);
+        ApplicationAction PLAYER_SWIPE_LEFT = keybinds.get(ApplicationInput.PLAYER_SWIPE_LEFT);
         _keybindPlayerSwipeLeft.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_SWIPE_LEFT), false);
 
-        ApplicationAction PLAYER_SWIPE_RIGHT = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_SWIPE_RIGHT);
+        ApplicationAction PLAYER_SWIPE_RIGHT = keybinds.get(ApplicationInput.PLAYER_SWIPE_RIGHT);
         _keybindPlayerSwipeRight.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_SWIPE_RIGHT), false);
         
-        ApplicationAction PLAYER_VOLUME = GeneralStorage.getShared().getSettingsAction(ApplicationInput.PLAYER_VOLUME);
+        ApplicationAction PLAYER_VOLUME = keybinds.get(ApplicationInput.PLAYER_VOLUME);
         _keybindPlayerVolume.setSelection(SettingsKeybindListAdapter.getCountForAction(PLAYER_VOLUME), false);
         
-        ApplicationAction QUICK_PLAYER_VOLUME_UP_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
+        ApplicationAction QUICK_PLAYER_VOLUME_UP_BUTTON = keybinds.get(ApplicationInput.QUICK_PLAYER_VOLUME_UP_BUTTON);
         _keybindQPlayerVU.setSelection(SettingsKeybindListAdapter.getCountForAction(QUICK_PLAYER_VOLUME_UP_BUTTON), false);
 
-        ApplicationAction QUICK_PLAYER_VOLUME_DOWN_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
+        ApplicationAction QUICK_PLAYER_VOLUME_DOWN_BUTTON = keybinds.get(ApplicationInput.QUICK_PLAYER_VOLUME_DOWN_BUTTON);
         _keybindQPlayerVD.setSelection(SettingsKeybindListAdapter.getCountForAction(QUICK_PLAYER_VOLUME_DOWN_BUTTON), false);
 
-        ApplicationAction QUICK_PLAYER_NEXT_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
+        ApplicationAction QUICK_PLAYER_NEXT_BUTTON = keybinds.get(ApplicationInput.QUICK_PLAYER_NEXT_BUTTON);
         _keybindQPlayerNext.setSelection(SettingsKeybindListAdapter.getCountForAction(QUICK_PLAYER_NEXT_BUTTON), false);
 
-        ApplicationAction QUICK_PLAYER_PREVIOUS_BUTTON = GeneralStorage.getShared().getSettingsAction(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
+        ApplicationAction QUICK_PLAYER_PREVIOUS_BUTTON = keybinds.get(ApplicationInput.QUICK_PLAYER_PREVIOUS_BUTTON);
         _keybindQPlayerPrev.setSelection(SettingsKeybindListAdapter.getCountForAction(QUICK_PLAYER_PREVIOUS_BUTTON), false);
 
-        ApplicationAction EARPHONES_UNPLUG = GeneralStorage.getShared().getSettingsAction(ApplicationInput.EARPHONES_UNPLUG);
+        ApplicationAction EARPHONES_UNPLUG = keybinds.get(ApplicationInput.EARPHONES_UNPLUG);
         _keybindEarphonesUnplug.setSelection(SettingsKeybindListAdapter.getCountForAction(EARPHONES_UNPLUG), false);
 
-        ApplicationAction EXTERNAL_PLAY = GeneralStorage.getShared().getSettingsAction(ApplicationInput.EXTERNAL_PLAY);
+        ApplicationAction EXTERNAL_PLAY = keybinds.get(ApplicationInput.EXTERNAL_PLAY);
         _keybindExternalPlay.setSelection(SettingsKeybindListAdapter.getCountForAction(EXTERNAL_PLAY), false);
     }
     

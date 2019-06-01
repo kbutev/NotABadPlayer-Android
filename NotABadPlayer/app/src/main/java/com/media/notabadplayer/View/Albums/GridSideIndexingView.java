@@ -136,18 +136,19 @@ public class GridSideIndexingView extends View {
     {
         super.onTouchEvent(event);
 
+        // What did we click on? Get the index of the label
         int y = (int) event.getY();
-        int selectedIndex = (int) (((float) y / (float) getPaddedHeight()) * getAlphabet().size());
+        int alphabetIndex = (int) (((float) y / (float) getPaddedHeight()) * getAlphabet().size());
         int alphabetSize = getAlphabet().size();
 
-        if (selectedIndex >= alphabetSize)
+        if (alphabetIndex >= alphabetSize)
         {
-            selectedIndex = alphabetSize - 1;
+            alphabetIndex = alphabetSize - 1;
         }
 
-        if (selectedIndex < 0)
+        if (alphabetIndex < 0)
         {
-            selectedIndex = 0;
+            alphabetIndex = 0;
         }
 
         if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE)
@@ -157,15 +158,16 @@ public class GridSideIndexingView extends View {
                 _selectionIndexer = (SectionIndexer) _view.getAdapter();
             }
 
-            int position = _selectionIndexer.getPositionForSection(selectedIndex);
+            // Retrieve the first matching item for the index of the label we clicked on
+            int exactItemIndex = _selectionIndexer.getPositionForSection(alphabetIndex);
 
-            if (position != -1)
+            if (exactItemIndex != -1)
             {
-                _view.setSelection(position);
+                _view.setSelection(exactItemIndex);
                 
-                if (selectedIndex < alphabetSize)
+                if (alphabetIndex < alphabetSize)
                 {
-                    displayTextCharacter(getAlphabet().get(selectedIndex));
+                    displayTextCharacter(getAlphabet().get(alphabetIndex));
                 }
             }
         }

@@ -129,6 +129,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         {
             restoreAudioPlayerState();
         }
+        
+        // Performance optimizations
+        performLaunchPerformanceOptimizations();
     }
 
     @Override
@@ -213,6 +216,13 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         // Set bottom navigation menu listener
         _navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+    
+    private void performLaunchPerformanceOptimizations()
+    {
+        // Anything we can initialize early on here, so the user can get smoother experience
+        // Optimization for the Settings screen
+        GeneralStorage.getShared().retrieveAllSettingsActionValues();
     }
     
     private boolean isOnAnRootTab()
