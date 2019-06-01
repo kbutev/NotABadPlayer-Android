@@ -3,13 +3,14 @@ package com.media.notabadplayer.Utilities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 
 public class MediaSorting {
-    public static ArrayList<AudioTrack> sortTracks(ArrayList<AudioTrack> tracks, AppSettings.TrackSorting sorting)
+    public static ArrayList<AudioTrack> sortTracks(List<AudioTrack> tracks, AppSettings.TrackSorting sorting)
     {
         switch (sorting)
         {
@@ -27,10 +28,10 @@ public class MediaSorting {
                 break;
         }
 
-        return tracks;
+        return new ArrayList<>(tracks);
     }
 
-    public static void sortAlbums(ArrayList<AudioAlbum> albums, AppSettings.AlbumSorting sorting)
+    public static void sortAlbums(List<AudioAlbum> albums, AppSettings.AlbumSorting sorting)
     {
         switch (sorting)
         {
@@ -40,7 +41,7 @@ public class MediaSorting {
         }
     }
     
-    public static void sortTracksByTrackNumber(ArrayList<AudioTrack> tracks)
+    public static void sortTracksByTrackNumber(List<AudioTrack> tracks)
     {
         Collections.sort(tracks, new Comparator<AudioTrack>() {
             @Override
@@ -50,7 +51,7 @@ public class MediaSorting {
         });
     }
 
-    public static void sortTracksByTitle(ArrayList<AudioTrack> tracks)
+    public static void sortTracksByTitle(List<AudioTrack> tracks)
     {
         Collections.sort(tracks, new Comparator<AudioTrack>() {
             @Override
@@ -60,7 +61,7 @@ public class MediaSorting {
         });
     }
 
-    public static void sortTracksByLongest(ArrayList<AudioTrack> tracks)
+    public static void sortTracksByLongest(List<AudioTrack> tracks)
     {
         Collections.sort(tracks, new Comparator<AudioTrack>() {
             @Override
@@ -70,7 +71,7 @@ public class MediaSorting {
         });
     }
 
-    public static void sortTracksByShortest(ArrayList<AudioTrack> tracks)
+    public static void sortTracksByShortest(List<AudioTrack> tracks)
     {
         Collections.sort(tracks, new Comparator<AudioTrack>() {
             @Override
@@ -80,7 +81,7 @@ public class MediaSorting {
         });
     }
     
-    public static void sortAlbumsByTitle(ArrayList<AudioAlbum> albums)
+    public static void sortAlbumsByTitle(List<AudioAlbum> albums)
     {
         Collections.sort(albums, new Comparator<AudioAlbum>() {
             @Override
@@ -90,7 +91,7 @@ public class MediaSorting {
         });
     }
 
-    public static void sortAlbumsByPopularity(ArrayList<AudioAlbum> albums)
+    public static void sortAlbumsByPopularity(List<AudioAlbum> albums)
     {
         Collections.sort(albums, new Comparator<AudioAlbum>() {
             @Override

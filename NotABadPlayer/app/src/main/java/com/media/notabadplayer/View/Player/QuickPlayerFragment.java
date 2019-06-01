@@ -1,7 +1,5 @@
 package com.media.notabadplayer.View.Player;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+import java.util.List;
 
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -372,7 +371,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
+    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
     {
 
     }
@@ -407,7 +406,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
 
     }

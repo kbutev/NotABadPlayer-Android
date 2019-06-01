@@ -1,7 +1,5 @@
 package com.media.notabadplayer.View.Player;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -38,6 +36,8 @@ import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
+
+import java.util.List;
 
 public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient
 {
@@ -548,7 +548,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums) 
+    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums) 
     {
 
     }
@@ -572,7 +572,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
 
     }

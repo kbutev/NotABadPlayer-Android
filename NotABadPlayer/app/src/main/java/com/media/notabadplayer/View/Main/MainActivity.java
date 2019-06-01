@@ -1,17 +1,22 @@
 package com.media.notabadplayer.View.Main;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -19,7 +24,6 @@ import android.view.MenuItem;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Launch.LaunchActivity;
 import com.media.notabadplayer.Presenter.ListsPresenter;
 import com.media.notabadplayer.Presenter.QuickPlayerPresenter;
 import com.media.notabadplayer.Storage.AudioStorage;
@@ -36,6 +40,7 @@ import com.media.notabadplayer.Presenter.SearchPresenter;
 import com.media.notabadplayer.Presenter.SettingsPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
@@ -47,8 +52,28 @@ import com.media.notabadplayer.View.Lists.CreateListsFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
 
+enum MainActivityState {
+    LAUNCHING, RUNNING;
+    
+    public boolean isLaunching()
+    {
+        return this == MainActivityState.LAUNCHING;
+    }
+
+    public boolean isRunning()
+    {
+        return this == MainActivityState.RUNNING;
+    }
+}
+
 public class MainActivity extends AppCompatActivity implements BaseView {
+    public static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 1;
     static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
+    
+    private MainActivityState _state = MainActivityState.LAUNCHING;
+
+    private boolean _launchedFromFile;
+    private Uri _launchedFromFileUri;
     
     private AudioStorage _audioStorage;
     private MainPresenter _presenter;
@@ -77,50 +102,74 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Never restore this activity, instead, restart app
-        if (savedInstanceState != null)
-        {
-            super.onCreate(null);
-            Intent intent = new Intent(this, LaunchActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-            return;
-        }
-        
         super.onCreate(null);
         
+        Log.v(MainActivity.class.getCanonicalName(), "Launching...");
+        
+        if (_state.isLaunching())
+        {
+            onCreateLaunch();
+        }
+        else
+        {
+            onCreateMain();
+        }
+    }
+    
+    private void onCreateLaunch()
+    {
+        setContentView(R.layout.activity_launch);
+
+        GeneralStorage.getShared().init(getApplication());
+        
+        Intent intent = getIntent();
+        
+        if (intent != null)
+        {
+            _launchedFromFile = Intent.ACTION_VIEW.equals(intent.getAction());
+
+            if (_launchedFromFile)
+            {
+                _launchedFromFileUri = intent.getData();
+            }
+        }
+        
+        requestPermissionForReadExtertalStorage();
+    }
+
+    private void onCreateMain()
+    {
         // App theme
         AppThemeUtility.setTheme(this, GeneralStorage.getShared().getAppThemeValue());
-        
+
         // Content
         setContentView(R.layout.activity_main);
-        
+
         // Presenter, audio model
         _presenter = new MainPresenter();
         _presenter.setView(this);
-        
+
         _audioStorage = new AudioStorage(this);
         _audioStorage.load();
-        
+
         // Audio Player initialization
         if (!AudioPlayer.getShared().isInitialized())
         {
             AudioPlayer.getShared().initialize(getApplication(), _audioStorage);
         }
-        
+
         // UI
-        initUI();
-        
+        initMainUI();
+
         // Noise suppression
         _noiseSuppression = new AudioPlayerNoiseSuppression();
         _noiseSuppression.start(this);
-        
+
         // App launch track
         Uri path = getIntent().getParcelableExtra("launchTrackPath");
-        
+
         boolean launchedWithInitialTrack = path != null;
-        
+
         if (launchedWithInitialTrack)
         {
             startAppWithTrack(path);
@@ -129,9 +178,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         {
             restoreAudioPlayerState();
         }
-        
+
         // Performance optimizations
         performLaunchPerformanceOptimizations();
+        
+        // Done
+        Log.v(MainActivity.class.getCanonicalName(), "Finished starting!");
     }
 
     @Override
@@ -194,8 +246,103 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // Currently on any of the first tabs? Send to background
         moveTaskToBack(true);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        // Handle permission accepted request
+        if (requestCode == PERMISSION_REQUEST_READ_EXTERNAL_STORAGE
+                && grantResults.length == 1
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            start();
+        }
+        else
+        {
+            DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    finish();
+                }
+            };
+
+            AlertWindows.showAlert(this, 0, R.string.error_need_storage_permission, R.string.ok, action);
+        }
+    }
+
+    private void start()
+    {
+        if (!_state.isLaunching())
+        {
+            throw new IllegalStateException("MainActivity cannot start, its already started");
+        }
+
+        Log.v(MainActivity.class.getCanonicalName(), "Starting...");
+        
+        _state = MainActivityState.RUNNING;
+
+        onCreateMain();
+
+        if (_launchedFromFile)
+        {
+            startAppWithTrack(_launchedFromFileUri);
+        }
+    }
     
-    private void initUI()
+    private void startAppWithTrack(Uri path)
+    {
+        Log.v(MainActivity.class.getCanonicalName(), "Launching player with initial track...");
+        
+        AudioTrack track = _audioStorage.findTrackByPath(path);
+
+        if (track == null)
+        {
+            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with desired track: " + path.toString());
+            return;
+        }
+
+        AudioPlaylist playlist = track.source.getSourcePlaylist(_audioStorage, track);
+
+        if (playlist == null)
+        {
+            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with desired track: " + path.toString());
+            return;
+        }
+
+        Intent intent = new Intent(this, PlayerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.putExtra("playlist", Serializing.serializeObject(playlist));
+        startActivity(intent);
+
+        // Transition animation
+        overridePendingTransition(0, 0);
+    }
+
+    public void requestPermissionForReadExtertalStorage()
+    {
+        try {
+            // Permission not granted:
+            // Request for permission, handle it with the activity method onRequestPermissionsResult()
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+            }
+            // Permission granted:
+            // Just start the app normally (transition from launch state)
+            else
+            {
+                start();
+            }
+        } catch (Exception e) {
+            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot request permission for read external storage: " + e.toString());
+            finish();
+        }
+    }
+    
+    private void initMainUI()
     {
         // Bottom navigation menu
         _navigation = findViewById(R.id.navigation);
@@ -469,35 +616,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             }
         }
     }
-
-    private void startAppWithTrack(@NonNull Uri path)
-    {
-        AudioTrack track = _audioStorage.findTrackByPath(path);
-
-        if (track == null)
-        {
-            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with desired track: " + path.toString());
-            return;
-        }
-
-        AudioPlaylist playlist = track.source.getSourcePlaylist(_audioStorage, track);
-        
-        if (playlist == null)
-        {
-            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with desired track: " + path.toString());
-            return;
-        }
-        
-        Intent intent = new Intent(this, PlayerActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra("playlist", Serializing.serializeObject(playlist));
-        startActivity(intent);
-        
-        // Transition animation
-        overridePendingTransition(0, 0);
-    }
-
+    
     private void saveCurrentAudioState()
     {
         GeneralStorage.getShared().savePlayerState();
@@ -533,7 +652,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
+    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
     {
 
     }
@@ -557,7 +676,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
 
     }

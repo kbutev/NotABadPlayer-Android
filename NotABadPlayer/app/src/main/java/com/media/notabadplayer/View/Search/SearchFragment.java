@@ -1,6 +1,5 @@
 package com.media.notabadplayer.View.Search;
 
-import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +37,8 @@ import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
+
+import java.util.List;
 
 public class SearchFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
@@ -227,7 +228,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
+    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
     {
 
     }
@@ -261,7 +262,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
         Context context = getContext();
 

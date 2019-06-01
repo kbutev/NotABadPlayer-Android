@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import java.util.ArrayList;
+import java.util.List;
 import com.google.common.base.Function;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -281,7 +282,7 @@ public class CreateListsFragment extends Fragment implements BaseView {
     }
 
     @Override
-    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
+    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
     {
 
     }
@@ -305,7 +306,7 @@ public class CreateListsFragment extends Fragment implements BaseView {
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
 
     }

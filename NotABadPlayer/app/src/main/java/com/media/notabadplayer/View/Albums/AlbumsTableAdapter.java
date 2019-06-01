@@ -1,6 +1,7 @@
 package com.media.notabadplayer.View.Albums;
 
 import java.util.ArrayList;
+import java.util.List;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -23,20 +24,14 @@ import com.media.notabadplayer.Utilities.MediaSorting;
 class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
 {
     private Context _context;
-    private ArrayList<AudioAlbum> _albums;
+    private List<AudioAlbum> _albums;
     private GridSideIndexingView _sideSelector;
     
-    public AlbumsTableAdapter(@NonNull Context context, ArrayList<AudioAlbum> albums, GridSideIndexingView sideSelector)
+    public AlbumsTableAdapter(@NonNull Context context, List<AudioAlbum> albums, GridSideIndexingView sideSelector)
     {
         this._context = context;
         this._albums = albums;
         this._sideSelector = sideSelector;
-        sortAlbums(GeneralStorage.getShared().getAlbumSortingValue());
-    }
-
-    public void sortAlbums(AppSettings.AlbumSorting albumSorting)
-    {
-        MediaSorting.sortAlbums(this._albums, albumSorting);
     }
     
     public int getCount()

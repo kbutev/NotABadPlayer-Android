@@ -1,6 +1,6 @@
 package com.media.notabadplayer.View.Search;
 
-import java.util.ArrayList;
+import java.util.List;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -22,11 +22,11 @@ import com.media.notabadplayer.Utilities.UIAnimations;
 public class SearchListAdapter extends BaseAdapter
 {
     private Context _context;
-    private ArrayList<AudioTrack> _tracks;
+    private List<AudioTrack> _tracks;
 
     private View _currentlySelectedView = null;
     
-    public SearchListAdapter(@NonNull Context context, ArrayList<AudioTrack> tracks)
+    public SearchListAdapter(@NonNull Context context, List<AudioTrack> tracks)
     {
         this._context = context;
         this._tracks = tracks;

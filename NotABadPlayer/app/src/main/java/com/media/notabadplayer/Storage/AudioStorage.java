@@ -9,7 +9,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -58,27 +61,27 @@ public class AudioStorage implements AudioInfo {
         }
         
         cursor.close();
+
+        MediaSorting.sortAlbumsByTitle(_albums);
         
         Log.v(AudioStorage.class.getCanonicalName(), "Successfully loaded " +  String.valueOf(_albums.size()) + " albums from media store.");
     }
     
-    public @NonNull ArrayList<AudioAlbum> getAlbums()
+    public @NonNull List<AudioAlbum> getAlbums()
     {
         if (_albums.size() > 0)
         {
-            return _albums;
+            return Collections.unmodifiableList(_albums);
         }
         
         load();
         
-        MediaSorting.sortAlbumsByTitle(_albums);
-        
-        return _albums;
+        return Collections.unmodifiableList(_albums);
     }
     
     public @Nullable AudioAlbum getAlbumByID(@NonNull String identifier)
     {
-        ArrayList<AudioAlbum> albums = getAlbums();
+        List<AudioAlbum> albums = getAlbums();
         
         for (AudioAlbum album: albums)
         {
@@ -91,7 +94,7 @@ public class AudioStorage implements AudioInfo {
         return null;
     }
 
-    synchronized public @NonNull ArrayList<AudioTrack> getAlbumTracks(@NonNull AudioAlbum album)
+    synchronized public @NonNull List<AudioTrack> getAlbumTracks(@NonNull AudioAlbum album)
     {
         if (_albumSongs.containsKey(album.albumID))
         {
@@ -160,7 +163,7 @@ public class AudioStorage implements AudioInfo {
         return albumTracks;
     }
     
-    public @NonNull ArrayList<AudioTrack> searchForTracks(@NonNull String query)
+    public @NonNull List<AudioTrack> searchForTracks(@NonNull String query)
     {
         ArrayList<AudioTrack> albumTracks = new ArrayList<>();
         

@@ -1,6 +1,6 @@
 package com.media.notabadplayer.View.Playlist;
 
-import java.util.ArrayList;
+import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -210,7 +210,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
     
     @Override
-    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
+    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
     {
 
     }
@@ -271,7 +271,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
     
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
         
     }

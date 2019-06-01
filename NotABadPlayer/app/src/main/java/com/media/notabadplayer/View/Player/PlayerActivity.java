@@ -1,6 +1,5 @@
 package com.media.notabadplayer.View.Player;
 
-import java.util.ArrayList;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
@@ -27,7 +26,6 @@ import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
-import com.media.notabadplayer.Launch.LaunchActivity;
 import com.media.notabadplayer.Presenter.PlayerPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
@@ -35,6 +33,9 @@ import com.media.notabadplayer.Utilities.AppThemeUtility;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Main.MainActivity;
+
+import java.util.List;
 
 public class PlayerActivity extends AppCompatActivity implements BaseView
 {
@@ -50,7 +51,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         if (savedInstanceState != null)
         {
             super.onCreate(null);
-            Intent intent = new Intent(this, LaunchActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
@@ -178,7 +179,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
+    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
     {
 
     }
@@ -202,7 +203,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
 
     }

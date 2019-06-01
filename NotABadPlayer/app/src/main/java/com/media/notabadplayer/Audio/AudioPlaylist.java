@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.media.notabadplayer.Constants.AppSettings;
@@ -27,13 +28,13 @@ public class AudioPlaylist implements Serializable
         this(name, trackAsAList(startWithTrack), startWithTrack);
     }
     
-    public AudioPlaylist(@NonNull String name, @NonNull ArrayList<AudioTrack> tracks) throws IllegalArgumentException
+    public AudioPlaylist(@NonNull String name, @NonNull List<AudioTrack> tracks) throws IllegalArgumentException
     {
         this(name, tracks, null);
     }
 
     public AudioPlaylist(@NonNull String name,
-                         @NonNull ArrayList<AudioTrack> tracks,
+                         @NonNull List<AudioTrack> tracks,
                          AudioTrack startWithTrack,
                          AppSettings.TrackSorting sorting) throws IllegalArgumentException
     {
@@ -41,7 +42,7 @@ public class AudioPlaylist implements Serializable
     }
 
     public AudioPlaylist(@NonNull String name,
-                         @NonNull ArrayList<AudioTrack> tracks,
+                         @NonNull List<AudioTrack> tracks,
                          AudioTrack startWithTrack) throws IllegalArgumentException
     {
         if (tracks.size() == 0)
@@ -50,7 +51,7 @@ public class AudioPlaylist implements Serializable
         }
         
         _name = name;
-        _tracks = tracks;
+        _tracks = new ArrayList<>(tracks);
         _playing = false;
         _playingTrackPosition = 0;
         
