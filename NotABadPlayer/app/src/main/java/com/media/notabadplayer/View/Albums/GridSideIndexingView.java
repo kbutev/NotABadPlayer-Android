@@ -126,8 +126,6 @@ public class GridSideIndexingView extends View {
     
     protected void onDraw(Canvas canvas) 
     {
-        Log.v("Tester", "draw!");
-        
         if (_alphabet.size() == 0)
         {
             super.onDraw(canvas);

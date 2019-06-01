@@ -50,7 +50,7 @@ import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
-import com.media.notabadplayer.View.Lists.CreateListsFragment;
+import com.media.notabadplayer.View.CreateLists.CreateListsFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
 
@@ -82,10 +82,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
     private BottomNavigationView _navigation;
     
-    private BaseView _currentTab;
-    
-    private int _currentTabID = 0;
-    private Map<Integer, CachedTab> _cachedTabs = new HashMap<>();
+    private TabNavigation _tabNavigation = new TabNavigation();
     
     private QuickPlayerFragment _quickPlayer;
     
@@ -96,9 +93,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            final int currentTabID = _currentTabID;
+            final int currentTabID = _tabNavigation.currentTabID;
             onTabItemSelected(item.getItemId());
-            return currentTabID != _currentTabID;
+            return currentTabID != _tabNavigation.currentTabID;
         }
     };
     
@@ -459,196 +456,57 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private boolean isOnAnRootTab()
     {
-        return getSupportFragmentManager().findFragmentById(R.id.mainLayout) == _currentTab;
+        return getSupportFragmentManager().findFragmentById(R.id.mainLayout) == _tabNavigation.currentTab;
     }
     
     private void selectAlbumsTab()
     {
         Log.v(MainActivity.class.getCanonicalName(), "Select albums tab");
-
-        cacheCurrentTab();
-
-        // If cached, load from cache
-        CachedTab cachedTab = _cachedTabs.get(R.id.navigation_albums);
-
-        if (cachedTab != null)
-        {
-            Log.v(MainActivity.class.getCanonicalName(), "Load albums tab from cache");
-            restoreTabFromCache(cachedTab, R.id.navigation_albums);
-            return;
-        }
-
-        _currentTabID = R.id.navigation_albums;
         
-        BasePresenter presenter = new AlbumsPresenter(_audioStorage);
-        _currentTab = AlbumsFragment.newInstance(presenter);
-        presenter.setView(_currentTab);
-        
-        refreshCurrentTab();
+        int tabID = R.id.navigation_albums;
+
+        _tabNavigation.willSelectTab(tabID);
+        _tabNavigation.selectTab(tabID);
+        _tabNavigation.didSelectTab(tabID);
     }
 
     private void selectListsTab()
     {
         Log.v(MainActivity.class.getCanonicalName(), "Select lists tab");
 
-        cacheCurrentTab();
+        int tabID = R.id.navigation_lists;
 
-        // If cached, load from cache
-        CachedTab cachedTab = _cachedTabs.get(R.id.navigation_lists);
-
-        if (cachedTab != null)
-        {
-            Log.v(MainActivity.class.getCanonicalName(), "Load lists from cache");
-            restoreTabFromCache(cachedTab, R.id.navigation_lists);
-            return;
-        }
-
-        _currentTabID = R.id.navigation_lists;
-        
-        BasePresenter presenter = new ListsPresenter(_audioStorage);
-        _currentTab = CreateListsFragment.newInstance(presenter);
-        presenter.setView(_currentTab);
-
-        refreshCurrentTab();
+        _tabNavigation.willSelectTab(tabID);
+        _tabNavigation.selectTab(tabID);
+        _tabNavigation.didSelectTab(tabID);
     }
 
     private void selectSearchTab()
     {
         Log.v(MainActivity.class.getCanonicalName(), "Select search tab");
 
-        cacheCurrentTab();
+        int tabID = R.id.navigation_search;
 
-        // If cached, load from cache
-        CachedTab cachedTab = _cachedTabs.get(R.id.navigation_search);
-
-        if (cachedTab != null)
-        {
-            Log.v(MainActivity.class.getCanonicalName(), "Load search tab from cache");
-            restoreTabFromCache(cachedTab, R.id.navigation_search);
-            return;
-        }
-
-        _currentTabID = R.id.navigation_search;
-        
-        BasePresenter presenter = new SearchPresenter(this, _audioStorage);
-        _currentTab = SearchFragment.newInstance(presenter);
-        presenter.setView(_currentTab);
-        
-        refreshCurrentTab();
+        _tabNavigation.willSelectTab(tabID);
+        _tabNavigation.selectTab(tabID);
+        _tabNavigation.didSelectTab(tabID);
     }
 
     private void selectSettingsTab()
     {
         Log.v(MainActivity.class.getCanonicalName(), "Select settings tab");
 
-        cacheCurrentTab();
+        int tabID = R.id.navigation_settings;
 
-        // If cached, load from cache
-        CachedTab cachedTab = _cachedTabs.get(R.id.navigation_settings);
-
-        if (cachedTab != null)
-        {
-            Log.v(MainActivity.class.getCanonicalName(), "Load settings tab from cache");
-            restoreTabFromCache(cachedTab, R.id.navigation_settings);
-            return;
-        }
-        
-        _currentTabID = R.id.navigation_settings;
-        
-        BasePresenter presenter = new SettingsPresenter( _audioStorage);
-        _currentTab = SettingsFragment.newInstance(presenter, this);
-        presenter.setView(_currentTab);
-        
-        refreshCurrentTab();
-    }
-
-    private void clearCurrentTabBackStack()
-    {
-        FragmentManager manager = getSupportFragmentManager();
-
-        while (manager.getBackStackEntryCount() > 0)
-        {
-            manager.popBackStackImmediate();
-        }
-    }
-    
-    private void refreshCurrentTab()
-    {
-        clearCurrentTabBackStack();
-
-        // Fragment - make sure the current tab is the in the main layout
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction().replace(R.id.mainLayout, (Fragment)_currentTab);
-        transaction.commit();
-
-        // Quick player is hidden for the settings screen
-        updateQuickPlayerVisibility();
-    }
-    
-    private void clearTabCache()
-    {
-        _cachedTabs.clear();
-    }
-
-    private void cacheCurrentTab()
-    {
-        switch (_currentTabID)
-        {
-            case R.id.navigation_albums:
-                if (GeneralStorage.getShared().getCachingPolicy().cacheAlbumsTab())
-                {
-                    _cachedTabs.put(R.id.navigation_albums, CachedTab.create(_currentTab, getSupportFragmentManager()));
-                }
-
-                break;
-            case R.id.navigation_lists:
-                if (GeneralStorage.getShared().getCachingPolicy().cacheListsTab())
-                {
-                    _cachedTabs.put(R.id.navigation_lists, CachedTab.create(_currentTab, getSupportFragmentManager()));
-                }
-
-                break;
-            case R.id.navigation_search:
-                if (GeneralStorage.getShared().getCachingPolicy().cacheSearchTab())
-                {
-                    _cachedTabs.put(R.id.navigation_search, CachedTab.create(_currentTab, getSupportFragmentManager()));
-                }
-
-                break;
-            case R.id.navigation_settings:
-                if (GeneralStorage.getShared().getCachingPolicy().cacheSettingsTab())
-                {
-                    _cachedTabs.put(R.id.navigation_settings, CachedTab.create(_currentTab, getSupportFragmentManager()));
-                }
-
-                break;
-        }
-    }
-
-    private void restoreTabFromCache(@NonNull CachedTab cachedTab, int tabID)
-    {
-        _currentTab = cachedTab.tab;
-        _currentTabID = tabID;
-
-        refreshCurrentTab();
-
-        if (cachedTab.tabSubview != null)
-        {
-            Fragment f = (Fragment)cachedTab.tabSubview;
-
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.setCustomAnimations(0, 0, 0, R.anim.hold);
-            transaction.addToBackStack(cachedTab.tabSubviewName);
-            transaction.replace(R.id.mainLayout, f, cachedTab.tabSubviewName);
-            transaction.commit();
-        }
+        _tabNavigation.willSelectTab(tabID);
+        _tabNavigation.selectTab(tabID);
+        _tabNavigation.didSelectTab(tabID);
     }
 
     private void onTabItemSelected(int itemID)
     {
         // If already selected, then try to go to the root tab
-        if (_currentTabID == itemID)
+        if (_tabNavigation.currentTabID == itemID)
         {
             // Not on any of the first tabs? Go back
             if (!isOnAnRootTab())
@@ -679,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         if (_quickPlayer != null)
         {
-            if (_currentTabID == R.id.navigation_settings)
+            if (_tabNavigation.currentTabID == R.id.navigation_settings)
             {
                 if (_quickPlayer.getView() != null)
                 {
@@ -730,9 +588,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
         // When not on the settings tab, let the view handle the request
-        if (_currentTabID != R.id.navigation_settings)
+        if (_tabNavigation.currentTabID != R.id.navigation_settings)
         {
-            _currentTab.openPlaylistScreen(_audioStorage, playlist);
+            _tabNavigation.currentTab.openPlaylistScreen(_audioStorage, playlist);
         }
     }
 
@@ -771,7 +629,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         Log.v(MainActivity.class.getSimpleName(), "App settings were reset");
 
-        clearTabCache();
+        _tabNavigation.clearTabCache();
     }
     
     @Override
@@ -779,7 +637,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         Log.v(MainActivity.class.getSimpleName(), "App theme changed to " + appTheme.name());
 
-        clearTabCache();
+        _tabNavigation.clearTabCache();
 
         AppThemeUtility.setTheme(this, appTheme);
         
@@ -791,7 +649,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         Log.v(MainActivity.class.getSimpleName(), "App track sorting changed.");
 
-        clearTabCache();
+        _tabNavigation.clearTabCache();
         
         _quickPlayer.appTrackSortingChanged(trackSorting);
     }
@@ -801,7 +659,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         Log.v(MainActivity.class.getSimpleName(), "App appearance changed.");
 
-        clearTabCache();
+        _tabNavigation.clearTabCache();
         
         _quickPlayer.onShowVolumeBarSettingChange(value);
     }
@@ -810,5 +668,229 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
 
+    }
+    
+    private class TabNavigation {
+        private BaseView currentTab;
+        private int currentTabID = 0;
+        private int previousTabID = 0;
+        private BaseView previousTab = null;
+        private Map<Integer, CachedTab> cachedTabs = new HashMap<>();
+
+        private void cacheCurrentTab()
+        {
+            if (currentTab != null)
+            {
+                AppSettings.TabCachingPolicies policy = GeneralStorage.getShared().getCachingPolicy();
+                
+                boolean cacheTab = false;
+                
+                switch (currentTabID)
+                {
+                    case R.id.navigation_albums:
+                        cacheTab = policy.cacheAlbumsTab();
+                        break;
+                    case R.id.navigation_lists:
+                        cacheTab = policy.cacheListsTab();
+                        break;
+                    case R.id.navigation_search:
+                        cacheTab = policy.cacheSearchTab();
+                        break;
+                    case R.id.navigation_settings:
+                        cacheTab = policy.cacheSettingsTab();
+                        break;
+                }
+                
+                if (cacheTab)
+                {
+                    cachedTabs.put(currentTabID, CachedTab.create(currentTab, getSupportFragmentManager()));
+                }
+            }
+        }
+        
+        private void clearTabCache()
+        {
+            cachedTabs.clear();
+        }
+        
+        private void willSelectTab(int destinationTabID)
+        {
+            cacheCurrentTab();
+            
+            // As soon as we cache the tab, we no longer need the backstack
+            clearCurrentTabBackStack();
+        }
+
+        private void selectTab(int destinationTabID)
+        {
+            previousTabID = currentTabID;
+            previousTab = currentTab;
+            currentTabID = destinationTabID;
+            
+            // If cached, load from cache
+            CachedTab cachedTab = cachedTabs.get(destinationTabID);
+
+            if (cachedTab != null)
+            {
+                Log.v(MainActivity.class.getCanonicalName(), "Loaded tab from cache instead from scratch");
+                currentTab = cachedTab.tab;
+                return;
+            }
+            
+            currentTab = createTabFromScratch(currentTabID);
+        }
+        
+        private void didSelectTab(int destinationTabID)
+        {
+            if (previousTab == null)
+            {
+                replaceCurrentTab();
+                return;
+            }
+            
+            // First, deselect the previous tab
+            deselectTab(previousTabID);
+            
+            // If current tab is already added, show it
+            if (currentTabIsAlreadyAdded())
+            {
+                showCurrentTab();
+            }
+            // If current tab is not added, always add it
+            else
+            {
+                addCurrentTab();
+            }
+        }
+        
+        private BaseView createTabFromScratch(int tabID)
+        {
+            BaseView tab = null;
+            BasePresenter presenter = null;
+            
+            switch (tabID)
+            {
+                case R.id.navigation_albums:
+                    presenter = new AlbumsPresenter(_audioStorage);
+                    tab = AlbumsFragment.newInstance(presenter);
+                    presenter.setView(tab);
+                    break;
+                case R.id.navigation_lists:
+                    presenter = new ListsPresenter(_audioStorage);
+                    tab = CreateListsFragment.newInstance(presenter);
+                    presenter.setView(tab);
+                    break;
+                case R.id.navigation_search:
+                    presenter = new SearchPresenter(getBaseContext(), _audioStorage);
+                    tab = SearchFragment.newInstance(presenter);
+                    presenter.setView(tab);
+                    break;
+                case R.id.navigation_settings:
+                    presenter = new SettingsPresenter(_audioStorage);
+                    tab = SettingsFragment.newInstance(presenter, MainActivity.this);
+                    presenter.setView(tab);
+                    break;
+            }
+            
+            return tab;
+        }
+        
+        private boolean deselectTab(int tabID)
+        {
+            // Returns true if tab will be removed instead of being hidden
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            
+            if (cacheContains(tabID))
+            {
+                transaction.hide((Fragment) previousTab);
+                transaction.commit();
+                return false;
+            }
+            
+            transaction.remove((Fragment) previousTab);
+            transaction.commit();
+            return true;
+        }
+        
+        private void replaceCurrentTab()
+        {
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.mainLayout, (Fragment) currentTab);
+            transaction.commit();
+        }
+        
+        private void addCurrentTab()
+        {
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            
+            if (!currentTabIsAlreadyAdded())
+            {
+                transaction.add(R.id.mainLayout, (Fragment) currentTab);
+            }
+            else
+            {
+                transaction.show((Fragment) currentTab);
+            }
+            
+            transaction.commit();
+        }
+
+        private void showCurrentTab()
+        {
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            
+            CachedTab cachedTab = cachedTabs.get(currentTabID);
+
+            // Show only if there is no subview in the cache tab
+            if (cachedTab == null)
+            {
+                transaction.show((Fragment) currentTab);
+            }
+            // Else, try to restore subview
+            else
+            {
+                // There is a cached tab subview - set the current tab hidden, add the subview
+                if (cachedTab.tabSubview instanceof Fragment)
+                {
+                    Fragment fragment = (Fragment) cachedTab.tabSubview;
+                    transaction.hide((Fragment) currentTab);
+                    transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
+                    transaction.addToBackStack(cachedTab.tabSubviewName);
+                    transaction.add(R.id.mainLayout, fragment, cachedTab.tabSubviewName);
+                }
+                // There is a cached tab, but there is no subview, just show the tab
+                else
+                {
+                    transaction.show((Fragment) currentTab);
+                }
+            }
+            
+            // Commit
+            transaction.commit();
+        }
+        
+        boolean cacheContains(int tabID)
+        {
+            return cachedTabs.get(tabID) != null;
+        }
+        
+        boolean currentTabIsAlreadyAdded()
+        {
+            return cacheContains(currentTabID);
+        }
+        
+        void clearCurrentTabBackStack()
+        {
+            FragmentManager manager = getSupportFragmentManager();
+
+            while (manager.getBackStackEntryCount() > 0)
+            {
+                manager.popBackStackImmediate();
+            }
+        }
     }
 }
