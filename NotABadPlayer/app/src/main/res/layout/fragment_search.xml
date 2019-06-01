@@ -1,66 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/background_base">
     
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp">
-        <EditText
-            android:id="@+id/searchField"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="3dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:textAppearance="@style/BlackText"
-            android:textColor="@null"
-            android:background="@drawable/search_field_border"
-            android:hint="@string/search_hint"
-            android:textColorHint="@color/grayText"
-            android:inputType="textVisiblePassword"
-            android:imeOptions="actionDone"/>
-        <ImageButton
-            android:id="@+id/searchFieldClearButton"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_clear_black"
-            android:background="@null"
-            app:layout_constraintRight_toRightOf="parent"
-            android:gravity="center_vertical"/>
-    </android.support.constraint.ConstraintLayout>
-    
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="5dp" />
-    
-    <TextView
-        android:id="@+id/searchTip"
+    <ProgressBar
+        android:id="@+id/progressIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:text="@string/search_results_tip"
-        android:textAppearance="@style/PrimaryText"
-        android:singleLine="true"
-        android:textAlignment="center"
+        android:indeterminate="true"
+        android:layout_centerInParent="true"
         android:visibility="gone"/>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="5dp" />
     
-    <ListView
-        android:id="@+id/searchResultsList"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:orientation="vertical">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp">
+            <EditText
+                android:id="@+id/searchField"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:textAppearance="@style/BlackText"
+                android:textColor="@null"
+                android:background="@drawable/search_field_border"
+                android:hint="@string/search_hint"
+                android:textColorHint="@color/grayText"
+                android:inputType="textVisiblePassword"
+                android:imeOptions="actionDone"/>
+            <ImageButton
+                android:id="@+id/searchFieldClearButton"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_clear_black"
+                android:background="@null"
+                app:layout_constraintRight_toRightOf="parent"
+                android:gravity="center_vertical"/>
+        </android.support.constraint.ConstraintLayout>
+        
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/searchTip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/search_results_tip"
+            android:textAppearance="@style/PrimaryText"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:visibility="gone"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <ListView
+            android:id="@+id/searchResultsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+    </LinearLayout>
+    
+</RelativeLayout>

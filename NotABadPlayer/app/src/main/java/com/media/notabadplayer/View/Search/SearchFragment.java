@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Search;
 
+import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -38,8 +40,6 @@ import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
-import java.util.List;
-
 public class SearchFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
     AudioPlayer _player = AudioPlayer.getShared();
@@ -50,6 +50,8 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     private ImageButton _searchFieldClearButton;
     private TextView _searchTip;
     private ListView _searchResults;
+    private ProgressBar _progressIndicator;
+    
     private SearchListAdapter _searchResultsAdapter;
     private Parcelable _searchResultsState;
     
@@ -75,6 +77,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
         _searchFieldClearButton = root.findViewById(R.id.searchFieldClearButton);
         _searchTip = root.findViewById(R.id.searchTip);
         _searchResults = root.findViewById(R.id.searchResultsList);
+        _progressIndicator = root.findViewById(R.id.progressIndicator);
         
         initUI();
         
@@ -95,6 +98,8 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     public void onStart()
     {
         super.onStart();
+
+        _progressIndicator.setVisibility(View.GONE);
 
         if (_searchResultsAdapter != null)
         {
@@ -278,10 +283,14 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
 
         if (searchTip != null)
         {
+            _progressIndicator.setVisibility(View.VISIBLE);
+            
             _searchTip.setText(searchTip);
         }
         else
         {
+            _progressIndicator.setVisibility(View.GONE);
+            
             if (songs.size() > 0)
             {
                 _searchTip.setText(String.valueOf(songs.size() + " " + getResources().getString(R.string.search_results_tip)));
