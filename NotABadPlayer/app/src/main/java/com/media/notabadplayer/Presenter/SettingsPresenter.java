@@ -97,6 +97,9 @@ public class SettingsPresenter implements BasePresenter
         AppSettings.AppTheme themeValue = GeneralStorage.getShared().getAppThemeValue();
 
         _view.appThemeChanged(themeValue);
+
+        AudioPlayer.getShared().unmute();
+        AudioPlayer.getShared().pause();
     }
 
     @Override

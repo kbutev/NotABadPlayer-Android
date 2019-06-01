@@ -1,6 +1,8 @@
 package com.media.notabadplayer.View.Albums;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -173,7 +175,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
+    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
     {
         Context context = getContext();
 
@@ -215,7 +217,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
 
     }

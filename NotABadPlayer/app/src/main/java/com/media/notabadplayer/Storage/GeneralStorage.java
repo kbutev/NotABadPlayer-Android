@@ -210,8 +210,6 @@ public class GeneralStorage
         saveSettingsAction(ApplicationInput.EXTERNAL_PLAY, ApplicationAction.PAUSE);
 
         saveCachingPolicy(AppSettings.TabCachingPolicies.ALBUMS_ONLY);
-        
-        AudioPlayer.getShared().unmute();
     }
     
     synchronized public boolean isFirstApplicationLaunch()

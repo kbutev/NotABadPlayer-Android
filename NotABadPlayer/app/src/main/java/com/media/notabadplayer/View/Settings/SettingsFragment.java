@@ -1,8 +1,8 @@
 package com.media.notabadplayer.View.Settings;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -539,7 +539,7 @@ public class SettingsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums)
+    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
     {
 
     }
@@ -563,7 +563,7 @@ public class SettingsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip)
+    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
         
     }

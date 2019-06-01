@@ -1,6 +1,7 @@
 package com.media.notabadplayer.Presenter;
 
 import java.util.ArrayList;
+import java.util.List;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -16,7 +17,7 @@ import com.media.notabadplayer.View.BaseView;
 public class AlbumsPresenter implements BasePresenter {
     private BaseView _view;
     private @NonNull AudioInfo _audioInfo;
-    private @NonNull ArrayList<AudioAlbum> _albums = new ArrayList<>();
+    private @NonNull List<AudioAlbum> _albums = new ArrayList<>();
 
     public AlbumsPresenter(@NonNull AudioInfo audioInfo)
     {
@@ -55,7 +56,7 @@ public class AlbumsPresenter implements BasePresenter {
         
         Log.v(AlbumsPresenter.class.getCanonicalName(), "Open '" + album.albumTitle + "' album");
 
-        ArrayList<AudioTrack> tracks = _audioInfo.getAlbumTracks(album);
+        List<AudioTrack> tracks = _audioInfo.getAlbumTracks(album);
 
         AudioPlaylist playlist = new AudioPlaylist(album.albumTitle, tracks);
 

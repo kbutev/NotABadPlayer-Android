@@ -1,6 +1,8 @@
 package com.media.notabadplayer.View.Lists;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -21,7 +23,7 @@ import com.media.notabadplayer.R;
 
 public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 {
-    private @NonNull ArrayList<AudioAlbum> _albums;
+    private @NonNull List<AudioAlbum> _albums;
     
     private @NonNull Context _context;
     
@@ -30,13 +32,13 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
     private int _selectedAlbumPosition;
     private LinearLayout _selectedAlbum;
     private CreatePlaylistAlbumsTracksAdapter _selectedAlbumAdapter;
-    private ArrayList<AudioTrack> _selectedTracks = new ArrayList<>();
+    private List<AudioTrack> _selectedTracks = new ArrayList<>();
     
     private @NonNull Function<AudioTrack, Boolean> _onItemClick;
     
     public CreatePlaylistAlbumsAdapter(@NonNull Context context,
                                        @NonNull AudioInfo audioInfo,
-                                       @NonNull ArrayList<AudioAlbum> albums,
+                                       @NonNull List<AudioAlbum> albums,
                                        @NonNull Function<AudioTrack, Boolean> onItemClick)
     {
         this._albums = albums;
@@ -150,7 +152,7 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         TextView title = listItem.findViewById(R.id.title);
         title.setText(album.albumTitle);
 
-        final ArrayList<AudioTrack> tracks = _audioInfo.getAlbumTracks(album);
+        final List<AudioTrack> tracks = _audioInfo.getAlbumTracks(album);
         
         if (tracks.size() > 0)
         {
@@ -229,14 +231,14 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 
     public class CreatePlaylistAlbumsTracksAdapter extends BaseAdapter
     {
-        private @NonNull ArrayList<AudioTrack> _tracks;
-        private @NonNull ArrayList<AudioTrack> _selectedTracks;
+        private @NonNull List<AudioTrack> _tracks;
+        private @NonNull List<AudioTrack> _selectedTracks;
 
         private Context _context;
 
         public CreatePlaylistAlbumsTracksAdapter(@NonNull Context context,
-                                                 @NonNull ArrayList<AudioTrack> tracks, 
-                                                 @NonNull ArrayList<AudioTrack> selectedTracks)
+                                                 @NonNull List<AudioTrack> tracks, 
+                                                 @NonNull List<AudioTrack> selectedTracks)
         {
             this._tracks = tracks;
             this._selectedTracks = selectedTracks;

@@ -15,21 +15,22 @@ import android.widget.EditText;
 import android.widget.ListView;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import java.util.ArrayList;
+import java.util.List;
 import com.google.common.base.Function;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Launch.LaunchActivity;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
+import com.media.notabadplayer.View.Main.MainActivity;
 
 public class CreatePlaylistActivity extends AppCompatActivity
 {
-    private ArrayList<AudioAlbum> _albums;
+    private List<AudioAlbum> _albums;
     
     private @Nullable AudioPlaylist _playlist;
     private @NonNull ArrayList<AudioTrack> _playlistTracks = new ArrayList<>();
@@ -48,7 +49,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         if (savedInstanceState != null)
         {
             super.onCreate(null);
-            Intent intent = new Intent(this, LaunchActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

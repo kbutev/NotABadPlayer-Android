@@ -1,6 +1,7 @@
 package com.media.notabadplayer.Presenter;
 
 import java.util.ArrayList;
+import java.util.List;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,7 +24,7 @@ public class SearchPresenter implements BasePresenter
     private BaseView _view;
     private @NonNull Context _context;
     private @NonNull AudioInfo _audioInfo;
-    private ArrayList<AudioTrack> _searchResults = new ArrayList<>();
+    private List<AudioTrack> _searchResults = new ArrayList<>();
     private @Nullable String _lastSearchQuery = null;
     
     public SearchPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo)

@@ -1,8 +1,8 @@
 package com.media.notabadplayer.View;
 
-import java.util.ArrayList;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.util.List;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -16,14 +16,14 @@ public interface BaseView {
 
     void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist);
     
-    void onMediaAlbumsLoad(@NonNull ArrayList<AudioAlbum> albums);
+    void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums);
 
     void onPlaylistLoad(@NonNull AudioPlaylist playlist);
     
     void openPlayerScreen(@NonNull AudioPlaylist playlist);
     void updatePlayerScreen(@NonNull AudioPlaylist playlist);
     
-    void searchQueryResults(@NonNull String searchQuery, @NonNull ArrayList<AudioTrack> songs, @Nullable String searchTip);
+    void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip);
     
     void appSettingsReset();
     void appThemeChanged(AppSettings.AppTheme appTheme);
