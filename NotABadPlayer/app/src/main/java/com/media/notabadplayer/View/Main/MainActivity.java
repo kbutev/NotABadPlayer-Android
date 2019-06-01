@@ -468,6 +468,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _tabNavigation.willSelectTab(tabID);
         _tabNavigation.selectTab(tabID);
         _tabNavigation.didSelectTab(tabID);
+
+        updateQuickPlayerVisibility();
     }
 
     private void selectListsTab()
@@ -479,6 +481,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _tabNavigation.willSelectTab(tabID);
         _tabNavigation.selectTab(tabID);
         _tabNavigation.didSelectTab(tabID);
+
+        updateQuickPlayerVisibility();
     }
 
     private void selectSearchTab()
@@ -490,6 +494,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _tabNavigation.willSelectTab(tabID);
         _tabNavigation.selectTab(tabID);
         _tabNavigation.didSelectTab(tabID);
+
+        updateQuickPlayerVisibility();
     }
 
     private void selectSettingsTab()
@@ -501,6 +507,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _tabNavigation.willSelectTab(tabID);
         _tabNavigation.selectTab(tabID);
         _tabNavigation.didSelectTab(tabID);
+
+        updateQuickPlayerVisibility();
     }
 
     private void onTabItemSelected(int itemID)
