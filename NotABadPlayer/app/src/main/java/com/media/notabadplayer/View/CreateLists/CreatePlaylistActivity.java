@@ -1,4 +1,4 @@
-package com.media.notabadplayer.View.Lists;
+package com.media.notabadplayer.View.CreateLists;
 
 import android.content.Context;
 import android.content.Intent;

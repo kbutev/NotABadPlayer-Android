@@ -221,9 +221,10 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
         PlaylistFragment view = PlaylistFragment.newInstance(presenter);
 
         FragmentTransaction transaction = manager.beginTransaction();
+        transaction.hide(this);
         transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
         transaction.addToBackStack(newEntryName);
-        transaction.replace(R.id.mainLayout, view, newEntryName);
+        transaction.add(R.id.mainLayout, view, newEntryName);
         transaction.commit();
     }
 
