@@ -30,8 +30,6 @@ public class LaunchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launch);
 
         GeneralStorage.getShared().init(getApplication());
-
-        boolean firstTimeLaunch = GeneralStorage.getShared().isFirstApplicationLaunch();
         
         _launchedFromFile = Intent.ACTION_VIEW.equals(getIntent().getAction());
         

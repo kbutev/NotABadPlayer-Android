@@ -69,11 +69,11 @@ public class KeyBinds
             case FORWARDS_8:
                 AudioPlayer.getShared().jumpForwards(8);
                 break;
-            case FORWARDS_10:
-                AudioPlayer.getShared().jumpForwards(10);
-                break;
             case FORWARDS_15:
                 AudioPlayer.getShared().jumpForwards(15);
+                break;
+            case FORWARDS_30:
+                AudioPlayer.getShared().jumpForwards(30);
                 break;
             case FORWARDS_60:
                 AudioPlayer.getShared().jumpForwards(60);
@@ -81,11 +81,11 @@ public class KeyBinds
             case BACKWARDS_8:
                 AudioPlayer.getShared().jumpBackwards(8);
                 break;
-            case BACKWARDS_10:
-                AudioPlayer.getShared().jumpBackwards(10);
-                break;
             case BACKWARDS_15:
                 AudioPlayer.getShared().jumpBackwards(15);
+                break;
+            case BACKWARDS_30:
+                AudioPlayer.getShared().jumpBackwards(30);
                 break;
             case BACKWARDS_60:
                 AudioPlayer.getShared().jumpBackwards(60);

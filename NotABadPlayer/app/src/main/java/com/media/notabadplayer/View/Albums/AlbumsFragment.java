@@ -70,18 +70,18 @@ public class AlbumsFragment extends Fragment implements BaseView
         super.onActivityCreated(savedInstanceState);
 
         _presenter.start();
+
+        if (_tableAdapter != null)
+        {
+            _table.setAdapter(_tableAdapter);
+        }
     }
 
     @Override
     public void onStart()
     {
         super.onStart();
-
-        if (_tableAdapter != null)
-        {
-            _table.setAdapter(_tableAdapter);
-        }
-
+        
         if (_tableState != null)
         {
             _table.onRestoreInstanceState(_tableState);

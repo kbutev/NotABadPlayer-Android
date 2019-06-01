@@ -1,5 +1,9 @@
 package com.media.notabadplayer.Storage;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,9 +21,6 @@ import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.Serializing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class GeneralStorage
 {
     private static GeneralStorage singleton;
@@ -31,6 +32,7 @@ public class GeneralStorage
     private boolean _firstTimeLaunch;
     
     private HashMap<ApplicationInput, ApplicationAction> _keyBinds = new HashMap<>();
+    private boolean _keyBindsFullyRetrieved = false;
     
     private GeneralStorage()
     {
@@ -382,13 +384,14 @@ public class GeneralStorage
     
     synchronized public ApplicationAction getSettingsAction(ApplicationInput input)
     {
-        SharedPreferences preferences = getSharedPreferences();
         ApplicationAction cachedAction = _keyBinds.get(input);
         
         if (cachedAction != null)
         {
             return cachedAction;
         }
+
+        SharedPreferences preferences = getSharedPreferences();
         
         String actionStr = preferences.getString(input.name(), "");
         
@@ -402,6 +405,35 @@ public class GeneralStorage
         }
         
         return ApplicationAction.DO_NOTHING;
+    }
+
+    public Map<ApplicationInput, ApplicationAction> retrieveAllSettingsActionValues()
+    {
+        if (_keyBindsFullyRetrieved)
+        {
+            return Collections.unmodifiableMap(_keyBinds);
+        }
+
+        _keyBindsFullyRetrieved = true;
+
+        _keyBinds.clear();
+
+        SharedPreferences preferences = getSharedPreferences();
+
+        for (ApplicationInput input : ApplicationInput.values())
+        {
+            String value = preferences.getString(input.name(), "");
+
+            try {
+                ApplicationAction action = ApplicationAction.valueOf(value);
+                _keyBinds.put(input, action);
+            }
+            catch (Exception e) {
+
+            }
+        }
+
+        return Collections.unmodifiableMap(_keyBinds);
     }
     
     synchronized public int getPlayerPlayedHistoryCapacity()
