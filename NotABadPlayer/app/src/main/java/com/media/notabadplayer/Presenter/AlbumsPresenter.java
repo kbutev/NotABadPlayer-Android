@@ -2,6 +2,8 @@ package com.media.notabadplayer.Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -38,9 +40,32 @@ public class AlbumsPresenter implements BasePresenter {
             throw new IllegalStateException("SettingsPresenter: view has not been set");
         }
 
-        _albums = _audioInfo.getAlbums();
+        Log.v(AlbumsPresenter.class.getCanonicalName(), "Starting... retrieving albums data...");
         
-        _view.onMediaAlbumsLoad(_albums);
+        // Use background thread to pull the albums data.
+        // Then, alert view on the main thread
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<AudioAlbum> albums = _audioInfo.getAlbums();
+
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        _albums = albums;
+                        
+                        _view.onMediaAlbumsLoad(_albums);
+                    }
+                };
+
+                mainHandler.post(myRunnable);
+            }
+        });
+
+        thread.start();
     }
 
     @Override

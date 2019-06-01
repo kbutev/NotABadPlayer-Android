@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,11 +73,6 @@ public class AlbumsFragment extends Fragment implements BaseView
         super.onActivityCreated(savedInstanceState);
 
         _presenter.start();
-
-        if (_tableAdapter != null)
-        {
-            _table.setAdapter(_tableAdapter);
-        }
     }
 
     @Override
@@ -177,6 +173,8 @@ public class AlbumsFragment extends Fragment implements BaseView
     @Override
     public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
     {
+        Log.v(AlbumsFragment.class.getCanonicalName(), "Media albums received. Updating table data.");
+        
         Context context = getContext();
 
         if (context == null)
@@ -193,9 +191,8 @@ public class AlbumsFragment extends Fragment implements BaseView
         {
             titles.add(albums.get(e).albumTitle);
         }
-        
-        _tableSideIndexingView.updateAlphabet(titles);
-        _tableSideIndexingView.start(_table, _indexingTextCharacter);
+
+        _tableSideIndexingView.start(_table, _indexingTextCharacter, titles);
     }
 
     @Override

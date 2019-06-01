@@ -6,7 +6,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,10 +22,11 @@ import com.media.notabadplayer.Utilities.UIAnimations;
 public class GridSideIndexingView extends View {
     public static final int BOTTOM_PADDING = 10;
     
-    private Context _context;
-    private SectionIndexer _selectionIndexer = null;
+    private @NonNull Context _context;
+    
+    private @Nullable SectionIndexer _selectionIndexer = null;
     private Paint _paint;
-    private String[] _sections;
+    private String[] _sections = new String[1];
 
     private GridView _view;
     private TextView _indexingTextCharacter;
@@ -33,54 +36,65 @@ public class GridSideIndexingView extends View {
     {
         super(context);
         _context = context;
-        init(_context);
+        initialize();
     }
 
     public GridSideIndexingView(@NonNull Context context, AttributeSet attrs)
     {
         super(context, attrs);
         _context = context;
-        init(_context);
+        initialize();
     }
 
     public GridSideIndexingView(@NonNull Context context, AttributeSet attrs, int defStyle) 
     {
         super(context, attrs, defStyle);
         _context = context;
-        init(_context);
+        initialize();
     }
 
-    private void init(@NonNull Context context)
+    private void initialize()
     {
         _paint = new Paint();
         
         TypedValue outValue = new TypedValue();
-        
-        if (context.getTheme().resolveAttribute(R.attr.gridSideIndexingTextColor, outValue, true))
+
+        if (_context.getTheme().resolveAttribute(R.attr.gridSideIndexingTextColor, outValue, true))
         {
-            _paint.setColor(context.getResources().getColor(outValue.resourceId));
+            _paint.setColor(_context.getResources().getColor(outValue.resourceId));
         }
         else
         {
-            _paint.setColor(context.getResources().getColor(R.color.gridSideIndexingText));
+            _paint.setColor(_context.getResources().getColor(R.color.gridSideIndexingText));
         }
-        
-        _paint.setTextSize(context.getResources().getDimension(R.dimen.gridSideIndexingTextSize));
+
+        _paint.setTextSize(_context.getResources().getDimension(R.dimen.gridSideIndexingTextSize));
         _paint.setTextAlign(Paint.Align.LEFT);
     }
-
-    public void start(@NonNull GridView list, @NonNull TextView textCharacter)
+    
+    public void start(@NonNull GridView list, @NonNull TextView textCharacter, ArrayList<String> titles)
     {
+        updateAlphabet(titles);
+        
         _view = list;
         _indexingTextCharacter = textCharacter;
         _selectionIndexer = (SectionIndexer) list.getAdapter();
-
+        
+        if (_selectionIndexer == null)
+        {
+            return;
+        }
+        
         Object[] sectionsArr = _selectionIndexer.getSections();
+        
         _sections = new String[sectionsArr.length];
-        for (int i = 0; i < sectionsArr.length; i++) {
+        
+        for (int i = 0; i < sectionsArr.length; i++) 
+        {
             _sections[i] = sectionsArr[i].toString();
         }
-
+        
+        invalidate();
     }
     
     public ArrayList<Character> getAlphabet()
@@ -88,9 +102,9 @@ public class GridSideIndexingView extends View {
         return _alphabet;
     }
 
-    public void updateAlphabet(ArrayList<String> titles)
+    private void updateAlphabet(ArrayList<String> titles)
     {
-        _alphabet = new ArrayList<>();
+        _alphabet.clear();
         
         for (int e = 0; e < titles.size(); e++)
         {
@@ -108,22 +122,28 @@ public class GridSideIndexingView extends View {
         }
 
         Collections.sort(_alphabet);
-        
-        if (_alphabet.isEmpty())
-        {
-            _alphabet.add('a');
-        }
     }
     
     protected void onDraw(Canvas canvas) 
     {
+        Log.v("Tester", "draw!");
+        
+        if (_alphabet.size() == 0)
+        {
+            super.onDraw(canvas);
+            return;
+        }
+        
         int viewHeight = getPaddedHeight();
         float charHeight = ((float) viewHeight) / (float) _sections.length;
 
         float widthCenter = getMeasuredWidth() / 2;
-        for (int i = 0; i < _sections.length; i++) {
+        
+        for (int i = 0; i < _sections.length; i++) 
+        {
             canvas.drawText(String.valueOf(_sections[i]), widthCenter, charHeight + (i * charHeight), _paint);
         }
+        
         super.onDraw(canvas);
     }
 
@@ -135,6 +155,11 @@ public class GridSideIndexingView extends View {
     public boolean onTouchEvent(MotionEvent event)
     {
         super.onTouchEvent(event);
+
+        if (_alphabet.size() == 0 || _selectionIndexer == null)
+        {
+            return true;
+        }
 
         // What did we click on? Get the index of the label
         int y = (int) event.getY();
@@ -153,11 +178,6 @@ public class GridSideIndexingView extends View {
 
         if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE)
         {
-            if (_selectionIndexer == null)
-            {
-                _selectionIndexer = (SectionIndexer) _view.getAdapter();
-            }
-
             // Retrieve the first matching item for the index of the label we clicked on
             int exactItemIndex = _selectionIndexer.getPositionForSection(alphabetIndex);
 

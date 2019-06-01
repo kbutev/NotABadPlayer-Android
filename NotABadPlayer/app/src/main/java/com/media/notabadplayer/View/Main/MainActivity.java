@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -138,8 +140,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void onCreateMain()
     {
         // App theme
-        AppThemeUtility.setTheme(this, GeneralStorage.getShared().getAppThemeValue());
-
+        AppThemeUtility.setTheme(this, GeneralStorage.getAppTheme(this));
+        
         // Content
         setContentView(R.layout.activity_main);
 
@@ -148,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _presenter.setView(this);
 
         _audioStorage = new AudioStorage(this);
-        _audioStorage.load();
 
         // Audio Player initialization
         if (!AudioPlayer.getShared().isInitialized())
@@ -162,26 +163,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // Noise suppression
         _noiseSuppression = new AudioPlayerNoiseSuppression();
         _noiseSuppression.start(this);
-
-        // App launch track
-        Uri path = getIntent().getParcelableExtra("launchTrackPath");
-
-        boolean launchedWithInitialTrack = path != null;
-
-        if (launchedWithInitialTrack)
-        {
-            startAppWithTrack(path);
-        }
-        else
-        {
-            restoreAudioPlayerState();
-        }
-
-        // Performance optimizations
-        performLaunchPerformanceOptimizations();
-        
-        // Done
-        Log.v(MainActivity.class.getCanonicalName(), "Finished starting!");
     }
 
     @Override
@@ -256,17 +237,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         if (requestCode == PERMISSION_REQUEST_READ_EXTERNAL_STORAGE
                 && grantResults.length == 1
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            start();
+            permissionForReadExtertalStorageGranted();
         }
         else
         {
-            DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    finish();
-                }
-            };
-
-            AlertWindows.showAlert(this, 0, R.string.error_need_storage_permission, R.string.ok, action);
+            permissionForReadExtertalStorageNotGranted();
         }
     }
 
@@ -277,16 +252,72 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             throw new IllegalStateException("MainActivity cannot start, its already started");
         }
 
+        Log.v(MainActivity.class.getCanonicalName(), "Finished launching!");
         Log.v(MainActivity.class.getCanonicalName(), "Starting...");
         
         _state = MainActivityState.RUNNING;
 
+        // Create main interface
         onCreateMain();
 
+        // Start services here
+        startServices();
+    }
+    
+    private void finishedStarting()
+    {
+        // Performance optimizations
+        performLaunchPerformanceOptimizations();
+
+        // Handle launch from file request
         if (_launchedFromFile)
         {
             startAppWithTrack(_launchedFromFileUri);
         }
+        
+        // Done
+        Log.v(MainActivity.class.getCanonicalName(), "Finished starting!");
+    }
+    
+    private void startServices()
+    {
+        final MainActivity main = this;
+        
+        // Use background thread to start the services - user defaults, audio storage, etc...
+        // Then, alert MainActivity on the main thread
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.v(MainActivity.class.getCanonicalName(), "Starting services...");
+                
+                GeneralStorage.getShared().init(getApplication());
+                
+                _audioStorage.load();
+                
+                GeneralStorage.getShared().restorePlayerState();
+
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        main.finishedStartingServices();
+                    }
+                };
+
+                mainHandler.post(myRunnable);
+            }
+        });
+        
+        thread.start();
+    }
+    
+    private void finishedStartingServices()
+    {
+        Log.v(MainActivity.class.getCanonicalName(), "Finished starting services!");
+        
+        finishedStarting();
     }
     
     private void startAppWithTrack(Uri path)
@@ -319,28 +350,81 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         overridePendingTransition(0, 0);
     }
 
-    public void requestPermissionForReadExtertalStorage()
+    private void requestPermissionForReadExtertalStorage()
     {
-        try {
-            // Permission not granted:
-            // Request for permission, handle it with the activity method onRequestPermissionsResult()
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+        final MainActivity mainActivity = this;
+        
+        // Use background thread to check for permission
+        // Then, alert update self on the main thread
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean permissionGiven = true;
+                
+                // Request for permission, handle it with the activity method onRequestPermissionsResult()
+                try {
+                    if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED)
+                    {
+                        ActivityCompat.requestPermissions(mainActivity,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+                        return;
+                    }
+                } 
+                catch (Exception e)
+                {
+                    permissionGiven = false;
+                }
+                
+                final boolean hasPermission = permissionGiven;
+                
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        // Permission granted:
+                        // Just start the app normally (transition from launch state)
+                        if (hasPermission)
+                        {
+                            permissionForReadExtertalStorageGranted();
+                        }
+                        // Permission not granted:
+                        // Stop app
+                        else
+                        {
+                            permissionForReadExtertalStorageNotGranted();
+                        }
+                    }
+                };
+
+                mainHandler.post(myRunnable);
             }
-            // Permission granted:
-            // Just start the app normally (transition from launch state)
-            else
-            {
-                start();
+        });
+        
+        thread.start();
+    }
+
+    private void permissionForReadExtertalStorageGranted()
+    {
+        Log.v(MainActivity.class.getCanonicalName(), "Permission for read external storage has been granted.");
+        
+        start();
+    }
+
+    private void permissionForReadExtertalStorageNotGranted()
+    {
+        Log.v(MainActivity.class.getCanonicalName(), "Error: permission for read external storage has not been granted.");
+        
+        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                finish();
             }
-        } catch (Exception e) {
-            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot request permission for read external storage: " + e.toString());
-            finish();
-        }
+        };
+
+        AlertWindows.showAlert(this, 0, R.string.error_need_storage_permission, R.string.ok, action);
     }
     
     private void initMainUI()
