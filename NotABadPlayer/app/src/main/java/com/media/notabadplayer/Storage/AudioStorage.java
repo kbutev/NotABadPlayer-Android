@@ -9,10 +9,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -21,62 +23,72 @@ import com.media.notabadplayer.Audio.AudioTrackSource;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
 public class AudioStorage implements AudioInfo {
-    private Context _context;
-    private ArrayList<AudioAlbum> _albums = new  ArrayList<>();
-    private HashMap<String, ArrayList<AudioTrack>> _albumSongs = new HashMap<>();
+    public static int ALBUM_TRACK_CACHE_CAPACITY = 30;
+    
+    private final Context _context;
+    
+    private final ArrayList<AudioAlbum> _albums = new ArrayList<>();
+    
+    private final SortedMap<String, List<AudioTrack>> _albumTracks = new TreeMap<>();
     
     public AudioStorage(@NonNull Context context)
     {
         _context = context;
     }
-
+    
     public void load()
     {
-        Log.v(AudioStorage.class.getCanonicalName(), "Loading albums from media store...");
-        
-        _albums.clear();
-        
-        Cursor cursor = _context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                null, null, null, null);
-        
-        if (cursor == null)
+        synchronized (_albums)
         {
-            return;
-        }
+            Log.v(AudioStorage.class.getCanonicalName(), "Loading albums from media store...");
 
-        int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
-        int artistColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
-        int albumIdColumn = cursor.getColumnIndex(MediaStore.Audio.Albums._ID);
-        int albumArtColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
-        
-        while (cursor.moveToNext())
-        {
-            long albumID = cursor.getLong(albumIdColumn);
-            String title = cursor.getString(titleColumn);
-            String artist = cursor.getString(artistColumn);
-            String cover = cursor.getString(albumArtColumn);
-            
-            AudioAlbum a = new AudioAlbum(String.valueOf(albumID), artist, title, cover != null ? cover : "");
-            _albums.add(a);
-        }
-        
-        cursor.close();
+            _albums.clear();
 
-        MediaSorting.sortAlbumsByTitle(_albums);
-        
-        Log.v(AudioStorage.class.getCanonicalName(), "Successfully loaded " +  String.valueOf(_albums.size()) + " albums from media store.");
+            Cursor cursor = _context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                    null, null, null, null);
+
+            if (cursor == null)
+            {
+                return;
+            }
+
+            int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
+            int artistColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
+            int albumIdColumn = cursor.getColumnIndex(MediaStore.Audio.Albums._ID);
+            int albumArtColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
+
+            while (cursor.moveToNext())
+            {
+                long albumID = cursor.getLong(albumIdColumn);
+                String title = cursor.getString(titleColumn);
+                String artist = cursor.getString(artistColumn);
+                String cover = cursor.getString(albumArtColumn);
+
+                AudioAlbum a = new AudioAlbum(String.valueOf(albumID), artist, title, cover != null ? cover : "");
+                _albums.add(a);
+            }
+
+            cursor.close();
+
+            MediaSorting.sortAlbumsByTitle(_albums);
+
+            Log.v(AudioStorage.class.getCanonicalName(), "Successfully loaded " +  String.valueOf(_albums.size()) + " albums from media store.");
+        }
     }
     
     public @NonNull List<AudioAlbum> getAlbums()
     {
-        if (_albums.size() > 0)
+        synchronized (_albums)
         {
+            if (_albums.size() > 0)
+            {
+                return Collections.unmodifiableList(_albums);
+            }
+
+            load();
+
             return Collections.unmodifiableList(_albums);
         }
-        
-        load();
-        
-        return Collections.unmodifiableList(_albums);
     }
     
     public @Nullable AudioAlbum getAlbumByID(@NonNull String identifier)
@@ -96,9 +108,9 @@ public class AudioStorage implements AudioInfo {
 
     synchronized public @NonNull List<AudioTrack> getAlbumTracks(@NonNull AudioAlbum album)
     {
-        if (_albumSongs.containsKey(album.albumID))
+        if (_albumTracks.containsKey(album.albumID))
         {
-            return _albumSongs.get(album.albumID);
+            return _albumTracks.get(album.albumID);
         }
         
         ArrayList<AudioTrack> albumTracks = new ArrayList<>();
@@ -158,9 +170,21 @@ public class AudioStorage implements AudioInfo {
 
         cursor.close();
 
-        _albumSongs.put(album.albumID, albumTracks);
+        storeTracksIntoCache(album.albumID, albumTracks);
         
         return albumTracks;
+    }
+    
+    private void storeTracksIntoCache(@NonNull String albumID, List<AudioTrack> tracks)
+    {
+        _albumTracks.put(albumID, tracks);
+        
+        if (_albumTracks.size() > AudioStorage.ALBUM_TRACK_CACHE_CAPACITY)
+        {
+            String firstKey = _albumTracks.firstKey();
+            
+            _albumTracks.remove(firstKey);
+        }
     }
     
     public @NonNull List<AudioTrack> searchForTracks(@NonNull String query)
