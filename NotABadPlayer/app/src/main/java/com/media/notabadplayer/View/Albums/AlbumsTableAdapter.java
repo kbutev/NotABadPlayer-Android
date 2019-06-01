@@ -16,10 +16,7 @@ import android.widget.TextView;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.Utilities.MediaSorting;
 
 class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
 {
