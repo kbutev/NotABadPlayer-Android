@@ -118,8 +118,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private void onCreateLaunch()
     {
-        setContentView(R.layout.activity_launch);
-
         GeneralStorage.getShared().init(getApplication());
         
         Intent intent = getIntent();
@@ -202,7 +200,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         disableInteraction();
         
         // Every time the main activity pauses, save the player state
-        saveCurrentAudioState();
+        if (_state.isRunning())
+        {
+            saveCurrentAudioState();
+        }
     }
     
     @Override
