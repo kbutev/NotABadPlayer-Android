@@ -2,7 +2,6 @@ package com.media.notabadplayer.View.Albums;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
@@ -40,6 +40,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     private Parcelable _tableState;
     private GridSideIndexingView _tableSideIndexingView;
     private TextView _indexingTextCharacter;
+    private ProgressBar _progressIndicator;
     
     public AlbumsFragment()
     {
@@ -61,6 +62,7 @@ public class AlbumsFragment extends Fragment implements BaseView
         _table = root.findViewById(R.id.primaryAreaGrid);
         _tableSideIndexingView = root.findViewById(R.id.tableSideIndexingView);
         _indexingTextCharacter = root.findViewById(R.id.indexingTextCharacter);
+        _progressIndicator = root.findViewById(R.id.progressIndicator);
         
         initUI();
         
@@ -175,6 +177,8 @@ public class AlbumsFragment extends Fragment implements BaseView
     public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
     {
         Log.v(AlbumsFragment.class.getCanonicalName(), "Media albums received. Updating table data.");
+
+        _progressIndicator.setVisibility(View.GONE);
         
         Context context = getContext();
 

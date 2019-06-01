@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private AudioStorage _audioStorage;
     private MainPresenter _presenter;
 
-    private BottomNavigationView _navigation;
+    private BottomNavigationView _navigationView;
     
     private TabNavigation _tabNavigation = new TabNavigation();
     
@@ -427,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void initMainUI()
     {
         // Bottom navigation menu
-        _navigation = findViewById(R.id.navigation);
+        _navigationView = findViewById(R.id.navigation);
         
         // Select default tab
         onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
@@ -444,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _presenter.start();
         
         // Set bottom navigation menu listener
-        _navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        _navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
     
     private void performLaunchPerformanceOptimizations()
@@ -465,11 +465,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         int tabID = R.id.navigation_albums;
 
-        _tabNavigation.willSelectTab(tabID);
-        _tabNavigation.selectTab(tabID);
-        _tabNavigation.didSelectTab(tabID);
-
-        updateQuickPlayerVisibility();
+        _tabNavigation.setCurrentTabTo(tabID, true);
     }
 
     private void selectListsTab()
@@ -478,11 +474,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         int tabID = R.id.navigation_lists;
 
-        _tabNavigation.willSelectTab(tabID);
-        _tabNavigation.selectTab(tabID);
-        _tabNavigation.didSelectTab(tabID);
-
-        updateQuickPlayerVisibility();
+        _tabNavigation.setCurrentTabTo(tabID, true);
     }
 
     private void selectSearchTab()
@@ -491,11 +483,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         int tabID = R.id.navigation_search;
 
-        _tabNavigation.willSelectTab(tabID);
-        _tabNavigation.selectTab(tabID);
-        _tabNavigation.didSelectTab(tabID);
-
-        updateQuickPlayerVisibility();
+        _tabNavigation.setCurrentTabTo(tabID, true);
     }
 
     private void selectSettingsTab()
@@ -504,11 +492,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         int tabID = R.id.navigation_settings;
 
-        _tabNavigation.willSelectTab(tabID);
-        _tabNavigation.selectTab(tabID);
-        _tabNavigation.didSelectTab(tabID);
-
-        updateQuickPlayerVisibility();
+        _tabNavigation.setCurrentTabTo(tabID, false);
     }
 
     private void onTabItemSelected(int itemID)
@@ -538,33 +522,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             case R.id.navigation_settings:
                 selectSettingsTab();
                 break;
-        }
-    }
-
-    private void updateQuickPlayerVisibility()
-    {
-        if (_quickPlayer != null)
-        {
-            if (_tabNavigation.currentTabID == R.id.navigation_settings)
-            {
-                if (_quickPlayer.getView() != null)
-                {
-                    final FragmentManager manager = getSupportFragmentManager();
-                    FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.detach(_quickPlayer);
-                    transaction.commit();
-                }
-            }
-            else
-            {
-                if (_quickPlayer.getView() == null)
-                {
-                    final FragmentManager manager = getSupportFragmentManager();
-                    FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.attach(_quickPlayer);
-                    transaction.commit();
-                }
-            }
         }
     }
     
@@ -684,41 +641,34 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         private int previousTabID = 0;
         private BaseView previousTab = null;
         private Map<Integer, CachedTab> cachedTabs = new HashMap<>();
-
-        private void cacheCurrentTab()
-        {
-            if (currentTab != null)
-            {
-                AppSettings.TabCachingPolicies policy = GeneralStorage.getShared().getCachingPolicy();
-                
-                boolean cacheTab = false;
-                
-                switch (currentTabID)
-                {
-                    case R.id.navigation_albums:
-                        cacheTab = policy.cacheAlbumsTab();
-                        break;
-                    case R.id.navigation_lists:
-                        cacheTab = policy.cacheListsTab();
-                        break;
-                    case R.id.navigation_search:
-                        cacheTab = policy.cacheSearchTab();
-                        break;
-                    case R.id.navigation_settings:
-                        cacheTab = policy.cacheSettingsTab();
-                        break;
-                }
-                
-                if (cacheTab)
-                {
-                    cachedTabs.put(currentTabID, CachedTab.create(currentTab, getSupportFragmentManager()));
-                }
-            }
-        }
         
-        private void clearTabCache()
+        private void setCurrentTabTo(int destinationTabID, boolean showQuickPlayer)
         {
-            cachedTabs.clear();
+            willSelectTab(destinationTabID);
+            selectTab(destinationTabID);
+            didSelectTab(destinationTabID);
+            
+            if (_quickPlayer != null)
+            {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                
+                if (showQuickPlayer)
+                {
+                    if (_quickPlayer.getView() == null)
+                    {
+                        transaction.attach(_quickPlayer);
+                    }
+                }
+                else
+                {
+                    if (_quickPlayer.getView() != null)
+                    {
+                        transaction.detach(_quickPlayer);
+                    }
+                }
+                
+                transaction.commit();
+            }
         }
         
         private void willSelectTab(int destinationTabID)
@@ -802,20 +752,55 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             
             return tab;
         }
+
+        private void cacheCurrentTab()
+        {
+            if (currentTab != null)
+            {
+                AppSettings.TabCachingPolicies policy = GeneralStorage.getShared().getCachingPolicy();
+
+                boolean cacheTab = false;
+
+                switch (currentTabID)
+                {
+                    case R.id.navigation_albums:
+                        cacheTab = policy.cacheAlbumsTab();
+                        break;
+                    case R.id.navigation_lists:
+                        cacheTab = policy.cacheListsTab();
+                        break;
+                    case R.id.navigation_search:
+                        cacheTab = policy.cacheSearchTab();
+                        break;
+                    case R.id.navigation_settings:
+                        cacheTab = policy.cacheSettingsTab();
+                        break;
+                }
+
+                if (cacheTab)
+                {
+                    cachedTabs.put(currentTabID, CachedTab.create(currentTab, getSupportFragmentManager()));
+                }
+            }
+        }
+
+        private void clearTabCache()
+        {
+            cachedTabs.clear();
+        }
         
         private boolean deselectTab(int tabID)
         {
-            // Returns true if tab will be removed instead of being hidden
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             
+            // Returns true if tab will be removed instead of being hidden
             if (cacheContains(tabID))
             {
                 transaction.hide((Fragment) previousTab);
                 transaction.commit();
                 return false;
             }
-            
+
             transaction.remove((Fragment) previousTab);
             transaction.commit();
             return true;
@@ -823,16 +808,16 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         private void replaceCurrentTab()
         {
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
             transaction.replace(R.id.mainLayout, (Fragment) currentTab);
+            
             transaction.commit();
         }
         
         private void addCurrentTab()
         {
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             
             if (!currentTabIsAlreadyAdded())
             {
@@ -848,11 +833,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         private void showCurrentTab()
         {
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             
             CachedTab cachedTab = cachedTabs.get(currentTabID);
-
+            
             // Show only if there is no subview in the cache tab
             if (cachedTab == null)
             {
@@ -877,7 +861,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 }
             }
             
-            // Commit
             transaction.commit();
         }
         

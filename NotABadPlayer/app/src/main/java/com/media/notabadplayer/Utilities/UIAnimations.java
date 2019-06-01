@@ -13,6 +13,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ImageViewCompat;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -84,6 +86,32 @@ public class UIAnimations {
         animationSet.play(fadeOut);
 
         animationSet.start();
+    }
+
+    public void animateQuickScaleDown(@Nullable Context context, final @Nullable View view, float startScaleValue)
+    {
+        if (context == null || view == null)
+        {
+            return;
+        }
+        
+        Animation animation = new ScaleAnimation(startScaleValue, 1.0f, startScaleValue, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(150);
+        animation.setFillAfter(true);
+        view.startAnimation(animation);
+    }
+
+    public void animateQuickScaleUp(@Nullable Context context, final @Nullable View view, float startScaleValue)
+    {
+        if (context == null || view == null)
+        {
+            return;
+        }
+
+        Animation animation = new ScaleAnimation(startScaleValue, 1.0f, startScaleValue, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(150);
+        animation.setFillAfter(true);
+        view.startAnimation(animation);
     }
 
     public class ImageAnimations {
