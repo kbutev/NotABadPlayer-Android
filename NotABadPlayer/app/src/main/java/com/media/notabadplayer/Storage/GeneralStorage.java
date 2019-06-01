@@ -494,6 +494,21 @@ public class GeneralStorage
         
         return AppSettings.AppTheme.LIGHT;
     }
+    
+    public static AppSettings.AppTheme getAppTheme(@NonNull Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+
+        try {
+            return AppSettings.AppTheme.valueOf(preferences.getString("app_theme_value", ""));
+        }
+        catch (Exception e)
+        {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read AppThemeUtility value from storage");
+        }
+
+        return AppSettings.AppTheme.LIGHT;
+    }
 
     synchronized public void saveAppThemeValue(AppSettings.AppTheme value)
     {
