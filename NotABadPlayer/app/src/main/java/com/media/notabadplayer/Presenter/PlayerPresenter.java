@@ -34,7 +34,7 @@ public class PlayerPresenter implements BasePresenter
     {
         if (_view == null)
         {
-            throw new IllegalStateException("SettingsPresenter: view has not been set");
+            throw new IllegalStateException("PlayerPresenter: view has not been set");
         }
         
         AudioPlayer player = AudioPlayer.getShared();

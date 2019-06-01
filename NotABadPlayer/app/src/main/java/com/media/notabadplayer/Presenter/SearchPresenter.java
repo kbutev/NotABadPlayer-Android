@@ -44,7 +44,7 @@ public class SearchPresenter implements BasePresenter
     {
         if (_view == null)
         {
-            throw new IllegalStateException("SettingsPresenter: view has not been set");
+            throw new IllegalStateException("SearchPresenter: view has not been set");
         }
 
         // Restore last search query from storage
