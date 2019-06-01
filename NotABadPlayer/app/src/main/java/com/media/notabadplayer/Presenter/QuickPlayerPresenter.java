@@ -35,7 +35,7 @@ public class QuickPlayerPresenter implements BasePresenter
     {
         if (_view == null)
         {
-            throw new IllegalStateException("SettingsPresenter: view has not been set");
+            throw new IllegalStateException("QuickPlayerPresenter: view has not been set");
         }
     }
 

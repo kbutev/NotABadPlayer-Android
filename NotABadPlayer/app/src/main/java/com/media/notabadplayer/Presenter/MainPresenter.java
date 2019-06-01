@@ -28,7 +28,7 @@ public class MainPresenter implements BasePresenter {
     {
         if (_view == null)
         {
-            throw new IllegalStateException("SettingsPresenter: view has not been set");
+            throw new IllegalStateException("MainPresenter: view has not been set");
         }
     }
 

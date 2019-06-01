@@ -37,7 +37,7 @@ public class AlbumsPresenter implements BasePresenter {
     {
         if (_view == null)
         {
-            throw new IllegalStateException("SettingsPresenter: view has not been set");
+            throw new IllegalStateException("AlbumsPresenter: view has not been set");
         }
 
         Log.v(AlbumsPresenter.class.getCanonicalName(), "Starting... retrieving albums data...");

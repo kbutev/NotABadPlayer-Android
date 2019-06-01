@@ -827,7 +827,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             {
                 transaction.show((Fragment) currentTab);
             }
-            
+
             transaction.commit();
         }
 
@@ -849,10 +849,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 if (cachedTab.tabSubview instanceof Fragment)
                 {
                     Fragment fragment = (Fragment) cachedTab.tabSubview;
-                    transaction.hide((Fragment) currentTab);
-                    transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
-                    transaction.addToBackStack(cachedTab.tabSubviewName);
+                    transaction.setCustomAnimations(R.anim.hold, R.anim.hold, R.anim.hold, R.anim.hold);
                     transaction.add(R.id.mainLayout, fragment, cachedTab.tabSubviewName);
+                    transaction.addToBackStack(cachedTab.tabSubviewName);
+                    transaction.hide((Fragment) currentTab);
                 }
                 // There is a cached tab, but there is no subview, just show the tab
                 else

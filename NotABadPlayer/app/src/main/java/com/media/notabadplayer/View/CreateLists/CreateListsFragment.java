@@ -275,10 +275,10 @@ public class CreateListsFragment extends Fragment implements BaseView {
         presenter.setView(view);
 
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.hide(this);
-        transaction.setCustomAnimations(0, R.anim.fade_in, 0, R.anim.hold);
-        transaction.addToBackStack(newEntryName);
+        transaction.setCustomAnimations(R.anim.scale_up, R.anim.long_hold, R.anim.hold, R.anim.hold);
         transaction.add(R.id.mainLayout, view, newEntryName);
+        transaction.addToBackStack(newEntryName);
+        transaction.hide(this);
         transaction.commit();
     }
 
