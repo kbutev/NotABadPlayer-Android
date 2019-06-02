@@ -129,6 +129,17 @@ public class SettingsFragment extends Fragment implements BaseView
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        // The settings presenter does not pull data, it only updates it
+        // But start it anyways, for consistency
+        // The fragment on its own pulls the data from storage and fills up the fields efficiently
+        _presenter.start();
+    }
+
+    @Override
     public void onResume()
     {
         super.onResume();
@@ -569,6 +580,12 @@ public class SettingsFragment extends Fragment implements BaseView
 
     @Override
     public void onPlaylistLoad(@NonNull AudioPlaylist playlist)
+    {
+
+    }
+
+    @Override
+    public void onUserPlaylistsLoad(@Nullable AudioPlaylist recentlyPlayed, @NonNull List<AudioPlaylist> playlists)
     {
 
     }

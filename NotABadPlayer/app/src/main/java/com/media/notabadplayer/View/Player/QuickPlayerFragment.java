@@ -381,6 +381,12 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     {
 
     }
+
+    @Override
+    public void onUserPlaylistsLoad(@Nullable AudioPlaylist recentlyPlayed, @NonNull List<AudioPlaylist> playlists)
+    {
+
+    }
     
     @Override
     public void openPlayerScreen(@NonNull AudioPlaylist playlist)

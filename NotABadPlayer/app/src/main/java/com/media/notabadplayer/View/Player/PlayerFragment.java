@@ -558,6 +558,12 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     {
 
     }
+
+    @Override
+    public void onUserPlaylistsLoad(@Nullable AudioPlaylist recentlyPlayed, @NonNull List<AudioPlaylist> playlists)
+    {
+
+    }
     
     @Override
     public void openPlayerScreen(@NonNull AudioPlaylist playlist) 
