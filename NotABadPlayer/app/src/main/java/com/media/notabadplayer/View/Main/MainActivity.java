@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 mainHandler.post(myRunnable);
             }
         });
-
+        
         thread.start();
     }
     
@@ -538,7 +538,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void onUserPlaylistsLoad(@Nullable AudioPlaylist recentlyPlayed, @NonNull List<AudioPlaylist> playlists)
+    public void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists)
     {
 
     }
@@ -827,7 +827,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                     presenter.setView(tab);
                     break;
                 case R.id.navigation_lists:
-                    presenter = new ListsPresenter(_audioStorage);
+                    presenter = new ListsPresenter(getBaseContext(), _audioStorage);
                     tab = ListsFragment.newInstance(presenter);
                     presenter.setView(tab);
                     break;

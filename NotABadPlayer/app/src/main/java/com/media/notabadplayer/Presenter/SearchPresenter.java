@@ -80,17 +80,7 @@ public class SearchPresenter implements BasePresenter
     @Override
     public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
-        if (!_running)
-        {
-            return;
-        }
         
-        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
-
-        if (currentlyPlayingPlaylist != null)
-        {
-            _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist);
-        }
     }
 
     @Override
@@ -107,6 +97,12 @@ public class SearchPresenter implements BasePresenter
 
     @Override
     public void onPlayOrderButtonClick()
+    {
+
+    }
+
+    @Override
+    public void onPlaylistItemDelete(int index)
     {
 
     }

@@ -24,6 +24,8 @@ public interface BasePresenter {
     void onPlayOrderButtonClick();
     void onOpenPlaylistButtonClick();
     
+    void onPlaylistItemDelete(int index);
+    
     void onSearchResultClick(int index);
     void onSearchQuery(@NonNull String searchValue);
     

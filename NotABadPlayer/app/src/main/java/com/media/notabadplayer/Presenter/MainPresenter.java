@@ -75,6 +75,12 @@ public class MainPresenter implements BasePresenter {
     }
 
     @Override
+    public void onPlaylistItemDelete(int index)
+    {
+
+    }
+
+    @Override
     public void onSearchResultClick(int index)
     {
 

@@ -89,12 +89,7 @@ public class PlaylistPresenter implements BasePresenter {
     @Override
     public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
-        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
-
-        if (currentlyPlayingPlaylist != null)
-        {
-            _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist);
-        }
+        
     }
 
     @Override
@@ -111,6 +106,12 @@ public class PlaylistPresenter implements BasePresenter {
 
     @Override
     public void onPlayOrderButtonClick()
+    {
+
+    }
+
+    @Override
+    public void onPlaylistItemDelete(int index)
     {
 
     }

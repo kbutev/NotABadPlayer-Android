@@ -2,6 +2,8 @@ package com.media.notabadplayer.Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -16,6 +18,7 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
 
@@ -23,10 +26,17 @@ public class ListsPresenter implements BasePresenter
 {
     private BaseView _view;
 
+    private @NonNull Context _context;
+    
     private @NonNull AudioInfo _audioInfo;
+    
+    private List<AudioPlaylist> _playlists = new ArrayList<>();
 
-    public ListsPresenter(@NonNull AudioInfo audioInfo)
+    private boolean _running = false;
+    
+    public ListsPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo)
     {
+        _context = context;
         _audioInfo = audioInfo;
     }
 
@@ -44,37 +54,13 @@ public class ListsPresenter implements BasePresenter
             throw new IllegalStateException("ListsPresenter: view has not been set");
         }
 
-        // Use background thread to retrieve the user playlists
-        // Then, update the view on the main thread
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final List<AudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
-                final ArrayList<AudioTrack> history = AudioPlayer.getShared().playHistory.getPlayHistory();
-                
-                Handler mainHandler = new Handler(Looper.getMainLooper());
-
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run()
-                    {
-                        List<AudioPlaylist> userPlaylists = playlists != null ? playlists : new ArrayList<AudioPlaylist>();
-                        AudioPlaylist historyPlaylist = history.size() > 0 ? new AudioPlaylist("...", history) : null;
-                        _view.onUserPlaylistsLoad(historyPlaylist, userPlaylists);
-                    }
-                };
-
-                mainHandler.post(myRunnable);
-            }
-        });
-
-        thread.start();
+        updatePlaylistsData(0);
     }
 
     @Override
     public void onAppStateChange(AppState state)
-    {
-
+    { 
+        _running = state.isRunning();
     }
 
     @Override
@@ -86,18 +72,22 @@ public class ListsPresenter implements BasePresenter
     @Override
     public void onPlaylistItemClick(int index) 
     {
+        if (index < 0 || index >= _playlists.size())
+        {
+            return;
+        }
+        
+        AudioPlaylist playlist = _playlists.get(index);
 
+        Log.v(ListsPresenter.class.getCanonicalName(), "Open playlist '" + playlist.getName() + "'");
+        
+        _view.openPlaylistScreen(_audioInfo, playlist);
     }
 
     @Override
     public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
-        if (playlist != null)
-        {
-            Log.v(ListsPresenter.class.getCanonicalName(), "Open player screen with playlist " + playlist.getName());
-
-            _view.openPlaylistScreen(_audioInfo, playlist);
-        }
+        
     }
 
     @Override
@@ -116,6 +106,26 @@ public class ListsPresenter implements BasePresenter
     public void onPlayOrderButtonClick()
     {
 
+    }
+
+    @Override
+    public void onPlaylistItemDelete(int index)
+    {
+        if (index < _playlists.size())
+        {
+            _playlists.remove(index);
+
+            if (_playlists.size() > 0)
+            {
+                ArrayList<AudioPlaylist> playlists = new ArrayList<>(_playlists);
+
+                playlists.remove(0);
+
+                GeneralStorage.getShared().saveUserPlaylists(playlists);
+                
+                updatePlaylistsData(0);
+            }
+        }
     }
 
     @Override
@@ -164,5 +174,49 @@ public class ListsPresenter implements BasePresenter
     public void onKeybindChange(ApplicationAction action, ApplicationInput input) 
     {
 
+    }
+    
+    private void updatePlaylistsData(int delay)
+    {
+        // Use background thread to retrieve the user playlists
+        // Then, update the view on the main thread
+        Handler handler = new Handler();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (!_running)
+                {
+                    updatePlaylistsData(250);
+                    return;
+                }
+                
+                List<AudioPlaylist> userPlaylists = GeneralStorage.getShared().getUserPlaylists();
+                final List<AudioPlaylist> playlists = userPlaylists != null ? userPlaylists : new ArrayList<AudioPlaylist>();
+                final ArrayList<AudioTrack> history = AudioPlayer.getShared().playHistory.getPlayHistory();
+                
+                if (history.size() > 0)
+                {
+                    String historyPlaylistName = _context.getResources().getString(R.string.playlist_name_recently_played);
+                    playlists.add(0, new AudioPlaylist(historyPlaylistName, history));
+                }
+
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        Log.v(ListsPresenter.class.getCanonicalName(), "Updating user playlist data");
+                        
+                        _playlists = playlists;
+                        _view.onUserPlaylistsLoad(_playlists);
+                    }
+                };
+
+                mainHandler.post(myRunnable);
+            }
+        });
+        
+        handler.postDelayed(thread, delay);
     }
 }

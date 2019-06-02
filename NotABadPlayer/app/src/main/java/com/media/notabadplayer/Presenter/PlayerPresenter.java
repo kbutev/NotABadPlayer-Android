@@ -118,6 +118,12 @@ public class PlayerPresenter implements BasePresenter
         
         KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
     }
+
+    @Override
+    public void onPlaylistItemDelete(int index)
+    {
+
+    }
     
     @Override
     public void onSearchResultClick(int index)
