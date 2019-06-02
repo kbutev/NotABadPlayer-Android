@@ -19,6 +19,8 @@ public interface BaseView {
     void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums);
 
     void onPlaylistLoad(@NonNull AudioPlaylist playlist);
+
+    void onUserPlaylistsLoad(@Nullable AudioPlaylist recentlyPlayed, @NonNull List<AudioPlaylist> playlists);
     
     void openPlayerScreen(@NonNull AudioPlaylist playlist);
     void updatePlayerScreen(@NonNull AudioPlaylist playlist);

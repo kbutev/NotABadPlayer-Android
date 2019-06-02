@@ -16,13 +16,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import com.google.common.base.Function;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -34,15 +35,17 @@ import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.BaseView;
 
 public class ListsFragment extends Fragment implements BaseView {
-    private ArrayList<AudioPlaylist> _playlists;
-
     private BasePresenter _presenter;
 
+    private List<AudioPlaylist> _playlists;
+    
     private Button _createPlaylistButton;
     private Button _deletePlaylistButton;
     private Button _donePlaylistButton;
     private ListView _playlistsList;
     private ListAdapter _playlistsAdapter;
+
+    private ProgressBar _progressIndicator;
     
     public ListsFragment()
     {
@@ -65,11 +68,20 @@ public class ListsFragment extends Fragment implements BaseView {
         _deletePlaylistButton = root.findViewById(R.id.deletePlaylistButton);
         _donePlaylistButton = root.findViewById(R.id.donePlaylistButton);
         _playlistsList = root.findViewById(R.id.playlistsList);
+        _progressIndicator = root.findViewById(R.id.progressIndicator);
         
         // Setup UI
         initUI();
         
         return root;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        _presenter.start();
     }
     
     @Override
@@ -78,8 +90,6 @@ public class ListsFragment extends Fragment implements BaseView {
         super.onResume();
 
         enableInteraction();
-        
-        updateListAdapters();
     }
 
     @Override
@@ -146,50 +156,6 @@ public class ListsFragment extends Fragment implements BaseView {
                 }
             }
         });
-
-        updateListAdapters();
-    }
-    
-    private void updateListAdapters()
-    {
-        Context context = getContext();
-
-        if (context == null)
-        {
-            return;
-        }
-
-        _playlists = GeneralStorage.getShared().getUserPlaylists();
-
-        if (_playlists == null)
-        {
-            _playlists = new ArrayList<>();
-        }
-        
-        ArrayList<AudioTrack> history = AudioPlayer.getShared().playHistory.getPlayHistory();
-        
-        if (history.size() > 0)
-        {
-            String playlistName = getResources().getString(R.string.playlist_name_recently_played);
-            AudioPlaylist historyPlaylist = new AudioPlaylist(playlistName, history);
-            _playlists.add(0, historyPlaylist);
-        }
-        
-        Function<Integer, Void> onRemoveButtonClick = new Function<Integer, Void>() {
-            @Override
-            public Void apply(Integer integer) {
-                if (integer != 0)
-                {
-                    deletePlaylistOnIndex(integer);
-                }
-                
-                return null;
-            }
-        };
-        
-        _playlistsAdapter = new ListAdapter(context, _playlists, onRemoveButtonClick);
-        _playlistsList.setAdapter(_playlistsAdapter);
-        _playlistsList.invalidateViews();
     }
     
     private void openCreatePlaylistScreen()
@@ -293,6 +259,57 @@ public class ListsFragment extends Fragment implements BaseView {
     {
 
     }
+
+    @Override
+    public void onUserPlaylistsLoad(@Nullable AudioPlaylist recentlyPlayed, @NonNull List<AudioPlaylist> playlists)
+    {
+        Context context = getContext();
+
+        if (context == null)
+        {
+            return;
+        }
+        
+        AudioPlaylist recentlyPlayedPlaylist = null;
+        
+        if (recentlyPlayed != null)
+        {
+            String recentlyPlayedName = getResources().getString(R.string.playlist_name_recently_played);
+            recentlyPlayedPlaylist = new AudioPlaylist(recentlyPlayedName, recentlyPlayed.getTracks());
+        }
+
+        // This will be the new @_playlists data
+        ArrayList<AudioPlaylist> resultPlaylists = new ArrayList<>(playlists);
+
+        // If recently playlist exists, add the rest of the playlists (at index 0 always)
+        if (recentlyPlayedPlaylist != null)
+        {
+            resultPlaylists.add(0, recentlyPlayedPlaylist);
+        }
+        
+        // Set data
+        _playlists = Collections.unmodifiableList(resultPlaylists);
+        
+        // Update adapter
+        Function<Integer, Void> onRemoveButtonClick = new Function<Integer, Void>() {
+            @Override
+            public Void apply(Integer integer) {
+                if (integer != 0)
+                {
+                    deletePlaylistOnIndex(integer);
+                }
+
+                return null;
+            }
+        };
+
+        _playlistsAdapter = new ListAdapter(context, _playlists, onRemoveButtonClick);
+        _playlistsList.setAdapter(_playlistsAdapter);
+        _playlistsList.invalidateViews();
+        
+        // Hide progress
+        hideProgressIndicator();
+    }
     
     @Override
     public void openPlayerScreen(@NonNull AudioPlaylist playlist)
@@ -340,5 +357,15 @@ public class ListsFragment extends Fragment implements BaseView {
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
 
+    }
+
+    private void showProgressIndicator()
+    {
+        _progressIndicator.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressIndicator()
+    {
+        _progressIndicator.setVisibility(View.GONE);
     }
 }

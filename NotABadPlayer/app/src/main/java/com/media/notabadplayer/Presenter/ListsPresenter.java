@@ -1,15 +1,24 @@
 package com.media.notabadplayer.Presenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
 
 public class ListsPresenter implements BasePresenter
@@ -17,6 +26,9 @@ public class ListsPresenter implements BasePresenter
     private BaseView _view;
 
     private @NonNull AudioInfo _audioInfo;
+    
+    private List<AudioPlaylist> _playlists = null;
+    private AudioPlaylist _recentlyPlayedPlaylist = null;
 
     public ListsPresenter(@NonNull AudioInfo audioInfo)
     {
@@ -36,6 +48,35 @@ public class ListsPresenter implements BasePresenter
         {
             throw new IllegalStateException("ListsPresenter: view has not been set");
         }
+
+        // Use background thread to retrieve the user playlists
+        // Then, update the view on the main thread
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<AudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
+                
+                ArrayList<AudioTrack> history = AudioPlayer.getShared().playHistory.getPlayHistory();
+                final AudioPlaylist historyPlaylist = history.size() > 0 ? new AudioPlaylist("...", history) : null;
+                
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        _recentlyPlayedPlaylist = historyPlaylist;
+                        _playlists = playlists != null ? playlists : new ArrayList<AudioPlaylist>();
+                        
+                        _view.onUserPlaylistsLoad(_recentlyPlayedPlaylist, _playlists);
+                    }
+                };
+
+                mainHandler.post(myRunnable);
+            }
+        });
+
+        thread.start();
     }
 
     @Override
