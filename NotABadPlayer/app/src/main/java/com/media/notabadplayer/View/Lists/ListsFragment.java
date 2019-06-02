@@ -1,4 +1,4 @@
-package com.media.notabadplayer.View.CreateLists;
+package com.media.notabadplayer.View.Lists;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,7 +33,7 @@ import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.BaseView;
 
-public class CreateListsFragment extends Fragment implements BaseView {
+public class ListsFragment extends Fragment implements BaseView {
     private ArrayList<AudioPlaylist> _playlists;
 
     private BasePresenter _presenter;
@@ -42,16 +42,16 @@ public class CreateListsFragment extends Fragment implements BaseView {
     private Button _deletePlaylistButton;
     private Button _donePlaylistButton;
     private ListView _playlistsList;
-    private CreateListAdapter _playlistsAdapter;
+    private ListAdapter _playlistsAdapter;
     
-    public CreateListsFragment()
+    public ListsFragment()
     {
 
     }
 
-    public static @NonNull CreateListsFragment newInstance(@NonNull BasePresenter presenter)
+    public static @NonNull ListsFragment newInstance(@NonNull BasePresenter presenter)
     {
-        CreateListsFragment fragment = new CreateListsFragment();
+        ListsFragment fragment = new ListsFragment();
         fragment._presenter = presenter;
         return fragment;
     }
@@ -187,7 +187,7 @@ public class CreateListsFragment extends Fragment implements BaseView {
             }
         };
         
-        _playlistsAdapter = new CreateListAdapter(context, _playlists, onRemoveButtonClick);
+        _playlistsAdapter = new ListAdapter(context, _playlists, onRemoveButtonClick);
         _playlistsList.setAdapter(_playlistsAdapter);
         _playlistsList.invalidateViews();
     }

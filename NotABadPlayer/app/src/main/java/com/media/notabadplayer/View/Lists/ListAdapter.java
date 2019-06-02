@@ -1,4 +1,4 @@
-package com.media.notabadplayer.View.CreateLists;
+package com.media.notabadplayer.View.Lists;
 
 import java.util.ArrayList;
 import android.content.Context;
@@ -17,7 +17,7 @@ import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.R;
 
-class CreateListAdapter extends BaseAdapter
+class ListAdapter extends BaseAdapter
 {
     private ArrayList<AudioPlaylist> _playlists;
 
@@ -27,9 +27,9 @@ class CreateListAdapter extends BaseAdapter
     
     private @NonNull Function<Integer, Void> _onRemoveButton;
 
-    public CreateListAdapter(@NonNull Context context,
-                             @NonNull ArrayList<AudioPlaylist> playlists,
-                             @NonNull Function<Integer, Void> onRemoveButton)
+    public ListAdapter(@NonNull Context context,
+                       @NonNull ArrayList<AudioPlaylist> playlists,
+                       @NonNull Function<Integer, Void> onRemoveButton)
     {
         this._playlists = playlists;
         this._context = context;
