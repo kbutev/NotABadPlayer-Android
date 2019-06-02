@@ -51,7 +51,7 @@ import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
-import com.media.notabadplayer.View.CreateLists.CreateListsFragment;
+import com.media.notabadplayer.View.Lists.ListsFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
 
@@ -822,7 +822,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                     break;
                 case R.id.navigation_lists:
                     presenter = new ListsPresenter(_audioStorage);
-                    tab = CreateListsFragment.newInstance(presenter);
+                    tab = ListsFragment.newInstance(presenter);
                     presenter.setView(tab);
                     break;
                 case R.id.navigation_search:
