@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Audio.AudioPlaylist;
@@ -26,6 +27,8 @@ public class SearchPresenter implements BasePresenter
     private @NonNull AudioInfo _audioInfo;
     private List<AudioTrack> _searchResults = new ArrayList<>();
     private @Nullable String _lastSearchQuery = null;
+
+    private boolean _running = false;
     
     public SearchPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo)
     {
@@ -55,6 +58,12 @@ public class SearchPresenter implements BasePresenter
             onSearchQuery(searchQuery);
         }
     }
+
+    @Override
+    public void onAppStateChange(AppState state)
+    {
+        _running = state.isRunning();
+    }
     
     @Override
     public void onAlbumItemClick(int index)
@@ -71,6 +80,11 @@ public class SearchPresenter implements BasePresenter
     @Override
     public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
 
         if (currentlyPlayingPlaylist != null)
@@ -100,6 +114,11 @@ public class SearchPresenter implements BasePresenter
     @Override
     public void onSearchResultClick(int index)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         if (index < 0 || index >= _searchResults.size())
         {
             Log.v(SearchPresenter.class.getCanonicalName(), "Error: invalid clicked search index");
@@ -128,6 +147,11 @@ public class SearchPresenter implements BasePresenter
     @Override
     public void onSearchQuery(@NonNull String searchValue)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         // Skip if we already searched for this
         if (_lastSearchQuery != null)
         {
@@ -184,7 +208,7 @@ public class SearchPresenter implements BasePresenter
     }
     
     @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
     {
         
     }
@@ -209,6 +233,11 @@ public class SearchPresenter implements BasePresenter
 
     private void openPlayerScreen(@NonNull AudioTrack clickedTrack)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
         
@@ -219,6 +248,11 @@ public class SearchPresenter implements BasePresenter
 
     private void playNewTrack(@NonNull AudioTrack clickedTrack)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
         
@@ -255,11 +289,21 @@ public class SearchPresenter implements BasePresenter
 
     private void playFirstTime(@NonNull AudioPlaylist playlist)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         playNew(playlist);
     }
 
     private void playNew(@NonNull AudioPlaylist playlist)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         AudioPlayer player = AudioPlayer.getShared();
 
         try {

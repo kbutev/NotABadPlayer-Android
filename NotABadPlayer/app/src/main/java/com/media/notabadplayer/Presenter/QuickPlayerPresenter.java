@@ -7,10 +7,10 @@ import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
-import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 public class QuickPlayerPresenter implements BasePresenter
@@ -18,6 +18,8 @@ public class QuickPlayerPresenter implements BasePresenter
     private BaseView _view;
 
     private @NonNull AudioInfo _audioInfo;
+    
+    private boolean _running = false;
 
     public QuickPlayerPresenter(@NonNull AudioInfo audioInfo)
     {
@@ -40,6 +42,12 @@ public class QuickPlayerPresenter implements BasePresenter
     }
 
     @Override
+    public void onAppStateChange(AppState state)
+    {
+        _running = state.isRunning();
+    }
+
+    @Override
     public void onAlbumItemClick(int index)
     {
 
@@ -54,6 +62,11 @@ public class QuickPlayerPresenter implements BasePresenter
     @Override
     public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
 
         if (currentlyPlayingPlaylist == null)
@@ -67,12 +80,22 @@ public class QuickPlayerPresenter implements BasePresenter
     @Override
     public void onPlayerButtonClick(ApplicationInput input)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         KeyBinds.getShared().evaluateInput(input);
     }
     
     @Override
     public void onOpenPlaylistButtonClick()
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
         
         if (currentlyPlayingPlaylist != null)
@@ -84,6 +107,11 @@ public class QuickPlayerPresenter implements BasePresenter
     @Override
     public void onPlayOrderButtonClick()
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
     }
 
@@ -112,7 +140,7 @@ public class QuickPlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting) 
+    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting) 
     {
 
     }

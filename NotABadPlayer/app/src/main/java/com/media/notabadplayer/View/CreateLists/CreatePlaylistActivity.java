@@ -45,18 +45,14 @@ public class CreatePlaylistActivity extends AppCompatActivity
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Never restore this activity, instead, restart app
+        super.onCreate(null);
+        
+        // Never restore this activity, navigate back to the main activity
         if (savedInstanceState != null)
         {
-            super.onCreate(null);
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
             finish();
             return;
         }
-        
-        super.onCreate(null);
         
         // App theme
         AppThemeUtility.setTheme(this, GeneralStorage.getShared().getAppThemeValue());

@@ -26,6 +26,7 @@ import android.view.MenuItem;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Presenter.ListsPresenter;
 import com.media.notabadplayer.Presenter.QuickPlayerPresenter;
 import com.media.notabadplayer.Storage.AudioStorage;
@@ -54,25 +55,11 @@ import com.media.notabadplayer.View.CreateLists.CreateListsFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
 
-enum MainActivityState {
-    LAUNCHING, RUNNING;
-    
-    public boolean isLaunching()
-    {
-        return this == MainActivityState.LAUNCHING;
-    }
-
-    public boolean isRunning()
-    {
-        return this == MainActivityState.RUNNING;
-    }
-}
-
 public class MainActivity extends AppCompatActivity implements BaseView {
     public static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 1;
     static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
     
-    private MainActivityState _state = MainActivityState.LAUNCHING;
+    private State _state = new State();
 
     private boolean _launchedFromFile;
     private Uri _launchedFromFileUri;
@@ -84,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private TabNavigation _tabNavigation = new TabNavigation();
     
-    private QuickPlayerFragment _quickPlayer;
+    private QuickPlayerFragment _quickPlayer = null;
+    private BasePresenter _quickPlayerPresenter = null;
     
     private AudioPlayerNoiseSuppression _noiseSuppression;
     
@@ -103,22 +91,23 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
         
-        Log.v(MainActivity.class.getCanonicalName(), "Launching...");
+        if (savedInstanceState != null)
+        {
+            Log.v(MainActivity.class.getCanonicalName(), "Application is being restored, deny, restart instead");
+            restartApp();
+            return;
+        }
+
+        Log.v(MainActivity.class.getCanonicalName(), "Application is launching");
         
-        if (_state.isLaunching())
-        {
-            onCreateLaunch();
-        }
-        else
-        {
-            onCreateMain();
-        }
+        _state.launch();
+        
+        onCreateLaunch();
     }
     
     private void onCreateLaunch()
     {
-        GeneralStorage.getShared().init(getApplication());
-        
+        // Store data from launch from file request
         Intent intent = getIntent();
         
         if (intent != null)
@@ -130,8 +119,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 _launchedFromFileUri = intent.getData();
             }
         }
-        
-        requestPermissionForReadExtertalStorage();
     }
 
     private void onCreateMain()
@@ -147,13 +134,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _presenter.setView(this);
 
         _audioStorage = new AudioStorage(this);
-
-        // Audio Player initialization
-        if (!AudioPlayer.getShared().isInitialized())
-        {
-            AudioPlayer.getShared().initialize(getApplication(), _audioStorage);
-        }
-
+        
         // UI
         initMainUI();
 
@@ -162,6 +143,21 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _noiseSuppression.start(this);
     }
 
+    private void restartApp()
+    {
+        Log.v(MainActivity.class.getCanonicalName(), "Restart application");
+        Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+        
+        if (intent != null)
+        {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+        
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
+    }
+    
     @Override
     public void onResume()
     {
@@ -177,10 +173,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         disableInteraction();
         
-        // Every time the main activity pauses, save the player state
+        // Every time the main activity pauses, save the player primaryState
         if (_state.isRunning())
         {
-            saveCurrentAudioState();
+            GeneralStorage.getShared().savePlayerState();
+            GeneralStorage.getShared().savePlayerPlayHistoryState();
         }
     }
     
@@ -216,13 +213,15 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     public void onBackPressed()
     {
         // Not on any of the first tabs? Go back
-        if (!isOnAnRootTab())
+        if (!_tabNavigation.isCurrentTabVisible())
         {
+            Log.v(MainActivity.class.getCanonicalName(), "Navigate backwards");
             super.onBackPressed();
             return;
         }
 
         // Currently on any of the first tabs? Send to background
+        Log.v(MainActivity.class.getCanonicalName(), "Navigate to home screen");
         moveTaskToBack(true);
     }
 
@@ -241,57 +240,27 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             permissionForReadExtertalStorageNotGranted();
         }
     }
-
-    private void start()
-    {
-        if (!_state.isLaunching())
-        {
-            throw new IllegalStateException("MainActivity cannot start, its already started");
-        }
-
-        Log.v(MainActivity.class.getCanonicalName(), "Finished launching!");
-        Log.v(MainActivity.class.getCanonicalName(), "Starting...");
-        
-        _state = MainActivityState.RUNNING;
-
-        // Create main interface
-        onCreateMain();
-
-        // Start services here
-        startServices();
-    }
-    
-    private void finishedStarting()
-    {
-        // Performance optimizations
-        performLaunchPerformanceOptimizations();
-
-        // Handle launch from file request
-        if (_launchedFromFile)
-        {
-            startAppWithTrack(_launchedFromFileUri);
-        }
-        
-        // Done
-        Log.v(MainActivity.class.getCanonicalName(), "Finished starting!");
-    }
     
     private void startServices()
     {
+        Log.v(MainActivity.class.getCanonicalName(), "Starting services...");
+        
         final MainActivity main = this;
         
-        // Use background thread to start the services - user defaults, audio storage, etc...
+        // Use background thread to start the services - audio storage, audio player
         // Then, alert MainActivity on the main thread
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.v(MainActivity.class.getCanonicalName(), "Starting services...");
-                
-                GeneralStorage.getShared().init(getApplication());
-                
+                // Audio Storage initialize
                 _audioStorage.load();
                 
+                // Audio Player initialize
+                AudioPlayer.getShared().initialize(getApplication(), _audioStorage);
+                
+                // Restore audio player primaryState
                 GeneralStorage.getShared().restorePlayerState();
+                GeneralStorage.getShared().restorePlayerPlayHistoryState(getApplication());
 
                 Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -306,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 mainHandler.post(myRunnable);
             }
         });
-        
+
         thread.start();
     }
     
@@ -314,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         Log.v(MainActivity.class.getCanonicalName(), "Finished starting services!");
         
-        finishedStarting();
+        _state.run();
     }
     
     private void startAppWithTrack(Uri path)
@@ -383,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                     public void run()
                     {
                         // Permission granted:
-                        // Just start the app normally (transition from launch state)
+                        // Just start the app normally (transition from launch primaryState)
                         if (hasPermission)
                         {
                             permissionForReadExtertalStorageGranted();
@@ -408,7 +377,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         Log.v(MainActivity.class.getCanonicalName(), "Permission for read external storage has been granted.");
         
-        start();
+        if (_state.isLaunching())
+        {
+            _state.start();
+        }
     }
 
     private void permissionForReadExtertalStorageNotGranted()
@@ -433,9 +405,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
         
         // Create quick player and it's presenter
-        BasePresenter presenter = new QuickPlayerPresenter(_audioStorage);
-        _quickPlayer = QuickPlayerFragment.newInstance(presenter, this);
-        presenter.setView(_quickPlayer);
+        _quickPlayerPresenter = new QuickPlayerPresenter(_audioStorage);
+        _quickPlayer = QuickPlayerFragment.newInstance(_quickPlayerPresenter, this);
+        _quickPlayerPresenter.setView(_quickPlayer);
         
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.quickPlayer, _quickPlayer).commit();
@@ -452,11 +424,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // Anything we can initialize early on here, so the user can get smoother experience
         // Optimization for the Settings screen
         GeneralStorage.getShared().retrieveAllSettingsActionValues();
-    }
-    
-    private boolean isOnAnRootTab()
-    {
-        return getSupportFragmentManager().findFragmentById(R.id.mainLayout) == _tabNavigation.currentTab;
     }
     
     private void selectAlbumsTab()
@@ -501,8 +468,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         if (_tabNavigation.currentTabID == itemID)
         {
             // Not on any of the first tabs? Go back
-            if (!isOnAnRootTab())
+            if (!_tabNavigation.isCurrentTabVisible())
             {
+                Log.v(MainActivity.class.getCanonicalName(), "Navigate tab backwards");
                 super.onBackPressed();
             }
             
@@ -524,18 +492,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 break;
         }
     }
-    
-    private void saveCurrentAudioState()
-    {
-        GeneralStorage.getShared().savePlayerState();
-        GeneralStorage.getShared().savePlayerPlayHistoryState();
-    }
-    
-    private void restoreAudioPlayerState()
-    {
-        GeneralStorage.getShared().restorePlayerState();
-        GeneralStorage.getShared().restorePlayerPlayHistoryState(getApplication());
-    }
 
     @Override
     public void enableInteraction()
@@ -555,7 +511,17 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         // When not on the settings tab, let the view handle the request
         if (_tabNavigation.currentTabID != R.id.navigation_settings)
         {
-            _tabNavigation.currentTab.openPlaylistScreen(_audioStorage, playlist);
+            // Make sure that the current tab exists and has been created (onCreate() was called)
+            if (_tabNavigation.currentTab != null)
+            {
+                BaseView view = _tabNavigation.currentTab.tab;
+                Fragment fragment = (Fragment) view;
+                
+                if (fragment.getView() != null)
+                {
+                    view.openPlaylistScreen(_audioStorage, playlist);
+                }
+            }
         }
     }
 
@@ -635,11 +601,122 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
     }
     
+    public class State {
+        private AppState primaryState = AppState.SUSPENDED;
+        
+        boolean isLaunching()
+        {
+            return primaryState == AppState.LAUNCHING;
+        }
+        
+        boolean isRunning()
+        {
+            return primaryState == AppState.RUNNING;
+        }
+        
+        private void launch()
+        {
+            if (!primaryState.isSuspended())
+            {
+                throw new IllegalStateException("Invalid app state, cannot start launching, state is " + primaryState.name());
+            }
+
+            Log.v(MainActivity.class.getCanonicalName(), "Launching...");
+            
+            primaryState = AppState.LAUNCHING;
+
+            // Mandatory storage permission request
+            requestPermissionForReadExtertalStorage();
+        }
+        
+        private void start()
+        {
+            if (!primaryState.isLaunching())
+            {
+                throw new IllegalStateException("Invalid app state, cannot start starting, state is " + primaryState.name());
+            }
+            
+            primaryState = AppState.STARTING;
+
+            Log.v(MainActivity.class.getCanonicalName(), "Finished launching!");
+            Log.v(MainActivity.class.getCanonicalName(), "Starting...");
+            
+            // General storage initialize
+            GeneralStorage.getShared().initialize(getApplication());
+
+            // Create main interface
+            onCreateMain();
+
+            // Start services here
+            startServices();
+        }
+
+        private void run()
+        {
+            if (!primaryState.isStarting())
+            {
+                throw new IllegalStateException("Invalid app state, cannot start running, state is " + primaryState.name());
+            }
+
+            Log.v(MainActivity.class.getCanonicalName(), "Finished starting!");
+            Log.v(MainActivity.class.getCanonicalName(), "Running...");
+
+            primaryState = AppState.RUNNING;
+
+            // Performance optimizations
+            performLaunchPerformanceOptimizations();
+
+            // Handle launch from file request
+            if (_launchedFromFile)
+            {
+                startAppWithTrack(_launchedFromFileUri);
+            }
+
+            onChange();
+        }
+
+        private void onChange()
+        {
+            alertPresentersOfAppState();
+        }
+        
+        private void alertPresentersOfAppState()
+        {
+            if (!primaryState.isStarting() && !primaryState.isRunning())
+            {
+                throw new IllegalStateException("Invalid app state, cannot alert presenters of app state now, state is " + primaryState.name());
+            }
+            
+            // Alert presenters that the app state has changed
+            CachedTab currentTab = _tabNavigation.currentTab;
+            
+            if (currentTab != null)
+            {
+                currentTab.presenter.onAppStateChange(primaryState);
+            }
+            
+            for (CachedTab tab : _tabNavigation.cachedTabs.values())
+            {
+                if (tab != currentTab)
+                {
+                    tab.presenter.onAppStateChange(primaryState);
+                }
+            }
+
+            if (_quickPlayerPresenter != null)
+            {
+                _quickPlayerPresenter.onAppStateChange(primaryState);
+            }
+        }
+    }
+    
     private class TabNavigation {
-        private BaseView currentTab;
+        private CachedTab currentTab = null;
         private int currentTabID = 0;
+        
         private int previousTabID = 0;
-        private BaseView previousTab = null;
+        private @Nullable BaseView previousTab = null;
+        
         private Map<Integer, CachedTab> cachedTabs = new HashMap<>();
         
         private void setCurrentTabTo(int destinationTabID, boolean showQuickPlayer)
@@ -669,6 +746,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 
                 transaction.commit();
             }
+            
+            // Alert presenters of app state
+            _state.alertPresentersOfAppState();
         }
         
         private void willSelectTab(int destinationTabID)
@@ -681,8 +761,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         private void selectTab(int destinationTabID)
         {
-            previousTabID = currentTabID;
-            previousTab = currentTab;
+            if (currentTab != null)
+            {
+                previousTabID = currentTabID;
+                previousTab = currentTab.tab;
+            }
+            
             currentTabID = destinationTabID;
             
             // If cached, load from cache
@@ -691,11 +775,18 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             if (cachedTab != null)
             {
                 Log.v(MainActivity.class.getCanonicalName(), "Loaded tab from cache instead from scratch");
-                currentTab = cachedTab.tab;
+                currentTab = cachedTab;
                 return;
             }
             
-            currentTab = createTabFromScratch(currentTabID);
+            CachedTab newTab = createTabFromScratch(currentTabID);
+            
+            if (newTab == null)
+            {
+                throw new RuntimeException("MainActivity could not create a new tab - invalid tab id");
+            }
+
+            currentTab = newTab;
         }
         
         private void didSelectTab(int destinationTabID)
@@ -721,7 +812,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             }
         }
         
-        private BaseView createTabFromScratch(int tabID)
+        private @Nullable CachedTab createTabFromScratch(int tabID)
         {
             BaseView tab = null;
             BasePresenter presenter = null;
@@ -748,13 +839,20 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                     tab = SettingsFragment.newInstance(presenter, MainActivity.this);
                     presenter.setView(tab);
                     break;
+                default:
+                    return null;
             }
             
-            return tab;
+            return new CachedTab(tab, presenter, null, null);
         }
 
         private void cacheCurrentTab()
         {
+            if (!_state.isRunning())
+            {
+                return;
+            }
+            
             if (currentTab != null)
             {
                 AppSettings.TabCachingPolicies policy = GeneralStorage.getShared().getCachingPolicy();
@@ -779,7 +877,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
                 if (cacheTab)
                 {
-                    cachedTabs.put(currentTabID, CachedTab.create(currentTab, getSupportFragmentManager()));
+                    CachedTab current = currentTab;
+                    
+                    cachedTabs.put(currentTabID, CachedTab.create(current.tab, current.presenter, getSupportFragmentManager()));
                 }
             }
         }
@@ -791,6 +891,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         private boolean deselectTab(int tabID)
         {
+            if (previousTab == null)
+            {
+                return true;
+            }
+            
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             
             // Returns true if tab will be removed instead of being hidden
@@ -810,7 +915,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-            transaction.replace(R.id.mainLayout, (Fragment) currentTab);
+            transaction.replace(R.id.mainLayout, (Fragment) currentTab.tab);
             
             transaction.commit();
         }
@@ -821,11 +926,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             
             if (!currentTabIsAlreadyAdded())
             {
-                transaction.add(R.id.mainLayout, (Fragment) currentTab);
+                transaction.add(R.id.mainLayout, (Fragment) currentTab.tab);
             }
             else
             {
-                transaction.show((Fragment) currentTab);
+                transaction.show((Fragment) currentTab.tab);
             }
 
             transaction.commit();
@@ -840,7 +945,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             // Show only if there is no subview in the cache tab
             if (cachedTab == null)
             {
-                transaction.show((Fragment) currentTab);
+                transaction.show((Fragment) currentTab.tab);
             }
             // Else, try to restore subview
             else
@@ -852,29 +957,34 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                     transaction.setCustomAnimations(R.anim.hold, R.anim.hold, R.anim.hold, R.anim.hold);
                     transaction.add(R.id.mainLayout, fragment, cachedTab.tabSubviewName);
                     transaction.addToBackStack(cachedTab.tabSubviewName);
-                    transaction.hide((Fragment) currentTab);
+                    transaction.hide((Fragment) currentTab.tab);
                 }
                 // There is a cached tab, but there is no subview, just show the tab
                 else
                 {
-                    transaction.show((Fragment) currentTab);
+                    transaction.show((Fragment) currentTab.tab);
                 }
             }
             
             transaction.commit();
         }
-        
-        boolean cacheContains(int tabID)
+
+        private boolean isCurrentTabVisible()
+        {
+            return getSupportFragmentManager().getBackStackEntryCount() == 0;
+        }
+
+        private boolean cacheContains(int tabID)
         {
             return cachedTabs.get(tabID) != null;
         }
-        
-        boolean currentTabIsAlreadyAdded()
+
+        private boolean currentTabIsAlreadyAdded()
         {
             return cacheContains(currentTabID);
         }
-        
-        void clearCurrentTabBackStack()
+
+        private void clearCurrentTabBackStack()
         {
             FragmentManager manager = getSupportFragmentManager();
 

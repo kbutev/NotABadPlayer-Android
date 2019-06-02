@@ -8,6 +8,7 @@ import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Storage.GeneralStorage;
@@ -24,6 +25,8 @@ public class SettingsPresenter implements BasePresenter
         _audioInfo = audioInfo;
     }
 
+    private boolean _running = false;
+    
     @Override
     public void setView(@NonNull BaseView view)
     {
@@ -36,6 +39,12 @@ public class SettingsPresenter implements BasePresenter
         {
             throw new IllegalStateException("SettingsPresenter: view has not been set");
         }
+    }
+
+    @Override
+    public void onAppStateChange(AppState state)
+    {
+        _running = state.isRunning();
     }
 
     @Override
@@ -90,6 +99,11 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onAppSettingsReset() 
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         GeneralStorage.getShared().resetDefaultSettingsValues();
         
         _view.appSettingsReset();
@@ -104,6 +118,11 @@ public class SettingsPresenter implements BasePresenter
 
     @Override
     public void onAppThemeChange(AppSettings.AppTheme themeValue) {
+        if (!_running)
+        {
+            return;
+        }
+        
         if (themeValue == GeneralStorage.getShared().getAppThemeValue())
         {
             return;
@@ -117,8 +136,13 @@ public class SettingsPresenter implements BasePresenter
     }
     
     @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings ShowVolumeBar value " + trackSorting.name());
         
         GeneralStorage.getShared().saveTrackSortingValue(trackSorting);
@@ -129,6 +153,11 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings ShowVolumeBar value " + value.name());
         
         GeneralStorage.getShared().saveShowVolumeBarValue(value);
@@ -142,6 +171,11 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings OpenPlayerOnPlay value " + value.name());
         
         GeneralStorage.getShared().saveOpenPlayerOnPlayValue(value);
@@ -150,6 +184,11 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onKeybindChange(ApplicationAction action, ApplicationInput input) 
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked keybind value of action " + action.name() + " for input " + input.name());
         
         GeneralStorage.getShared().saveSettingsAction(input, action);

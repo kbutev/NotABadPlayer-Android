@@ -1,6 +1,6 @@
 package com.media.notabadplayer.View.Player;
 
-import android.content.Intent;
+import java.util.List;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -33,9 +33,6 @@ import com.media.notabadplayer.Utilities.AppThemeUtility;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
-import com.media.notabadplayer.View.Main.MainActivity;
-
-import java.util.List;
 
 public class PlayerActivity extends AppCompatActivity implements BaseView
 {
@@ -47,18 +44,14 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Never restore this activity, instead, restart app
+        super.onCreate(null);
+        
+        // Never restore this activity, navigate back to the main activity
         if (savedInstanceState != null)
         {
-            super.onCreate(null);
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
             finish();
             return;
         }
-        
-        super.onCreate(null);
 
         // Audio model - retrieve from intent
         String intentData = getIntent().getStringExtra("playlist");

@@ -276,7 +276,7 @@ public class SettingsFragment extends Fragment implements BaseView
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 AppSettings.TrackSorting selectedValue = AppSettings.TrackSorting.values()[position];
                 AppSettings.AlbumSorting albumSorting = GeneralStorage.getShared().getAlbumSortingValue();
-                _presenter.onAppTrackSortingChanged(selectedValue);
+                _presenter.onAppTrackSortingChange(selectedValue);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}

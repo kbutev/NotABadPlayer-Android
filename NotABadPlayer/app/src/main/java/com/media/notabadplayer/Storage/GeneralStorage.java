@@ -49,8 +49,15 @@ public class GeneralStorage
         return singleton;
     }
     
-    public void init(@NonNull Application context)
+    public void initialize(@NonNull Application context)
     {
+        if (___context != null)
+        {
+            throw new UncheckedExecutionException(new Exception("Must not call initialize() twice"));
+        }
+        
+        Log.v(GeneralStorage.class.getCanonicalName(), "Initializing...");
+        
         ___context = context;
         
         ___preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
@@ -58,6 +65,8 @@ public class GeneralStorage
         detectFirstTimeLaunch();
 
         detectVersionChange();
+
+        Log.v(GeneralStorage.class.getCanonicalName(), "Initialized!");
     }
     
     private @NonNull Application getContext()

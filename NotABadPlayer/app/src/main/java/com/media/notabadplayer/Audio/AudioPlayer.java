@@ -100,8 +100,12 @@ public class AudioPlayer {
             throw new UncheckedExecutionException(new Exception("Must not call initialize() twice"));
         }
         
+        Log.v(AudioPlayer.class.getCanonicalName(), "Initializing...");
+        
         _application = application;
         _audioInfo = audioInfo;
+        
+        Log.v(AudioPlayer.class.getCanonicalName(), "Initialized!");
     }
     
     public boolean isPlaying()
