@@ -2,6 +2,7 @@ package com.media.notabadplayer.Presenter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlayer;
@@ -74,6 +75,8 @@ public class QuickPlayerPresenter implements BasePresenter
             return;
         }
 
+        Log.v(QuickPlayerPresenter.class.getCanonicalName(), "Open player screen");
+        
         _view.openPlayerScreen(currentlyPlayingPlaylist);
     }
 
@@ -113,6 +116,12 @@ public class QuickPlayerPresenter implements BasePresenter
         }
         
         KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+    }
+
+    @Override
+    public void onPlaylistItemDelete(int index)
+    {
+
     }
 
     @Override

@@ -363,9 +363,9 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     @Override
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
+        // Forward request to the application's root view
         if (_rootView != null)
         {
-            // Forward request to the application's root view
             _rootView.openPlaylistScreen(audioInfo, playlist);
         }
     }
@@ -383,7 +383,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void onUserPlaylistsLoad(@Nullable AudioPlaylist recentlyPlayed, @NonNull List<AudioPlaylist> playlists)
+    public void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists)
     {
 
     }

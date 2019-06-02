@@ -247,7 +247,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void onUserPlaylistsLoad(@Nullable AudioPlaylist recentlyPlayed, @NonNull List<AudioPlaylist> playlists)
+    public void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists)
     {
 
     }

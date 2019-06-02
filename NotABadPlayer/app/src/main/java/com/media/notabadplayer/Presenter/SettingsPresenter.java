@@ -60,12 +60,7 @@ public class SettingsPresenter implements BasePresenter
     @Override
     public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
-        if (playlist != null)
-        {
-            Log.v(SettingsPresenter.class.getCanonicalName(), "Open player screen with playlist " + playlist.getName());
-
-            _view.openPlaylistScreen(_audioInfo, playlist);
-        }
+        
     }
     
     @Override
@@ -84,6 +79,12 @@ public class SettingsPresenter implements BasePresenter
     public void onPlayOrderButtonClick()
     {
         
+    }
+
+    @Override
+    public void onPlaylistItemDelete(int index)
+    {
+
     }
 
     @Override

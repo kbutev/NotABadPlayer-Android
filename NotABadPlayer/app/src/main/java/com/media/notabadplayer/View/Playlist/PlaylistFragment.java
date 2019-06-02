@@ -249,7 +249,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void onUserPlaylistsLoad(@Nullable AudioPlaylist recentlyPlayed, @NonNull List<AudioPlaylist> playlists)
+    public void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists)
     {
 
     }

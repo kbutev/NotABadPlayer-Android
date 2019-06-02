@@ -36,8 +36,6 @@ import com.media.notabadplayer.View.BaseView;
 
 public class ListsFragment extends Fragment implements BaseView {
     private BasePresenter _presenter;
-
-    private List<AudioPlaylist> _playlists;
     
     private Button _createPlaylistButton;
     private Button _deletePlaylistButton;
@@ -75,14 +73,6 @@ public class ListsFragment extends Fragment implements BaseView {
         
         return root;
     }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-
-        _presenter.start();
-    }
     
     @Override
     public void onResume()
@@ -90,6 +80,9 @@ public class ListsFragment extends Fragment implements BaseView {
         super.onResume();
 
         enableInteraction();
+        
+        // Start presenter every time onResume() to refresh the playlists data
+        _presenter.start();
     }
 
     @Override
@@ -152,7 +145,7 @@ public class ListsFragment extends Fragment implements BaseView {
 
                 if (!_playlistsAdapter.isInEditMode())
                 {
-                    _presenter.onOpenPlayer(_playlists.get(position));
+                    _presenter.onPlaylistItemClick(position);
                 }
             }
         });
@@ -174,21 +167,7 @@ public class ListsFragment extends Fragment implements BaseView {
 
     private void deletePlaylistOnIndex(int position)
     {
-        if (position < _playlists.size())
-        {
-            _playlists.remove(position);
-            
-            if (_playlists.size() > 0)
-            {
-                ArrayList<AudioPlaylist> playlists = new ArrayList<>(_playlists);
-
-                playlists.remove(0);
-                
-                GeneralStorage.getShared().saveUserPlaylists(playlists);
-            }
-
-            _playlistsAdapter.notifyDataSetChanged();
-        }
+        _presenter.onPlaylistItemDelete(position);
     }
     
     @Override
@@ -261,7 +240,7 @@ public class ListsFragment extends Fragment implements BaseView {
     }
 
     @Override
-    public void onUserPlaylistsLoad(@Nullable AudioPlaylist recentlyPlayed, @NonNull List<AudioPlaylist> playlists)
+    public void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists)
     {
         Context context = getContext();
 
@@ -269,26 +248,6 @@ public class ListsFragment extends Fragment implements BaseView {
         {
             return;
         }
-        
-        AudioPlaylist recentlyPlayedPlaylist = null;
-        
-        if (recentlyPlayed != null)
-        {
-            String recentlyPlayedName = getResources().getString(R.string.playlist_name_recently_played);
-            recentlyPlayedPlaylist = new AudioPlaylist(recentlyPlayedName, recentlyPlayed.getTracks());
-        }
-
-        // This will be the new @_playlists data
-        ArrayList<AudioPlaylist> resultPlaylists = new ArrayList<>(playlists);
-
-        // If recently playlist exists, add the rest of the playlists (at index 0 always)
-        if (recentlyPlayedPlaylist != null)
-        {
-            resultPlaylists.add(0, recentlyPlayedPlaylist);
-        }
-        
-        // Set data
-        _playlists = Collections.unmodifiableList(resultPlaylists);
         
         // Update adapter
         Function<Integer, Void> onRemoveButtonClick = new Function<Integer, Void>() {
@@ -303,7 +262,7 @@ public class ListsFragment extends Fragment implements BaseView {
             }
         };
 
-        _playlistsAdapter = new ListAdapter(context, _playlists, onRemoveButtonClick);
+        _playlistsAdapter = new ListAdapter(context, playlists, onRemoveButtonClick);
         _playlistsList.setAdapter(_playlistsAdapter);
         _playlistsList.invalidateViews();
         
