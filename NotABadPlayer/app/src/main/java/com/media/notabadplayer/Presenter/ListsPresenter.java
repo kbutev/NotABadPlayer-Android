@@ -2,7 +2,6 @@ package com.media.notabadplayer.Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -17,7 +16,6 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
-import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
 
@@ -26,9 +24,6 @@ public class ListsPresenter implements BasePresenter
     private BaseView _view;
 
     private @NonNull AudioInfo _audioInfo;
-    
-    private List<AudioPlaylist> _playlists = null;
-    private AudioPlaylist _recentlyPlayedPlaylist = null;
 
     public ListsPresenter(@NonNull AudioInfo audioInfo)
     {
@@ -55,9 +50,7 @@ public class ListsPresenter implements BasePresenter
             @Override
             public void run() {
                 final List<AudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
-                
-                ArrayList<AudioTrack> history = AudioPlayer.getShared().playHistory.getPlayHistory();
-                final AudioPlaylist historyPlaylist = history.size() > 0 ? new AudioPlaylist("...", history) : null;
+                final ArrayList<AudioTrack> history = AudioPlayer.getShared().playHistory.getPlayHistory();
                 
                 Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -65,10 +58,9 @@ public class ListsPresenter implements BasePresenter
                     @Override
                     public void run()
                     {
-                        _recentlyPlayedPlaylist = historyPlaylist;
-                        _playlists = playlists != null ? playlists : new ArrayList<AudioPlaylist>();
-                        
-                        _view.onUserPlaylistsLoad(_recentlyPlayedPlaylist, _playlists);
+                        List<AudioPlaylist> userPlaylists = playlists != null ? playlists : new ArrayList<AudioPlaylist>();
+                        AudioPlaylist historyPlaylist = history.size() > 0 ? new AudioPlaylist("...", history) : null;
+                        _view.onUserPlaylistsLoad(historyPlaylist, userPlaylists);
                     }
                 };
 
