@@ -2,7 +2,6 @@ package com.media.notabadplayer.View.CreateLists;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;

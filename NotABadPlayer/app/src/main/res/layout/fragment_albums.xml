@@ -27,7 +27,7 @@
         android:layout_marginRight="2dp"
         android:layout_alignParentRight="true">
         
-        <com.media.notabadplayer.View.Albums.GridSideIndexingView
+        <com.media.notabadplayer.View.Other.GridSideIndexingView
             android:id="@+id/tableSideIndexingView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

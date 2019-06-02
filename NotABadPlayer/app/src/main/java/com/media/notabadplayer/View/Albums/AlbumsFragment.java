@@ -29,6 +29,7 @@ import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Other.GridSideIndexingView;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
 public class AlbumsFragment extends Fragment implements BaseView

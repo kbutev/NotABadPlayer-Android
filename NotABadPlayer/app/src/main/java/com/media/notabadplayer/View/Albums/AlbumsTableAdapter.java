@@ -17,6 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.View.Other.GridSideIndexingView;
 
 class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
 {
