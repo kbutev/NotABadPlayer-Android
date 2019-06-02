@@ -8,6 +8,7 @@ import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
@@ -68,6 +69,12 @@ public class PlayerPresenter implements BasePresenter
         // Set audio player playlist for the first time and play its track
         Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen for the first time and playing track '" + _playlist.getPlayingTrack().title + "'");
         playFirstTime(_playlist);
+    }
+
+    @Override
+    public void onAppStateChange(AppState state)
+    {
+
     }
     
     @Override
@@ -137,7 +144,7 @@ public class PlayerPresenter implements BasePresenter
     }
     
     @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
     {
 
     }

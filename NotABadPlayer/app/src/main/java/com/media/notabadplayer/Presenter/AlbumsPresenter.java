@@ -12,15 +12,20 @@ import com.media.notabadplayer.Audio.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.View.BaseView;
 
 public class AlbumsPresenter implements BasePresenter {
     private BaseView _view;
+    
     private @NonNull AudioInfo _audioInfo;
+    
     private @NonNull List<AudioAlbum> _albums = new ArrayList<>();
 
+    private boolean _running = false;
+    
     public AlbumsPresenter(@NonNull AudioInfo audioInfo)
     {
         _audioInfo = audioInfo;
@@ -67,10 +72,21 @@ public class AlbumsPresenter implements BasePresenter {
 
         thread.start();
     }
+    
+    @Override
+    public void onAppStateChange(AppState state)
+    {
+        _running = state.isRunning();
+    }
 
     @Override
     public void onAlbumItemClick(int index)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         if (index < 0 || index >= _albums.size())
         {
             Log.v(AlbumsPresenter.class.getCanonicalName(), "Error: Invalid album list index, cannot respond to event properly");
@@ -97,6 +113,11 @@ public class AlbumsPresenter implements BasePresenter {
     @Override
     public void onOpenPlayer(@Nullable AudioPlaylist playlist)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         if (playlist != null)
         {
             Log.v(AlbumsPresenter.class.getCanonicalName(), "Open player screen with playlist " + playlist.getName());
@@ -148,7 +169,7 @@ public class AlbumsPresenter implements BasePresenter {
     }
     
     @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
     {
 
     }

@@ -10,6 +10,7 @@ import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Audio.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
@@ -48,6 +49,12 @@ public class PlaylistPresenter implements BasePresenter {
         }
         
         _view.onPlaylistLoad(_playlist);
+    }
+
+    @Override
+    public void onAppStateChange(AppState state)
+    {
+
     }
 
     @Override
@@ -133,7 +140,7 @@ public class PlaylistPresenter implements BasePresenter {
     }
     
     @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
     {
 
     }

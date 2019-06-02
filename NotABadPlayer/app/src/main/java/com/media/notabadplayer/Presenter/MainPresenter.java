@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -30,6 +31,12 @@ public class MainPresenter implements BasePresenter {
         {
             throw new IllegalStateException("MainPresenter: view has not been set");
         }
+    }
+
+    @Override
+    public void onAppStateChange(AppState state)
+    {
+
     }
 
     @Override
@@ -93,7 +100,7 @@ public class MainPresenter implements BasePresenter {
     }
     
     @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
     {
 
     }
