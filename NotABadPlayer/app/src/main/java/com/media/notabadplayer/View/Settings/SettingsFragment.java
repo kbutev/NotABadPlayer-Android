@@ -6,6 +6,8 @@ import java.util.Map;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -38,7 +41,7 @@ public class SettingsFragment extends Fragment implements BaseView
     private BasePresenter _presenter;
     private BaseView _rootView;
     
-    private boolean _pickersFullyInitialized = false;
+    private View _layout;
     
     private Spinner _themePicker;
     private Spinner _trackSortingPicker;
@@ -61,6 +64,8 @@ public class SettingsFragment extends Fragment implements BaseView
     private Spinner _keybindExternalPlay;
     
     private Button _resetSettingsButton;
+
+    private ProgressBar _progressIndicator;
     
     private AppSettings.AppTheme _currentAppTheme;
     
@@ -89,6 +94,8 @@ public class SettingsFragment extends Fragment implements BaseView
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
         // Setup UI
+        _layout = root.findViewById(R.id.settingsLayout);
+        
         _themePicker = root.findViewById(R.id.themePicker);
         _trackSortingPicker = root.findViewById(R.id.trackSortingPicker);
         _showVolumeBarPicker = root.findViewById(R.id.showVolumeBarPicker);
@@ -110,8 +117,10 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindExternalPlay = root.findViewById(R.id.keybindExternalPlay);
         _resetSettingsButton = root.findViewById(R.id.resetButton);
         
-        // Init UI
-        initUI();
+        _progressIndicator = root.findViewById(R.id.progressIndicator);
+                
+        // Init UI after delay
+        initializeAfterDelay();
         
         // App theme retrieve and store
         _currentAppTheme = GeneralStorage.getShared().getAppThemeValue();
@@ -125,19 +134,6 @@ public class SettingsFragment extends Fragment implements BaseView
         super.onResume();
 
         enableInteraction();
-
-        // Finish initializing the pickers here
-        if (!_pickersFullyInitialized)
-        {
-            _pickersFullyInitialized = true;
-
-            // Select correct values
-            selectProperValues();
-
-            // Setup user interaction for the picker views
-            // Do this after selectProperValues(), to prevent the callbacks from being fired
-            setupPickersCallbacks();
-        }
     }
 
     @Override
@@ -146,6 +142,33 @@ public class SettingsFragment extends Fragment implements BaseView
         super.onPause();
 
         disableInteraction();
+    }
+    
+    private void initializeAfterDelay()
+    {
+        showProgressIndicator();
+        
+        Handler handler = new Handler(Looper.getMainLooper());
+        
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                // Init UI
+                initUI();
+
+                // Select correct values
+                selectProperValues();
+
+                // Setup user interaction for the picker views
+                // Do this after selectProperValues(), to prevent the callbacks from being fired
+                setupPickersCallbacks();
+
+                // Hide progress indicator
+                hideProgressIndicator();
+            }
+        };
+        
+        handler.postDelayed(runnable, 50);
     }
 
     private void initUI()
@@ -603,6 +626,9 @@ public class SettingsFragment extends Fragment implements BaseView
         {
             return;
         }
+
+        // Retrieve and store app theme again
+        _currentAppTheme = GeneralStorage.getShared().getAppThemeValue();
         
         // Reload
         Fragment fragment = this;
@@ -610,9 +636,6 @@ public class SettingsFragment extends Fragment implements BaseView
         ft.detach(fragment);
         ft.attach(fragment);
         ft.commit();
-        
-        // Retrieve and store again
-        _currentAppTheme = GeneralStorage.getShared().getAppThemeValue();
     }
     
     @Override
@@ -635,6 +658,20 @@ public class SettingsFragment extends Fragment implements BaseView
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
         
+    }
+
+    private void showProgressIndicator()
+    {
+        _layout.setVisibility(View.INVISIBLE);
+        
+        _progressIndicator.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressIndicator()
+    {
+        _layout.setVisibility(View.VISIBLE);
+        
+        _progressIndicator.setVisibility(View.GONE);
     }
     
     class SettingsListAdapter extends BaseAdapter

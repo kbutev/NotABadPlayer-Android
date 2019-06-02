@@ -98,8 +98,8 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     public void onStart()
     {
         super.onStart();
-
-        _progressIndicator.setVisibility(View.GONE);
+        
+        hideProgressIndicator();
 
         if (_searchResultsAdapter != null)
         {
@@ -284,13 +284,13 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
 
         if (searchTip != null)
         {
-            _progressIndicator.setVisibility(View.VISIBLE);
+            showProgressIndicator();
             
             _searchTip.setText(searchTip);
         }
         else
         {
-            _progressIndicator.setVisibility(View.GONE);
+            hideProgressIndicator();
             
             if (songs.size() > 0)
             {
@@ -371,5 +371,15 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
 
+    }
+    
+    private void showProgressIndicator()
+    {
+        _progressIndicator.setVisibility(View.VISIBLE);
+    }
+    
+    private void hideProgressIndicator()
+    {
+        _progressIndicator.setVisibility(View.GONE);
     }
 }
