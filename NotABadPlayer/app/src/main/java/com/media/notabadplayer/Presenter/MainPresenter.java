@@ -7,7 +7,6 @@ import com.media.notabadplayer.Audio.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
-import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
 public class MainPresenter implements BasePresenter {

@@ -1,7 +1,6 @@
 package com.media.notabadplayer.View.CreateLists;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -26,7 +25,6 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
-import com.media.notabadplayer.View.Main.MainActivity;
 
 public class CreatePlaylistActivity extends AppCompatActivity
 {
