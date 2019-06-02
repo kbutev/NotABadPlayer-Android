@@ -671,12 +671,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             {
                 startAppWithTrack(_launchedFromFileUri);
             }
-
-            onChange();
-        }
-
-        private void onChange()
-        {
+            
+            // Alert presenters of app state
             alertPresentersOfAppState();
         }
         
