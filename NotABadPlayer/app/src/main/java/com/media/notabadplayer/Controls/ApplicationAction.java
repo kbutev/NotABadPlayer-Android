@@ -12,6 +12,7 @@ public enum ApplicationAction {
     VOLUME_UP,
     VOLUME_DOWN,
     MUTE_OR_UNMUTE,
+    MUTE,
     FORWARDS_8,
     FORWARDS_15,
     FORWARDS_30,
