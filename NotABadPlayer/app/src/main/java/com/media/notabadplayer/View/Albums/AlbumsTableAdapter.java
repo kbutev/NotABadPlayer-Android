@@ -3,7 +3,7 @@ package com.media.notabadplayer.View.Albums;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
-import android.net.Uri;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -24,6 +24,10 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     private Context _context;
     private List<AudioAlbum> _albums;
     private GridSideIndexingView _sideSelector;
+
+    private AlbumsImageProcesses _imageSetterProcesses = new AlbumsImageProcesses();
+    
+    private Drawable _artCoverNoneDrawable = null;
     
     public AlbumsTableAdapter(@NonNull Context context, List<AudioAlbum> albums, GridSideIndexingView sideSelector)
     {
@@ -62,16 +66,24 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
         AudioAlbum item = (AudioAlbum) getItem(position);
         String dataTitle = item.albumTitle;
         String dataCover = item.albumCover;
-        
-        ImageView cover = checkNotNull((ImageView)listItem.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
-        
+
         if (!dataCover.isEmpty())
         {
-            cover.setImageURI(Uri.parse(Uri.decode(dataCover)));
+            AlbumsImageProcess p = new AlbumsImageProcess(_context, listItem, dataCover, _imageSetterProcesses);
+            _imageSetterProcesses.add(p);
+            p.start();
         }
         else
         {
-            cover.setImageDrawable(parent.getResources().getDrawable(R.drawable.cover_art_none));
+            _imageSetterProcesses.removeProcessForView(listItem);
+            
+            if (_artCoverNoneDrawable == null)
+            {
+                _artCoverNoneDrawable = parent.getResources().getDrawable(R.drawable.cover_art_none);
+            }
+            
+            ImageView cover = checkNotNull((ImageView)listItem.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
+            cover.setImageDrawable(_artCoverNoneDrawable);
         }
         
         TextView title = checkNotNull((TextView)listItem.findViewById(R.id.title), "Base adapter is expecting a valid text view");
@@ -127,5 +139,68 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     public int getSectionForPosition(int position) 
     {
         return 0;
+    }
+
+    private class AlbumsImageProcesses implements AlbumsImageProcessDelegate {
+        ArrayList<AlbumsImageProcess> currentRunningProcesses = new ArrayList<>();
+
+        private void add(@NonNull AlbumsImageProcess process)
+        {
+            AlbumsImageProcess alreadyRunning = findRunningProcessWithSameTarget(process);
+
+            if (alreadyRunning != null)
+            {
+                remove(alreadyRunning);
+            }
+            
+            currentRunningProcesses.add(process);
+        }
+
+        private void remove(@NonNull AlbumsImageProcess process)
+        {
+            process.stop();
+
+            currentRunningProcesses.remove(process);
+        }
+        
+        private void removeProcessForView(@NonNull View view)
+        {
+            for (int e = 0; e < currentRunningProcesses.size(); e++)
+            {
+                if (currentRunningProcesses.get(e).getTarget() == view)
+                {
+                    currentRunningProcesses.get(e).stop();
+                    currentRunningProcesses.remove(e);
+                    break;
+                }
+            }
+        }
+
+        private AlbumsImageProcess findRunningProcessWithSameTarget(@NonNull AlbumsImageProcess process)
+        {
+            for (AlbumsImageProcess p : currentRunningProcesses)
+            {
+                if (p.isEqualTo(process))
+                {
+                    return p;
+                }
+            }
+
+            return null;
+        }
+        
+        @Override
+        public void onProcessFinish()
+        {
+            // Cleanup - remove non running process
+            for (int e = 0; e < currentRunningProcesses.size(); e++)
+            {
+                if (!currentRunningProcesses.get(e).isRunning())
+                {
+                    currentRunningProcesses.remove(e);
+                    break;
+                }
+            }
+        }
     }
 }
