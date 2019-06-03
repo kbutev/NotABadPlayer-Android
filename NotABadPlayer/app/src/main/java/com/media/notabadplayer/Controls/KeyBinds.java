@@ -66,6 +66,9 @@ public class KeyBinds
             case MUTE_OR_UNMUTE:
                 AudioPlayer.getShared().muteOrUnmute();
                 break;
+            case MUTE:
+                AudioPlayer.getShared().mute();
+                break;
             case FORWARDS_8:
                 AudioPlayer.getShared().jumpForwards(8);
                 break;
