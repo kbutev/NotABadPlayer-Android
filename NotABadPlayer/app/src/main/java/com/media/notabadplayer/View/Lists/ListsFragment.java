@@ -83,6 +83,9 @@ public class ListsFragment extends Fragment implements BaseView {
         
         // Start presenter every time onResume() to refresh the playlists data
         _presenter.start();
+        
+        // Always make sure that we are not in delete mode when resuming
+        endDeleteMode();
     }
 
     @Override
@@ -115,9 +118,7 @@ public class ListsFragment extends Fragment implements BaseView {
                     return;
                 }
 
-                _playlistsAdapter.enterEditMode();
-                _deletePlaylistButton.setVisibility(View.GONE);
-                _donePlaylistButton.setVisibility(View.VISIBLE);
+                enterDeleteMode();
             }
         });
 
@@ -129,9 +130,7 @@ public class ListsFragment extends Fragment implements BaseView {
                     return;
                 }
 
-                _playlistsAdapter.leaveEditMode();
-                _donePlaylistButton.setVisibility(View.GONE);
-                _deletePlaylistButton.setVisibility(View.VISIBLE);
+                endDeleteMode();
             }
         });
         
@@ -163,6 +162,30 @@ public class ListsFragment extends Fragment implements BaseView {
         Intent intent = new Intent(a, CreatePlaylistActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+    
+    private void enterDeleteMode()
+    {
+        if (_playlistsAdapter == null)
+        {
+            return;
+        }
+        
+        _playlistsAdapter.enterEditMode();
+        _deletePlaylistButton.setVisibility(View.GONE);
+        _donePlaylistButton.setVisibility(View.VISIBLE);
+    }
+
+    private void endDeleteMode()
+    {
+        if (_playlistsAdapter == null)
+        {
+            return;
+        }
+        
+        _playlistsAdapter.leaveEditMode();
+        _donePlaylistButton.setVisibility(View.GONE);
+        _deletePlaylistButton.setVisibility(View.VISIBLE);
     }
 
     private void deletePlaylistOnIndex(int position)
