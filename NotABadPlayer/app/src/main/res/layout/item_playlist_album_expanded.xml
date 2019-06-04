@@ -12,7 +12,7 @@
         <ImageView
             android:id="@+id/albumCover"
             android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_height="64dp"
             android:src="@drawable/cover_art_none"/>
 
         <TextView

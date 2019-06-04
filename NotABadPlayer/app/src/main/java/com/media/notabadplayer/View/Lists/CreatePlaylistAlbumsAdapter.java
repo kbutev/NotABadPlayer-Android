@@ -33,12 +33,12 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
     private CreatePlaylistAlbumsTracksAdapter _selectedAlbumAdapter;
     private List<AudioTrack> _selectedTracks = new ArrayList<>();
     
-    private @NonNull Function<AudioTrack, Boolean> _onItemClick;
+    private @NonNull Function<AudioTrack, Void> _onItemClick;
     
     public CreatePlaylistAlbumsAdapter(@NonNull Context context,
                                        @NonNull AudioInfo audioInfo,
                                        @NonNull List<AudioAlbum> albums,
-                                       @NonNull Function<AudioTrack, Boolean> onItemClick)
+                                       @NonNull Function<AudioTrack, Void> onItemClick)
     {
         this._albums = albums;
         this._context = context;

@@ -88,18 +88,23 @@ public class CreatePlaylistActivity extends AppCompatActivity
             }
         });
         
-        Function<AudioTrack, Boolean> onTrackClick = new Function<AudioTrack, Boolean>() {
+        Function<AudioTrack, Void> onTrackClick = new Function<AudioTrack, Void>() {
             @Override
-            public Boolean apply(@NullableDecl AudioTrack input) {
-                boolean result = addToPlaylist(input);
-                
-                if (result)
+            public Void apply(@NullableDecl AudioTrack input) {
+                if (!playlistTracksContain(input))
                 {
+                    addToPlaylist(input);
                     _albumsAdapter.selectTrack(input);
-                    updateAddedTracks();
+                }
+                else
+                {
+                    removeFromPlaylist(input);
+                    _albumsAdapter.deselectTrack(input);
                 }
                 
-                return result;
+                updateAddedTracks();
+                
+                return null;
             }
         };
 
@@ -141,11 +146,16 @@ public class CreatePlaylistActivity extends AppCompatActivity
         _albumsAdapter.notifyDataSetChanged();
     }
     
-    private boolean addToPlaylist(AudioTrack track)
+    private boolean playlistTracksContain(AudioTrack track)
+    {
+        return _playlistTracks.contains(track);
+    }
+    
+    private void addToPlaylist(AudioTrack track)
     {
         if (_playlistTracks.contains(track))
         {
-            return false;
+            return;
         }
         
         String name = _nameField.getText().toString();
@@ -158,8 +168,6 @@ public class CreatePlaylistActivity extends AppCompatActivity
         _playlistTracks.add(track);
 
         _playlist = new AudioPlaylist(name, _playlistTracks);
-        
-        return true;
     }
 
     private void removeFromPlaylist(AudioTrack track)
