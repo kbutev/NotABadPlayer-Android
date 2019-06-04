@@ -47,11 +47,11 @@ public class AlbumsImageProcess {
                 try {
                     Uri uri = Uri.parse(Uri.decode(_dataCover));
                     _bitmapResult = MediaStore.Images.Media.getBitmap(_context.getContentResolver(), uri);
-                    finish(true);
+                    finish();
                 } 
                 catch (Exception e)
                 {
-                    finish(false);
+                    finish();
                 }
             }
         };
@@ -101,7 +101,7 @@ public class AlbumsImageProcess {
         }
     }
     
-    private void finish(boolean success)
+    private void finish()
     {
         final AlbumsImageProcess process = this;
         
