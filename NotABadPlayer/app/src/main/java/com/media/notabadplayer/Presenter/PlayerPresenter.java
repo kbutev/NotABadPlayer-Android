@@ -104,19 +104,31 @@ public class PlayerPresenter implements BasePresenter
         
         KeyBinds.getShared().performAction(action);
     }
+    
+    @Override
+    public void onPlayOrderButtonClick()
+    {
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Player input: change play order");
 
+        KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+    }
+    
     @Override
     public void onOpenPlaylistButtonClick()
     {
 
     }
+    
+    @Override
+    public void onPlayerVolumeSet(double value)
+    {
+        AudioPlayer.getShared().setVolume((int)value);
+    }
 
     @Override
-    public void onPlayOrderButtonClick()
+    public void onPlaylistsChanged()
     {
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Player input: change play order");
-        
-        KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+
     }
 
     @Override

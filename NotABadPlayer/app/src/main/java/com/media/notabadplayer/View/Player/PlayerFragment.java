@@ -195,11 +195,13 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
                 UIAnimations.getShared().imageAnimations.animateTap(getContext(), _volumeIcon);
                 
-                AudioPlayer.getShared().setVolume(progress);
                 _volumeBar.setProgress(progress);
                 
                 // Reset the motion state of the layout, to prevent swipe down
                 _layout.resetMotionState();
+                
+                // Alert presenter
+                _presenter.onPlayerVolumeSet(progress);
             }
             
             @Override

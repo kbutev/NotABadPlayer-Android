@@ -17,8 +17,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import com.google.common.base.Function;
 
@@ -30,7 +28,6 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.BaseView;
 
@@ -73,6 +70,14 @@ public class ListsFragment extends Fragment implements BaseView {
         
         return root;
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        _presenter.start();
+    }
     
     @Override
     public void onResume()
@@ -81,8 +86,8 @@ public class ListsFragment extends Fragment implements BaseView {
 
         enableInteraction();
         
-        // Start presenter every time onResume() to refresh the playlists data
-        _presenter.start();
+        // Request data from the presenter every time we resume
+        _presenter.onPlaylistsChanged();
         
         // Always make sure that we are not in delete mode when resuming
         endDeleteMode();

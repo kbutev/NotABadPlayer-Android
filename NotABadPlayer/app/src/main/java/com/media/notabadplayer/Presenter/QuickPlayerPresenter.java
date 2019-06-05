@@ -90,6 +90,17 @@ public class QuickPlayerPresenter implements BasePresenter
         
         KeyBinds.getShared().evaluateInput(input);
     }
+
+    @Override
+    public void onPlayOrderButtonClick()
+    {
+        if (!_running)
+        {
+            return;
+        }
+
+        KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+    }
     
     @Override
     public void onOpenPlaylistButtonClick()
@@ -108,14 +119,15 @@ public class QuickPlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onPlayOrderButtonClick()
+    public void onPlayerVolumeSet(double value)
     {
-        if (!_running)
-        {
-            return;
-        }
-        
-        KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+
+    }
+
+    @Override
+    public void onPlaylistsChanged()
+    {
+
     }
 
     @Override
