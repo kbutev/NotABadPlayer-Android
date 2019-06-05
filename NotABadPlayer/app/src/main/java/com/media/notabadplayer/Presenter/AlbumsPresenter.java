@@ -123,15 +123,27 @@ public class AlbumsPresenter implements BasePresenter {
     }
 
     @Override
+    public void onPlayOrderButtonClick()
+    {
+
+    }
+
+    @Override
     public void onOpenPlaylistButtonClick()
     {
 
     }
 
     @Override
-    public void onPlayOrderButtonClick()
+    public void onPlayerVolumeSet(double value)
     {
 
+    }
+    
+    @Override
+    public void onPlaylistsChanged()
+    {
+        
     }
 
     @Override
