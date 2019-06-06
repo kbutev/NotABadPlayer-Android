@@ -1,6 +1,7 @@
-package com.media.notabadplayer.Audio;
+package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,7 +18,8 @@ public class AudioTrack implements Serializable {
     public final @NonNull String trackNum;
     public final double durationInSeconds;
     public final @NonNull String duration;
-    public final @NonNull AudioTrackSource source;
+    public final @NonNull
+    AudioTrackSource source;
     
     public AudioTrack(@NonNull String filePath,
                       @NonNull String title,

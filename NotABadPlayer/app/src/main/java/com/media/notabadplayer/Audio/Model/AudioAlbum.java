@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Audio;
+package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
 

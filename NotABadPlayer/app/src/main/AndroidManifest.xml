@@ -18,7 +18,8 @@
             android:label="@string/app_name"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden">
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -48,6 +49,15 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait">
         </activity>
+
+        <service android:enabled="true" android:name=".Audio.Players.AudioPlayerService" android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="AudioPlayerService.play" />
+                <action android:name="AudioPlayerService.pause" />
+                <action android:name="AudioPlayerService.previous" />
+                <action android:name="AudioPlayerService.next" />
+            </intent-filter>
+        </service>
 
     </application>
 

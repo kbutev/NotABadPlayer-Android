@@ -19,13 +19,13 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import java.util.List;
 
 import com.google.common.base.Function;
-import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayOrder;
-import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
@@ -40,7 +40,7 @@ import com.media.notabadplayer.View.BaseView;
 public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient {
     private static int MEDIA_BAR_MAX_VALUE = 100;
     
-    AudioPlayer _player = AudioPlayer.getShared();
+    Player _player = Player.getShared();
     
     private BasePresenter _presenter;
     private BaseView _rootView;
@@ -110,10 +110,20 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     public void onStart()
     {
         super.onStart();
-
-        if (AudioPlayer.getShared().hasPlaylist())
+        
+        if (Player.getShared().hasPlaylist())
         {
-            updateMediaInfo(AudioPlayer.getShared().getPlaylist().getPlayingTrack());
+            updateMediaInfo(Player.getShared().getPlaylist().getPlayingTrack());
+        }
+        else
+        {
+            // Player may not be loaded yet, retrieve some dummy values from the general storage
+            AudioPlaylist playlist = GeneralStorage.getShared().retrievePlayerSavedStatePlaylist();
+            
+            if (playlist != null)
+            {
+                updateMediaInfo(playlist.getPlayingTrack());
+            }
         }
     }
 
@@ -301,7 +311,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
     private void updatePlayOrderButtonState()
     {
-        AudioPlayOrder order = AudioPlayer.getShared().getPlayOrder();
+        AudioPlayOrder order = Player.getShared().getPlayOrder();
         
         switch (order)
         {
@@ -325,7 +335,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     
     private void swipeUp()
     {
-        _presenter.onOpenPlayer(AudioPlayer.getShared().getPlaylist());
+        _presenter.onOpenPlayer(Player.getShared().getPlaylist());
     }
 
     private void startLooping()

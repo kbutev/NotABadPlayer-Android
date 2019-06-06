@@ -57,7 +57,7 @@ General design:
 
 * Simple lifecycle for the components of the app: for activities/fragments. Fragments rely on onActivityCreate() to start their presenters and loopers (if they are any); AudioPlayer singleton is used to represent the player of the app and the AudioInfo singleton is used to represent the media library (audio albums and their tracks information)
 
-* No Android Services used. Supposedly one should be used for the audio player, just in case the app gets killed from low memory, but I find that unlikely to happen because of the low memory footprint of the app; not only that but I don't like the idea of the app being killed while the audio player keeps ringing in the background
+* Using Android Services to play the audio. If the app is killed by the OS, the service (which is a daemon basically), will still keep running. A notification is displayed while the player is running, which gives you some control of the audio player.
 
 * Supports one orientation only: portrait
 
@@ -77,7 +77,7 @@ Portrait mode only.
 
 # Screens
 
-Albums screen (quick screen at the bottom)
+Albums screen (quick player at the bottom, swipe up to open player screen)
 
 ![alt text](https://github.com/felixisto/NotABadPlayer-Android/blob/master/About/scrn1.jpg)
 

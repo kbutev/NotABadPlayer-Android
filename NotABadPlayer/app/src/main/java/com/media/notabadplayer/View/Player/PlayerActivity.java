@@ -18,11 +18,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Utilities.AudioPlayerNoiseSuppression;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;

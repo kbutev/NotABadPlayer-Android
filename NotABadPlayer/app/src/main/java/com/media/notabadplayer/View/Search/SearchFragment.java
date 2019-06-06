@@ -24,13 +24,13 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayOrder;
-import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.R;
@@ -42,7 +42,7 @@ import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
 public class SearchFragment extends Fragment implements BaseView, AudioPlayerObserver
 {
-    AudioPlayer _player = AudioPlayer.getShared();
+    Player _player = Player.getShared();
     
     private BasePresenter _presenter;
     

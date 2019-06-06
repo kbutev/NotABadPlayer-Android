@@ -77,8 +77,16 @@
     <!-- About -->
     <string name="about">About</string>
     <string name="about_version">Version 1.6 (9)</string>
-    <string name="about_release_date">Released 2019.06.5</string>
+    <string name="about_release_date">Released 2019.06.6</string>
     <string name="about_credits">Programmed, designed &amp; tested by Kristiyan Butev</string>
+
+    <!-- Notification -->
+    <string name="notification_title_prefix">\'</string>
+    <string name="notification_title_suffix">\' -\u0020</string>
+    <string name="notification_resume">Resume</string>
+    <string name="notification_pause">Pause</string>
+    <string name="notification_previous">Previous</string>
+    <string name="notification_next">Next</string>
     
     <!-- Errors -->
     <string name="error">Error</string>

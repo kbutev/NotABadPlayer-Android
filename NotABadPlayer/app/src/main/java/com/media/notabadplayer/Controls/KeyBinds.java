@@ -1,7 +1,7 @@
 package com.media.notabadplayer.Controls;
 
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Storage.GeneralStorage;
 
 public class KeyBinds
@@ -40,61 +40,61 @@ public class KeyBinds
                 System.exit(0);
                 break;
             case PLAY:
-                AudioPlayer.getShared().resume();
+                Player.getShared().resume();
                 break;
             case PAUSE:
-                AudioPlayer.getShared().pause();
+                Player.getShared().pause();
                 break;
             case PAUSE_OR_RESUME:
-                AudioPlayer.getShared().pauseOrResume();
+                Player.getShared().pauseOrResume();
                 break;
             case NEXT:
-                AudioPlayer.getShared().playNext();
+                Player.getShared().playNext();
                 break;
             case PREVIOUS:
-                AudioPlayer.getShared().playPrevious();
+                Player.getShared().playPrevious();
                 break;
             case SHUFFLE:
-                AudioPlayer.getShared().shuffle();
+                Player.getShared().shuffle();
                 break;
             case VOLUME_UP:
-                AudioPlayer.getShared().volumeUp();
+                Player.getShared().volumeUp();
                 break;
             case VOLUME_DOWN:
-                AudioPlayer.getShared().volumeDown();
+                Player.getShared().volumeDown();
                 break;
             case MUTE_OR_UNMUTE:
-                AudioPlayer.getShared().muteOrUnmute();
+                Player.getShared().muteOrUnmute();
                 break;
             case MUTE:
-                AudioPlayer.getShared().mute();
+                Player.getShared().mute();
                 break;
             case FORWARDS_8:
-                AudioPlayer.getShared().jumpForwards(8);
+                Player.getShared().jumpForwards(8);
                 break;
             case FORWARDS_15:
-                AudioPlayer.getShared().jumpForwards(15);
+                Player.getShared().jumpForwards(15);
                 break;
             case FORWARDS_30:
-                AudioPlayer.getShared().jumpForwards(30);
+                Player.getShared().jumpForwards(30);
                 break;
             case FORWARDS_60:
-                AudioPlayer.getShared().jumpForwards(60);
+                Player.getShared().jumpForwards(60);
                 break;
             case BACKWARDS_8:
-                AudioPlayer.getShared().jumpBackwards(8);
+                Player.getShared().jumpBackwards(8);
                 break;
             case BACKWARDS_15:
-                AudioPlayer.getShared().jumpBackwards(15);
+                Player.getShared().jumpBackwards(15);
                 break;
             case BACKWARDS_30:
-                AudioPlayer.getShared().jumpBackwards(30);
+                Player.getShared().jumpBackwards(30);
                 break;
             case BACKWARDS_60:
-                AudioPlayer.getShared().jumpBackwards(60);
+                Player.getShared().jumpBackwards(60);
                 break;
             case CHANGE_PLAY_ORDER:
-                AudioPlayer player = AudioPlayer.getShared();
+                Player player = Player.getShared();
 
                 AudioPlayOrder order = player.getPlayOrder();
                 
@@ -119,7 +119,7 @@ public class KeyBinds
                 
                 break;
             case RECALL:
-                AudioPlayer.getShared().playHistory.playPrevious();
+                Player.getShared().playHistory.playPreviousInHistory();
                 break;
         }
         

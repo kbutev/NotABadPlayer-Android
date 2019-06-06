@@ -5,6 +5,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
+
 public interface AudioInfo {
     @NonNull List<AudioAlbum> getAlbums();
     @Nullable AudioAlbum getAlbumByID(String identifier);

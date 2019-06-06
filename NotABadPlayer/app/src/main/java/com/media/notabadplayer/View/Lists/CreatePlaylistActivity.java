@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.common.base.Function;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
+import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
@@ -59,7 +59,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         setContentView(R.layout.activity_create_playlist);
         
         // Model
-        _albums = AudioPlayer.getShared().getAudioInfo().getAlbums();
+        _albums = Player.getShared().getAudioInfo().getAlbums();
         
         // UI
         _cancelButton = findViewById(R.id.buttonCancel);
@@ -108,7 +108,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
             }
         };
 
-        _albumsAdapter = new CreatePlaylistAlbumsAdapter(this, AudioPlayer.getShared().getAudioInfo(), _albums, onTrackClick);
+        _albumsAdapter = new CreatePlaylistAlbumsAdapter(this, Player.getShared().getAudioInfo(), _albums, onTrackClick);
         _albumsList.setAdapter(_albumsAdapter);
         
         _albumsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

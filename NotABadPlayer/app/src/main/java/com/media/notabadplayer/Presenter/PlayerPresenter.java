@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
@@ -38,7 +38,7 @@ public class PlayerPresenter implements BasePresenter
             throw new IllegalStateException("PlayerPresenter: view has not been set");
         }
         
-        AudioPlayer player = AudioPlayer.getShared();
+        Player player = Player.getShared();
         AudioPlaylist currentPlaylist = player.getPlaylist();
         
         if (currentPlaylist != null)
@@ -122,7 +122,7 @@ public class PlayerPresenter implements BasePresenter
     @Override
     public void onPlayerVolumeSet(double value)
     {
-        AudioPlayer.getShared().setVolume((int)value);
+        Player.getShared().setVolume((int)value);
     }
 
     @Override
@@ -204,7 +204,7 @@ public class PlayerPresenter implements BasePresenter
 
         Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.title + "'");
 
-        AudioPlayer player = AudioPlayer.getShared();
+        Player player = Player.getShared();
 
         try {
             player.playPlaylist(playlist);

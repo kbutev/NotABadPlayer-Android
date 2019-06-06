@@ -10,12 +10,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
@@ -144,7 +144,7 @@ public class SearchPresenter implements BasePresenter
             playNewTrack(clickedTrack);
         }
         
-        AudioPlaylist audioPlayerPlaylist = AudioPlayer.getShared().getPlaylist();
+        AudioPlaylist audioPlayerPlaylist = Player.getShared().getPlaylist();
         
         if (audioPlayerPlaylist != null)
         {
@@ -264,7 +264,7 @@ public class SearchPresenter implements BasePresenter
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
         
-        AudioPlayer player = AudioPlayer.getShared();
+        Player player = Player.getShared();
         AudioPlaylist currentPlaylist = player.getPlaylist();
 
         if (currentPlaylist != null)
@@ -312,7 +312,7 @@ public class SearchPresenter implements BasePresenter
             return;
         }
         
-        AudioPlayer player = AudioPlayer.getShared();
+        Player player = Player.getShared();
 
         try {
             player.playPlaylist(playlist);

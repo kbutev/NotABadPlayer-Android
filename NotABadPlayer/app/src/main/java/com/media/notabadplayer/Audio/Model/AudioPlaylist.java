@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Audio;
+package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
@@ -142,6 +143,16 @@ public class AudioPlaylist implements Serializable
         
         return null;
     }
+
+    public boolean isPlayingFirstTrack()
+    {
+        return _playingTrackPosition == 0;
+    }
+
+    public boolean isPlayingLastTrack()
+    {
+        return _playingTrackPosition + 1 == _tracks.size();
+    }
     
     public void playCurrent()
     {
@@ -174,8 +185,9 @@ public class AudioPlaylist implements Serializable
     public void goToNextPlayingTrack()
     {
         _playing = true;
-        
-        if (_playingTrackPosition + 1 == _tracks.size())
+
+        // Stop playing upon reaching the end
+        if (isPlayingLastTrack())
         {
             _playing = false;
         }
@@ -188,8 +200,10 @@ public class AudioPlaylist implements Serializable
     public void goToNextPlayingTrackRepeat()
     {
         _playing = true;
-        
-        if (_playingTrackPosition + 1 < _tracks.size())
+
+        // Keep going until reaching the end
+        // Once the end is reached, jump to the first track to loop the list again
+        if (!isPlayingLastTrack())
         {
             goToNextPlayingTrack();
         }
@@ -203,7 +217,7 @@ public class AudioPlaylist implements Serializable
     {
         _playing = true;
         
-        if (_playingTrackPosition - 1 < 0)
+        if (isPlayingFirstTrack())
         {
             _playingTrackPosition = 0;
             _playing = false;
