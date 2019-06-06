@@ -24,16 +24,16 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Presenter.ListsPresenter;
 import com.media.notabadplayer.Presenter.QuickPlayerPresenter;
-import com.media.notabadplayer.Storage.AudioStorage;
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlayerNoiseSuppression;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Storage.AudioLibrary;
+import com.media.notabadplayer.Audio.Utilities.AudioPlayerNoiseSuppression;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
@@ -57,14 +57,14 @@ import com.media.notabadplayer.View.Settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity implements BaseView {
     public static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 1;
-    static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
+    public static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
     
     private State _state = new State();
-
+    
     private boolean _launchedFromFile;
     private Uri _launchedFromFileUri;
     
-    private AudioStorage _audioStorage;
+    private AudioLibrary _audioLibrary;
     private MainPresenter _presenter;
 
     private BottomNavigationView _navigationView;
@@ -86,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             return currentTabID != _tabNavigation.currentTabID;
         }
     };
+
+    private static final String RESTART_APP_KEY = "RESTART_APP";
+    private static final String RESTART_APP_WAS_PLAYING_KEY = "RESTART_APP";
+    private boolean _restarted = false;
+    private boolean _restartedWasPlaying = false;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,18 +103,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             return;
         }
 
-        Log.v(MainActivity.class.getCanonicalName(), "Application is launching");
-        
-        _state.launch();
-        
-        onCreateLaunch();
-    }
-    
-    private void onCreateLaunch()
-    {
-        // Store data from launch from file request
+        // Store data from intent
         Intent intent = getIntent();
-        
+
         if (intent != null)
         {
             _launchedFromFile = Intent.ACTION_VIEW.equals(intent.getAction());
@@ -118,7 +114,30 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             {
                 _launchedFromFileUri = intent.getData();
             }
+
+            _restarted = intent.getBooleanExtra(RESTART_APP_KEY, false);
+            _restartedWasPlaying = intent.getBooleanExtra(RESTART_APP_WAS_PLAYING_KEY, false);
         }
+        
+        if (!_restarted)
+        {
+            Log.v(MainActivity.class.getCanonicalName(), "Application is launching...");
+        }
+        else
+        {
+            Log.v(MainActivity.class.getCanonicalName(), "Application restarted! Application is now launching...");
+        }
+        
+        // State
+        _state.launch();
+        
+        // UI
+        onCreateLaunch();
+    }
+    
+    private void onCreateLaunch()
+    {
+        
     }
 
     private void onCreateMain()
@@ -133,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _presenter = new MainPresenter();
         _presenter.setView(this);
 
-        _audioStorage = new AudioStorage(this);
+        _audioLibrary = new AudioLibrary(this);
         
         // UI
         initMainUI();
@@ -145,14 +164,22 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
     private void restartApp()
     {
-        Log.v(MainActivity.class.getCanonicalName(), "Restart application");
+        Log.v(MainActivity.class.getCanonicalName(), "Restarting application...");
+        
         Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
         
         if (intent != null)
         {
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra(RESTART_APP_KEY, true);
+            intent.putExtra(RESTART_APP_WAS_PLAYING_KEY, Player.getShared().isPlaying());
             startActivity(intent);
+            overridePendingTransition(0, 0);
         }
+
+        savePlayerState();
+        
+        Player.getShared().end();
         
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
@@ -174,11 +201,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         disableInteraction();
         
         // Every time the main activity pauses, save the player primaryState
-        if (_state.isRunning())
-        {
-            GeneralStorage.getShared().savePlayerState();
-            GeneralStorage.getShared().savePlayerPlayHistoryState();
-        }
+        savePlayerState();
     }
     
     @Override
@@ -245,23 +268,20 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         Log.v(MainActivity.class.getCanonicalName(), "Starting services...");
         
+        // Use background thread to start the services - audio storage
+        // Then, alert self on the main thread
         final MainActivity main = this;
         
-        // Use background thread to start the services - audio storage, audio player
-        // Then, alert MainActivity on the main thread
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                // Audio Storage initialize
-                _audioStorage.load();
-                
-                // Audio Player initialize
-                AudioPlayer.getShared().initialize(getApplication(), _audioStorage);
-                
-                // Restore audio player primaryState
-                GeneralStorage.getShared().restorePlayerState();
-                GeneralStorage.getShared().restorePlayerPlayHistoryState(getApplication());
+                // Audio Storage start
+                _audioLibrary.load();
 
+                // Audio Player start
+                Player.getShared().start(getApplication(), _audioLibrary, _restartedWasPlaying);
+                
+                // Finish on main thread
                 Handler mainHandler = new Handler(Looper.getMainLooper());
 
                 Runnable myRunnable = new Runnable() {
@@ -290,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         Log.v(MainActivity.class.getCanonicalName(), "Launching player with initial track...");
         
-        AudioTrack track = _audioStorage.findTrackByPath(path);
+        AudioTrack track = _audioLibrary.findTrackByPath(path);
 
         if (track == null)
         {
@@ -298,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             return;
         }
 
-        AudioPlaylist playlist = track.source.getSourcePlaylist(_audioStorage, track);
+        AudioPlaylist playlist = track.source.getSourcePlaylist(_audioLibrary, track);
 
         if (playlist == null)
         {
@@ -405,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
         
         // Create quick player and it's presenter
-        _quickPlayerPresenter = new QuickPlayerPresenter(_audioStorage);
+        _quickPlayerPresenter = new QuickPlayerPresenter(_audioLibrary);
         _quickPlayer = QuickPlayerFragment.newInstance(_quickPlayerPresenter, this);
         _quickPlayerPresenter.setView(_quickPlayer);
         
@@ -421,7 +441,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private void performLaunchPerformanceOptimizations()
     {
-        // Anything we can initialize early on here, so the user can get smoother experience
+        // Anything we can start early on here, so the user can get smoother experience
         // Optimization for the Settings screen
         GeneralStorage.getShared().retrieveAllSettingsActionValues();
     }
@@ -519,7 +539,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 
                 if (fragment.getView() != null)
                 {
-                    view.openPlaylistScreen(_audioStorage, playlist);
+                    view.openPlaylistScreen(_audioLibrary, playlist);
                 }
             }
         }
@@ -607,6 +627,15 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
     }
     
+    private void savePlayerState()
+    {
+        if (_state.isRunning())
+        {
+            GeneralStorage.getShared().savePlayerState();
+            GeneralStorage.getShared().savePlayerPlayHistoryState();
+        }
+    }
+    
     public class State {
         private AppState primaryState = AppState.SUSPENDED;
         
@@ -631,6 +660,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             
             primaryState = AppState.LAUNCHING;
 
+            // General storage initialize
+            GeneralStorage.getShared().initialize(getApplication());
+
             // Mandatory storage permission request
             requestPermissionForReadExtertalStorage();
         }
@@ -647,9 +679,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             Log.v(MainActivity.class.getCanonicalName(), "Finished launching!");
             Log.v(MainActivity.class.getCanonicalName(), "Starting...");
             
-            // General storage initialize
-            GeneralStorage.getShared().initialize(getApplication());
-
             // Create main interface
             onCreateMain();
 
@@ -822,22 +851,22 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             switch (tabID)
             {
                 case R.id.navigation_albums:
-                    presenter = new AlbumsPresenter(_audioStorage);
+                    presenter = new AlbumsPresenter(_audioLibrary);
                     tab = AlbumsFragment.newInstance(presenter);
                     presenter.setView(tab);
                     break;
                 case R.id.navigation_lists:
-                    presenter = new ListsPresenter(getBaseContext(), _audioStorage);
+                    presenter = new ListsPresenter(getBaseContext(), _audioLibrary);
                     tab = ListsFragment.newInstance(presenter);
                     presenter.setView(tab);
                     break;
                 case R.id.navigation_search:
-                    presenter = new SearchPresenter(getBaseContext(), _audioStorage);
+                    presenter = new SearchPresenter(getBaseContext(), _audioLibrary);
                     tab = SearchFragment.newInstance(presenter);
                     presenter.setView(tab);
                     break;
                 case R.id.navigation_settings:
-                    presenter = new SettingsPresenter(_audioStorage);
+                    presenter = new SettingsPresenter(_audioLibrary);
                     tab = SettingsFragment.newInstance(presenter, MainActivity.this);
                     presenter.setView(tab);
                     break;

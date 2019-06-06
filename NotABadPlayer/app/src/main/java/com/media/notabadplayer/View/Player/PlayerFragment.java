@@ -19,13 +19,13 @@ import android.widget.TextView;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import com.google.common.base.Function;
-import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioPlayOrder;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
@@ -46,7 +46,8 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private BasePresenter _presenter;
 
-    @NonNull AudioPlayer _player = AudioPlayer.getShared();
+    @NonNull
+    Player _player = Player.getShared();
     
     private boolean _playerIsMuted = false;
     
@@ -184,7 +185,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         }
         
         _volumeBar.setMax(VOLUME_BAR_MAX_VALUE);
-        _volumeBar.setProgress(AudioPlayer.getShared().getVolume());
+        _volumeBar.setProgress(Player.getShared().getVolume());
         _volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -469,7 +470,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
     private void updatePlayOrderButtonState()
     {
-        AudioPlayOrder order = AudioPlayer.getShared().getPlayOrder();
+        AudioPlayOrder order = Player.getShared().getPlayOrder();
         
         switch (order)
         {

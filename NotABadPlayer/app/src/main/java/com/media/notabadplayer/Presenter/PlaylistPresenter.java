@@ -6,9 +6,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -193,7 +193,7 @@ public class PlaylistPresenter implements BasePresenter {
         ArrayList<AudioTrack> tracks = _playlist.getTracks();
         AudioPlaylist playlistToPlay = new AudioPlaylist(playlistName, tracks, clickedTrack);
 
-        AudioPlayer player = AudioPlayer.getShared();
+        Player player = Player.getShared();
         AudioPlaylist currentPlaylist = player.getPlaylist();
 
         if (currentPlaylist != null)
@@ -231,7 +231,7 @@ public class PlaylistPresenter implements BasePresenter {
 
     private void playNew(@NonNull AudioPlaylist playlist)
     {
-        AudioPlayer player = AudioPlayer.getShared();
+        Player player = Player.getShared();
 
         try {
             player.playPlaylist(playlist);

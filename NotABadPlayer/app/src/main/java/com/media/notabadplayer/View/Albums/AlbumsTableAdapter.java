@@ -15,7 +15,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.Other.GridSideIndexingView;
 

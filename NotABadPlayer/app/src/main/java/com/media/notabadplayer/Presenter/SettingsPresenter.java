@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
@@ -125,8 +125,8 @@ public class SettingsPresenter implements BasePresenter
 
         _view.appThemeChanged(themeValue);
 
-        AudioPlayer.getShared().unmute();
-        AudioPlayer.getShared().pause();
+        Player.getShared().unmute();
+        Player.getShared().pause();
     }
 
     @Override
@@ -177,8 +177,8 @@ public class SettingsPresenter implements BasePresenter
 
         // Since the volume icon may no longer be visible after this change, always unmute & pause
         Log.v(SettingsPresenter.class.getCanonicalName(), "Setting ShowVolumeBar was changed, automatically unmuting and pausing player");
-        AudioPlayer.getShared().unmute();
-        AudioPlayer.getShared().pause();
+        Player.getShared().unmute();
+        Player.getShared().pause();
     }
 
     @Override
@@ -211,8 +211,8 @@ public class SettingsPresenter implements BasePresenter
         {
             Log.v(SettingsPresenter.class.getCanonicalName(), "Keybind PLAYER_VOLUME was changed, automatically unmuting and pausing player");
             
-            AudioPlayer.getShared().unmute();
-            AudioPlayer.getShared().pause();
+            Player.getShared().unmute();
+            Player.getShared().pause();
         }
     }
 }

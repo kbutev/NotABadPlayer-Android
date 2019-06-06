@@ -11,9 +11,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
@@ -204,7 +204,7 @@ public class ListsPresenter implements BasePresenter
                 
                 List<AudioPlaylist> userPlaylists = GeneralStorage.getShared().getUserPlaylists();
                 final List<AudioPlaylist> playlists = userPlaylists != null ? userPlaylists : new ArrayList<AudioPlaylist>();
-                final ArrayList<AudioTrack> history = AudioPlayer.getShared().playHistory.getPlayHistory();
+                final ArrayList<AudioTrack> history = Player.getShared().playHistory.getPlayHistory();
                 
                 if (history.size() > 0)
                 {

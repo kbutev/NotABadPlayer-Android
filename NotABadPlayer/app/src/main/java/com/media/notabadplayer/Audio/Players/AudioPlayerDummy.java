@@ -1,0 +1,208 @@
+package com.media.notabadplayer.Audio.Players;
+
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.AudioPlayerHistory;
+import com.media.notabadplayer.Audio.AudioPlayerObserver;
+import com.media.notabadplayer.Audio.AudioPlayerObservers;
+import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
+
+import java.util.ArrayList;
+
+public class AudioPlayerDummy implements AudioPlayer {
+    private final AudioPlayerObservers observers;
+    private final AudioPlayerHistory playHistory = new AudioPlayerDummy.PlayHistory();
+
+    AudioPlayerDummy(@Nullable AudioPlayerObservers observers)
+    {
+        this.observers = observers != null ? observers : new AudioPlayerDummy.Observers();
+    }
+    
+    @Override
+    public boolean isPlaying() {
+        return false;
+    }
+
+    @Override
+    public boolean isCompletelyStopped() {
+        return false;
+    }
+
+    @Override
+    public @Nullable AudioPlaylist getPlaylist() {
+        return null;
+    }
+
+    @Override
+    public boolean hasPlaylist() {
+        return false;
+    }
+
+    @Override
+    public AudioPlayOrder getPlayOrder() {
+        return AudioPlayOrder.FORWARDS;
+    }
+
+    @Override
+    public void setPlayOrder(AudioPlayOrder order) {
+
+    }
+
+    @Override
+    public void playPlaylist(@NonNull AudioPlaylist playlist) throws Exception {
+
+    }
+    
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public void pauseOrResume() {
+
+    }
+
+    @Override
+    public void playNext() {
+
+    }
+
+    @Override
+    public void playPrevious() {
+
+    }
+
+    @Override
+    public void playNextBasedOnPlayOrder() {
+
+    }
+
+    @Override
+    public void shuffle() {
+
+    }
+
+    @Override
+    public void jumpBackwards(int msec) {
+
+    }
+
+    @Override
+    public void jumpForwards(int msec) {
+
+    }
+
+    @Override
+    public int getDurationMSec() {
+        return 0;
+    }
+
+    @Override
+    public int getCurrentPositionMSec() {
+        return 0;
+    }
+
+    @Override
+    public void seekTo(int msec) {
+
+    }
+
+    @Override
+    public int getVolume() {
+        return 0;
+    }
+
+    @Override
+    public void setVolume(int volume) {
+
+    }
+
+    @Override
+    public void volumeUp() {
+
+    }
+
+    @Override
+    public void volumeDown() {
+
+    }
+
+    @Override
+    public boolean isMuted() {
+        return false;
+    }
+
+    @Override
+    public void muteOrUnmute() {
+
+    }
+
+    @Override
+    public void mute() {
+
+    }
+
+    @Override
+    public void unmute() {
+
+    }
+
+    @Override
+    public @NonNull
+    AudioPlayerObservers observers() {
+        return observers;
+    }
+
+    @Override
+    public @NonNull
+    AudioPlayerHistory playHistory() {
+        return playHistory;
+    }
+
+    public class Observers implements AudioPlayerObservers
+    {
+        public void attach(AudioPlayerObserver observer)
+        {
+            
+        }
+
+        public void detach(AudioPlayerObserver observer)
+        {
+            
+        }
+    }
+
+    public class PlayHistory implements AudioPlayerHistory
+    {
+        public @NonNull ArrayList<AudioTrack> getPlayHistory()
+        {
+            return new ArrayList<>();
+        }
+
+        public void setList(@NonNull ArrayList<AudioTrack> playHistory)
+        {
+            
+        }
+
+        public void playPreviousInHistory(@NonNull AudioInfo audioInfo)
+        {
+            
+        }
+    }
+}

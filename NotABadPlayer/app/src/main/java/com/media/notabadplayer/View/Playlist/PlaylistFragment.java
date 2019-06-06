@@ -17,13 +17,13 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayOrder;
-import com.media.notabadplayer.Audio.AudioPlayer;
+import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.LooperService;
@@ -36,7 +36,7 @@ import com.media.notabadplayer.View.Player.PlayerActivity;
 
 public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient
 {
-    AudioPlayer _player = AudioPlayer.getShared();
+    Player _player = Player.getShared();
     
     private BasePresenter _presenter;
     
@@ -233,7 +233,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         _albumTitleHeader.setText(playlist.getName());
         
         // Scroll down to the currently playing track
-        AudioPlaylist audioPlaylist = AudioPlayer.getShared().getPlaylist();
+        AudioPlaylist audioPlaylist = Player.getShared().getPlaylist();
 
         if (audioPlaylist != null && audioPlaylist.getName().equals(playlist.getName()))
         {
@@ -285,7 +285,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     @Override
     public void onPlayerPlay(AudioTrack current)
     {
-        
+        _table.invalidateViews();
     }
     
     @Override

@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Audio;
+package com.media.notabadplayer.Audio.Utilities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

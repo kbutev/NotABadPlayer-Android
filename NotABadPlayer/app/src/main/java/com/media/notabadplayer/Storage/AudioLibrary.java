@@ -13,13 +13,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.media.notabadplayer.Audio.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioTrack;
-import com.media.notabadplayer.Audio.AudioTrackSource;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Model.AudioTrackSource;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
-public class AudioStorage implements AudioInfo {
+// Provides simple interface to the audio library of the user.
+// Dependant on storage access permission:
+// Make sure you have access to user storage before using the audio library.
+public class AudioLibrary implements AudioInfo {
     public static int ALBUM_TRACK_CACHE_CAPACITY = 30;
     
     private final Context _context;
@@ -28,7 +31,7 @@ public class AudioStorage implements AudioInfo {
     
     private final SortedMap<String, List<AudioTrack>> _albumTracks = new TreeMap<>();
     
-    public AudioStorage(@NonNull Context context)
+    public AudioLibrary(@NonNull Context context)
     {
         _context = context;
     }
@@ -37,7 +40,7 @@ public class AudioStorage implements AudioInfo {
     {
         synchronized (_albums)
         {
-            Log.v(AudioStorage.class.getCanonicalName(), "Loading albums from media store...");
+            Log.v(AudioLibrary.class.getCanonicalName(), "Loading albums from media store...");
 
             _albums.clear();
 
@@ -69,7 +72,7 @@ public class AudioStorage implements AudioInfo {
 
             MediaSorting.sortAlbumsByTitle(_albums);
 
-            Log.v(AudioStorage.class.getCanonicalName(), "Successfully loaded " +  String.valueOf(_albums.size()) + " albums from media store.");
+            Log.v(AudioLibrary.class.getCanonicalName(), "Successfully loaded " +  String.valueOf(_albums.size()) + " albums from media store.");
         }
     }
     
@@ -176,7 +179,7 @@ public class AudioStorage implements AudioInfo {
     {
         _albumTracks.put(albumID, tracks);
         
-        if (_albumTracks.size() > AudioStorage.ALBUM_TRACK_CACHE_CAPACITY)
+        if (_albumTracks.size() > AudioLibrary.ALBUM_TRACK_CACHE_CAPACITY)
         {
             String firstKey = _albumTracks.firstKey();
             

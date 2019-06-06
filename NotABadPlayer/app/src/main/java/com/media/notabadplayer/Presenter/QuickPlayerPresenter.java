@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
@@ -68,7 +68,7 @@ public class QuickPlayerPresenter implements BasePresenter
             return;
         }
         
-        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
+        AudioPlaylist currentlyPlayingPlaylist = Player.getShared().getPlaylist();
 
         if (currentlyPlayingPlaylist == null)
         {
@@ -110,7 +110,7 @@ public class QuickPlayerPresenter implements BasePresenter
             return;
         }
         
-        AudioPlaylist currentlyPlayingPlaylist = AudioPlayer.getShared().getPlaylist();
+        AudioPlaylist currentlyPlayingPlaylist = Player.getShared().getPlaylist();
         
         if (currentlyPlayingPlaylist != null)
         {

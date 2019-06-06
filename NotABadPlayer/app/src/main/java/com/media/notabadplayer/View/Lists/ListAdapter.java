@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.common.base.Function;
-import com.media.notabadplayer.Audio.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.R;
 
 class ListAdapter extends BaseAdapter

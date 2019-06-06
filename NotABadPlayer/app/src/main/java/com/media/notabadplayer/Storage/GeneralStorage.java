@@ -8,19 +8,22 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
-import com.media.notabadplayer.Audio.AudioPlayOrder;
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.Serializing;
 
+// Provides simple interface to the user preferences (built in storage).
+// Before using the general storage, you MUST call initialize().
 public class GeneralStorage
 {
     private static GeneralStorage singleton;
@@ -39,7 +42,7 @@ public class GeneralStorage
         _firstTimeLaunch = true;
     }
 
-    synchronized public static GeneralStorage getShared()
+    public static GeneralStorage getShared()
     {
         if (singleton == null)
         {
@@ -49,7 +52,7 @@ public class GeneralStorage
         return singleton;
     }
     
-    public void initialize(@NonNull Application context)
+    synchronized public void initialize(@NonNull Application context)
     {
         if (___context != null)
         {
@@ -192,7 +195,7 @@ public class GeneralStorage
         Log.v(GeneralStorage.class.getCanonicalName(), "Successfully migrated settings values!");
     }
 
-    synchronized public void resetDefaultSettingsValues()
+    public void resetDefaultSettingsValues()
     {
         savePlayerPlayedHistoryCapacity(50);
         saveAppThemeValue(AppSettings.AppTheme.LIGHT);
@@ -221,7 +224,7 @@ public class GeneralStorage
         saveCachingPolicy(AppSettings.TabCachingPolicies.ALBUMS_ONLY);
     }
     
-    synchronized public boolean isFirstApplicationLaunch()
+    public boolean isFirstApplicationLaunch()
     {
         return _firstTimeLaunch;
     }
@@ -248,9 +251,9 @@ public class GeneralStorage
         return storageVersion;
     }
     
-    synchronized public void savePlayerState()
+    public void savePlayerState()
     {
-        AudioPlayer player = AudioPlayer.getShared();
+        Player player = Player.getShared();
         
         if (!player.hasPlaylist())
         {
@@ -266,10 +269,10 @@ public class GeneralStorage
         editor.apply();
     }
     
-    synchronized public void restorePlayerState()
+    public void restorePlayerState()
     {
         SharedPreferences preferences = getSharedPreferences();
-        AudioPlayer player = AudioPlayer.getShared();
+        Player player = Player.getShared();
 
         String playOrderData = preferences.getString("player_play_order", "");
         String playlistData = preferences.getString("player_current_playlist", "");
@@ -314,17 +317,30 @@ public class GeneralStorage
         
         player.seekTo(positionMSec);
         
-        // Always pause by default when restoring state from storage
-        player.pause();
-        
         // Success
         Log.v(GeneralStorage.class.getCanonicalName(), "Successfully restored audio player state!");
     }
 
-    synchronized public void savePlayerPlayHistoryState()
+    public @Nullable AudioPlaylist retrievePlayerSavedStatePlaylist()
     {
         SharedPreferences preferences = getSharedPreferences();
-        AudioPlayer player = AudioPlayer.getShared();
+        
+        String playlistData = preferences.getString("player_current_playlist", "");
+        
+        Object result = Serializing.deserializeObject(playlistData);
+
+        if (!(result instanceof AudioPlaylist))
+        {
+            return null;
+        }
+
+        return (AudioPlaylist)result;
+    }
+
+    public void savePlayerPlayHistoryState()
+    {
+        SharedPreferences preferences = getSharedPreferences();
+        Player player = Player.getShared();
 
         if (!player.hasPlaylist())
         {
@@ -340,10 +356,10 @@ public class GeneralStorage
         Log.v(GeneralStorage.class.getCanonicalName(), "Saved audio player state to storage.");
     }
 
-    synchronized public void restorePlayerPlayHistoryState(@NonNull Application application)
+    public void restorePlayerPlayHistoryState(@NonNull Application application)
     {
         SharedPreferences preferences = getSharedPreferences();
-        AudioPlayer player = AudioPlayer.getShared();
+        Player player = Player.getShared();
         
         String data = preferences.getString("player_play_history", "");
 
@@ -362,7 +378,7 @@ public class GeneralStorage
         player.playHistory.setList(playHistory);
     }
 
-    synchronized public void saveSearchQuery(String searchQuery)
+    public void saveSearchQuery(String searchQuery)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -372,12 +388,12 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public String retrieveSearchQuery()
+    public String retrieveSearchQuery()
     {
         return getSharedPreferences().getString("searchQuery", "");
     }
 
-    synchronized public void saveSettingsAction(ApplicationInput input, ApplicationAction action)
+    public void saveSettingsAction(ApplicationInput input, ApplicationAction action)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -389,7 +405,7 @@ public class GeneralStorage
         _keyBinds.put(input, action);
     }
     
-    synchronized public ApplicationAction getSettingsAction(ApplicationInput input)
+    public ApplicationAction getSettingsAction(ApplicationInput input)
     {
         ApplicationAction cachedAction = _keyBinds.get(input);
         
@@ -443,12 +459,12 @@ public class GeneralStorage
         return Collections.unmodifiableMap(_keyBinds);
     }
     
-    synchronized public int getPlayerPlayedHistoryCapacity()
+    public int getPlayerPlayedHistoryCapacity()
     {
         return getSharedPreferences().getInt("player_history_capacity", 1);
     }
     
-    synchronized public void savePlayerPlayedHistoryCapacity(int value)
+    public void savePlayerPlayedHistoryCapacity(int value)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -456,7 +472,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public ArrayList<AudioPlaylist> getUserPlaylists()
+    public ArrayList<AudioPlaylist> getUserPlaylists()
     {
         SharedPreferences preferences = getSharedPreferences();
         
@@ -481,7 +497,7 @@ public class GeneralStorage
         return null;
     }
 
-    synchronized public void saveUserPlaylists(@NonNull ArrayList<AudioPlaylist> playlists)
+    public void saveUserPlaylists(@NonNull ArrayList<AudioPlaylist> playlists)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -489,7 +505,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public AppSettings.AppTheme getAppThemeValue()
+    public AppSettings.AppTheme getAppThemeValue()
     {
         SharedPreferences preferences = getSharedPreferences();
         
@@ -519,7 +535,7 @@ public class GeneralStorage
         return AppSettings.AppTheme.LIGHT;
     }
 
-    synchronized public void saveAppThemeValue(AppSettings.AppTheme value)
+    public void saveAppThemeValue(AppSettings.AppTheme value)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -527,7 +543,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public AppSettings.AlbumSorting getAlbumSortingValue()
+    public AppSettings.AlbumSorting getAlbumSortingValue()
     {
         SharedPreferences preferences = getSharedPreferences();
         
@@ -542,7 +558,7 @@ public class GeneralStorage
         return AppSettings.AlbumSorting.TITLE;
     }
 
-    synchronized public void saveAlbumSortingValue(AppSettings.AlbumSorting value)
+    public void saveAlbumSortingValue(AppSettings.AlbumSorting value)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -550,7 +566,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public AppSettings.TrackSorting getTrackSortingValue()
+    public AppSettings.TrackSorting getTrackSortingValue()
     {
         SharedPreferences preferences = getSharedPreferences();
         
@@ -565,7 +581,7 @@ public class GeneralStorage
         return AppSettings.TrackSorting.TITLE;
     }
 
-    synchronized public void saveTrackSortingValue(AppSettings.TrackSorting value)
+    public void saveTrackSortingValue(AppSettings.TrackSorting value)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -573,7 +589,7 @@ public class GeneralStorage
         editor.apply();
     }
     
-    synchronized public AppSettings.ShowVolumeBar getShowVolumeBarValue()
+    public AppSettings.ShowVolumeBar getShowVolumeBarValue()
     {
         SharedPreferences preferences = getSharedPreferences();
         
@@ -588,7 +604,7 @@ public class GeneralStorage
         return AppSettings.ShowVolumeBar.NO;
     }
 
-    synchronized public void saveShowVolumeBarValue(AppSettings.ShowVolumeBar value)
+    public void saveShowVolumeBarValue(AppSettings.ShowVolumeBar value)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -596,7 +612,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    synchronized public AppSettings.OpenPlayerOnPlay getOpenPlayerOnPlayValue()
+    public AppSettings.OpenPlayerOnPlay getOpenPlayerOnPlayValue()
     {
         SharedPreferences preferences = getSharedPreferences();
 
@@ -611,7 +627,7 @@ public class GeneralStorage
         return AppSettings.OpenPlayerOnPlay.NO;
     }
 
-    synchronized public void saveOpenPlayerOnPlayValue(AppSettings.OpenPlayerOnPlay value)
+    public void saveOpenPlayerOnPlayValue(AppSettings.OpenPlayerOnPlay value)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -619,7 +635,7 @@ public class GeneralStorage
         editor.apply();
     }
     
-    synchronized public AppSettings.TabCachingPolicies getCachingPolicy()
+    public AppSettings.TabCachingPolicies getCachingPolicy()
     {
         SharedPreferences preferences = getSharedPreferences();
 
@@ -634,7 +650,7 @@ public class GeneralStorage
         return AppSettings.TabCachingPolicies.NO_CACHING;
     }
     
-    synchronized public void saveCachingPolicy(AppSettings.TabCachingPolicies value)
+    public void saveCachingPolicy(AppSettings.TabCachingPolicies value)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();

@@ -15,9 +15,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlaylist;
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.UIAnimations;
 
@@ -146,7 +146,7 @@ class PlaylistListAdapter extends BaseAdapter
         // Select playing track
         boolean isPlayingTrack = false;
         
-        AudioPlaylist playlist = AudioPlayer.getShared().getPlaylist();
+        AudioPlaylist playlist = Player.getShared().getPlaylist();
         
         if (playlist != null)
         {

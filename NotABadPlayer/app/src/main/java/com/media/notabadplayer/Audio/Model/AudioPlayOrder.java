@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Audio;
+package com.media.notabadplayer.Audio.Model;
 
 public enum AudioPlayOrder {
     ONCE,

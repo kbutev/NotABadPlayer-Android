@@ -12,7 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.AudioTrack;
+import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.R;
 
 public class CreatePlaylistTracksAdapter extends BaseAdapter
