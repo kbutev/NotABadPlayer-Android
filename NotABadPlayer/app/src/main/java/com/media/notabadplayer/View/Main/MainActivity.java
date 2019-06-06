@@ -93,7 +93,20 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private boolean _restartedWasPlaying = false;
     
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+        
+        // Load data from intent
+        loadDataFromIntent(intent);
+        
+        // Play new file?
+        playTrackFromIntentRequest();
+    }
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(null);
         
         if (savedInstanceState != null)
@@ -102,22 +115,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             restartApp();
             return;
         }
-
-        // Store data from intent
-        Intent intent = getIntent();
-
-        if (intent != null)
-        {
-            _launchedFromFile = Intent.ACTION_VIEW.equals(intent.getAction());
-
-            if (_launchedFromFile)
-            {
-                _launchedFromFileUri = intent.getData();
-            }
-
-            _restarted = intent.getBooleanExtra(RESTART_APP_KEY, false);
-            _restartedWasPlaying = intent.getBooleanExtra(RESTART_APP_WAS_PLAYING_KEY, false);
-        }
+        
+        // Load data from intent
+        loadDataFromIntent(getIntent());
         
         if (!_restarted)
         {
@@ -133,6 +133,19 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         // UI
         onCreateLaunch();
+    }
+    
+    private void loadDataFromIntent(@NonNull Intent intent)
+    {
+        _launchedFromFile = Intent.ACTION_VIEW.equals(intent.getAction());
+
+        if (_launchedFromFile)
+        {
+            _launchedFromFileUri = intent.getData();
+        }
+
+        _restarted = intent.getBooleanExtra(RESTART_APP_KEY, false);
+        _restartedWasPlaying = intent.getBooleanExtra(RESTART_APP_WAS_PLAYING_KEY, false);
     }
     
     private void onCreateLaunch()
@@ -211,6 +224,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         {
             unregisterReceiver(_noiseSuppression);
         }
+        
+        Log.v(MainActivity.class.getCanonicalName(), "Application is terminated.");
         
         super.onDestroy();
     }
@@ -306,6 +321,14 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _state.run();
     }
     
+    private void playTrackFromIntentRequest()
+    {
+        if (_launchedFromFile)
+        {
+            startAppWithTrack(_launchedFromFileUri);
+        }
+    }
+    
     private void startAppWithTrack(Uri path)
     {
         Log.v(MainActivity.class.getCanonicalName(), "Launching player with initial track...");
@@ -327,12 +350,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
 
         Intent intent = new Intent(this, PlayerActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("playlist", Serializing.serializeObject(playlist));
         startActivity(intent);
-
-        // Transition animation
+        
         overridePendingTransition(0, 0);
     }
 
@@ -700,12 +721,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
             // Performance optimizations
             performLaunchPerformanceOptimizations();
-
+            
             // Handle launch from file request
-            if (_launchedFromFile)
-            {
-                startAppWithTrack(_launchedFromFileUri);
-            }
+            playTrackFromIntentRequest();
             
             // Alert presenters of app state
             alertPresentersOfAppState();
