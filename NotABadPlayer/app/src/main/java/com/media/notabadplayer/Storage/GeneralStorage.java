@@ -56,7 +56,7 @@ public class GeneralStorage
     {
         if (___context != null)
         {
-            throw new UncheckedExecutionException(new Exception("Must not call initialize() twice"));
+            throw new UncheckedExecutionException(new Exception("GeneralStorage: Must not call initialize() twice"));
         }
         
         Log.v(GeneralStorage.class.getCanonicalName(), "Initializing...");
@@ -312,7 +312,11 @@ public class GeneralStorage
             Log.v(GeneralStorage.class.getCanonicalName(), "Failed to restore audio player state, " + e.toString());
             return;
         }
+
+        // Always pause after restoring
+        player.pause();
         
+        // Seek to last memorized location
         int positionMSec = preferences.getInt("player_current_position", 0);
         
         player.seekTo(positionMSec);

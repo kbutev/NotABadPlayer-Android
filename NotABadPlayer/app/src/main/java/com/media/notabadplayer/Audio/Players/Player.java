@@ -112,9 +112,9 @@ public class Player implements AudioPlayer {
             GeneralStorage.getShared().restorePlayerPlayHistoryState(_application);
             
             // Play state
-            if (!_playOnStart)
+            if (_playOnStart)
             {
-                player.pause();
+                player.resume();
             }
         }
         else
