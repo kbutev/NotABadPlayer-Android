@@ -178,22 +178,23 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void restartApp()
     {
         Log.v(MainActivity.class.getCanonicalName(), "Restarting application...");
-        
-        Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-        
-        if (intent != null)
-        {
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.putExtra(RESTART_APP_KEY, true);
-            intent.putExtra(RESTART_APP_WAS_PLAYING_KEY, Player.getShared().isPlaying());
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-        }
 
+        // Save player state
         savePlayerState();
-        
+
+        // End the player properly
         Player.getShared().end();
         
+        // Start a new instance of this
+        Intent intent = new Intent(this, MainActivity.class);
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(RESTART_APP_KEY, true);
+        intent.putExtra(RESTART_APP_WAS_PLAYING_KEY, Player.getShared().isPlaying());
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+        
+        // Must restart, in order to wipe out the memory - singletons will be wiped out too
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
     }
