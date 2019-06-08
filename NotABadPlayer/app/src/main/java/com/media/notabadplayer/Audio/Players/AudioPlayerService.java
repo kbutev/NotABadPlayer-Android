@@ -925,9 +925,9 @@ public class AudioPlayerService extends Service implements AudioPlayer {
 
             PendingIntent playPauseAction = PendingIntent.getBroadcast(getApplicationContext(), 1, actionIntentData, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            builder.addAction(R.drawable.media_previous, _actionPreviousString, previousAction)
-                    .addAction(R.drawable.media_pause, playPauseString, playPauseAction)
-                    .addAction(R.drawable.media_next, _actionNextString, nextAction);
+            builder.addAction(0, _actionPreviousString, previousAction)
+                    .addAction(0, playPauseString, playPauseAction)
+                    .addAction(0, _actionNextString, nextAction);
             
             // Result
             Notification n = builder.build();
