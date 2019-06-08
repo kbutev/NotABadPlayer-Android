@@ -148,7 +148,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
 
                 if (position >= 0)
                 {
-                    _tableAdapter.selectItem(view);
+                    _tableAdapter.selectItem(view, position);
                     
                     _presenter.onPlaylistItemClick(position);
                 }
@@ -281,9 +281,14 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
     
     @Override
-    public void onPlayerPlay(AudioTrack current)
+    public void onPlayerPlay(@NonNull AudioTrack current)
     {
-        _table.invalidateViews();
+        boolean result = _tableAdapter.isItemSelectedForTrack(current);
+        
+        if (!result)
+        {
+            _table.invalidateViews();
+        }
     }
     
     @Override
@@ -299,13 +304,13 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void onPlayerPause(AudioTrack track)
+    public void onPlayerPause(@NonNull AudioTrack track)
     {
         
     }
 
     @Override
-    public void onPlayerResume(AudioTrack track)
+    public void onPlayerResume(@NonNull AudioTrack track)
     {
         
     }

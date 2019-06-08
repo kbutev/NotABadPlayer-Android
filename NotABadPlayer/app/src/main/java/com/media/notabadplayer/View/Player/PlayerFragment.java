@@ -553,7 +553,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public void onPlayerPlay(AudioTrack current)
+    public void onPlayerPlay(@NonNull AudioTrack current)
     {
         updateMediaInfo(current);
         updatePlayButtonState();
@@ -572,14 +572,14 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public void onPlayerPause(AudioTrack track)
+    public void onPlayerPause(@NonNull AudioTrack track)
     {
 
         updatePlayButtonState();
     }
     
     @Override
-    public void onPlayerResume(AudioTrack track)
+    public void onPlayerResume(@NonNull AudioTrack track)
     {
         updatePlayButtonState();
     }

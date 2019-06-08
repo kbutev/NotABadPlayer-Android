@@ -29,6 +29,7 @@ class PlaylistListAdapter extends BaseAdapter
     private boolean _isPlaylist;
     
     private View _currentlySelectedView = null;
+    private int _currentlySelectedViewListIndex = -1;
     
     public PlaylistListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist)
     {
@@ -167,7 +168,11 @@ class PlaylistListAdapter extends BaseAdapter
         else
         {
             listItem.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
+            
+            deselectCurrentItem();
+            
             _currentlySelectedView = listItem;
+            _currentlySelectedViewListIndex = position;
         }
         
         return listItem;
@@ -187,14 +192,38 @@ class PlaylistListAdapter extends BaseAdapter
         
         return String.valueOf(_tracks.size()) + " " + tracks + ", " + total_duration + " " + AudioTrack.secondsToString(totalDuration);
     }
+
+    public boolean isItemSelectedForTrack(@NonNull AudioTrack track)
+    {
+        int position = -1;
+
+        for (int e = 0; e < _tracks.size(); e++)
+        {
+            AudioTrack listTrack = _tracks.get(e);
+
+            if (listTrack.equals(track))
+            {
+                position = e;
+                break;
+            }
+        }
+
+        if (position == -1)
+        {
+            return false;
+        }
+
+        return position == _currentlySelectedViewListIndex;
+    }
     
-    public void selectItem(@NonNull View view)
+    public void selectItem(@NonNull View view, int position)
     {
         deselectCurrentItem();
         
         view.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
         
         _currentlySelectedView = view;
+        _currentlySelectedViewListIndex = position;
         
         UIAnimations.getShared().listItemAnimations.animateTap(_context, _currentlySelectedView);
     }
@@ -208,5 +237,6 @@ class PlaylistListAdapter extends BaseAdapter
         }
 
         _currentlySelectedView = null;
+        _currentlySelectedViewListIndex = -1;
     }
 }
