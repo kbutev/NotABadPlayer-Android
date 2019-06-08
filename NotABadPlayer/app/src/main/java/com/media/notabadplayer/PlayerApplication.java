@@ -345,6 +345,16 @@ public class PlayerApplication extends Application {
                 return;
             }
 
+            // This is a very rare case, where the user starts the app from home and launches
+            // it from other programs such as the Files program
+            // Deny this activity existence by showing a request permission denied dialog
+            if (_state.isRequestingPermissions())
+            {
+                _state.onRequestPermissionsDenied(activity);
+                
+                return;
+            }
+
             throw new UncheckedExecutionException(new Exception("Internal application state error."));
         }
         @Override
