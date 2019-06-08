@@ -312,7 +312,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void onPlayerPlay(AudioTrack current)
+    public void onPlayerPlay(@NonNull AudioTrack current)
     {
 
     }
@@ -330,13 +330,13 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void onPlayerPause(AudioTrack track)
+    public void onPlayerPause(@NonNull AudioTrack track)
     {
 
     }
 
     @Override
-    public void onPlayerResume(AudioTrack track)
+    public void onPlayerResume(@NonNull AudioTrack track)
     {
 
     }
