@@ -88,7 +88,7 @@ public class ListsPresenter implements BasePresenter
                     
                     if (recentlyPlayed != null)
                     {
-                        lists.add(recentlyPlayed);
+                        lists.add(0, recentlyPlayed);
                     }
 
                     final ArrayList<AudioPlaylist> data = lists;
