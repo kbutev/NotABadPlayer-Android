@@ -6,8 +6,6 @@ import java.util.Map;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -118,9 +116,8 @@ public class SettingsFragment extends Fragment implements BaseView
         _resetSettingsButton = root.findViewById(R.id.resetButton);
         
         _progressIndicator = root.findViewById(R.id.progressIndicator);
-                
-        // Init UI after delay
-        initializeAfterDelay();
+        
+        // UI is initialized by onAppSettingsLoad() which is called by the presenter
         
         // App theme retrieve and store
         _currentAppTheme = GeneralStorage.getShared().getAppThemeValue();
@@ -132,11 +129,10 @@ public class SettingsFragment extends Fragment implements BaseView
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
-        // The settings presenter does not pull data, it only updates it
-        // But start it anyways, for consistency
-        // The fragment on its own pulls the data from storage and fills up the fields efficiently
+        
         _presenter.start();
+        
+        showProgressIndicator();
     }
 
     @Override
@@ -155,33 +151,6 @@ public class SettingsFragment extends Fragment implements BaseView
         disableInteraction();
     }
     
-    private void initializeAfterDelay()
-    {
-        showProgressIndicator();
-        
-        Handler handler = new Handler(Looper.getMainLooper());
-        
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                // Init UI
-                initUI();
-
-                // Select correct values
-                selectProperValues();
-
-                // Setup user interaction for the picker views
-                // Do this after selectProperValues(), to prevent the callbacks from being fired
-                setupPickersCallbacks();
-
-                // Hide progress indicator
-                hideProgressIndicator();
-            }
-        };
-        
-        handler.postDelayed(runnable, 50);
-    }
-
     private void initUI()
     {
         Context context = getContext();
@@ -514,7 +483,6 @@ public class SettingsFragment extends Fragment implements BaseView
         AlertWindows.showAlert(getContext(), 0, R.string.settings_dialog_reset, R.string.yes, action, R.string.no);
     }
     
-    @Override
     public void enableInteraction()
     {
         _themePicker.setClickable(true);
@@ -540,7 +508,6 @@ public class SettingsFragment extends Fragment implements BaseView
         _resetSettingsButton.setClickable(true);
     }
 
-    @Override
     public void disableInteraction()
     {
         _themePicker.setClickable(false);
@@ -609,6 +576,23 @@ public class SettingsFragment extends Fragment implements BaseView
     }
 
     @Override
+    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
+    {
+        // Init UI
+        initUI();
+
+        // Select correct values
+        selectProperValues();
+
+        // Setup user interaction for the picker views
+        // Do this after selectProperValues(), to prevent the callbacks from being fired
+        setupPickersCallbacks();
+
+        // Hide progress indicator
+        hideProgressIndicator();
+    }
+
+    @Override
     public void appSettingsReset()
     {
         // Notify root view
@@ -669,6 +653,18 @@ public class SettingsFragment extends Fragment implements BaseView
     public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
 
+    }
+
+    @Override
+    public void onFetchDataErrorEncountered(@NonNull Exception error)
+    {
+        if (getView() == null)
+        {
+            return;
+        }
+
+        // Retry until we succeed
+        _presenter.fetchData();
     }
     
     @Override

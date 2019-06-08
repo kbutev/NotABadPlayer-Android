@@ -10,9 +10,13 @@ import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.View.BaseView;
 
 public interface BasePresenter {
+    // Call this only once, before start().
     void setView(@NonNull BaseView view);
     
+    // Call this only once, as soon as the view is ready to use
     void start();
+    
+    void fetchData();
     
     void onAppStateChange(AppState state);
     

@@ -42,11 +42,13 @@ public class ListsFragment extends Fragment implements BaseView {
 
     private ProgressBar _progressIndicator;
     
+    private boolean _playlistsLoaded = false;
+    
     public ListsFragment()
     {
 
     }
-
+    
     public static @NonNull ListsFragment newInstance(@NonNull BasePresenter presenter)
     {
         ListsFragment fragment = new ListsFragment();
@@ -75,7 +77,7 @@ public class ListsFragment extends Fragment implements BaseView {
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
+        
         _presenter.start();
     }
     
@@ -87,7 +89,7 @@ public class ListsFragment extends Fragment implements BaseView {
         enableInteraction();
         
         // Request data from the presenter every time we resume
-        _presenter.onPlaylistsChanged();
+        _presenter.fetchData();
         
         // Always make sure that we are not in delete mode when resuming
         endDeleteMode();
@@ -99,6 +101,12 @@ public class ListsFragment extends Fragment implements BaseView {
         super.onPause();
 
         disableInteraction();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
     }
     
     private void initUI()
@@ -163,6 +171,12 @@ public class ListsFragment extends Fragment implements BaseView {
         {
             return;
         }
+        
+        // Until the playlists are loaded, these requests will be ignored
+        if (!_playlistsLoaded)
+        {
+            return;
+        }
 
         Intent intent = new Intent(a, CreatePlaylistActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -171,6 +185,12 @@ public class ListsFragment extends Fragment implements BaseView {
     
     private void enterDeleteMode()
     {
+        // Until the playlists are loaded, these requests will be ignored
+        if (!_playlistsLoaded)
+        {
+            return;
+        }
+        
         if (_playlistsAdapter == null)
         {
             return;
@@ -198,7 +218,6 @@ public class ListsFragment extends Fragment implements BaseView {
         _presenter.onPlaylistItemDelete(position);
     }
     
-    @Override
     public void enableInteraction()
     {
         _createPlaylistButton.setClickable(true);
@@ -207,7 +226,6 @@ public class ListsFragment extends Fragment implements BaseView {
         _playlistsList.setClickable(true);
     }
 
-    @Override
     public void disableInteraction()
     {
         _createPlaylistButton.setClickable(false);
@@ -290,6 +308,7 @@ public class ListsFragment extends Fragment implements BaseView {
             }
         };
 
+        _playlistsLoaded = true;
         _playlistsAdapter = new ListAdapter(context, playlists, onRemoveButtonClick);
         _playlistsList.setAdapter(_playlistsAdapter);
         _playlistsList.invalidateViews();
@@ -317,6 +336,12 @@ public class ListsFragment extends Fragment implements BaseView {
     }
 
     @Override
+    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
+    {
+
+    }
+
+    @Override
     public void appSettingsReset()
     {
 
@@ -338,6 +363,18 @@ public class ListsFragment extends Fragment implements BaseView {
     public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
 
+    }
+
+    @Override
+    public void onFetchDataErrorEncountered(@NonNull Exception error)
+    {
+        if (getView() == null)
+        {
+            return;
+        }
+        
+        // Retry until we succeed
+        _presenter.fetchData();
     }
 
     @Override

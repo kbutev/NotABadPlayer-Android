@@ -181,14 +181,12 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
         });
     }
     
-    @Override
     public void enableInteraction()
     {
         _searchFieldClearButton.setClickable(true);
         _searchResults.setClickable(true);
     }
 
-    @Override
     public void disableInteraction()
     {
         _searchFieldClearButton.setClickable(false);
@@ -350,6 +348,12 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
+    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
+    {
+
+    }
+
+    @Override
     public void appSettingsReset()
     {
         
@@ -369,6 +373,12 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
 
     @Override
     public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
+    {
+
+    }
+
+    @Override
+    public void onFetchDataErrorEncountered(@NonNull Exception error)
     {
 
     }

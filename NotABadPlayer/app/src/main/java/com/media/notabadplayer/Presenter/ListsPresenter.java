@@ -2,7 +2,6 @@ package com.media.notabadplayer.Presenter;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,9 +10,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
@@ -25,24 +23,31 @@ import com.media.notabadplayer.View.BaseView;
 public class ListsPresenter implements BasePresenter
 {
     private BaseView _view;
-
-    private @NonNull Context _context;
     
     private @NonNull AudioInfo _audioInfo;
     
     private List<AudioPlaylist> _playlists = new ArrayList<>();
+    
+    private final String _historyPlaylistName;
 
     private boolean _running = false;
     
+    private boolean _fetchingData = false;
+    
     public ListsPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo)
     {
-        _context = context;
         _audioInfo = audioInfo;
+        _historyPlaylistName = context.getResources().getString(R.string.playlist_name_recently_played);
     }
-
+    
     @Override
     public void setView(@NonNull BaseView view)
     {
+        if (_view != null)
+        {
+            throw new IllegalStateException("ListsPresenter: view has already been set");
+        }
+        
         _view = view;
     }
     
@@ -53,8 +58,75 @@ public class ListsPresenter implements BasePresenter
         {
             throw new IllegalStateException("ListsPresenter: view has not been set");
         }
+    }
 
-        updatePlaylistsData(0);
+    @Override
+    public void fetchData()
+    {
+        if (_fetchingData)
+        {
+            return;
+        }
+        
+        _fetchingData = true;
+        
+        final boolean running = _running;
+        
+        // Wait for the app start running
+        // Then, update the view on the main thread
+        Handler handler = new Handler();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                Runnable myRunnable;
+                
+                if (running)
+                {
+                    ArrayList<AudioPlaylist> lists = GeneralStorage.getShared().getUserPlaylists();
+                    AudioPlaylist recentlyPlayed = Player.getShared().playHistory.getPlayHistoryAsPlaylist(_historyPlaylistName);
+                    
+                    if (recentlyPlayed != null)
+                    {
+                        lists.add(recentlyPlayed);
+                    }
+
+                    final ArrayList<AudioPlaylist> data = lists;
+                    
+                    myRunnable = new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            Log.v(ListsPresenter.class.getCanonicalName(), "Updating user playlists data");
+
+                            _fetchingData = false;
+                            
+                            _playlists = data;
+                            
+                            updatePlaylistsData();
+                        }
+                    };
+                }
+                else
+                {
+                    myRunnable = new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            Log.v(ListsPresenter.class.getCanonicalName(), "Presenter is not ready to fetch yet!");
+
+                            _fetchingData = false;
+                            
+                            _view.onFetchDataErrorEncountered(new RuntimeException("Presenter is not ready to fetch yet"));
+                        }
+                    };
+                }
+                
+                mainHandler.post(myRunnable);
+            }
+        });
+
+        handler.post(thread);
     }
 
     @Override
@@ -72,6 +144,11 @@ public class ListsPresenter implements BasePresenter
     @Override
     public void onPlaylistItemClick(int index) 
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         if (index < 0 || index >= _playlists.size())
         {
             return;
@@ -80,7 +157,7 @@ public class ListsPresenter implements BasePresenter
         AudioPlaylist playlist = _playlists.get(index);
 
         Log.v(ListsPresenter.class.getCanonicalName(), "Open playlist '" + playlist.getName() + "'");
-        
+
         _view.openPlaylistScreen(_audioInfo, playlist);
     }
 
@@ -117,12 +194,17 @@ public class ListsPresenter implements BasePresenter
     @Override
     public void onPlaylistsChanged()
     {
-        updatePlaylistsData(0);
+        updatePlaylistsData();
     }
 
     @Override
     public void onPlaylistItemDelete(int index)
     {
+        if (!_running)
+        {
+            return;
+        }
+        
         if (index < _playlists.size())
         {
             _playlists.remove(index);
@@ -135,7 +217,7 @@ public class ListsPresenter implements BasePresenter
 
                 GeneralStorage.getShared().saveUserPlaylists(playlists);
                 
-                updatePlaylistsData(0);
+                updatePlaylistsData();
             }
         }
     }
@@ -188,47 +270,8 @@ public class ListsPresenter implements BasePresenter
 
     }
     
-    private void updatePlaylistsData(int delay)
+    private void updatePlaylistsData()
     {
-        // Use background thread to retrieve the user playlists
-        // Then, update the view on the main thread
-        Handler handler = new Handler();
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (!_running)
-                {
-                    updatePlaylistsData(250);
-                    return;
-                }
-                
-                List<AudioPlaylist> userPlaylists = GeneralStorage.getShared().getUserPlaylists();
-                final List<AudioPlaylist> playlists = userPlaylists != null ? userPlaylists : new ArrayList<AudioPlaylist>();
-                final ArrayList<AudioTrack> history = Player.getShared().playHistory.getPlayHistory();
-                
-                if (history.size() > 0)
-                {
-                    String historyPlaylistName = _context.getResources().getString(R.string.playlist_name_recently_played);
-                    playlists.add(0, new AudioPlaylist(historyPlaylistName, history));
-                }
-
-                Handler mainHandler = new Handler(Looper.getMainLooper());
-
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run()
-                    {
-                        Log.v(ListsPresenter.class.getCanonicalName(), "Updating user playlist data");
-                        
-                        _playlists = playlists;
-                        _view.onUserPlaylistsLoad(_playlists);
-                    }
-                };
-
-                mainHandler.post(myRunnable);
-            }
-        });
-        
-        handler.postDelayed(thread, delay);
+        _view.onUserPlaylistsLoad(_playlists);
     }
 }

@@ -27,6 +27,11 @@ public class PlayerPresenter implements BasePresenter
     @Override
     public void setView(@NonNull BaseView view)
     {
+        if (_view != null)
+        {
+            throw new IllegalStateException("PlayerPresenter: view has already been set");
+        }
+        
         _view = view;
     }
     
@@ -69,6 +74,12 @@ public class PlayerPresenter implements BasePresenter
         // Set audio player playlist for the first time and play its track
         Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen for the first time and playing track '" + _playlist.getPlayingTrack().title + "'");
         playFirstTime(_playlist);
+    }
+
+    @Override
+    public void fetchData()
+    {
+
     }
 
     @Override

@@ -26,6 +26,8 @@ public class AlbumsPresenter implements BasePresenter {
 
     private boolean _running = false;
     
+    private boolean _fetchingData = false;
+    
     public AlbumsPresenter(@NonNull AudioInfo audioInfo)
     {
         _audioInfo = audioInfo;
@@ -34,6 +36,11 @@ public class AlbumsPresenter implements BasePresenter {
     @Override
     public void setView(@NonNull BaseView view)
     {
+        if (_view != null)
+        {
+            throw new IllegalStateException("AlbumsPresenter: view has already been set");
+        }
+        
         _view = view;
     }
     
@@ -45,32 +52,70 @@ public class AlbumsPresenter implements BasePresenter {
             throw new IllegalStateException("AlbumsPresenter: view has not been set");
         }
 
-        Log.v(AlbumsPresenter.class.getCanonicalName(), "Starting... retrieving albums data...");
-        
-        // Use background thread to pull the albums data.
-        // Then, alert view on the main thread
+        fetchData();
+    }
+
+    @Override
+    public void fetchData()
+    {
+        Log.v(AlbumsPresenter.class.getCanonicalName(), "Retrieving albums data...");
+
+        if (_fetchingData)
+        {
+            return;
+        }
+
+        _fetchingData = true;
+
+        final boolean running = _running;
+
+        // Wait for the app start running
+        // Then, update the view on the main thread
+        Handler handler = new Handler();
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                final List<AudioAlbum> albums = _audioInfo.getAlbums();
-
                 Handler mainHandler = new Handler(Looper.getMainLooper());
-                
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run()
-                    {
-                        _albums = albums;
-                        
-                        _view.onMediaAlbumsLoad(_albums);
-                    }
-                };
+                Runnable myRunnable;
+
+                if (running)
+                {
+                    final List<AudioAlbum> albums = _audioInfo.getAlbums();
+
+                    myRunnable = new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            Log.v(AlbumsPresenter.class.getCanonicalName(), "Updating albums data");
+
+                            _fetchingData = false;
+
+                            _albums = albums;
+
+                            _view.onMediaAlbumsLoad(_albums);
+                        }
+                    };
+                }
+                else
+                {
+                    myRunnable = new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            Log.v(AlbumsPresenter.class.getCanonicalName(), "Presenter is not ready to fetch yet!");
+
+                            _fetchingData = false;
+
+                            _view.onFetchDataErrorEncountered(new RuntimeException("Presenter is not ready to fetch yet"));
+                        }
+                    };
+                }
 
                 mainHandler.post(myRunnable);
             }
         });
 
-        thread.start();
+        handler.post(thread);
     }
     
     @Override

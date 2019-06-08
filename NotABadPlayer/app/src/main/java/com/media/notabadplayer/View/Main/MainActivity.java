@@ -3,35 +3,31 @@ package com.media.notabadplayer.View.Main;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.Manifest;
-import android.content.DialogInterface;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
-import com.media.notabadplayer.Audio.Model.AudioAlbum;
-import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
+import com.media.notabadplayer.R;
+import com.media.notabadplayer.Audio.Model.AudioAlbum;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Presenter.ListsPresenter;
 import com.media.notabadplayer.Presenter.QuickPlayerPresenter;
 import com.media.notabadplayer.Storage.AudioLibrary;
-import com.media.notabadplayer.Audio.Utilities.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -41,9 +37,7 @@ import com.media.notabadplayer.Presenter.AlbumsPresenter;
 import com.media.notabadplayer.Presenter.MainPresenter;
 import com.media.notabadplayer.Presenter.SearchPresenter;
 import com.media.notabadplayer.Presenter.SettingsPresenter;
-import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
@@ -56,25 +50,20 @@ import com.media.notabadplayer.View.Search.SearchFragment;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity implements BaseView {
-    public static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 1;
     public static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
     
-    private State _state = new State();
+    private boolean _appIsRunning = false;
     
     private boolean _launchedFromFile;
     private Uri _launchedFromFileUri;
     
-    private AudioLibrary _audioLibrary;
+    private AudioLibrary _audioLibrary = AudioLibrary.getShared();
     private MainPresenter _presenter;
-
-    private BottomNavigationView _navigationView;
     
     private TabNavigation _tabNavigation = new TabNavigation();
     
     private QuickPlayerFragment _quickPlayer = null;
     private BasePresenter _quickPlayerPresenter = null;
-    
-    private AudioPlayerNoiseSuppression _noiseSuppression;
     
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -87,11 +76,19 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
     };
 
-    private static final String RESTART_APP_KEY = "RESTART_APP";
-    private static final String RESTART_APP_WAS_PLAYING_KEY = "RESTART_APP";
-    private boolean _restarted = false;
-    private boolean _restartedWasPlaying = false;
-    
+    private BroadcastReceiver applicationRunningListener = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            String value = intent.getAction();
+
+            if (value != null)
+            {
+                start();
+            }
+        }
+    };
+
     @Override
     protected void onNewIntent(Intent intent)
     {
@@ -109,121 +106,43 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
         super.onCreate(null);
         
-        if (savedInstanceState != null)
-        {
-            Log.v(MainActivity.class.getCanonicalName(), "Application is being restored, deny, restart instead");
-            restartApp();
-            return;
-        }
-        
+        // Starts listening to application events
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(getResources().getString(R.string.broadcast_application_is_running));
+        registerReceiver(applicationRunningListener, filter);
+
         // Load data from intent
-        loadDataFromIntent(getIntent());
+        Intent intent = getIntent();
         
-        if (!_restarted)
+        if (intent != null)
         {
-            Log.v(MainActivity.class.getCanonicalName(), "Application is launching...");
-        }
-        else
-        {
-            Log.v(MainActivity.class.getCanonicalName(), "Application restarted! Application is now launching...");
-        }
-        
-        // State
-        _state.launch();
-        
-        // UI
-        onCreateLaunch();
-    }
-    
-    private void loadDataFromIntent(@NonNull Intent intent)
-    {
-        _launchedFromFile = Intent.ACTION_VIEW.equals(intent.getAction());
-
-        if (_launchedFromFile)
-        {
-            _launchedFromFileUri = intent.getData();
+            loadDataFromIntent(intent);
         }
 
-        _restarted = intent.getBooleanExtra(RESTART_APP_KEY, false);
-        _restartedWasPlaying = intent.getBooleanExtra(RESTART_APP_WAS_PLAYING_KEY, false);
-    }
-    
-    private void onCreateLaunch()
-    {
-        
-    }
-
-    private void onCreateMain()
-    {
         // App theme
-        AppThemeUtility.setTheme(this, GeneralStorage.getAppTheme(this));
+        AppThemeUtility.setTheme(this, GeneralStorage.getShared().getAppThemeValue());
         
         // Content
         setContentView(R.layout.activity_main);
 
-        // Presenter, audio model
+        // Presenter setup
         _presenter = new MainPresenter();
         _presenter.setView(this);
 
-        _audioLibrary = new AudioLibrary(this);
-        
         // UI
         initMainUI();
-
-        // Noise suppression
-        _noiseSuppression = new AudioPlayerNoiseSuppression();
-        _noiseSuppression.start(this);
-    }
-
-    private void restartApp()
-    {
-        Log.v(MainActivity.class.getCanonicalName(), "Restarting application...");
-
-        // Save player state
-        savePlayerState();
-
-        // End the player properly
-        Player.getShared().end();
-        
-        // Start a new instance of this
-        Intent intent = new Intent(this, MainActivity.class);
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(RESTART_APP_KEY, true);
-        intent.putExtra(RESTART_APP_WAS_PLAYING_KEY, Player.getShared().isPlaying());
-        startActivity(intent);
-        overridePendingTransition(0, 0);
-        
-        // Must restart, in order to wipe out the memory - singletons will be wiped out too
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(0);
-    }
-    
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
-        enableInteraction();
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-
-        disableInteraction();
-        
-        // Every time the main activity pauses, save the player primaryState
-        savePlayerState();
     }
     
     @Override
     protected void onDestroy()
     {
-        if (_noiseSuppression != null)
+        unregisterReceiver(applicationRunningListener);
+        
+        // Save audio player state
+        if (_appIsRunning)
         {
-            unregisterReceiver(_noiseSuppression);
+            GeneralStorage.getShared().savePlayerState();
+            GeneralStorage.getShared().savePlayerPlayHistoryState();
         }
         
         Log.v(MainActivity.class.getCanonicalName(), "Application is terminated.");
@@ -259,67 +178,63 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             return;
         }
 
-        // Currently on any of the first tabs? Send to background
-        Log.v(MainActivity.class.getCanonicalName(), "Navigate to home screen");
-        moveTaskToBack(true);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults)
-    {
-        // Handle permission accepted request
-        if (requestCode == PERMISSION_REQUEST_READ_EXTERNAL_STORAGE
-                && grantResults.length == 1
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            permissionForReadExtertalStorageGranted();
-        }
-        else
+        // Currently on any of the first tabs?
+        // If this is the root activity (aka was launched from home)
+        // Return to home
+        if (isTaskRoot())
         {
-            permissionForReadExtertalStorageNotGranted();
+            Log.v(MainActivity.class.getCanonicalName(), "Navigate back to home screen");
+            moveTaskToBack(true);
+            return;
         }
+        
+        // If this activity was launched from another program, return to the previous activity
+        Log.v(MainActivity.class.getCanonicalName(), "Navigate back to the client program");
+        super.onBackPressed();
     }
     
-    private void startServices()
+    private void start()
     {
-        Log.v(MainActivity.class.getCanonicalName(), "Starting services...");
+        if (_appIsRunning)
+        {
+            return;
+        }
         
-        // Use background thread to start the services - audio storage
-        // Then, alert self on the main thread
-        final MainActivity main = this;
+        // This is called by the broadcast receiver
+        // which listens to application events
+        // When the application is completely finished with initialization it sends that event,
+        // which leads to this method being called
+        _appIsRunning = true;
         
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Audio Storage start
-                _audioLibrary.load();
+        // Alert all presenters
+        _presenter.onAppStateChange(AppState.RUNNING);
+        
+        CachedTab currentTab = _tabNavigation.currentTab;
 
-                // Audio Player start
-                Player.getShared().start(getApplication(), _audioLibrary, _restartedWasPlaying);
-                
-                // Finish on main thread
-                Handler mainHandler = new Handler(Looper.getMainLooper());
-
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run()
-                    {
-                        main.finishedStartingServices();
-                    }
-                };
-
-                mainHandler.post(myRunnable);
+        currentTab.presenter.onAppStateChange(AppState.RUNNING);
+        
+        for (CachedTab tab : _tabNavigation.cachedTabs.values())
+        {
+            if (currentTab != tab)
+            {
+                tab.presenter.onAppStateChange(AppState.RUNNING);
             }
-        });
+        }
         
-        thread.start();
+        _quickPlayerPresenter.onAppStateChange(AppState.RUNNING);
+
+        // When starting, try to play the intent file
+        playTrackFromIntentRequest();
     }
-    
-    private void finishedStartingServices()
+
+    private void loadDataFromIntent(@NonNull Intent intent)
     {
-        Log.v(MainActivity.class.getCanonicalName(), "Finished starting services!");
-        
-        _state.run();
+        _launchedFromFile = Intent.ACTION_VIEW.equals(intent.getAction());
+
+        if (_launchedFromFile)
+        {
+            _launchedFromFileUri = intent.getData();
+        }
     }
     
     private void playTrackFromIntentRequest()
@@ -350,6 +265,16 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             return;
         }
 
+        AudioPlaylist currentPlaylist = Player.getShared().getPlaylist();
+        
+        if (currentPlaylist != null)
+        {
+            if (playlist.getPlayingTrack().equals(currentPlaylist.getPlayingTrack()))
+            {
+                return;
+            }
+        }
+        
         Intent intent = new Intent(this, PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("playlist", Serializing.serializeObject(playlist));
@@ -357,91 +282,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         overridePendingTransition(0, 0);
     }
-
-    private void requestPermissionForReadExtertalStorage()
-    {
-        final MainActivity mainActivity = this;
-        
-        // Use background thread to check for permission
-        // Then, alert update self on the main thread
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean permissionGiven = true;
-                
-                // Request for permission, handle it with the activity method onRequestPermissionsResult()
-                try {
-                    if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED)
-                    {
-                        ActivityCompat.requestPermissions(mainActivity,
-                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
-                        return;
-                    }
-                } 
-                catch (Exception e)
-                {
-                    permissionGiven = false;
-                }
-                
-                final boolean hasPermission = permissionGiven;
-                
-                Handler mainHandler = new Handler(Looper.getMainLooper());
-
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run()
-                    {
-                        // Permission granted:
-                        // Just start the app normally (transition from launch primaryState)
-                        if (hasPermission)
-                        {
-                            permissionForReadExtertalStorageGranted();
-                        }
-                        // Permission not granted:
-                        // Stop app
-                        else
-                        {
-                            permissionForReadExtertalStorageNotGranted();
-                        }
-                    }
-                };
-
-                mainHandler.post(myRunnable);
-            }
-        });
-        
-        thread.start();
-    }
-
-    private void permissionForReadExtertalStorageGranted()
-    {
-        Log.v(MainActivity.class.getCanonicalName(), "Permission for read external storage has been granted.");
-        
-        if (_state.isLaunching())
-        {
-            _state.start();
-        }
-    }
-
-    private void permissionForReadExtertalStorageNotGranted()
-    {
-        Log.v(MainActivity.class.getCanonicalName(), "Error: permission for read external storage has not been granted.");
-        
-        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                finish();
-            }
-        };
-
-        AlertWindows.showAlert(this, 0, R.string.error_need_storage_permission, R.string.ok, action);
-    }
     
     private void initMainUI()
     {
         // Bottom navigation menu
-        _navigationView = findViewById(R.id.navigation);
+        BottomNavigationView navigationView = findViewById(R.id.navigation);
         
         // Select default tab
         onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
@@ -454,18 +299,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.quickPlayer, _quickPlayer).commit();
         
-        // Start presenter
-        _presenter.start();
-        
         // Set bottom navigation menu listener
-        _navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-    }
-    
-    private void performLaunchPerformanceOptimizations()
-    {
-        // Anything we can start early on here, so the user can get smoother experience
-        // Optimization for the Settings screen
-        GeneralStorage.getShared().retrieveAllSettingsActionValues();
+        navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
     
     private void selectAlbumsTab()
@@ -536,18 +371,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void enableInteraction()
-    {
-
-    }
-
-    @Override
-    public void disableInteraction()
-    {
-
-    }
-
-    @Override
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
         // When not on the settings tab, let the view handle the request
@@ -604,6 +427,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
+    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
+    {
+
+    }
+
+    @Override
     public void appSettingsReset()
     {
         Log.v(MainActivity.class.getSimpleName(), "App settings were reset");
@@ -644,123 +473,20 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
+    public void onFetchDataErrorEncountered(@NonNull Exception error)
+    {
+
+    }
+
+    @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
 
     }
     
-    private void savePlayerState()
-    {
-        if (_state.isRunning())
-        {
-            GeneralStorage.getShared().savePlayerState();
-            GeneralStorage.getShared().savePlayerPlayHistoryState();
-        }
-    }
-    
-    public class State {
-        private AppState primaryState = AppState.SUSPENDED;
-        
-        boolean isLaunching()
-        {
-            return primaryState == AppState.LAUNCHING;
-        }
-        
-        boolean isRunning()
-        {
-            return primaryState == AppState.RUNNING;
-        }
-        
-        private void launch()
-        {
-            if (!primaryState.isSuspended())
-            {
-                throw new IllegalStateException("Invalid app state, cannot start launching, state is " + primaryState.name());
-            }
-
-            Log.v(MainActivity.class.getCanonicalName(), "Launching...");
-            
-            primaryState = AppState.LAUNCHING;
-
-            // General storage initialize
-            GeneralStorage.getShared().initialize(getApplication());
-
-            // Mandatory storage permission request
-            requestPermissionForReadExtertalStorage();
-        }
-        
-        private void start()
-        {
-            if (!primaryState.isLaunching())
-            {
-                throw new IllegalStateException("Invalid app state, cannot start starting, state is " + primaryState.name());
-            }
-            
-            primaryState = AppState.STARTING;
-
-            Log.v(MainActivity.class.getCanonicalName(), "Finished launching!");
-            Log.v(MainActivity.class.getCanonicalName(), "Starting...");
-            
-            // Create main interface
-            onCreateMain();
-
-            // Start services here
-            startServices();
-        }
-
-        private void run()
-        {
-            if (!primaryState.isStarting())
-            {
-                throw new IllegalStateException("Invalid app state, cannot start running, state is " + primaryState.name());
-            }
-
-            Log.v(MainActivity.class.getCanonicalName(), "Finished starting!");
-            Log.v(MainActivity.class.getCanonicalName(), "Running...");
-
-            primaryState = AppState.RUNNING;
-
-            // Performance optimizations
-            performLaunchPerformanceOptimizations();
-            
-            // Handle launch from file request
-            playTrackFromIntentRequest();
-            
-            // Alert presenters of app state
-            alertPresentersOfAppState();
-        }
-        
-        private void alertPresentersOfAppState()
-        {
-            if (!primaryState.isStarting() && !primaryState.isRunning())
-            {
-                throw new IllegalStateException("Invalid app state, cannot alert presenters of app state now, state is " + primaryState.name());
-            }
-            
-            // Alert presenters that the app state has changed
-            CachedTab currentTab = _tabNavigation.currentTab;
-            
-            if (currentTab != null)
-            {
-                currentTab.presenter.onAppStateChange(primaryState);
-            }
-            
-            for (CachedTab tab : _tabNavigation.cachedTabs.values())
-            {
-                if (tab != currentTab)
-                {
-                    tab.presenter.onAppStateChange(primaryState);
-                }
-            }
-
-            if (_quickPlayerPresenter != null)
-            {
-                _quickPlayerPresenter.onAppStateChange(primaryState);
-            }
-        }
-    }
-    
     private class TabNavigation {
+        AppSettings.TabCachingPolicies cachingPolicy = AppSettings.TabCachingPolicies.ALBUMS_ONLY;
+        
         private CachedTab currentTab = null;
         private int currentTabID = 0;
         
@@ -796,9 +522,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 
                 transaction.commit();
             }
-            
-            // Alert presenters of app state
-            _state.alertPresentersOfAppState();
         }
         
         private void willSelectTab(int destinationTabID)
@@ -837,6 +560,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             }
 
             currentTab = newTab;
+
+            // Alert presenter of app state
+            if (_appIsRunning)
+            {
+                currentTab.presenter.onAppStateChange(AppState.RUNNING);
+            }
         }
         
         private void didSelectTab(int destinationTabID)
@@ -885,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                     presenter.setView(tab);
                     break;
                 case R.id.navigation_settings:
-                    presenter = new SettingsPresenter(_audioLibrary);
+                    presenter = new SettingsPresenter();
                     tab = SettingsFragment.newInstance(presenter, MainActivity.this);
                     presenter.setView(tab);
                     break;
@@ -898,30 +627,23 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         private void cacheCurrentTab()
         {
-            if (!_state.isRunning())
-            {
-                return;
-            }
-            
             if (currentTab != null)
             {
-                AppSettings.TabCachingPolicies policy = GeneralStorage.getShared().getCachingPolicy();
-
                 boolean cacheTab = false;
 
                 switch (currentTabID)
                 {
                     case R.id.navigation_albums:
-                        cacheTab = policy.cacheAlbumsTab();
+                        cacheTab = cachingPolicy.cacheAlbumsTab();
                         break;
                     case R.id.navigation_lists:
-                        cacheTab = policy.cacheListsTab();
+                        cacheTab = cachingPolicy.cacheListsTab();
                         break;
                     case R.id.navigation_search:
-                        cacheTab = policy.cacheSearchTab();
+                        cacheTab = cachingPolicy.cacheSearchTab();
                         break;
                     case R.id.navigation_settings:
-                        cacheTab = policy.cacheSettingsTab();
+                        cacheTab = cachingPolicy.cacheSettingsTab();
                         break;
                 }
 
@@ -939,26 +661,24 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             cachedTabs.clear();
         }
         
-        private boolean deselectTab(int tabID)
+        private void deselectTab(int tabID)
         {
             if (previousTab == null)
             {
-                return true;
+                return;
             }
             
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             
-            // Returns true if tab will be removed instead of being hidden
             if (cacheContains(tabID))
             {
                 transaction.hide((Fragment) previousTab);
                 transaction.commit();
-                return false;
+                return;
             }
 
             transaction.remove((Fragment) previousTab);
             transaction.commit();
-            return true;
         }
         
         private void replaceCurrentTab()

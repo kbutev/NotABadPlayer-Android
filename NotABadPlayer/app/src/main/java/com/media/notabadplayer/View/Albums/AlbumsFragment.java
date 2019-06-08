@@ -123,13 +123,11 @@ public class AlbumsFragment extends Fragment implements BaseView
         });
     }
     
-    @Override
     public void enableInteraction()
     {
         _table.setClickable(true);
     }
 
-    @Override
     public void disableInteraction()
     {
         _table.setClickable(false);
@@ -232,6 +230,12 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
+    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
+    {
+        
+    }
+
+    @Override
     public void appSettingsReset()
     {
 
@@ -253,6 +257,18 @@ public class AlbumsFragment extends Fragment implements BaseView
     public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
     {
 
+    }
+
+    @Override
+    public void onFetchDataErrorEncountered(@NonNull Exception error)
+    {
+        if (getView() == null)
+        {
+            return;
+        }
+
+        // Retry until we succeed
+        _presenter.fetchData();
     }
 
     @Override

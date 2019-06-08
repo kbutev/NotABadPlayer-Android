@@ -30,6 +30,11 @@ public class QuickPlayerPresenter implements BasePresenter
     @Override
     public void setView(@NonNull BaseView view)
     {
+        if (_view != null)
+        {
+            throw new IllegalStateException("PlayerPresenter: view has already been set");
+        }
+        
         _view = view;
     }
     
@@ -40,6 +45,12 @@ public class QuickPlayerPresenter implements BasePresenter
         {
             throw new IllegalStateException("QuickPlayerPresenter: view has not been set");
         }
+    }
+
+    @Override
+    public void fetchData()
+    {
+
     }
 
     @Override

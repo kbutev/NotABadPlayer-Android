@@ -1,6 +1,7 @@
 package com.media.notabadplayer.Audio.Players;
 
 import java.util.ArrayList;
+import java.util.List;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -730,15 +731,15 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         private ArrayList<AudioTrack> _playHistory = new ArrayList<>();
 
         @Override
-        public @NonNull ArrayList<AudioTrack> getPlayHistory()
+        public @NonNull List<AudioTrack> getPlayHistory()
         {
             return _playHistory;
         }
 
         @Override
-        public void setList(@NonNull ArrayList<AudioTrack> playHistory)
+        public void setList(@NonNull List<AudioTrack> playHistory)
         {
-            _playHistory = playHistory;
+            _playHistory = new ArrayList<>(playHistory);
         }
         
         @Override

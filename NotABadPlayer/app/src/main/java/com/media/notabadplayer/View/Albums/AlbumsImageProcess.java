@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.media.notabadplayer.R;
 
 public class AlbumsImageProcess {

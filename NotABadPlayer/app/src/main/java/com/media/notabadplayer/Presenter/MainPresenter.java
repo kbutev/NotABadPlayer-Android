@@ -20,6 +20,11 @@ public class MainPresenter implements BasePresenter {
     @Override
     public void setView(@NonNull BaseView view)
     {
+        if (_view != null)
+        {
+            throw new IllegalStateException("MainPresenter: view has already been set");
+        }
+        
         _view = view;
     }
     
@@ -30,6 +35,12 @@ public class MainPresenter implements BasePresenter {
         {
             throw new IllegalStateException("MainPresenter: view has not been set");
         }
+    }
+
+    @Override
+    public void fetchData()
+    {
+
     }
 
     @Override
