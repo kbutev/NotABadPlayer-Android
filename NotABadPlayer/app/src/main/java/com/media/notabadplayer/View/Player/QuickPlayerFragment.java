@@ -226,9 +226,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
                 _presenter.onPlayOrderButtonClick();
 
                 UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonPlayOrder);
-
-                // Save current audio state
-                saveCurrentAudioState();
             }
         });
 
@@ -269,12 +266,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         _mediaBar.setProgress((int)newPosition);
         
         _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
-    }
-
-    private void saveCurrentAudioState()
-    {
-        GeneralStorage.getShared().savePlayerState();
-        GeneralStorage.getShared().savePlayerPlayHistoryState();
     }
 
     private void updateMediaInfo(AudioTrack playingTrack)
@@ -348,7 +339,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         LooperService.getShared().unsubscribe(this);
     }
 
-    @Override
     public void enableInteraction()
     {
         _buttonPlaylist.setClickable(true);
@@ -359,7 +349,6 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         _buttonPlayOrder.setClickable(true);
     }
 
-    @Override
     public void disableInteraction()
     {
         _buttonPlaylist.setClickable(false);
@@ -465,6 +454,12 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
+    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
+    {
+
+    }
+    
+    @Override
     public void appSettingsReset()
     {
 
@@ -488,6 +483,12 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
     }
 
+    @Override
+    public void onFetchDataErrorEncountered(@NonNull Exception error)
+    {
+
+    }
+    
     @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {

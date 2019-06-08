@@ -191,13 +191,11 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         LooperService.getShared().unsubscribe(this);
     }
 
-    @Override
     public void enableInteraction()
     {
         _table.setClickable(true);
     }
 
-    @Override
     public void disableInteraction()
     {
         _table.setClickable(false);
@@ -319,6 +317,12 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
+    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
+    {
+
+    }
+
+    @Override
     public void appSettingsReset()
     {
 
@@ -338,6 +342,12 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
 
     @Override
     public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
+    {
+
+    }
+
+    @Override
+    public void onFetchDataErrorEncountered(@NonNull Exception error)
     {
 
     }

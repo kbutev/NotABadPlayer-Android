@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.support.annotation.NonNull;
 import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
+import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 
@@ -24,6 +25,11 @@ public class AudioPlayerNoiseSuppression extends BroadcastReceiver implements Au
     @Override
     public void onReceive(@NonNull Context context, Intent intent)
     {
+        if (!Player.getShared().isStarted())
+        {
+            return;
+        }
+        
         if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction()))
         {
             KeyBinds.getShared().evaluateInput(ApplicationInput.EARPHONES_UNPLUG);
@@ -33,6 +39,11 @@ public class AudioPlayerNoiseSuppression extends BroadcastReceiver implements Au
     @Override
     public void onAudioFocusChange(int focusChange) 
     {
+        if (!Player.getShared().isStarted())
+        {
+            return;
+        }
+        
         switch (focusChange) {
             case (AudioManager.AUDIOFOCUS_LOSS):
                 KeyBinds.getShared().evaluateInput(ApplicationInput.EARPHONES_UNPLUG);

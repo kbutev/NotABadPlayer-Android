@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
@@ -19,18 +18,17 @@ import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.PlayerApplication;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.Serializing;
 
 // Provides simple interface to the user preferences (built in storage).
-// Before using the general storage, you MUST call initialize().
 public class GeneralStorage
 {
     private static GeneralStorage singleton;
     
-    private Application ___context;
-    
-    private SharedPreferences ___preferences;
+    private Application _context;
+    private SharedPreferences _preferences;
     
     private boolean _firstTimeLaunch;
     
@@ -40,9 +38,21 @@ public class GeneralStorage
     private GeneralStorage()
     {
         _firstTimeLaunch = true;
+
+        Log.v(GeneralStorage.class.getCanonicalName(), "Initializing...");
+
+        _context = PlayerApplication.getShared();
+
+        _preferences = _context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+
+        detectFirstTimeLaunch();
+
+        detectVersionChange();
+
+        Log.v(GeneralStorage.class.getCanonicalName(), "Initialized!");
     }
 
-    public static GeneralStorage getShared()
+    public synchronized static GeneralStorage getShared()
     {
         if (singleton == null)
         {
@@ -52,44 +62,14 @@ public class GeneralStorage
         return singleton;
     }
     
-    synchronized public void initialize(@NonNull Application context)
-    {
-        if (___context != null)
-        {
-            throw new UncheckedExecutionException(new Exception("GeneralStorage: Must not call initialize() twice"));
-        }
-        
-        Log.v(GeneralStorage.class.getCanonicalName(), "Initializing...");
-        
-        ___context = context;
-        
-        ___preferences = context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
-        
-        detectFirstTimeLaunch();
-
-        detectVersionChange();
-
-        Log.v(GeneralStorage.class.getCanonicalName(), "Initialized!");
-    }
-    
     private @NonNull Application getContext()
     {
-        if (___context == null)
-        {
-            throw new UncheckedExecutionException(new Exception("GeneralStorage cannot be used before being initialized, initialize() has never been called"));
-        }
-        
-        return ___context;
+        return _context;
     }
     
     private @NonNull SharedPreferences getSharedPreferences()
     {
-        if (___context == null)
-        {
-            throw new UncheckedExecutionException(new Exception("GeneralStorage cannot be used before being initialized, initialize() has never been called"));
-        }
-        
-        return ___preferences;
+        return _preferences;
     }
     
     private void detectFirstTimeLaunch()
@@ -352,8 +332,10 @@ public class GeneralStorage
         }
         
         SharedPreferences.Editor editor = preferences.edit();
+        
+        ArrayList<AudioTrack> history = new ArrayList<>(player.playHistory.getPlayHistory());
 
-        editor.putString("player_play_history", Serializing.serializeObject(player.playHistory.getPlayHistory()));
+        editor.putString("player_play_history", Serializing.serializeObject(history));
         
         editor.apply();
         
@@ -476,7 +458,7 @@ public class GeneralStorage
         editor.apply();
     }
 
-    public ArrayList<AudioPlaylist> getUserPlaylists()
+    public @NonNull ArrayList<AudioPlaylist> getUserPlaylists()
     {
         SharedPreferences preferences = getSharedPreferences();
         
@@ -488,7 +470,7 @@ public class GeneralStorage
             if (playlistsArray == null)
             {
                 Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not deserialize user playlists");
-                return null;
+                return new ArrayList<>();
             }
             
             return playlistsArray;
@@ -498,7 +480,7 @@ public class GeneralStorage
             
         }
         
-        return null;
+        return new ArrayList<>();
     }
 
     public void saveUserPlaylists(@NonNull ArrayList<AudioPlaylist> playlists)

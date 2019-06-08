@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import java.util.ArrayList;
+import java.util.List;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -20,31 +21,40 @@ import com.media.notabadplayer.Audio.AudioPlayerObservers;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.PlayerApplication;
 import com.media.notabadplayer.Storage.GeneralStorage;
 
 // Standard audio player for the app.
 // Before using the player, you MUST call start().
+//
 // The player automatically restores its state from user storage
 // as soon as the audio player service is running.
 // The player does not save its own state, it must be saved by an external state.
-// Dependant on @GeneralStorage (must be initialized before using the player).
+//
+// Dependant on storage access permission (must have read permission for storage).
 // Dependant on @AudioLibrary (must be initialized before using the player).
-// Dependant on storage access permission.
 public class Player implements AudioPlayer {
     private static Player _singleton;
+    
+    private final Object lock = new Object();
     
     private AudioPlayerServiceBinding _serviceBinding = new AudioPlayerServiceBinding();
     private AudioPlayer _player = getPlayerDummy();
     
     private Application _application;
     private AudioInfo _audioInfo;
-    
-    private boolean _playOnStart;
 
     public final Player.Observers observers = new Player.Observers();
     public final Player.PlayHistory playHistory = new Player.PlayHistory();
     
-    public static synchronized Player getShared()
+    private Player()
+    {
+        Log.v(Player.class.getCanonicalName(), "Initializing...");
+        _application = PlayerApplication.getShared();
+        Log.v(Player.class.getCanonicalName(), "Initialized!");
+    }
+    
+    public synchronized static Player getShared()
     {
         if (_singleton == null)
         {
@@ -64,30 +74,32 @@ public class Player implements AudioPlayer {
         return _audioInfo;
     }
     
-    synchronized public void start(@NonNull Application application, @NonNull AudioInfo audioInfo, boolean playOnStart)
+    public boolean isStarted()
     {
-        if (_audioInfo != null)
+        synchronized (lock)
+        {
+            return _audioInfo != null;
+        }
+    }
+
+    public void start(@NonNull AudioInfo audioInfo)
+    {
+        if (isStarted())
         {
             throw new UncheckedExecutionException(new Exception("Must not call start() twice"));
         }
         
-        Log.v(Player.class.getCanonicalName(), "Initializing...");
+        Log.v(Player.class.getCanonicalName(), "Player starting...");
 
-        _application = application;
-        _audioInfo = audioInfo;
-        _playOnStart = playOnStart;
+        synchronized (lock)
+        {
+            _audioInfo = audioInfo;
+        }
         
         // Start the audio service
         _serviceBinding.startService();
-        
-        Log.v(Player.class.getCanonicalName(), "Initialized!");
     }
     
-    synchronized public void end()
-    {
-        _serviceBinding.stopService();
-    }
-
     private AudioPlayer getPlayer()
     {
         return _player;
@@ -110,12 +122,6 @@ public class Player implements AudioPlayer {
             // Restore audio state here
             GeneralStorage.getShared().restorePlayerState();
             GeneralStorage.getShared().restorePlayerPlayHistoryState(_application);
-            
-            // Play state
-            if (_playOnStart)
-            {
-                player.resume();
-            }
         }
         else
         {
@@ -343,13 +349,25 @@ public class Player implements AudioPlayer {
     public class PlayHistory implements AudioPlayerHistory
     {
         @Override
-        public @NonNull ArrayList<AudioTrack> getPlayHistory()
+        public @NonNull List<AudioTrack> getPlayHistory()
         {
             return getPlayer().playHistory().getPlayHistory();
         }
+        
+        public @Nullable AudioPlaylist getPlayHistoryAsPlaylist(@NonNull String playlistName)
+        {
+            List<AudioTrack> tracks = getPlayer().playHistory().getPlayHistory();
+            
+            if (tracks.size() == 0)
+            {
+                return null;
+            }
+            
+            return new AudioPlaylist(playlistName, tracks);
+        }
 
         @Override
-        public void setList(@NonNull ArrayList<AudioTrack> playHistory)
+        public void setList(@NonNull List<AudioTrack> playHistory)
         {
             getPlayer().playHistory().setList(playHistory);
         }

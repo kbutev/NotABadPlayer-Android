@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Player;
 
+import java.util.List;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -36,8 +37,6 @@ import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
-
-import java.util.List;
 
 public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient
 {
@@ -142,29 +141,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         
         startLooping();
     }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-        saveCurrentAudioState();
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-
-        saveCurrentAudioState();
-    }
-
+    
     @Override
     public void onDestroy()
     {
@@ -332,9 +309,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
                 UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonPlayOrder);
                 _presenter.onPlayOrderButtonClick();
-                
-                // Save current audio state
-                saveCurrentAudioState();
             }
         });
 
@@ -428,12 +402,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         }
     }
     
-    private void saveCurrentAudioState()
-    {
-        GeneralStorage.getShared().savePlayerState();
-        GeneralStorage.getShared().savePlayerPlayHistoryState();
-    }
-    
     private void updateMediaInfo(AudioTrack playingTrack)
     {
         if (playingTrack != null)
@@ -520,7 +488,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         LooperService.getShared().unsubscribe(this);
     }
 
-    @Override
     public void enableInteraction()
     {
         _buttonRecall.setClickable(true);
@@ -532,7 +499,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _volumeIcon.setClickable(true);
     }
 
-    @Override
     public void disableInteraction()
     {
         _buttonRecall.setClickable(false);
@@ -625,6 +591,12 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
+    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
+    {
+
+    }
+    
+    @Override
     public void appSettingsReset()
     {
 
@@ -644,6 +616,12 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
     @Override
     public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
+    {
+
+    }
+
+    @Override
+    public void onFetchDataErrorEncountered(@NonNull Exception error)
     {
 
     }

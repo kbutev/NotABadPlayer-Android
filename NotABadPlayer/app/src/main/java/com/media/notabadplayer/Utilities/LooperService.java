@@ -1,23 +1,28 @@
 package com.media.notabadplayer.Utilities;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import android.os.Handler;
 import android.os.Looper;
+import com.google.common.base.Function;
 
 public class LooperService {
     public static int LOOPER_INTERVAL_MSEC = 100;
 
     private static LooperService singleton;
+    
+    private final ClientsManager _clientsManager = new ClientsManager();
 
-    private ClientsCollection _clients = new ClientsCollection();
+    private final Handler _mainHandler;
+    private final Runnable _loopingRunnable;
 
-    private Handler _handler;
-    private Runnable _runnable;
-
+    private final Handler _backgroundHandler;
+    
     private LooperService()
     {
-        _handler = new Handler(Looper.getMainLooper());
-        _runnable = new Runnable() {
+        _mainHandler = new Handler(Looper.getMainLooper());
+        _loopingRunnable = new Runnable() {
             @Override
             public void run() {
                 loop();
@@ -25,6 +30,8 @@ public class LooperService {
             }
         };
 
+        _backgroundHandler = new Handler();
+        
         loopAgain();
     }
 
@@ -40,31 +47,57 @@ public class LooperService {
 
     public void subscribe(final LooperClient client)
     {
-        _clients.subscribe(client);
+        _clientsManager.subscribe(client);
     }
 
     public void unsubscribe(final LooperClient client)
     {
-        _clients.unsubscribe(client);
+        _clientsManager.unsubscribe(client);
+    }
+    
+    public void runOnMain(final Function<Void, Void> callback)
+    {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                callback.apply(null);
+            }
+        };
+        
+        _mainHandler.postDelayed(runnable, 1);
+    }
+
+    public void runOnBackground(final Function<Void, Void> callback)
+    {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                callback.apply(null);
+            }
+        };
+
+        _backgroundHandler.postDelayed(runnable, 1);
     }
 
     private void loop()
     {
-        _clients.loop();
+        _clientsManager.loop();
     }
 
     private void loopAgain()
     {
-        _handler.postDelayed(_runnable, LOOPER_INTERVAL_MSEC);
+        _mainHandler.postDelayed(_loopingRunnable, LOOPER_INTERVAL_MSEC);
     }
-
-    class ClientsCollection {
+    
+    class ClientsManager 
+    {
         private ArrayList<LooperClient> _clients = new ArrayList<>();
-        private final Object mutex = new Object();
-
+        
+        private final Object mainLock = new Object();
+        
         void subscribe(final LooperClient client)
         {
-            synchronized (mutex)
+            synchronized (mainLock)
             {
                 if (!_clients.contains(client))
                 {
@@ -75,20 +108,25 @@ public class LooperService {
 
         void unsubscribe(final LooperClient client)
         {
-            synchronized (mutex)
+            synchronized (mainLock)
             {
                 _clients.remove(client);
             }
         }
-
+        
         void loop()
         {
-            synchronized (mutex)
+            // This must be called on the main thread
+            Collection<LooperClient> clients;
+
+            synchronized (mainLock)
             {
-                for (LooperClient client : _clients)
-                {
-                    client.loop();
-                }
+                clients = Collections.unmodifiableCollection(_clients);
+            }
+            
+            for (LooperClient client : clients)
+            {
+                client.loop();
             }
         }
     }

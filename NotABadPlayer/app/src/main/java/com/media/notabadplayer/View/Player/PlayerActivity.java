@@ -154,18 +154,6 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void enableInteraction()
-    {
-
-    }
-
-    @Override
-    public void disableInteraction()
-    {
-
-    }
-
-    @Override
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
     {
 
@@ -208,6 +196,12 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
+    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
+    {
+
+    }
+    
+    @Override
     public void appSettingsReset()
     {
 
@@ -227,6 +221,12 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
 
     @Override
     public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
+    {
+
+    }
+
+    @Override
+    public void onFetchDataErrorEncountered(@NonNull Exception error)
     {
 
     }

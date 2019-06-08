@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,38 +14,69 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Audio.Model.AudioTrackSource;
+import com.media.notabadplayer.PlayerApplication;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
 // Provides simple interface to the audio library of the user.
+// Before using the audio library, you MUST call initialize().
 // Dependant on storage access permission:
 // Make sure you have access to user storage before using the audio library.
 public class AudioLibrary implements AudioInfo {
     public static int ALBUM_TRACK_CACHE_CAPACITY = 30;
+
+    private static AudioLibrary singleton;
     
-    private final Context _context;
+    private Application _context;
     
     private final ArrayList<AudioAlbum> _albums = new ArrayList<>();
     
     private final SortedMap<String, List<AudioTrack>> _albumTracks = new TreeMap<>();
     
-    public AudioLibrary(@NonNull Context context)
+    private AudioLibrary()
     {
-        _context = context;
+        Log.v(AudioLibrary.class.getCanonicalName(), "Initializing...");
+
+        _context = PlayerApplication.getShared();
+
+        Log.v(AudioLibrary.class.getCanonicalName(), "Initialized!");
+    }
+    
+    public synchronized static AudioLibrary getShared()
+    {
+        if (singleton == null)
+        {
+            singleton = new AudioLibrary();
+        }
+
+        return singleton;
+    }
+    
+    private @NonNull Application getContext()
+    {
+        if (_context == null)
+        {
+            throw new UncheckedExecutionException(new Exception("AudioLibrary cannot be used before being initialized, initialize() has never been called"));
+        }
+
+        return _context;
     }
     
     public void load()
     {
         synchronized (_albums)
         {
+            Context context = getContext();
+            
             Log.v(AudioLibrary.class.getCanonicalName(), "Loading albums from media store...");
 
             _albums.clear();
 
-            Cursor cursor = _context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+            Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                     null, null, null, null);
 
             if (cursor == null)
@@ -106,12 +138,17 @@ public class AudioLibrary implements AudioInfo {
         return null;
     }
 
-    synchronized public @NonNull List<AudioTrack> getAlbumTracks(@NonNull AudioAlbum album)
+    public @NonNull List<AudioTrack> getAlbumTracks(@NonNull AudioAlbum album)
     {
-        if (_albumTracks.containsKey(album.albumID))
+        synchronized (_albumTracks)
         {
-            return _albumTracks.get(album.albumID);
+            if (_albumTracks.containsKey(album.albumID))
+            {
+                return _albumTracks.get(album.albumID);
+            }
         }
+
+        Context context = getContext();
         
         ArrayList<AudioTrack> albumTracks = new ArrayList<>();
         
@@ -132,7 +169,7 @@ public class AudioLibrary implements AudioInfo {
             selection = selection + " and album_id = " + album.albumID;
         }
         
-        Cursor cursor = _context.getContentResolver().query(
+        Cursor cursor = context.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection, selection, null, null);
         
@@ -177,18 +214,23 @@ public class AudioLibrary implements AudioInfo {
     
     private void storeTracksIntoCache(@NonNull String albumID, List<AudioTrack> tracks)
     {
-        _albumTracks.put(albumID, tracks);
-        
-        if (_albumTracks.size() > AudioLibrary.ALBUM_TRACK_CACHE_CAPACITY)
+        synchronized (_albumTracks)
         {
-            String firstKey = _albumTracks.firstKey();
-            
-            _albumTracks.remove(firstKey);
+            _albumTracks.put(albumID, tracks);
+
+            if (_albumTracks.size() > AudioLibrary.ALBUM_TRACK_CACHE_CAPACITY)
+            {
+                String firstKey = _albumTracks.firstKey();
+
+                _albumTracks.remove(firstKey);
+            }
         }
     }
     
     public @NonNull List<AudioTrack> searchForTracks(@NonNull String query)
     {
+        Context context = getContext();
+        
         ArrayList<AudioTrack> albumTracks = new ArrayList<>();
         
         String projection[] = {
@@ -214,7 +256,7 @@ public class AudioLibrary implements AudioInfo {
         
         String orderBy = null;
 
-        Cursor cursor = _context.getContentResolver().query(
+        Cursor cursor = context.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection, selection, selectionArgs, orderBy);
         
@@ -267,6 +309,8 @@ public class AudioLibrary implements AudioInfo {
 
     public AudioTrack findTrackByPath(@NonNull Uri path)
     {
+        Context context = getContext();
+        
         String projection[] = {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.TITLE,
@@ -278,7 +322,7 @@ public class AudioLibrary implements AudioInfo {
                 MediaStore.Audio.Media.TRACK
         };
 
-        Cursor cursor = _context.getContentResolver().query(
+        Cursor cursor = context.getContentResolver().query(
                 path,
                 projection, null, null, null);
         

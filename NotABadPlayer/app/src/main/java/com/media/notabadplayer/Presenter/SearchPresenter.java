@@ -39,6 +39,11 @@ public class SearchPresenter implements BasePresenter
     @Override
     public void setView(@NonNull BaseView view)
     {
+        if (_view != null)
+        {
+            throw new IllegalStateException("PlayerPresenter: view has already been set");
+        }
+        
         _view = view;
     }
     
@@ -57,6 +62,12 @@ public class SearchPresenter implements BasePresenter
         {
             onSearchQuery(searchQuery);
         }
+    }
+
+    @Override
+    public void fetchData()
+    {
+        
     }
 
     @Override

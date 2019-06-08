@@ -1,10 +1,11 @@
 package com.media.notabadplayer.Presenter;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -18,18 +19,23 @@ public class SettingsPresenter implements BasePresenter
 {
     private BaseView _view;
 
-    private @NonNull AudioInfo _audioInfo;
-
-    public SettingsPresenter(@NonNull AudioInfo audioInfo)
-    {
-        _audioInfo = audioInfo;
-    }
-
     private boolean _running = false;
+    
+    private boolean _fetchingData = false;
+    
+    public SettingsPresenter()
+    {
+        
+    }
     
     @Override
     public void setView(@NonNull BaseView view)
     {
+        if (_view != null)
+        {
+            throw new IllegalStateException("SettingsPresenter: view has already been set");
+        }
+        
         _view = view;
     }
     
@@ -39,6 +45,65 @@ public class SettingsPresenter implements BasePresenter
         {
             throw new IllegalStateException("SettingsPresenter: view has not been set");
         }
+        
+        fetchData();
+    }
+
+    @Override
+    public void fetchData()
+    {
+        if (_fetchingData)
+        {
+            return;
+        }
+
+        _fetchingData = true;
+
+        final boolean running = _running;
+
+        // Wait for the app start running
+        // Then, update the view on the main thread
+        Handler handler = new Handler();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                Runnable myRunnable;
+
+                if (running)
+                {
+                    myRunnable = new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            Log.v(SettingsPresenter.class.getCanonicalName(), "Updating settings data");
+
+                            _fetchingData = false;
+                            
+                            updateSettingsData();
+                        }
+                    };
+                }
+                else
+                {
+                    myRunnable = new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            Log.v(SettingsPresenter.class.getCanonicalName(), "Presenter is not ready to fetch yet!");
+
+                            _fetchingData = false;
+                            
+                            _view.onFetchDataErrorEncountered(new RuntimeException("Presenter is not ready to fetch yet"));
+                        }
+                    };
+                }
+
+                mainHandler.post(myRunnable);
+            }
+        });
+
+        handler.post(thread);
     }
 
     @Override
@@ -214,5 +279,10 @@ public class SettingsPresenter implements BasePresenter
             Player.getShared().unmute();
             Player.getShared().pause();
         }
+    }
+
+    private void updateSettingsData()
+    {
+        _view.onAppSettingsLoad(GeneralStorage.getShared());
     }
 }

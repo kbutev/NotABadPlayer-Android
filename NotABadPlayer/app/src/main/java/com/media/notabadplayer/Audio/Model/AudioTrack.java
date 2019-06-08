@@ -1,7 +1,6 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

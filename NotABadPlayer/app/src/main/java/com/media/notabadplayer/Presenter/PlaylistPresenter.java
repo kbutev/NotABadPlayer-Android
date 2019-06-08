@@ -37,6 +37,11 @@ public class PlaylistPresenter implements BasePresenter {
     @Override
     public void setView(@NonNull BaseView view)
     {
+        if (_view != null)
+        {
+            throw new IllegalStateException("PlaylistPresenter: view has already been set");
+        }
+        
         _view = view;
     }
     
@@ -49,6 +54,12 @@ public class PlaylistPresenter implements BasePresenter {
         }
         
         _view.onPlaylistLoad(_playlist);
+    }
+
+    @Override
+    public void fetchData()
+    {
+
     }
 
     @Override

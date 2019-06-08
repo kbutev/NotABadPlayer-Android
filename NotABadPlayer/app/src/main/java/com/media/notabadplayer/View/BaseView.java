@@ -11,9 +11,6 @@ import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 
 public interface BaseView {
-    void enableInteraction();
-    void disableInteraction();
-
     void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist);
     
     void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums);
@@ -26,11 +23,13 @@ public interface BaseView {
     void updatePlayerScreen(@NonNull AudioPlaylist playlist);
     
     void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip);
-    
+
+    void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage);
     void appSettingsReset();
     void appThemeChanged(AppSettings.AppTheme appTheme);
     void appTrackSortingChanged(AppSettings.TrackSorting trackSorting);
     void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar showVolumeBar);
     
+    void onFetchDataErrorEncountered(@NonNull Exception error);
     void onPlayerErrorEncountered(@NonNull Exception error);
 }

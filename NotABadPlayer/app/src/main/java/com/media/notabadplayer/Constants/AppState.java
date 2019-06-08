@@ -1,11 +1,11 @@
 package com.media.notabadplayer.Constants;
 
 public enum AppState {
-    SUSPENDED, LAUNCHING, STARTING, RUNNING;
+    INACTIVE, LAUNCHING, REQUESTING_PERMISSIONS, STARTING, RUNNING;
 
-    public boolean isSuspended()
+    public boolean isInactive()
     {
-        return this == AppState.SUSPENDED;
+        return this == AppState.INACTIVE;
     }
     
     public boolean isLaunching()
@@ -13,19 +13,14 @@ public enum AppState {
         return this == AppState.LAUNCHING;
     }
 
-    public boolean finishedLaunching()
+    public boolean isRequestingPermissions()
     {
-        return this != AppState.LAUNCHING;
+        return this == AppState.REQUESTING_PERMISSIONS;
     }
-
+    
     public boolean isStarting()
     {
         return this == AppState.STARTING;
-    }
-
-    public boolean finishedStarting()
-    {
-        return this != AppState.STARTING;
     }
     
     public boolean isRunning()

@@ -1,5 +1,7 @@
 package com.media.notabadplayer.Audio.Players;
 
+import java.util.ArrayList;
+import java.util.List;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -11,8 +13,6 @@ import com.media.notabadplayer.Audio.AudioPlayerObservers;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Audio.Model.AudioTrack;
-
-import java.util.ArrayList;
 
 public class AudioPlayerDummy implements AudioPlayer {
     private final AudioPlayerObservers observers;
@@ -190,12 +190,12 @@ public class AudioPlayerDummy implements AudioPlayer {
 
     public class PlayHistory implements AudioPlayerHistory
     {
-        public @NonNull ArrayList<AudioTrack> getPlayHistory()
+        public @NonNull List<AudioTrack> getPlayHistory()
         {
             return new ArrayList<>();
         }
 
-        public void setList(@NonNull ArrayList<AudioTrack> playHistory)
+        public void setList(@NonNull List<AudioTrack> playHistory)
         {
             
         }
