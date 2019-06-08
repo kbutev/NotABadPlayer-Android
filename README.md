@@ -14,24 +14,15 @@ Architectural design:
 
 * MVP (Model=data, View=interface, Presenter=data/interface bridge, state controller)
 
-* App consists of multiple activities and fragments, the main activity is seperate from the launch activity (launch only asks for read/write permissions), activities are forced to rely on singletons in order to their job. Its complete nonsense, single activity apps are better, there should be no need to rely on singletons to make your application work properly
+* Application is mostly single activity. There are two other activities, but the Main Activity is the one in which users will spend most of their time, since they have access to the player controls there.
 
 * Activities communicate trough serialization objects (Java Base64 serialization style)
 
-* Every view subclasses a BaseView interface (with one exception, CreatePlaylistActivity, because it has only one possible action)
+* The fragments are the views in this MVP design (inherit BaseView). Some activities also inherit BaseView. Fragments use onActivityCreate() to start their presenters.
 
-* Every BaseView has a BasePresenter, a presenter which holds the model, makes the decision making
+* Presenters hold the model, responsible for decision making. They respond to view input (user interaction) and then forward back messages to their views, to order them what to do.
 
-* The views are always responsible for UI navigation
-
-* Upon UI interaction, views alert their presenters, which perform some logic based on the input
-
-* BaseView and BasePresenter have a lot of duplicate methods - view usually has "performAction" type of methods,
-presenter has "onEvent" type of methods, it looks messy, but surprisingly it gets the job done, UI is seperated from the logic
-
-* So many empty interface methods of BaseView and BasePresenter... extremely slow and boring to write
-
-* The fragments are always the observers (not the presenters), they observe the state of the audio player
+* The fragments are the observers for the audio player (rather than the presenters), this is because audio player events merely change the UI information rather than changing complex "business" logic
 
 Design patterns:
 
@@ -49,13 +40,13 @@ General design:
 
 * CPU and energy efficient, memory ineffecient since the audio information is retrieved once and reused when trying to use the audio player
 
-* Virtually no exceptions are thrown, the try-catch blocks usually just print errors/warnings to log
+* Very little little exception handling is done, try-catch blocks usually are there just to print errors/warnings
 
-* Media storage (the library, that is, the albums/tracks found on the device) is read with the Android API MediaStore and is cached for CPU/energy efficiency
+* Audio Library, a singleton that store audio data of albums and tracks. It uses the Android API MediaStore.
 
-* Always single process app, if you open it from another Android app it opens a new window instead of adding an activity to the stack of the caller app
+* Multiple task android app: when launching the player from another program, like the Files program, a separate task is created and put ontop of the navigation for the Files program, rather than transfering the user to one single unique task window (like in iOS).
 
-* Simple lifecycle for the components of the app: for activities/fragments. Fragments rely on onActivityCreate() to start their presenters and loopers (if they are any); AudioPlayer singleton is used to represent the player of the app and the AudioInfo singleton is used to represent the media library (audio albums and their tracks information)
+* Lifecycle: Application is used to handle the app launch process: it holds the app state and alerts its activities when the app is completely finished with its launching process. The app does not wait to start all the services: it shows the UI and gives some control to the user for better experience. When the Application is finished starting all services, it alerts its activities.
 
 * Using Android Services to play the audio. If the app is killed by the OS, the service (which is a daemon basically), will still keep running. A notification is displayed while the player is running, which gives you some control of the audio player.
 
@@ -72,6 +63,10 @@ CPU & energy efficient.
 Includes standart player features like creating playlists, searching for tracks, controlling the audio player even when not on the player screen (a quick player is available, attached to the bottom of the screen).
 
 Includes slightly more fancy features like jumping back to the previously played song, regardless to which album or list it belonged to.
+
+Background playback (audio can usually remain playing even when the app is killed due to low memory)
+
+Notification playback - control the player from the status screen
 
 Portrait mode only.
 
