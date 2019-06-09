@@ -168,7 +168,6 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
             if (_albumTitleHeader.getVisibility() != View.GONE)
             {
                 _albumTitleHeader.setVisibility(View.GONE);
-                UIAnimations.getShared().animateFadeOut(getContext(), _albumTitleHeader);
             }
         }
         else
