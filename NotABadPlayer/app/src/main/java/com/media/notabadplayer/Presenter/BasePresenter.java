@@ -29,7 +29,6 @@ public interface BasePresenter {
     void onOpenPlaylistButtonClick();
     void onPlayerVolumeSet(double value);
     
-    void onPlaylistsChanged();
     void onPlaylistItemDelete(int index);
     
     void onSearchResultClick(int index);

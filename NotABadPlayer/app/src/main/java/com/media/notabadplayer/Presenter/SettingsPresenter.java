@@ -153,12 +153,6 @@ public class SettingsPresenter implements BasePresenter
     }
 
     @Override
-    public void onPlaylistsChanged()
-    {
-
-    }
-
-    @Override
     public void onPlaylistItemDelete(int index)
     {
 
