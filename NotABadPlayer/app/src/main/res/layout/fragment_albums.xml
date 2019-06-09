@@ -19,7 +19,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:numColumns="2"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:overScrollMode="never"/>
     
     <FrameLayout
         android:layout_width="30dp"

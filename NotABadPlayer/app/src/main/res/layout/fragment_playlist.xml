@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         android:numColumns="1"
         android:verticalSpacing="1dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:overScrollMode="never"/>
 
     <TextView
         android:id="@+id/albumTitleHeader"

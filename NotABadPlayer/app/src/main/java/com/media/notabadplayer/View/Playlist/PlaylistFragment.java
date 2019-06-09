@@ -61,7 +61,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_album, container, false);
+        View root = inflater.inflate(R.layout.fragment_playlist, container, false);
 
         _table = root.findViewById(R.id.albumSongsGrid);
 
