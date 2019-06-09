@@ -44,13 +44,20 @@ public class PlayerApplication extends Application {
     {
         super.onCreate();
         
-        Log.v(PlayerApplication.class.getCanonicalName(), "Initialized!");
+        Log.v(PlayerApplication.class.getCanonicalName(), "Initialized. About to start launching...");
 
         // Set shared instance value
         application = this;
         
-        // Wait for the first activity to start, then continue with start with the app launch
-        setLifecycle(LIFECYCLE_LAUNCHING);
+        // Set app lifecycle, in order to monitor the activities lifecycles
+        if (_lifecycleCallbacks != null)
+        {
+            unregisterActivityLifecycleCallbacks(_lifecycleCallbacks);
+        }
+
+        _lifecycleCallbacks = LIFECYCLE;
+
+        registerActivityLifecycleCallbacks(_lifecycleCallbacks);
     }
 
     @Override
@@ -64,18 +71,6 @@ public class PlayerApplication extends Application {
         Intent intent = new Intent();
         intent.setAction(getResources().getString(R.string.broadcast_application_is_running));
         sendBroadcast(intent);
-    }
-    
-    private void setLifecycle(@NonNull ActivityLifecycleCallbacks callback)
-    {
-        if (_lifecycleCallbacks != null)
-        {
-            unregisterActivityLifecycleCallbacks(_lifecycleCallbacks);
-        }
-        
-        _lifecycleCallbacks = callback;
-        
-        registerActivityLifecycleCallbacks(_lifecycleCallbacks);
     }
     
     private void terminate()
@@ -156,17 +151,12 @@ public class PlayerApplication extends Application {
             return primaryState.isLaunching();
         }
 
-        public boolean isRequestingPermissions()
+        public boolean isRunning()
         {
-            return primaryState.isRequestingPermissions();
+            return primaryState.isRunning();
         }
         
-        public void update()
-        {
-            
-        }
-        
-        private void launch()
+        private void launch(@NonNull final Activity activity)
         {
             if (!primaryState.isInactive())
             {
@@ -179,26 +169,17 @@ public class PlayerApplication extends Application {
 
             // General storage initialize
             GeneralStorage.getShared();
-        }
-        
-        private void startRequestPermissions(@NonNull final Activity activity)
-        {
-            if (!primaryState.isLaunching())
-            {
-                throw new IllegalStateException("Invalid app state, cannot start requesting permissions, state is " + primaryState.name());
-            }
-
-            Log.v(PlayerApplication.class.getCanonicalName(), "Checking if app has required permissions to start properly...");
-
-            primaryState = AppState.REQUESTING_PERMISSIONS;
             
+            // Check if the app has the required permissions
             // Request in the background (performance optimization)
+            Log.v(PlayerApplication.class.getCanonicalName(), "Checking if app has required permissions to start properly...");
+            
             LooperService.getShared().runOnBackground(new Function<Void, Void>() {
                 @NullableDecl
                 @Override
                 public Void apply(@NullableDecl Void input) {
                     final PermissionsStatus state = _permissions.evaluatePermissions(activity);
-                    
+
                     // Evaluate on main thread
                     LooperService.getShared().runOnBackground(new Function<Void, Void>() {
                         @NullableDecl
@@ -208,7 +189,7 @@ public class PlayerApplication extends Application {
                             {
                                 onRequestPermissionsGranted();
                             }
-                            
+
                             if (state == PermissionsStatus.DENIED)
                             {
                                 _permissions.requestPermissions(activity);
@@ -218,11 +199,11 @@ public class PlayerApplication extends Application {
                             {
                                 onRequestPermissionsDenied(activity);
                             }
-                            
+
                             return null;
                         }
                     });
-                    
+
                     return null;
                 }
             });
@@ -244,9 +225,7 @@ public class PlayerApplication extends Application {
 
         private void onRequestPermissionsGranted()
         {
-            Log.v(PlayerApplication.class.getCanonicalName(), "All required permissions have been granted! Proceed with application launch process...");
-            
-            setLifecycle(LIFECYCLE_STARTED);
+            Log.v(PlayerApplication.class.getCanonicalName(), "All required permissions have been granted!");
 
             _state.start();
         }
@@ -266,15 +245,14 @@ public class PlayerApplication extends Application {
 
         private void start()
         {
-            if (!primaryState.isLaunching() && !primaryState.isRequestingPermissions())
+            if (!primaryState.isLaunching())
             {
                 throw new IllegalStateException("Invalid app state, cannot start starting, state is " + primaryState.name());
             }
             
             primaryState = AppState.STARTING;
-
-            Log.v(PlayerApplication.class.getCanonicalName(), "Finished launching!");
-            Log.v(PlayerApplication.class.getCanonicalName(), "Starting...");
+            
+            Log.v(PlayerApplication.class.getCanonicalName(), "Successfully launched! Starting...");
 
             LooperService.getShared().runOnBackground(new Function<Void, Void>() {
                 @NullableDecl
@@ -316,9 +294,8 @@ public class PlayerApplication extends Application {
             {
                 throw new IllegalStateException("Invalid app state, cannot start running, state is " + primaryState.name());
             }
-
-            Log.v(PlayerApplication.class.getCanonicalName(), "Finished starting!");
-            Log.v(PlayerApplication.class.getCanonicalName(), "Running...");
+            
+            Log.v(PlayerApplication.class.getCanonicalName(), "Successfully started! Running...");
 
             primaryState = AppState.RUNNING;
             
@@ -331,78 +308,7 @@ public class PlayerApplication extends Application {
         }
     }
 
-    private ActivityLifecycleCallbacks LIFECYCLE_LAUNCHING = new ActivityLifecycleCallbacks() {
-        @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            // Called once:
-            // When the first activity is created
-            
-            if (_state.isInactive())
-            {
-                // Idle -> Launch
-                _state.launch();
-
-                return;
-            }
-
-            // This is a very rare case, where the user starts the app from home and launches
-            // it from other programs such as the Files program
-            // Deny this activity existence by showing a request permission denied dialog
-            if (_state.isRequestingPermissions())
-            {
-                _state.onRequestPermissionsDenied(activity);
-                
-                return;
-            }
-
-            throw new UncheckedExecutionException(new Exception("Internal application state error."));
-        }
-        @Override
-        public void onActivityStarted(Activity activity) {}
-        @Override
-        public void onActivityResumed(Activity activity) 
-        {
-            // Called twice:
-            // 1. When the main activity is starting for the first time
-            // 2. When the main activity dialog for request permissions is dismissed
-            
-            if (_state.isLaunching())
-            {
-                // The main activity has resumed
-                // Continue with the app launch process
-                // Start requesting permissions
-                // Launch -> Requesting Permissions
-                _state.startRequestPermissions(activity);
-                
-                return;
-            }
-            
-            if (_state.isRequestingPermissions())
-            {
-                // When the request for permissions are allowed/denied, the activity dialog will hide
-                // Which will cause the main activity to show up
-                // Requesting Permissions -> Start
-                _state.onRequestPermissionsResult(activity);
-                
-                return;
-            }
-
-            throw new UncheckedExecutionException(new Exception("Internal application state error."));
-        }
-        @Override
-        public void onActivityPaused(Activity activity) {}
-        @Override
-        public void onActivityStopped(Activity activity) {}
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
-        @Override
-        public void onActivityDestroyed(Activity activity)
-        {
-            
-        }
-    };
-
-    private ActivityLifecycleCallbacks LIFECYCLE_STARTED = new ActivityLifecycleCallbacks() {
+    private ActivityLifecycleCallbacks LIFECYCLE = new ActivityLifecycleCallbacks() {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {}
         @Override
@@ -410,7 +316,34 @@ public class PlayerApplication extends Application {
         @Override
         public void onActivityResumed(Activity activity) 
         {
-            broadcastRunningState();
+            // Called in three cases:
+            // 1. When the app is inactive and the main activity is starting for the first time
+            // 2. When the app is launching and the main activity dialog is dismissed
+            // 3. App is running, just broadcast running state
+            
+            if (_state.isInactive())
+            {
+                // Inactive -> Launch
+                _state.launch(activity);
+
+                return;
+            }
+            
+            if (_state.isLaunching())
+            {
+                // When the dialog box for permissions is dismissed, the main activity resumes again
+                // Launch -> Start
+                _state.onRequestPermissionsResult(activity);
+                
+                return;
+            }
+            
+            if (_state.isRunning())
+            {
+                broadcastRunningState();
+                
+                return;
+            }
         }
         @Override
         public void onActivityPaused(Activity activity) {}
