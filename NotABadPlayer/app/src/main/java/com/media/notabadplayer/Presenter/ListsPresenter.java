@@ -67,6 +67,8 @@ public class ListsPresenter implements BasePresenter
         {
             return;
         }
+
+        Log.v(ListsPresenter.class.getCanonicalName(), "Fetching user playlists...");
         
         _fetchingData = true;
         
@@ -97,7 +99,7 @@ public class ListsPresenter implements BasePresenter
                         @Override
                         public void run()
                         {
-                            Log.v(ListsPresenter.class.getCanonicalName(), "Updating user playlists data");
+                            Log.v(ListsPresenter.class.getCanonicalName(), "Retrieved user playlists, updating view");
 
                             _fetchingData = false;
                             

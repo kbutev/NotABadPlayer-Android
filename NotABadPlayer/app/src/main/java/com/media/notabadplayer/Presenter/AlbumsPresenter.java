@@ -58,12 +58,12 @@ public class AlbumsPresenter implements BasePresenter {
     @Override
     public void fetchData()
     {
-        Log.v(AlbumsPresenter.class.getCanonicalName(), "Retrieving albums data...");
-
         if (_fetchingData)
         {
             return;
         }
+        
+        Log.v(AlbumsPresenter.class.getCanonicalName(), "Fetching albums...");
 
         _fetchingData = true;
 
@@ -86,7 +86,7 @@ public class AlbumsPresenter implements BasePresenter {
                         @Override
                         public void run()
                         {
-                            Log.v(AlbumsPresenter.class.getCanonicalName(), "Updating albums data");
+                            Log.v(AlbumsPresenter.class.getCanonicalName(), "Retrieved albums, updating view");
 
                             _fetchingData = false;
 

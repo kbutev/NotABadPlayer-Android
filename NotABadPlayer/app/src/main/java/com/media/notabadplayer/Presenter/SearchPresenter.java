@@ -173,6 +173,8 @@ public class SearchPresenter implements BasePresenter
                 return;
             }
         }
+
+        Log.v(SearchPresenter.class.getCanonicalName(), "Searching for '" + searchValue + "' ...");
         
         _lastSearchQuery = searchValue;
         
@@ -197,6 +199,8 @@ public class SearchPresenter implements BasePresenter
                     @Override
                     public void run()
                     {
+                        Log.v(SearchPresenter.class.getCanonicalName(), "Retrieved search results, updating view");
+                        
                         _view.searchQueryResults(searchQuery, _searchResults, null);
                     }
                 };

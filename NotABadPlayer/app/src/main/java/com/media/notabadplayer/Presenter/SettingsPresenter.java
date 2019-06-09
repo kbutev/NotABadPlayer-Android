@@ -57,6 +57,8 @@ public class SettingsPresenter implements BasePresenter
             return;
         }
 
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Fetching app settings...");
+        
         _fetchingData = true;
 
         final boolean running = _running;
@@ -76,7 +78,7 @@ public class SettingsPresenter implements BasePresenter
                         @Override
                         public void run()
                         {
-                            Log.v(SettingsPresenter.class.getCanonicalName(), "Updating settings data");
+                            Log.v(SettingsPresenter.class.getCanonicalName(), "Retrieved app settings, updating view");
 
                             _fetchingData = false;
                             
