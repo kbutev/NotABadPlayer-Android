@@ -66,7 +66,8 @@
         <ListView
             android:id="@+id/addedTracksList"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="200dp"
+            android:overScrollMode="never" />
 
         <TextView
             android:layout_width="match_parent"
@@ -81,7 +82,8 @@
         <ListView
             android:id="@+id/albumsList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:overScrollMode="never" />
     </LinearLayout>
 
 </LinearLayout>
