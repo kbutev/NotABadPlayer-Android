@@ -134,6 +134,20 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
     
     @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        // Save audio player state
+        if (_appIsRunning)
+        {
+            Log.v(MainActivity.class.getCanonicalName(), "Saving audio player state.");
+            GeneralStorage.getShared().savePlayerState();
+            GeneralStorage.getShared().savePlayerPlayHistoryState();
+        }
+    }
+    
+    @Override
     protected void onDestroy()
     {
         unregisterReceiver(applicationRunningListener);
