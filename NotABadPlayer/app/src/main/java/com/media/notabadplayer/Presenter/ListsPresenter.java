@@ -192,12 +192,6 @@ public class ListsPresenter implements BasePresenter
     }
 
     @Override
-    public void onPlaylistsChanged()
-    {
-        updatePlaylistsData();
-    }
-
-    @Override
     public void onPlaylistItemDelete(int index)
     {
         if (!_running)
