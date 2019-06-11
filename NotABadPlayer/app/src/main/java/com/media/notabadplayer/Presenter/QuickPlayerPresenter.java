@@ -99,7 +99,12 @@ public class QuickPlayerPresenter implements BasePresenter
             return;
         }
         
-        KeyBinds.getShared().evaluateInput(input);
+        Exception exception = KeyBinds.getShared().evaluateInput(input);
+        
+        if (exception != null)
+        {
+            _view.onPlayerErrorEncountered(exception);
+        }
     }
 
     @Override
@@ -110,7 +115,12 @@ public class QuickPlayerPresenter implements BasePresenter
             return;
         }
 
-        KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+        Exception exception = KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+
+        if (exception != null)
+        {
+            _view.onPlayerErrorEncountered(exception);
+        }
     }
     
     @Override

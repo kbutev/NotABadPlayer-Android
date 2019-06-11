@@ -3,6 +3,7 @@ package com.media.notabadplayer.View.Search;
 import java.util.List;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -34,6 +35,7 @@ import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -386,7 +388,13 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
+        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                _searchResults.invalidateViews();
+            }
+        };
 
+        AlertWindows.showAlert(getContext(), R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
     }
     
     private void showProgressIndicator()

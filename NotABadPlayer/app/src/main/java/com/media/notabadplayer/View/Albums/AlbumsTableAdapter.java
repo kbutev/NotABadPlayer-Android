@@ -90,7 +90,7 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
         
         if (dataTitle.length() == 0)
         {
-            title.setText(R.string.title_unknown);
+            title.setText(R.string.albums_title_unknown);
         }
         else
         {

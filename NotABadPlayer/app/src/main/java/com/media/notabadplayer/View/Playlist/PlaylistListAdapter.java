@@ -122,7 +122,7 @@ class PlaylistListAdapter extends BaseAdapter
         
         if (dataTitle.length() == 0)
         {
-            title.setText(R.string.title_unknown);
+            title.setText(R.string.albums_title_unknown);
         }
         else
         {
@@ -137,7 +137,7 @@ class PlaylistListAdapter extends BaseAdapter
         }
         else
         {
-            trackNum.setText(R.string.zero_track_num_symbol);
+            trackNum.setText(R.string.albums_zero_track_num_symbol);
         }
         
         TextView duration = checkNotNull((TextView)listItem.findViewById(R.id.duration), "Base adapter is expecting a valid text view");
@@ -187,8 +187,8 @@ class PlaylistListAdapter extends BaseAdapter
             totalDuration += track.durationInSeconds;
         }
         
-        String tracks = _context.getResources().getString(R.string.tracks);
-        String total_duration = _context.getResources().getString(R.string.total_duration);
+        String tracks = _context.getResources().getString(R.string.albums_tracks);
+        String total_duration = _context.getResources().getString(R.string.albums_total_duration);
         
         return String.valueOf(_tracks.size()) + " " + tracks + ", " + total_duration + " " + AudioTrack.secondsToString(totalDuration);
     }

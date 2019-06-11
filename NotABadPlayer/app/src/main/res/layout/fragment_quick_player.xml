@@ -38,7 +38,7 @@
                     android:id="@+id/labelTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/nothing_playing"
+                    android:text="@string/player_nothing_playing"
                     android:textAppearance="@style/QuickPlayerText"
                     android:singleLine="true"/>
                 
@@ -50,18 +50,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/QuickPlayerSubtext"
-                        android:text="@string/zero_timer"/>
+                        android:text="@string/player_zero_timer"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/QuickPlayerSubtext"
-                        android:text="@string/timer_separator"/>
+                        android:text="@string/player_timer_separator"/>
                     <TextView
                         android:id="@+id/durationTotal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/QuickPlayerSubtext"
-                        android:text="@string/zero_timer"
+                        android:text="@string/player_zero_timer"
                         android:gravity="right"/>
                 </LinearLayout>
 

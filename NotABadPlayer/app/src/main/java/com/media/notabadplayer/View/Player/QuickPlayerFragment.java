@@ -267,6 +267,14 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         
         _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
     }
+    
+    private void clearMediaInfo()
+    {
+        _imageCover.setImageDrawable(getResources().getDrawable(R.drawable.cover_art_none));
+
+        _labelTitle.setText(R.string.player_nothing_playing);
+        _labelDurationTotal.setText(R.string.player_zero_timer);
+    }
 
     private void updateMediaInfo(AudioTrack playingTrack)
     {
@@ -433,6 +441,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     public void onPlayerStop()
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_play);
+        clearMediaInfo();
     }
     
     @Override

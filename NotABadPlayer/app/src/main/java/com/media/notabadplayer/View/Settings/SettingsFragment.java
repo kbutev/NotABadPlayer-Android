@@ -670,7 +670,13 @@ public class SettingsFragment extends Fragment implements BaseView
     @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
-        
+        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // Do nothing
+            }
+        };
+
+        AlertWindows.showAlert(getContext(), R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
     }
 
     private void showProgressIndicator()

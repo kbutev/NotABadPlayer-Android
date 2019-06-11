@@ -19,10 +19,10 @@ public interface AudioPlayer
     void pause();
     void stop();
     void pauseOrResume();
-    void playNext();
-    void playPrevious();
-    void playNextBasedOnPlayOrder();
-    void shuffle();
+    void playNext() throws Exception;
+    void playPrevious() throws Exception;
+    void playNextBasedOnPlayOrder() throws Exception;
+    void shuffle() throws Exception;
     void jumpBackwards(int msec);
     void jumpForwards(int msec);
     int getDurationMSec();

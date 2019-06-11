@@ -136,7 +136,7 @@
                 android:id="@+id/durationCurrent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/zero_timer"
+                android:text="@string/player_zero_timer"
                 android:textAppearance="@style/PlayerText"
                 android:layout_weight="0.5"
                 android:layout_marginLeft="10dp"/>
@@ -144,7 +144,7 @@
                 android:id="@+id/durationTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/zero_timer"
+                android:text="@string/player_zero_timer"
                 android:textAppearance="@style/PlayerText"
                 android:layout_weight="0.5"
                 android:gravity="right"

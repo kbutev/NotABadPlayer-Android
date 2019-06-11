@@ -112,8 +112,13 @@ public class PlayerPresenter implements BasePresenter
         ApplicationAction action = KeyBinds.getShared().getActionForInput(input);
         
         Log.v(PlayerPresenter.class.getCanonicalName(), "Perform KeyBinds action '" + action.name() + "' for input '" + input.name() + "'");
-        
-        KeyBinds.getShared().performAction(action);
+
+        Exception exception = KeyBinds.getShared().performAction(action);
+
+        if (exception != null)
+        {
+            _view.onPlayerErrorEncountered(exception);
+        }
     }
     
     @Override
@@ -121,7 +126,12 @@ public class PlayerPresenter implements BasePresenter
     {
         Log.v(PlayerPresenter.class.getCanonicalName(), "Player input: change play order");
 
-        KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+        Exception exception = KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
+
+        if (exception != null)
+        {
+            _view.onPlayerErrorEncountered(exception);
+        }
     }
     
     @Override
