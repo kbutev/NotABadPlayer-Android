@@ -4,6 +4,8 @@ import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Storage.GeneralStorage;
 
+import javax.annotation.Nullable;
+
 public class KeyBinds
 {
     private static KeyBinds _singleton;
@@ -23,15 +25,17 @@ public class KeyBinds
         return GeneralStorage.getShared().getSettingsAction(input);
     }
     
-    public ApplicationAction evaluateInput(ApplicationInput input)
+    public @Nullable Exception evaluateInput(ApplicationInput input)
     {
         ApplicationAction action = getActionForInput(input);
         
         return performAction(action);
     }
     
-    public ApplicationAction performAction(ApplicationAction action)
+    public @Nullable Exception performAction(ApplicationAction action)
     {
+        Exception exception = null;
+        
         switch (action)
         {
             case DO_NOTHING:
@@ -49,13 +53,28 @@ public class KeyBinds
                 Player.getShared().pauseOrResume();
                 break;
             case NEXT:
-                Player.getShared().playNext();
+                try {
+                    Player.getShared().playNext();
+                } catch (Exception e)
+                {
+                    exception = e;
+                }
                 break;
             case PREVIOUS:
-                Player.getShared().playPrevious();
+                try {
+                    Player.getShared().playPrevious();
+                } catch (Exception e)
+                {
+                    exception = e;
+                }
                 break;
             case SHUFFLE:
-                Player.getShared().shuffle();
+                try {
+                    Player.getShared().shuffle();
+                } catch (Exception e)
+                {
+                    exception = e;
+                }
                 break;
             case VOLUME_UP:
                 Player.getShared().volumeUp();
@@ -123,6 +142,6 @@ public class KeyBinds
                 break;
         }
         
-        return action;
+        return exception;
     }
 }

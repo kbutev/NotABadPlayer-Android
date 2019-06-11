@@ -14,15 +14,15 @@
     <string name="title_settings">Settings</string>
 
     <!-- Albums tab -->
-    <string name="title_unknown">Unknown</string>
-    <string name="zero_track_num_symbol">-</string>
-    <string name="tracks">tracks</string>
-    <string name="total_duration">duration</string>
+    <string name="albums_title_unknown">Unknown</string>
+    <string name="albums_zero_track_num_symbol">-</string>
+    <string name="albums_tracks">tracks</string>
+    <string name="albums_total_duration">duration</string>
     
     <!-- Player tab -->
-    <string name="nothing_playing">Nothing playing</string>
-    <string name="zero_timer">0:00</string>
-    <string name="timer_separator">/</string>
+    <string name="player_nothing_playing">Nothing playing</string>
+    <string name="player_zero_timer">0:00</string>
+    <string name="player_timer_separator">/</string>
     
     <!-- Playlists -->
     <string name="playlist_create">Create</string>
@@ -81,7 +81,7 @@
     <!-- About -->
     <string name="about">About</string>
     <string name="about_version">Version 1.7 (10)</string>
-    <string name="about_release_date">Released 2019.06.9</string>
+    <string name="about_release_date">Released 2019.06.11</string>
     <string name="about_credits">Programmed, designed &amp; tested by Kristiyan Butev</string>
 
     <!-- Notification -->

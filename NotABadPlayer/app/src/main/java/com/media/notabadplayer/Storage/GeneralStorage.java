@@ -249,7 +249,7 @@ public class GeneralStorage
         editor.apply();
     }
     
-    public void restorePlayerState()
+    public boolean restorePlayerState()
     {
         SharedPreferences preferences = getSharedPreferences();
         Player player = Player.getShared();
@@ -259,7 +259,7 @@ public class GeneralStorage
         
         if (playlistData == null || playOrderData == null)
         {
-            return;
+            return false;
         }
 
         // Restore play order state
@@ -271,7 +271,7 @@ public class GeneralStorage
             playOrder = AudioPlayOrder.valueOf(playOrderData);
         } catch (Exception e) {
             Log.v(GeneralStorage.class.getCanonicalName(), "Failed to restore audio player state, " + e.toString());
-            return;
+            return false;
         }
         
         player.setPlayOrder(playOrder);
@@ -281,7 +281,7 @@ public class GeneralStorage
 
         if (!(result instanceof AudioPlaylist))
         {
-            return;
+            return false;
         }
         
         AudioPlaylist playlist = (AudioPlaylist)result;
@@ -290,7 +290,7 @@ public class GeneralStorage
             player.playPlaylist(playlist);
         } catch (Exception e) {
             Log.v(GeneralStorage.class.getCanonicalName(), "Failed to restore audio player state, " + e.toString());
-            return;
+            return false;
         }
 
         // Always pause after restoring
@@ -303,6 +303,7 @@ public class GeneralStorage
         
         // Success
         Log.v(GeneralStorage.class.getCanonicalName(), "Successfully restored audio player state!");
+        return true;
     }
 
     public @Nullable AudioPlaylist retrievePlayerSavedStatePlaylist()
@@ -342,7 +343,7 @@ public class GeneralStorage
         Log.v(GeneralStorage.class.getCanonicalName(), "Saved audio player state to storage.");
     }
 
-    public void restorePlayerPlayHistoryState(@NonNull Application application)
+    public void restorePlayerPlayHistoryState()
     {
         SharedPreferences preferences = getSharedPreferences();
         Player player = Player.getShared();

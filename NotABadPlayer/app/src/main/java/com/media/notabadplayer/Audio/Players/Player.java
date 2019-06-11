@@ -120,8 +120,17 @@ public class Player implements AudioPlayer {
             }
 
             // Restore audio state here
-            GeneralStorage.getShared().restorePlayerState();
-            GeneralStorage.getShared().restorePlayerPlayHistoryState(_application);
+            boolean result = GeneralStorage.getShared().restorePlayerState();
+            GeneralStorage.getShared().restorePlayerPlayHistoryState();
+            
+            // Failed to restore player state - send stop() request to all observers
+            if (!result)
+            {
+                for (AudioPlayerObserver observer : observers._observers)
+                {
+                    observer.onPlayerStop();
+                }
+            }
         }
         else
         {
@@ -207,25 +216,25 @@ public class Player implements AudioPlayer {
     }
 
     @Override
-    public void playNext()
+    public void playNext() throws Exception
     {
         getPlayer().playNext();
     }
 
     @Override
-    public void playPrevious()
+    public void playPrevious() throws Exception
     {
         getPlayer().playPrevious();
     }
 
     @Override
-    public void playNextBasedOnPlayOrder()
+    public void playNextBasedOnPlayOrder() throws Exception
     {
         getPlayer().playNextBasedOnPlayOrder();
     }
 
     @Override
-    public void shuffle()
+    public void shuffle() throws Exception
     {
         getPlayer().shuffle();
     }

@@ -123,6 +123,11 @@ public class AudioPlaylist implements Serializable
     {
         return _tracks.get(_playingTrackPosition);
     }
+    
+    public int getPlayingIndex()
+    {
+        return _playingTrackPosition;
+    }
 
     public boolean isAlbumPlaylist()
     {
@@ -157,6 +162,17 @@ public class AudioPlaylist implements Serializable
     public void playCurrent()
     {
         _playing = true;
+    }
+    
+    public void goToTrack(@NonNull AudioTrack track)
+    {
+        int index = _tracks.indexOf(track);
+        
+        if (index != -1)
+        {
+            _playing = true;
+            _playingTrackPosition = index;
+        }
     }
     
     public void goToTrackBasedOnPlayOrder(AudioPlayOrder playOrder)

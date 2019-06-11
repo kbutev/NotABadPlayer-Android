@@ -2,6 +2,7 @@ package com.media.notabadplayer.View.Lists;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.BaseView;
 
@@ -380,7 +382,13 @@ public class ListsFragment extends Fragment implements BaseView {
     @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
+        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // Do nothing
+            }
+        };
 
+        AlertWindows.showAlert(getContext(), R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
     }
 
     private void showProgressIndicator()

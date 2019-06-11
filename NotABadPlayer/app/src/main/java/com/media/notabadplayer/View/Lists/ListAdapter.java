@@ -94,7 +94,7 @@ class ListAdapter extends BaseAdapter
         title.setText(playlist.getName());
         
         TextView description = listItem.findViewById(R.id.description);
-        String tracksText = _context.getResources().getString(R.string.tracks);
+        String tracksText = _context.getResources().getString(R.string.albums_tracks);
         description.setText(String.valueOf(playlist.size()) + " " + tracksText);
         
         // Remove button is displayed only in edit mode and is never displayed for position one

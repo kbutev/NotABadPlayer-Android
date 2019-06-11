@@ -3,6 +3,7 @@ package com.media.notabadplayer.View.Albums;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Presenter.BasePresenter;
+import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Other.GridSideIndexingView;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
@@ -274,6 +276,12 @@ public class AlbumsFragment extends Fragment implements BaseView
     @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
+        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                _table.invalidateViews();
+            }
+        };
 
+        AlertWindows.showAlert(getContext(), R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
     }
 }

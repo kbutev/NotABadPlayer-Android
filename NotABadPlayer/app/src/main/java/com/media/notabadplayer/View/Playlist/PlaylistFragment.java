@@ -3,6 +3,7 @@ package com.media.notabadplayer.View.Playlist;
 import java.util.List;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -26,6 +27,7 @@ import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.LooperService;
 import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.Serializing;
@@ -359,7 +361,13 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
-
+        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                _table.invalidateViews();
+            }
+        };
+        
+        AlertWindows.showAlert(getContext(), R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
     }
 
     @Override
