@@ -256,11 +256,16 @@ public class SearchPresenter implements BasePresenter
         }
         
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
-        AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
         
-        Log.v(SearchPresenter.class.getCanonicalName(), "Opening player screen");
-        
-        _view.openPlayerScreen(searchPlaylist);
+        try {
+            AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
+
+            Log.v(SearchPresenter.class.getCanonicalName(), "Opening player screen");
+
+            _view.openPlayerScreen(searchPlaylist);
+        } catch (Exception e) {
+            Log.v(SearchPresenter.class.getCanonicalName(), "Error: Could not open player screen: " + e.toString());
+        }
     }
 
     private void playNewTrack(@NonNull AudioTrack clickedTrack)
@@ -271,7 +276,14 @@ public class SearchPresenter implements BasePresenter
         }
         
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
-        AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
+        AudioPlaylist searchPlaylist;
+        
+        try {
+            searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
+        } catch (Exception e) {
+            Log.v(SearchPresenter.class.getCanonicalName(), "Error: Could not play track: " + e.toString());
+            return;
+        }
         
         Player player = Player.getShared();
         AudioPlaylist currentPlaylist = player.getPlaylist();

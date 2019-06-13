@@ -24,27 +24,42 @@ public class AudioPlaylist implements Serializable
     
     transient private Random _random;
     
-    public AudioPlaylist(@NonNull String name, @NonNull AudioTrack startWithTrack) throws IllegalArgumentException
+    public AudioPlaylist(@NonNull String name, @NonNull AudioTrack startWithTrack) throws Exception
     {
         this(name, trackAsAList(startWithTrack), startWithTrack);
     }
     
-    public AudioPlaylist(@NonNull String name, @NonNull List<AudioTrack> tracks) throws IllegalArgumentException
+    public AudioPlaylist(@NonNull String name, @NonNull List<AudioTrack> tracks)
     {
-        this(name, tracks, null);
+        this(name, tracks, null, false);
+    }
+
+    public AudioPlaylist(@NonNull String name,
+                         @NonNull List<AudioTrack> tracks,
+                         AppSettings.TrackSorting sorting)
+    {
+        this(name, MediaSorting.sortTracks(tracks, sorting), null, false);
     }
 
     public AudioPlaylist(@NonNull String name,
                          @NonNull List<AudioTrack> tracks,
                          AudioTrack startWithTrack,
-                         AppSettings.TrackSorting sorting) throws IllegalArgumentException
+                         AppSettings.TrackSorting sorting) throws Exception
     {
         this(name, MediaSorting.sortTracks(tracks, sorting), startWithTrack);
     }
 
     public AudioPlaylist(@NonNull String name,
                          @NonNull List<AudioTrack> tracks,
-                         AudioTrack startWithTrack) throws IllegalArgumentException
+                         AudioTrack startWithTrack) throws Exception
+    {
+        this(name, tracks, startWithTrack, false);
+    }
+
+    private AudioPlaylist(@NonNull String name,
+                          @NonNull List<AudioTrack> tracks,
+                          AudioTrack startWithTrack,
+                          boolean dummy)
     {
         if (tracks.size() == 0)
         {
@@ -69,22 +84,32 @@ public class AudioPlaylist implements Serializable
         
         if (startWithTrack != null)
         {
+            boolean trackWasFound = false;
+            
             for (int e = 0; e < _tracks.size(); e++)
             {
                 if (_tracks.get(e).equals(startWithTrack))
                 {
                     _playingTrackPosition = e;
+                    trackWasFound = true;
                     break;
                 }
+            }
+            
+            if (!trackWasFound)
+            {
+                throw new IllegalArgumentException("Playlist cannot be created with a starting track that is not part of the given playlist tracks");
             }
         }
 
         _random = new Random();
     }
 
-    public AudioPlaylist sortedPlaylist(AppSettings.TrackSorting sorting)
+    public @NonNull AudioPlaylist sortedPlaylist(AppSettings.TrackSorting sorting)
     {
-        return new AudioPlaylist(getName(), getTracks(), getPlayingTrack(), sorting);
+        AudioPlaylist playlist = new AudioPlaylist(getName(), getTracks(), sorting);
+        playlist._playingTrackPosition = _playingTrackPosition;
+        return playlist;
     }
     
     private static ArrayList<AudioTrack> trackAsAList(@NonNull AudioTrack track)
@@ -124,31 +149,11 @@ public class AudioPlaylist implements Serializable
         return _tracks.get(_playingTrackPosition);
     }
     
-    public int getPlayingIndex()
-    {
-        return _playingTrackPosition;
-    }
-
     public boolean isAlbumPlaylist()
     {
         return _name.equals(_tracks.get(0).albumTitle);
     }
     
-    public AudioAlbum getAlbum(@NonNull AudioInfo audioInfo)
-    {
-        for (int e = 0; e < _tracks.size(); e++)
-        {
-            AudioAlbum album = audioInfo.getAlbumByID(_tracks.get(e).albumID);
-            
-            if (album != null)
-            {
-                return album;
-            }
-        }
-        
-        return null;
-    }
-
     public boolean isPlayingFirstTrack()
     {
         return _playingTrackPosition == 0;

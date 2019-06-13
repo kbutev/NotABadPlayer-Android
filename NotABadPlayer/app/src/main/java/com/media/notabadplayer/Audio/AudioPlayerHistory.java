@@ -9,5 +9,5 @@ public interface AudioPlayerHistory
 {
     @NonNull List<AudioTrack> getPlayHistory();
     void setList(@NonNull List<AudioTrack> playHistory);
-    void playPreviousInHistory(@NonNull AudioInfo audioInfo);
+    void playPreviousInHistory(@NonNull AudioInfo audioInfo) throws Exception;
 }

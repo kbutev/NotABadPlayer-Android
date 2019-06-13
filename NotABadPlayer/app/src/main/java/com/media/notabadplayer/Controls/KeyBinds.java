@@ -138,7 +138,11 @@ public class KeyBinds
                 
                 break;
             case RECALL:
-                Player.getShared().playHistory.playPreviousInHistory();
+                try {
+                    Player.getShared().playHistory.playPreviousInHistory();
+                } catch (Exception e) {
+                    exception = e;
+                }
                 break;
         }
         
