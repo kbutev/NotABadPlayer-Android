@@ -1,6 +1,7 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
@@ -23,86 +23,70 @@ public class AudioPlaylist implements Serializable
     private int _playingTrackPosition;
     
     transient private Random _random;
+
+    public AudioPlaylist(@NonNull String name, @NonNull List<AudioTrack> tracks)
+    {
+        if (tracks.size() == 0)
+        {
+            throw new IllegalArgumentException("Given playlist tracks must not be empty");
+        }
+
+        _name = name;
+        _tracks = new ArrayList<>(tracks);
+        _playing = false;
+        _playingTrackPosition = 0;
+
+        // Set proper source value
+        boolean isAlbumList = isAlbumPlaylist();
+        _tracks = new ArrayList<>();
+        AudioTrack firstTrack = tracks.get(0);
+
+        for (int e = 0; e < tracks.size(); e++)
+        {
+            AudioTrackSource source = isAlbumList ? AudioTrackSource.createAlbumSource(firstTrack.albumID) : AudioTrackSource.createPlaylistSource(_name);
+            _tracks.add(new AudioTrack(tracks.get(e), source));
+        }
+
+        _random = new Random();
+    }
     
     public AudioPlaylist(@NonNull String name, @NonNull AudioTrack startWithTrack) throws Exception
     {
         this(name, trackAsAList(startWithTrack), startWithTrack);
     }
     
-    public AudioPlaylist(@NonNull String name, @NonNull List<AudioTrack> tracks)
+    public AudioPlaylist(@NonNull String name,
+                         @NonNull List<AudioTrack> tracks,
+                         @Nullable AudioTrack startWithTrack) throws Exception
     {
-        this(name, tracks, null, false);
+        this(name, tracks, startWithTrack, AppSettings.TrackSorting.TITLE);
     }
 
     public AudioPlaylist(@NonNull String name,
                          @NonNull List<AudioTrack> tracks,
                          AppSettings.TrackSorting sorting)
     {
-        this(name, MediaSorting.sortTracks(tracks, sorting), null, false);
+        this(name, MediaSorting.sortTracks(tracks, sorting));
     }
-
+    
     public AudioPlaylist(@NonNull String name,
                          @NonNull List<AudioTrack> tracks,
-                         AudioTrack startWithTrack,
+                         @Nullable AudioTrack startWithTrack,
                          AppSettings.TrackSorting sorting) throws Exception
     {
-        this(name, MediaSorting.sortTracks(tracks, sorting), startWithTrack);
-    }
+        this(name, MediaSorting.sortTracks(tracks, sorting));
 
-    public AudioPlaylist(@NonNull String name,
-                         @NonNull List<AudioTrack> tracks,
-                         AudioTrack startWithTrack) throws Exception
-    {
-        this(name, tracks, startWithTrack, false);
-    }
-
-    private AudioPlaylist(@NonNull String name,
-                          @NonNull List<AudioTrack> tracks,
-                          AudioTrack startWithTrack,
-                          boolean dummy)
-    {
-        if (tracks.size() == 0)
-        {
-            throw new IllegalArgumentException("Given playlist tracks must not be empty");
-        }
-        
-        _name = name;
-        _tracks = new ArrayList<>(tracks);
-        _playing = false;
-        _playingTrackPosition = 0;
-        
-        // Set proper source value
-        boolean isAlbumList = isAlbumPlaylist();
-        _tracks = new ArrayList<>();
-        AudioTrack firstTrack = tracks.get(0);
-        
-        for (int e = 0; e < tracks.size(); e++)
-        {
-            AudioTrackSource source = isAlbumList ? AudioTrackSource.createAlbumSource(firstTrack.albumID) : AudioTrackSource.createPlaylistSource(_name);
-            _tracks.add(new AudioTrack(tracks.get(e), source));
-        }
-        
         if (startWithTrack != null)
         {
-            boolean trackWasFound = false;
-            
-            for (int e = 0; e < _tracks.size(); e++)
+            if (hasTrack(startWithTrack))
             {
-                if (_tracks.get(e).equals(startWithTrack))
-                {
-                    _playingTrackPosition = e;
-                    trackWasFound = true;
-                    break;
-                }
+                goToTrack(startWithTrack);
             }
-            
-            if (!trackWasFound)
+            else
             {
-                throw new IllegalArgumentException("Playlist cannot be created with a starting track that is not part of the given playlist tracks");
+                throw new IllegalArgumentException("Playlist cannot be created with a starting track not included in the given tracks");
             }
         }
-
-        _random = new Random();
     }
 
     public @NonNull AudioPlaylist sortedPlaylist(AppSettings.TrackSorting sorting)
@@ -162,6 +146,11 @@ public class AudioPlaylist implements Serializable
     public boolean isPlayingLastTrack()
     {
         return _playingTrackPosition + 1 == _tracks.size();
+    }
+
+    public boolean hasTrack(@NonNull AudioTrack track)
+    {
+        return _tracks.indexOf(track) != -1;
     }
     
     public void playCurrent()
