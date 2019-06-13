@@ -78,7 +78,7 @@ public class GeneralStorage
         
         if (this._firstTimeLaunch)
         {
-            Log.v(GeneralStorage.class.getCanonicalName(), "First time launching the program! Setting app settings to their default values");
+            Log.v(GeneralStorage.class.getCanonicalName(), "First time launching the program!");
             
             SharedPreferences.Editor editor = getSharedPreferences().edit();
             editor.putBoolean("firstTime", false);
@@ -177,6 +177,8 @@ public class GeneralStorage
 
     public void resetDefaultSettingsValues()
     {
+        Log.v(GeneralStorage.class.getCanonicalName(), "Resetting values to their defaults");
+        
         savePlayerPlayedHistoryCapacity(50);
         saveAppThemeValue(AppSettings.AppTheme.LIGHT);
         saveAlbumSortingValue(AppSettings.AlbumSorting.TITLE);
@@ -202,6 +204,18 @@ public class GeneralStorage
         saveSettingsAction(ApplicationInput.EXTERNAL_PLAY, ApplicationAction.PAUSE);
 
         saveCachingPolicy(AppSettings.TabCachingPolicies.ALBUMS_ONLY);
+        
+        SharedPreferences preferences = getSharedPreferences();
+        SharedPreferences.Editor editor = preferences.edit();
+
+        String userPlaylistsEmpty = Serializing.serializeObject(new ArrayList<>());
+
+        if (userPlaylistsEmpty != null)
+        {
+            editor.putString("user_playlists", userPlaylistsEmpty);
+        }
+        
+        editor.apply();
     }
     
     public boolean isFirstApplicationLaunch()
@@ -659,6 +673,10 @@ public class GeneralStorage
                     ArrayList<AudioPlaylist> playlistsArray = (ArrayList<AudioPlaylist>)object;
                     return playlistsArray;
                 }
+            }
+            else
+            {
+                return new ArrayList<>();
             }
         }
         
