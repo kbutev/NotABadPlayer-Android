@@ -779,7 +779,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         }
         
         @Override
-        public void playPreviousInHistory(@NonNull AudioInfo audioInfo)
+        public void playPreviousInHistory(@NonNull AudioInfo audioInfo) throws Exception
         {
             stop();
 
@@ -790,22 +790,24 @@ public class AudioPlayerService extends Service implements AudioPlayer {
 
             _playHistory.remove(0);
 
-            AudioTrack previousTrack = _playHistory.get(0);
+            AudioTrack previousTrack = _playlist.getPlayingTrack();
+            AudioTrack previouslyPlayed = _playHistory.get(0);
 
-            AudioPlaylist playlist = previousTrack.source.getSourcePlaylist(audioInfo, previousTrack);
+            AudioPlaylist playlist = previouslyPlayed.source.getSourcePlaylist(audioInfo, previouslyPlayed);
 
             if (playlist == null)
             {
                 String playlistName = getContext().getResources().getString(R.string.playlist_name_previously_played);
-                playlist = new AudioPlaylist(playlistName, previousTrack);
+                playlist = new AudioPlaylist(playlistName, previouslyPlayed);
             }
 
             try {
                 playPlaylist(playlist);
             } catch (Exception e) {
                 Log.v(Player.class.getCanonicalName(), "Error: cannot play previous from play history, " + e.toString());
-
-                stop();
+                _playlist.goToTrack(previousTrack);
+                _observers.onStop();
+                throw e;
             }
         }
 

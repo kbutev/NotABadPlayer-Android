@@ -185,18 +185,31 @@ public class PlaylistPresenter implements BasePresenter {
     {
         String playlistName = _playlist.getName();
         ArrayList<AudioTrack> tracks = _playlist.getTracks();
-        AudioPlaylist playlist = new AudioPlaylist(playlistName, tracks, clickedTrack);
 
-        Log.v(PlaylistPresenter.class.getCanonicalName(), "Opening player screen");
+        try {
+            AudioPlaylist playlist = new AudioPlaylist(playlistName, tracks, clickedTrack);
 
-        _view.openPlayerScreen(playlist);
+            Log.v(PlaylistPresenter.class.getCanonicalName(), "Opening player screen");
+
+            _view.openPlayerScreen(playlist);
+        } catch (Exception e) {
+            Log.v(PlaylistPresenter.class.getCanonicalName(), "Error: Could not open player screen: " + e.toString());
+        }
     }
 
     private void playNewTrack(@NonNull AudioTrack clickedTrack)
     {
         String playlistName = _playlist.getName();
         ArrayList<AudioTrack> tracks = _playlist.getTracks();
-        AudioPlaylist playlistToPlay = new AudioPlaylist(playlistName, tracks, clickedTrack);
+        
+        AudioPlaylist playlistToPlay;
+        
+        try {
+            playlistToPlay = new AudioPlaylist(playlistName, tracks, clickedTrack);
+        } catch (Exception e) {
+            Log.v(PlaylistPresenter.class.getCanonicalName(), "Error: Could not play track: " + e.toString());
+            return;
+        }
 
         Player player = Player.getShared();
         AudioPlaylist currentPlaylist = player.getPlaylist();

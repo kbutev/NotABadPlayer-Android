@@ -200,7 +200,7 @@ public class AudioPlayerDummy implements AudioPlayer {
             
         }
 
-        public void playPreviousInHistory(@NonNull AudioInfo audioInfo)
+        public void playPreviousInHistory(@NonNull AudioInfo audioInfo) throws Exception
         {
             
         }

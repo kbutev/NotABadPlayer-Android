@@ -381,13 +381,13 @@ public class Player implements AudioPlayer {
             getPlayer().playHistory().setList(playHistory);
         }
 
-        public void playPreviousInHistory()
+        public void playPreviousInHistory() throws Exception
         {
             getPlayer().playHistory().playPreviousInHistory(_audioInfo);
         }
 
         @Override
-        public void playPreviousInHistory(@NonNull AudioInfo audioInfo)
+        public void playPreviousInHistory(@NonNull AudioInfo audioInfo) throws Exception
         {
             getPlayer().playHistory().playPreviousInHistory(audioInfo);
         }

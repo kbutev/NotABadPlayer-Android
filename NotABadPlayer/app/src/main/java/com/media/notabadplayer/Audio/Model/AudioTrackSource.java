@@ -10,7 +10,7 @@ import com.media.notabadplayer.Storage.GeneralStorage;
 
 public class AudioTrackSource implements Serializable
 {
-    private final String _value;
+    private final @NonNull String _value;
     private final boolean _isAlbumSource;
 
     public static AudioTrackSource createAlbumSource(@NonNull String albumID)
@@ -23,7 +23,7 @@ public class AudioTrackSource implements Serializable
         return new AudioTrackSource(playlistName, false);
     }
     
-    private AudioTrackSource(String value, boolean isAlbumSource)
+    private AudioTrackSource(@NonNull String value, boolean isAlbumSource)
     {
         this._value = value;
         this._isAlbumSource = isAlbumSource;
@@ -39,8 +39,7 @@ public class AudioTrackSource implements Serializable
         return !isAlbum();
     }
 
-    public @Nullable
-    AudioPlaylist getSourcePlaylist(@NonNull AudioInfo audioInfo, @Nullable AudioTrack playingTrack)
+    public @Nullable AudioPlaylist getSourcePlaylist(@NonNull AudioInfo audioInfo, @Nullable AudioTrack playingTrack)
     {
         if (isAlbum())
         {
@@ -50,25 +49,29 @@ public class AudioTrackSource implements Serializable
             {
                 return null;
             }
-            
-            return new AudioPlaylist(album.albumTitle, audioInfo.getAlbumTracks(album), playingTrack);
+
+            try {
+                return new AudioPlaylist(album.albumTitle, audioInfo.getAlbumTracks(album), playingTrack);
+            } catch (Exception e1) {
+                
+            }
         }
         
         if (isPlaylist())
         {
             ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
             
-            if (playlists == null)
-            {
-                return null;
-            }
-            
             for (int e = 0; e < playlists.size(); e++)
             {
                 if (_value.equals(playlists.get(e).getName()))
                 {
                     AudioPlaylist pl = playlists.get(e);
-                    return new AudioPlaylist(pl.getName(), pl.getTracks(), playingTrack);
+
+                    try {
+                        return new AudioPlaylist(pl.getName(), pl.getTracks(), playingTrack);
+                    } catch (Exception e2) {
+
+                    }
                 }
             }
             
