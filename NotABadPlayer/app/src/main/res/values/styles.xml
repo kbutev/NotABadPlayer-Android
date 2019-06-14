@@ -38,10 +38,10 @@
         <item name="playerTextColor">@color/playerTextInverted</item>
         <item name="playerSubtextColor">@color/playerSubtextInverted</item>
         <item name="playerTitleColor">@color/playerTitleInverted</item>
-        <item name="playerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="playerButtonsTintColor">@color/playerButtonsTintInverted</item>
         <item name="quickPlayerTextColor">@color/quickPlayerTextInverted</item>
         <item name="quickPlayerSubtextColor">@color/quickPlayerSubtextInverted</item>
-        <item name="quickPlayerButtonsTintColor">@color/playerButtonsTint</item>
+        <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTintInverted</item>
         <item name="quickPlayerBorderColor">@color/quickPlayerBorderInverted</item>
         <item name="albumTitleHeaderTextColor">@color/albumTitleHeaderTextInverted</item>
         <item name="indexerCharBackgroundColor">@color/indexerCharBackgroundInverted</item>
@@ -67,7 +67,7 @@
         <item name="playerTextColor">@color/playerTextInverted</item>
         <item name="playerSubtextColor">@color/playerSubtextInverted</item>
         <item name="playerTitleColor">@color/playerTitleInverted</item>
-        <item name="playerButtonsTintColor">@color/quickPlayerButtonsTint</item>
+        <item name="playerButtonsTintColor">@color/playerButtonsTintInverted</item>
         <item name="quickPlayerTextColor">@color/quickPlayerText</item>
         <item name="quickPlayerSubtextColor">@color/quickPlayerSubtext</item>
         <item name="quickPlayerButtonsTintColor">@color/quickPlayerButtonsTint</item>

@@ -26,12 +26,12 @@
     
     <color name="baseBackgroundInverted">#414141</color>
     <color name="navigationBackgroundInverted">#ffffff</color>
-    <color name="quickPlayerBackgroundInverted">#414141</color>
+    <color name="quickPlayerBackgroundInverted">#F8F7F5</color>
     <color name="playerBackgroundInverted">#414141</color>
     <color name="genericButtonBackgroundInverted">#ffffff</color>
     <color name="genericBorderBackgroundInverted">#F8F7F5</color>
     <color name="borderOutlineInverted">#414141</color>
-    <color name="quickPlayerBorderInverted">#FFFFFFFF</color>
+    <color name="quickPlayerBorderInverted">#414141</color>
     <color name="albumTitleHeaderBackgroundInverted">#F8F7F5</color>
     <color name="indexerCharBackgroundInverted">#99F8F7F5</color>
     
@@ -64,8 +64,8 @@
     <color name="playerTextInverted">#ffffff</color>
     <color name="playerSubtextInverted">#FFEB3B</color>
     <color name="playerTitleInverted">#ffffff</color>
-    <color name="quickPlayerTextInverted">#ffffff</color>
-    <color name="quickPlayerSubtextInverted">#FFEB3B</color>
+    <color name="quickPlayerTextInverted">#414141</color>
+    <color name="quickPlayerSubtextInverted">#6c6c6c</color>
     <color name="albumTitleHeaderTextInverted">#000000</color>
     <color name="trackNumberInverted">#E9E9E9</color>
     <color name="genericButtonTextInverted">#000000</color>
@@ -74,7 +74,9 @@
 
     <!-- Buttons -->
     <color name="playerButtonsTint">#000000</color>
+    <color name="playerButtonsTintInverted">#ffffff</color>
     <color name="quickPlayerButtonsTint">#ffffff</color>
+    <color name="quickPlayerButtonsTintInverted">#000000</color>
     
     <!-- Seek bars -->
     <color name="playerBaseProgressBar">#6c6c6c</color>
