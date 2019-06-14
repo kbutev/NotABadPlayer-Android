@@ -64,7 +64,7 @@ public class AudioPlaylist implements Serializable
                          @NonNull List<AudioTrack> tracks,
                          @Nullable AudioTrack startWithTrack) throws Exception
     {
-        this(name, tracks, startWithTrack, AppSettings.TrackSorting.TITLE);
+        this(name, tracks, startWithTrack, AppSettings.TrackSorting.NONE);
     }
 
     public AudioPlaylist(@NonNull String name,
@@ -94,10 +94,23 @@ public class AudioPlaylist implements Serializable
         }
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof AudioPlaylist)
+        {
+            AudioPlaylist playlist = (AudioPlaylist)o;
+            
+            return _name.equals(playlist._name) && _playingTrackPosition == playlist._playingTrackPosition && _tracks.equals(playlist._tracks);
+        }
+
+        return false;
+    }
+
     public @NonNull AudioPlaylist sortedPlaylist(AppSettings.TrackSorting sorting)
     {
         AudioPlaylist playlist = new AudioPlaylist(getName(), getTracks(), sorting);
-        playlist._playingTrackPosition = _playingTrackPosition;
+        playlist.goToTrack(getPlayingTrack());
         return playlist;
     }
     

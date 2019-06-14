@@ -291,13 +291,10 @@ public class SearchPresenter implements BasePresenter
         if (currentPlaylist != null)
         {
             String newPlaylistName = searchPlaylist.getName();
-            String currentPlaylistName = currentPlaylist.getName();
-
             AudioTrack newTrack = searchPlaylist.getPlayingTrack();
-            AudioTrack currentTrack = currentPlaylist.getPlayingTrack();
 
             // Current playing playlist or track does not match the state of the presenter's playlist?
-            if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
+            if (!searchPlaylist.equals(currentPlaylist))
             {
                 // Change the audio player playlist to equal the presenter's playlist
                 Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "' from playlist '" + newPlaylistName + "'");
