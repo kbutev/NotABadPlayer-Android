@@ -50,9 +50,14 @@ public class AudioPlaylist implements Serializable
         _random = new Random();
     }
     
-    public AudioPlaylist(@NonNull String name, @NonNull AudioTrack startWithTrack) throws Exception
+    public AudioPlaylist(@NonNull String name, @NonNull AudioTrack startWithTrack)
     {
-        this(name, trackAsAList(startWithTrack), startWithTrack);
+        this(name, trackAsAList(startWithTrack));
+        
+        if (hasTrack(startWithTrack))
+        {
+            goToTrack(startWithTrack);
+        }
     }
     
     public AudioPlaylist(@NonNull String name,

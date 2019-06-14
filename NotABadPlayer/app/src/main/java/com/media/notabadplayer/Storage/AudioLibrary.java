@@ -350,23 +350,12 @@ public class AudioLibrary implements AudioInfo {
         String albumId = cursor.getString(albumIDColumn);
         AudioAlbum album = getAlbumByID(albumId);
 
-        if (album == null)
-        {
-            return null;
-        }
+        AudioTrackSource source = album != null ? AudioTrackSource.createAlbumSource(album.albumID) : AudioTrackSource.createPlaylistSource(title);
         
-        String albumCover = album.albumCover;
+        String albumCover = album != null ? album.albumCover : "";
         
         cursor.close();
         
-        return new AudioTrack(filePath,
-                              title,
-                              artist,
-                              albumTitle,
-                              albumId,
-                              albumCover,
-                              trackNum,
-                              duration,
-                              AudioTrackSource.createAlbumSource(album.albumID));
+        return new AudioTrack(filePath, title, artist, albumTitle, albumId, albumCover, trackNum, duration, source);
     }
 }

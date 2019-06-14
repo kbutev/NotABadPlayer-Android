@@ -243,11 +243,14 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
     private void loadDataFromIntent(@NonNull Intent intent)
     {
-        _launchedFromFile = Intent.ACTION_VIEW.equals(intent.getAction());
-
-        if (_launchedFromFile)
+        if (Intent.ACTION_VIEW.equals(intent.getAction()))
         {
             _launchedFromFileUri = intent.getData();
+            _launchedFromFile = _launchedFromFileUri != null;
+        }
+        else
+        {
+            _launchedFromFile = false;
         }
     }
     
@@ -259,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
     }
     
-    private void startAppWithTrack(Uri path)
+    private void startAppWithTrack(@NonNull Uri path)
     {
         Log.v(MainActivity.class.getCanonicalName(), "Launching player with initial track...");
         
@@ -267,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         if (track == null)
         {
-            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with desired track: " + path.toString());
+            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with non-existing track: " + path.toString());
             return;
         }
 
@@ -275,10 +278,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         if (playlist == null)
         {
-            Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with desired track: " + path.toString());
-            return;
+            playlist = new AudioPlaylist(track.title, track);
         }
-
+        
         AudioPlaylist currentPlaylist = Player.getShared().getPlaylist();
         
         if (currentPlaylist != null)
