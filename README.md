@@ -40,8 +40,6 @@ General design:
 
 * CPU and energy efficient, memory ineffecient since the audio information is retrieved once and reused when trying to use the audio player
 
-* Very little little exception handling is done, try-catch blocks usually are there just to print errors/warnings
-
 * Audio Library, a singleton that store audio data of albums and tracks. It uses the Android API MediaStore.
 
 * Multiple task android app: when launching the player from another program, like the Files program, a separate task is created and put ontop of the navigation for the Files program, rather than transfering the user to one single unique task window (like in iOS).
