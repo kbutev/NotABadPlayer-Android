@@ -48,14 +48,11 @@ public class PlayerPresenter implements BasePresenter
         
         if (currentPlaylist != null)
         {
-            String newPlaylistName = _playlist.getName();
-            String currentPlaylistName = currentPlaylist.getName();
-
             AudioTrack newTrack = _playlist.getPlayingTrack();
             AudioTrack currentTrack = currentPlaylist.getPlayingTrack();
 
             // Current playing playlist or track does not match the state of the presenter's playlist?
-            if (!newPlaylistName.equals(currentPlaylistName) || !newTrack.equals(currentTrack))
+            if (!_playlist.equals(currentPlaylist))
             {
                 // Change the audio player playlist to equal the presenter's playlist
                 Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen and playing track '" + newTrack.title + "'");

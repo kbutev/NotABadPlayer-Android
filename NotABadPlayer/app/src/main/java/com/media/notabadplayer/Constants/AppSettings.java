@@ -11,7 +11,7 @@ public class AppSettings
     }
     
     public enum TrackSorting {
-        TRACK_NUMBER, TITLE, LONGEST, SHORTEST
+        NONE, TRACK_NUMBER, TITLE, LONGEST, SHORTEST
     }
     
     public enum ShowVolumeBar {
