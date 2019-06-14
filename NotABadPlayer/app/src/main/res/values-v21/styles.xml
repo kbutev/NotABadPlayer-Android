@@ -90,4 +90,10 @@
         <item name="albumTitleHeaderBackgroundColor">@color/albumTitleHeaderBackground</item>
         <item name="borderOutlineColor">@color/borderOutline</item>
     </style>
+
+    <!-- Splash screen image -->
+    <style name="splashScreenTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
 </resources>
