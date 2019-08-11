@@ -36,6 +36,8 @@ Design patterns:
 
 * Command - keybind actions
 
+* Bridge - Player class is abstraction while AudioPlayerService & AudioPlayerDummy are implementation.
+
 General design:
 
 * CPU and energy efficient, memory ineffecient since the audio information is retrieved once and reused when trying to use the audio player
