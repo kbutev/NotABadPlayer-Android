@@ -259,5 +259,7 @@ public class PlaylistPresenter implements BasePresenter {
         {
             player.resume();
         }
+
+        _view.updatePlayerScreen(playlist);
     }
 }

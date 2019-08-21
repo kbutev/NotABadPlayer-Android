@@ -343,5 +343,7 @@ public class SearchPresenter implements BasePresenter
         {
             player.resume();
         }
+
+        _view.updatePlayerScreen(playlist);
     }
 }
