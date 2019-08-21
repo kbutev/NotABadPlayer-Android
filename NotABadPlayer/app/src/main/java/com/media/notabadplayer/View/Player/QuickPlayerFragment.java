@@ -448,12 +448,14 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     public void onPlayerPause(@NonNull AudioTrack track)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_play);
+        updateMediaInfo(track);
     }
     
     @Override
     public void onPlayerResume(@NonNull AudioTrack track)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
+        updateMediaInfo(track);
     }
 
     @Override
