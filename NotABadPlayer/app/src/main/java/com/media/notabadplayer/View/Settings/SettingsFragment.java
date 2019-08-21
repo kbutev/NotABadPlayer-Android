@@ -570,7 +570,7 @@ public class SettingsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
+    public void updateSearchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
         
     }
@@ -593,12 +593,12 @@ public class SettingsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void appSettingsReset()
+    public void onResetAppSettings()
     {
         // Notify root view
         if (_rootView != null)
         {
-            _rootView.appSettingsReset();
+            _rootView.onResetAppSettings();
         }
         
         // Update self
@@ -606,12 +606,12 @@ public class SettingsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void appThemeChanged(AppSettings.AppTheme appTheme)
+    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
     {
         // Notify root view
         if (_rootView != null)
         {
-            _rootView.appThemeChanged(appTheme);
+            _rootView.onAppThemeChanged(appTheme);
         }
         
         // Update self
@@ -640,12 +640,12 @@ public class SettingsFragment extends Fragment implements BaseView
     }
     
     @Override
-    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
         // Notify root view
         if (_rootView != null)
         {
-            _rootView.appTrackSortingChanged(trackSorting);
+            _rootView.onAppTrackSortingChanged(trackSorting);
         }
     }
     

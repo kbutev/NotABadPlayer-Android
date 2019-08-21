@@ -190,7 +190,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
+    public void updateSearchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
 
     }
@@ -202,19 +202,19 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
     
     @Override
-    public void appSettingsReset()
+    public void onResetAppSettings()
     {
 
     }
 
     @Override
-    public void appThemeChanged(AppSettings.AppTheme appTheme)
+    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
     {
 
     }
 
     @Override
-    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }
