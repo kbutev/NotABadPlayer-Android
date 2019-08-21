@@ -43,7 +43,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     private BasePresenter _presenter;
     
     private GridView _table;
-    private PlaylistListAdapter _tableAdapter;
+    private @Nullable PlaylistListAdapter _tableAdapter;
     private Parcelable _tableState;
     
     private TextView _albumTitleHeader;
@@ -148,7 +148,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
 
                 position--;
 
-                if (position >= 0)
+                if (position >= 0 && _tableAdapter != null)
                 {
                     _tableAdapter.selectItem(view, position);
                     
@@ -284,6 +284,11 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     @Override
     public void onPlayerPlay(@NonNull AudioTrack current)
     {
+        if (_tableAdapter == null)
+        {
+            return;
+        }
+
         boolean result = _tableAdapter.isItemSelectedForTrack(current);
         
         if (!result)

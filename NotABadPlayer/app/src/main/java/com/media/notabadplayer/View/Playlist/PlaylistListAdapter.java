@@ -1,6 +1,9 @@
 package com.media.notabadplayer.View.Playlist;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -27,7 +30,9 @@ class PlaylistListAdapter extends BaseAdapter
     private String _playlistName;
     private ArrayList<AudioTrack> _tracks;
     private boolean _isPlaylist;
-    
+
+    private HashSet<View> _listViews = new HashSet<>();
+
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
     
@@ -106,14 +111,21 @@ class PlaylistListAdapter extends BaseAdapter
             
             return header;
         }
-        
+
+        // Album track item
+        // Never reuse convert view, because of header
+        convertView = LayoutInflater.from(_context).inflate(R.layout.item_album_track, parent, false);
+
+        View listItem = convertView;
+
+        // Views set update
+        _listViews.add(listItem);
+
         // Item (follow position > 0)
         position--;
 
         AudioTrack item = (AudioTrack) getItem(position);
-        
-        View listItem = LayoutInflater.from(_context).inflate(R.layout.item_album_track, parent, false);
-        
+
         String dataTitle = item.title;
         String dataTrackNum = item.trackNum;
         String dataDuration = item.duration;
@@ -167,12 +179,9 @@ class PlaylistListAdapter extends BaseAdapter
         }
         else
         {
-            listItem.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
-            
-            deselectCurrentItem();
-            
             _currentlySelectedView = listItem;
             _currentlySelectedViewListIndex = position;
+            _currentlySelectedView.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
         }
         
         return listItem;
@@ -219,24 +228,24 @@ class PlaylistListAdapter extends BaseAdapter
     public void selectItem(@NonNull View view, int position)
     {
         deselectCurrentItem();
-        
-        view.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
-        
+
         _currentlySelectedView = view;
         _currentlySelectedViewListIndex = position;
-        
+
+        _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
         UIAnimations.getShared().listItemAnimations.animateTap(_context, _currentlySelectedView);
     }
     
     public void deselectCurrentItem()
     {
-        if (_currentlySelectedView != null)
-        {
-            UIAnimations.getShared().listItemAnimations.endAll();
-            _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
-        }
+        UIAnimations.getShared().listItemAnimations.endAll();
 
-        _currentlySelectedView = null;
-        _currentlySelectedViewListIndex = -1;
+        Iterator<View> iterator = _listViews.iterator();
+
+        while (iterator.hasNext())
+        {
+            View child = iterator.next();
+            child.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+        }
     }
 }
