@@ -1,11 +1,15 @@
 package com.media.notabadplayer.View.Search;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +28,11 @@ public class SearchListAdapter extends BaseAdapter
     private Context _context;
     private List<AudioTrack> _tracks;
 
+    private HashSet<View> _listViews = new HashSet<>();
+
     private View _currentlySelectedView = null;
-    
+    private int _currentlySelectedViewListIndex = -1;
+
     public SearchListAdapter(@NonNull Context context, List<AudioTrack> tracks)
     {
         this._context = context;
@@ -51,15 +58,19 @@ public class SearchListAdapter extends BaseAdapter
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) 
     {
-        if (convertView == null) 
+        // Album track item
+        if (convertView == null)
         {
             convertView = LayoutInflater.from(_context).inflate(R.layout.item_search_result, parent, false);
         }
+
+        View listItem = convertView;
+
+        // Views set update
+        _listViews.add(convertView);
         
         // Item update
         AudioTrack item = (AudioTrack) getItem(position);
-        
-        View listItem = convertView;
         
         ImageView cover = listItem.findViewById(R.id.albumCover);
         
@@ -104,32 +115,58 @@ public class SearchListAdapter extends BaseAdapter
         }
         else
         {
-            listItem.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
             _currentlySelectedView = listItem;
+            _currentlySelectedViewListIndex = position;
+            _currentlySelectedView.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
         }
         
         return listItem;
     }
 
-    public void selectItem(@NonNull View view)
+    public boolean isItemSelectedForTrack(@NonNull AudioTrack track)
+    {
+        int position = -1;
+
+        for (int e = 0; e < _tracks.size(); e++)
+        {
+            AudioTrack listTrack = _tracks.get(e);
+
+            if (listTrack.equals(track))
+            {
+                position = e;
+                break;
+            }
+        }
+
+        if (position == -1)
+        {
+            return false;
+        }
+
+        return position == _currentlySelectedViewListIndex;
+    }
+
+    public void selectItem(@NonNull View view, int position)
     {
         deselectCurrentItem();
 
-        view.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
-
         _currentlySelectedView = view;
+        _currentlySelectedViewListIndex = position;
 
+        _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
         UIAnimations.getShared().listItemAnimations.animateTap(_context, _currentlySelectedView);
     }
 
     public void deselectCurrentItem()
     {
-        if (_currentlySelectedView != null)
-        {
-            UIAnimations.getShared().listItemAnimations.endAll();
-            _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
-        }
+        UIAnimations.getShared().listItemAnimations.endAll();
 
-        _currentlySelectedView = null;
+        Iterator<View> iterator = _listViews.iterator();
+
+        while (iterator.hasNext())
+        {
+            View child = iterator.next();
+            child.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+        }
     }
 }

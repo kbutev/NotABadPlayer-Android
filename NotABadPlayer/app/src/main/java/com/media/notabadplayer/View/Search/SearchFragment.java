@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,11 +52,11 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     private EditText _searchField;
     private ImageButton _searchFieldClearButton;
     private TextView _searchTip;
-    private ListView _searchResults;
+    private ListView _searchResultsList;
     private ProgressBar _progressIndicator;
     
-    private SearchListAdapter _searchResultsAdapter;
-    private Parcelable _searchResultsState;
+    private @Nullable SearchListAdapter _searchResultsAdapter;
+    private @Nullable Parcelable _searchResultsState;
     
     public SearchFragment()
     {
@@ -78,7 +79,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
         _searchField = root.findViewById(R.id.searchField);
         _searchFieldClearButton = root.findViewById(R.id.searchFieldClearButton);
         _searchTip = root.findViewById(R.id.searchTip);
-        _searchResults = root.findViewById(R.id.searchResultsList);
+        _searchResultsList = root.findViewById(R.id.searchResultsList);
         _progressIndicator = root.findViewById(R.id.progressIndicator);
         
         initUI();
@@ -105,12 +106,12 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
 
         if (_searchResultsAdapter != null)
         {
-            _searchResults.setAdapter(_searchResultsAdapter);
+            _searchResultsList.setAdapter(_searchResultsAdapter);
         }
         
         if (_searchResultsState != null)
         {
-            _searchResults.onRestoreInstanceState(_searchResultsState);
+            _searchResultsList.onRestoreInstanceState(_searchResultsState);
         }
     }
 
@@ -125,7 +126,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     @Override
     public void onPause()
     {
-        _searchResultsState = _searchResults.onSaveInstanceState();
+        _searchResultsState = _searchResultsList.onSaveInstanceState();
         
         super.onPause();
         
@@ -167,16 +168,16 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
             }
         });
         
-        _searchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        _searchResultsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (!_searchResults.isClickable())
+                if (!_searchResultsList.isClickable() || _searchResultsAdapter == null)
                 {
                     return;
                 }
-                
-                _searchResultsAdapter.selectItem(view);
+
+                _searchResultsAdapter.selectItem(view, position);
 
                 _presenter.onSearchResultClick(position);
             }
@@ -186,13 +187,13 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     public void enableInteraction()
     {
         _searchFieldClearButton.setClickable(true);
-        _searchResults.setClickable(true);
+        _searchResultsList.setClickable(true);
     }
 
     public void disableInteraction()
     {
         _searchFieldClearButton.setClickable(false);
-        _searchResults.setClickable(false);
+        _searchResultsList.setClickable(false);
     }
 
     @Override
@@ -291,16 +292,16 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
         if (searchTip != null)
         {
             showProgressIndicator();
-            
+
             _searchTip.setText(searchTip);
         }
         else
         {
             hideProgressIndicator();
-            
+
             if (songs.size() > 0)
             {
-                _searchTip.setText(String.valueOf(songs.size() + " " + getResources().getString(R.string.search_results_tip)));
+                _searchTip.setText(String.valueOf(songs.size()) + " " + getResources().getString(R.string.search_results_tip));
             }
             else
             {
@@ -309,20 +310,30 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
         }
 
         _searchResultsAdapter = new SearchListAdapter(context, songs);
-        _searchResults.setAdapter(_searchResultsAdapter);
-        _searchResults.invalidateViews();
+        _searchResultsList.setAdapter(_searchResultsAdapter);
+        _searchResultsList.invalidateViews();
     }
 
     @Override
     public void onPlayerPlay(@NonNull AudioTrack current)
     {
+        if (_searchResultsAdapter == null)
+        {
+            return;
+        }
 
+        boolean result = _searchResultsAdapter.isItemSelectedForTrack(current);
+
+        if (!result)
+        {
+            _searchResultsList.invalidateViews();
+        }
     }
 
     @Override
     public void onPlayerFinish()
     {
-        _searchResults.invalidateViews();
+        _searchResultsList.invalidateViews();
     }
 
     @Override
@@ -390,7 +401,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     {
         DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                _searchResults.invalidateViews();
+                _searchResultsList.invalidateViews();
             }
         };
 
