@@ -22,12 +22,12 @@ public interface BaseView {
     void openPlayerScreen(@NonNull AudioPlaylist playlist);
     void updatePlayerScreen(@NonNull AudioPlaylist playlist);
     
-    void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip);
+    void updateSearchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip);
 
     void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage);
-    void appSettingsReset();
-    void appThemeChanged(AppSettings.AppTheme appTheme);
-    void appTrackSortingChanged(AppSettings.TrackSorting trackSorting);
+    void onResetAppSettings();
+    void onAppThemeChanged(AppSettings.AppTheme appTheme);
+    void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting);
     void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar showVolumeBar);
     
     void onFetchDataErrorEncountered(@NonNull Exception error);

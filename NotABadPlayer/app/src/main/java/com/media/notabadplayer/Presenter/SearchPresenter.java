@@ -184,7 +184,7 @@ public class SearchPresenter implements BasePresenter
         GeneralStorage.getShared().saveSearchQuery(searchQuery);
 
         // Start search process
-        _view.searchQueryResults(searchQuery, new ArrayList<AudioTrack>(), _context.getResources().getString(R.string.search_hint_searching));
+        _view.updateSearchQueryResults(searchQuery, new ArrayList<AudioTrack>(), _context.getResources().getString(R.string.search_hint_searching));
 
         // Use background thread to retrieve the search results
         // Then, update the view on the main thread
@@ -201,7 +201,7 @@ public class SearchPresenter implements BasePresenter
                     {
                         Log.v(SearchPresenter.class.getCanonicalName(), "Retrieved search results, updating view");
                         
-                        _view.searchQueryResults(searchQuery, _searchResults, null);
+                        _view.updateSearchQueryResults(searchQuery, _searchResults, null);
                     }
                 };
 

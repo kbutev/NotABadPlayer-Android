@@ -180,11 +180,11 @@ public class SettingsPresenter implements BasePresenter
         
         GeneralStorage.getShared().resetDefaultSettingsValues();
         
-        _view.appSettingsReset();
+        _view.onResetAppSettings();
 
         AppSettings.AppTheme themeValue = GeneralStorage.getShared().getAppThemeValue();
 
-        _view.appThemeChanged(themeValue);
+        _view.onAppThemeChanged(themeValue);
 
         Player.getShared().unmute();
         Player.getShared().pause();
@@ -206,7 +206,7 @@ public class SettingsPresenter implements BasePresenter
         
         GeneralStorage.getShared().saveAppThemeValue(themeValue);
         
-        _view.appThemeChanged(themeValue);
+        _view.onAppThemeChanged(themeValue);
     }
     
     @Override
@@ -221,7 +221,7 @@ public class SettingsPresenter implements BasePresenter
         
         GeneralStorage.getShared().saveTrackSortingValue(trackSorting);
         
-        _view.appTrackSortingChanged(trackSorting);
+        _view.onAppTrackSortingChanged(trackSorting);
     }
     
     @Override

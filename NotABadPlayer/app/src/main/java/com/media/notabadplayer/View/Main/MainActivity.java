@@ -437,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void searchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
+    public void updateSearchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
     {
 
     }
@@ -449,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void appSettingsReset()
+    public void onResetAppSettings()
     {
         Log.v(MainActivity.class.getSimpleName(), "App settings were reset");
 
@@ -457,7 +457,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
     
     @Override
-    public void appThemeChanged(AppSettings.AppTheme appTheme)
+    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
     {
         Log.v(MainActivity.class.getSimpleName(), "App theme changed to " + appTheme.name());
 
@@ -465,17 +465,17 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         AppThemeUtility.setTheme(this, appTheme);
         
-        _quickPlayer.appThemeChanged(appTheme);
+        _quickPlayer.onAppThemeChanged(appTheme);
     }
     
     @Override
-    public void appTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
         Log.v(MainActivity.class.getSimpleName(), "App track sorting changed.");
 
         _tabNavigation.clearTabCache();
         
-        _quickPlayer.appTrackSortingChanged(trackSorting);
+        _quickPlayer.onAppTrackSortingChanged(trackSorting);
     }
 
     @Override
