@@ -612,6 +612,20 @@ public class GeneralStorage
         editor.putString("open_player_on_play", value.name());
         editor.apply();
     }
+
+    public int getCurrentlySelectedNavigationTab()
+    {
+        SharedPreferences preferences = getSharedPreferences();
+        return preferences.getInt("selected_navigation_tab", 0);
+    }
+
+    public void saveCurrentlySelectedNavigationTab(int tabId)
+    {
+        SharedPreferences preferences = getSharedPreferences();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("selected_navigation_tab", tabId);
+        editor.apply();
+    }
     
     public AppSettings.TabCachingPolicies getCachingPolicy()
     {
@@ -636,7 +650,7 @@ public class GeneralStorage
         editor.apply();
     }
     
-    public static ArrayList<AudioPlaylist> objectToPlaylistsArray(Object object)
+    private static ArrayList<AudioPlaylist> objectToPlaylistsArray(Object object)
     {
         if (object instanceof ArrayList)
         {
@@ -660,7 +674,7 @@ public class GeneralStorage
         return null;
     }
 
-    public static ArrayList<AudioTrack> objectToTracksArray(Object object)
+    private static ArrayList<AudioTrack> objectToTracksArray(Object object)
     {
         if (object instanceof ArrayList)
         {

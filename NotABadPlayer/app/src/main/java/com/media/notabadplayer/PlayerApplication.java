@@ -79,14 +79,7 @@ public class PlayerApplication extends Application {
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
     }
-    
-    private void restart()
-    {
-        Log.v(PlayerApplication.class.getCanonicalName(), "Restarting application...");
-        
-        terminate();
-    }
-    
+
     private void performLaunchPerformanceOptimizations()
     {
         // Anything we can start early on here, so the user can get smoother experience

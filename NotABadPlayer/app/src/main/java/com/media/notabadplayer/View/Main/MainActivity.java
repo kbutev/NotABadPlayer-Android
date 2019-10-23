@@ -305,8 +305,20 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         BottomNavigationView navigationView = findViewById(R.id.navigation);
         
         // Select default tab
-        onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
-        
+        GeneralStorage storage = GeneralStorage.getShared();
+        int defaultSelectionId = storage.getCurrentlySelectedNavigationTab();
+
+        if (defaultSelectionId == 0)
+        {
+            onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
+            navigationView.setSelectedItemId(DEFAULT_SELECTED_TAB_ID);
+        }
+        else
+        {
+            onTabItemSelected(defaultSelectionId);
+            navigationView.setSelectedItemId(defaultSelectionId);
+        }
+
         // Create quick player and it's presenter
         _quickPlayerPresenter = new QuickPlayerPresenter(_audioLibrary);
         _quickPlayer = QuickPlayerFragment.newInstance(_quickPlayerPresenter, this);
@@ -384,6 +396,9 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 selectSettingsTab();
                 break;
         }
+
+        // Save the current id to storage
+        GeneralStorage.getShared().saveCurrentlySelectedNavigationTab(itemID);
     }
 
     @Override
