@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -177,17 +178,27 @@ public class SettingsPresenter implements BasePresenter
         {
             return;
         }
-        
-        GeneralStorage.getShared().resetDefaultSettingsValues();
-        
+
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Resetting app settings to their defaults...");
+
+        GeneralStorage storage = GeneralStorage.getShared();
+        Player player = Player.getShared();
+
+        // Reset storage
+        storage.resetDefaultSettingsValues();
+
+        // Update player state (storage does not change the player directly)
+        player.setPlayOrder(storage.retrievePlayerStatePlayOrder());
+
+        // Alert view delegate
         _view.onResetAppSettings();
+        _view.onAppThemeChanged(storage.getAppThemeValue());
 
-        AppSettings.AppTheme themeValue = GeneralStorage.getShared().getAppThemeValue();
+        // Always unmute and pause the player
+        player.unmute();
+        player.pause();
 
-        _view.onAppThemeChanged(themeValue);
-
-        Player.getShared().unmute();
-        Player.getShared().pause();
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Finished resetting app settings!");
     }
 
     @Override
