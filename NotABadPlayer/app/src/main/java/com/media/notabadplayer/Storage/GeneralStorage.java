@@ -1,5 +1,6 @@
 package com.media.notabadplayer.Storage;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -178,7 +179,8 @@ public class GeneralStorage
     public void resetDefaultSettingsValues()
     {
         Log.v(GeneralStorage.class.getCanonicalName(), "Resetting values to their defaults");
-        
+
+        resetPlayerState();
         savePlayerPlayedHistoryCapacity(50);
         saveAppThemeValue(AppSettings.AppTheme.LIGHT);
         saveAlbumSortingValue(AppSettings.AlbumSorting.TITLE);
@@ -244,88 +246,46 @@ public class GeneralStorage
         
         return storageVersion;
     }
-    
+
+    public void resetPlayerState()
+    {
+        AudioPlayOrder defaultPlayOrder = AudioPlayOrder.FORWARDS;
+
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+
+        editor.putString("player_play_order", defaultPlayOrder.name());
+
+        editor.apply();
+    }
+
     public void savePlayerState()
     {
         Player player = Player.getShared();
-        
+
         if (!player.hasPlaylist())
         {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Cannot save player state yet, its not initialized yet!");
             return;
         }
-        
+
         SharedPreferences.Editor editor = getSharedPreferences().edit();
-        
+
         editor.putString("player_current_playlist", Serializing.serializeObject(player.getPlaylist()));
+
         editor.putString("player_play_order", player.getPlayOrder().name());
+
         editor.putInt("player_current_position", player.getCurrentPositionMSec());
-        
+
         editor.apply();
     }
-    
-    public boolean restorePlayerState()
+
+    public @Nullable AudioPlaylist retrievePlayerStateCurrentPlaylist()
     {
         SharedPreferences preferences = getSharedPreferences();
-        Player player = Player.getShared();
 
-        String playOrderData = preferences.getString("player_play_order", "");
         String playlistData = preferences.getString("player_current_playlist", "");
-        
-        if (playlistData == null || playOrderData == null)
-        {
-            return false;
-        }
 
-        // Restore play order state
-        Log.v(GeneralStorage.class.getCanonicalName(), "Restoring audio player state...");
-        
-        AudioPlayOrder playOrder;
-        
-        try {
-            playOrder = AudioPlayOrder.valueOf(playOrderData);
-        } catch (Exception e) {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Failed to restore audio player state, " + e.toString());
-            return false;
-        }
-        
-        player.setPlayOrder(playOrder);
-        
         // Restore playlist
-        Object result = Serializing.deserializeObject(playlistData);
-
-        if (!(result instanceof AudioPlaylist))
-        {
-            return false;
-        }
-        
-        AudioPlaylist playlist = (AudioPlaylist)result;
-        
-        try {
-            player.playPlaylist(playlist);
-        } catch (Exception e) {
-            Log.v(GeneralStorage.class.getCanonicalName(), "Failed to restore audio player state, " + e.toString());
-            return false;
-        }
-
-        // Always pause after restoring
-        player.pause();
-        
-        // Seek to last memorized location
-        int positionMSec = preferences.getInt("player_current_position", 0);
-        
-        player.seekTo(positionMSec);
-        
-        // Success
-        Log.v(GeneralStorage.class.getCanonicalName(), "Successfully restored audio player state!");
-        return true;
-    }
-
-    public @Nullable AudioPlaylist retrievePlayerSavedStatePlaylist()
-    {
-        SharedPreferences preferences = getSharedPreferences();
-        
-        String playlistData = preferences.getString("player_current_playlist", "");
-        
         Object result = Serializing.deserializeObject(playlistData);
 
         if (!(result instanceof AudioPlaylist))
@@ -334,6 +294,30 @@ public class GeneralStorage
         }
 
         return (AudioPlaylist)result;
+    }
+
+    public AudioPlayOrder retrievePlayerStatePlayOrder()
+    {
+        SharedPreferences preferences = getSharedPreferences();
+
+        String playOrderData = preferences.getString("player_play_order", "");
+
+        try {
+            return AudioPlayOrder.valueOf(playOrderData);
+        } catch (Exception e) {
+
+        }
+
+        return AudioPlayOrder.FORWARDS;
+    }
+
+    public int retrievePlayerStatePlayPosition()
+    {
+        SharedPreferences preferences = getSharedPreferences();
+
+        int positionMSec = preferences.getInt("player_current_position", 0);
+
+        return positionMSec;
     }
 
     public void savePlayerPlayHistoryState()
@@ -357,7 +341,7 @@ public class GeneralStorage
         Log.v(GeneralStorage.class.getCanonicalName(), "Saved audio player state to storage.");
     }
 
-    public void restorePlayerPlayHistoryState()
+    public @Nullable ArrayList<AudioTrack> retrievePlayerPlayHistoryState()
     {
         SharedPreferences preferences = getSharedPreferences();
         Player player = Player.getShared();
@@ -366,17 +350,10 @@ public class GeneralStorage
 
         if (data == null)
         {
-            return;
+            return null;
         }
-        
-        ArrayList<AudioTrack> playHistory = objectToTracksArray(Serializing.deserializeObject(data));
-        
-        if (playHistory == null)
-        {
-            return;
-        }
-        
-        player.playHistory.setList(playHistory);
+
+        return objectToTracksArray(Serializing.deserializeObject(data));
     }
 
     public void saveSearchQuery(String searchQuery)

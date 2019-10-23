@@ -118,13 +118,15 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         else
         {
             // Player may not be loaded yet, retrieve some dummy values from the general storage
-            AudioPlaylist playlist = GeneralStorage.getShared().retrievePlayerSavedStatePlaylist();
+            AudioPlaylist playlist = GeneralStorage.getShared().retrievePlayerStateCurrentPlaylist();
             
             if (playlist != null)
             {
                 updateMediaInfo(playlist.getPlayingTrack());
             }
         }
+
+        updatePlayOrderButtonState();
     }
 
     @Override

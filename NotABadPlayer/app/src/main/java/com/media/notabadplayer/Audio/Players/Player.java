@@ -120,11 +120,25 @@ public class Player implements AudioPlayer {
             }
 
             // Restore audio state here
-            boolean result = GeneralStorage.getShared().restorePlayerState();
-            GeneralStorage.getShared().restorePlayerPlayHistoryState();
-            
-            // Failed to restore player state - send stop() request to all observers
-            if (!result)
+            restorePlayStateFromStorage();
+            restorePlayHistoryFromStorage();
+
+            // Always start the player paused
+            pause();
+
+            // Alert observers of the current state
+            AudioPlaylist playlist = getPlaylist();
+
+            if (playlist != null)
+            {
+                AudioTrack track = playlist.getPlayingTrack();
+
+                for (AudioPlayerObserver observer : observers._observers)
+                {
+                    observer.onPlayerPause(track);
+                }
+            }
+            else
             {
                 for (AudioPlayerObserver observer : observers._observers)
                 {
@@ -146,8 +160,41 @@ public class Player implements AudioPlayer {
         // The purpose of this object is to avoid null pointer exception
         // When the audio service is not running, the @_player is set to equal to a dummy
         // Note: while the dummy can be used to ignore most player requests, the player observers
-        // must be recorded and transfered to the real audio service when it gets set
+        // must be recorded and transferred to the real audio service when it gets set
         return new AudioPlayerDummy(observers);
+    }
+
+    private void restorePlayStateFromStorage()
+    {
+        GeneralStorage storage = GeneralStorage.getShared();
+
+        AudioPlayOrder playOrder = storage.retrievePlayerStatePlayOrder();
+        setPlayOrder(playOrder);
+
+        AudioPlaylist playlist = storage.retrievePlayerStateCurrentPlaylist();
+
+        if (playlist != null)
+        {
+            try {
+                playPlaylist(playlist);
+            } catch (Exception e) {
+                Log.v(Player.class.getCanonicalName(), "Failed to restore the player state from storage.");
+                return;
+            }
+        }
+
+        int playPosition = storage.retrievePlayerStatePlayPosition();
+        seekTo(playPosition);
+    }
+
+    private void restorePlayHistoryFromStorage()
+    {
+        ArrayList<AudioTrack> history = GeneralStorage.getShared().retrievePlayerPlayHistoryState();
+
+        if (history != null)
+        {
+            playHistory.setList(history);
+        }
     }
 
     @Override
