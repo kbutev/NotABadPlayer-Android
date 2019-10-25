@@ -120,11 +120,8 @@ public class Player implements AudioPlayer {
             }
 
             // Restore audio state here
-            restorePlayStateFromStorage();
+            restorePlayerStateFromStorage(true);
             restorePlayHistoryFromStorage();
-
-            // Always start the player paused
-            pause();
 
             // Alert observers of the current state
             AudioPlaylist playlist = getPlaylist();
@@ -164,13 +161,15 @@ public class Player implements AudioPlayer {
         return new AudioPlayerDummy(observers);
     }
 
-    private void restorePlayStateFromStorage()
+    private void restorePlayerStateFromStorage(boolean pause)
     {
         GeneralStorage storage = GeneralStorage.getShared();
 
+        // Restore play order
         AudioPlayOrder playOrder = storage.retrievePlayerStatePlayOrder();
         setPlayOrder(playOrder);
 
+        // Restore playlist
         AudioPlaylist playlist = storage.retrievePlayerStateCurrentPlaylist();
 
         if (playlist != null)
@@ -183,6 +182,13 @@ public class Player implements AudioPlayer {
             }
         }
 
+        // Start player as paused?
+        if (pause && playlist != null)
+        {
+            pause();
+        }
+
+        // Restore play position
         int playPosition = storage.retrievePlayerStatePlayPosition();
         seekTo(playPosition);
     }
