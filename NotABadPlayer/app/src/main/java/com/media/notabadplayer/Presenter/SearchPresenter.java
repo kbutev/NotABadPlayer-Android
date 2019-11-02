@@ -55,6 +55,8 @@ public class SearchPresenter implements BasePresenter
             throw new IllegalStateException("SearchPresenter: view has not been set");
         }
 
+        Log.v(SearchPresenter.class.getCanonicalName(), "Start.");
+
         // Restore last search query from storage
         String searchQuery = GeneralStorage.getShared().retrieveSearchQuery();
 

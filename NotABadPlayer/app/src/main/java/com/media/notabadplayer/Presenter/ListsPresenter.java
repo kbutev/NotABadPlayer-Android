@@ -58,6 +58,8 @@ public class ListsPresenter implements BasePresenter
         {
             throw new IllegalStateException("ListsPresenter: view has not been set");
         }
+
+        Log.v(ListsPresenter.class.getCanonicalName(), "Start.");
     }
 
     @Override

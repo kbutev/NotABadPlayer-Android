@@ -45,6 +45,8 @@ public class QuickPlayerPresenter implements BasePresenter
         {
             throw new IllegalStateException("QuickPlayerPresenter: view has not been set");
         }
+
+        Log.v(QuickPlayerPresenter.class.getCanonicalName(), "Start.");
     }
 
     @Override
