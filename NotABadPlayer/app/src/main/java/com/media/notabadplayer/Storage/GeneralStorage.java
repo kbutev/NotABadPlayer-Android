@@ -206,6 +206,8 @@ public class GeneralStorage
         saveSettingsAction(ApplicationInput.EXTERNAL_PLAY, ApplicationAction.PAUSE);
 
         saveCachingPolicy(AppSettings.TabCachingPolicies.ALBUMS_ONLY);
+
+        saveSearchQuery("");
         
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
