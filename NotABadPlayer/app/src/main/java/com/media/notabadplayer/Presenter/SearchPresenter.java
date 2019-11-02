@@ -62,7 +62,8 @@ public class SearchPresenter implements BasePresenter
 
         if (searchQuery != null && searchQuery.length() > 0)
         {
-            onSearchQuery(searchQuery);
+            _lastSearchQuery = searchQuery;
+            searchForQuery();
         }
     }
 
@@ -166,52 +167,17 @@ public class SearchPresenter implements BasePresenter
         {
             return;
         }
-        
+
         // Skip if we already searched for this
-        if (_lastSearchQuery != null)
-        {
-            if (searchValue.equals(_lastSearchQuery))
-            {
+        if (_lastSearchQuery != null) {
+            if (searchValue.equals(_lastSearchQuery)) {
                 return;
             }
         }
 
-        Log.v(SearchPresenter.class.getCanonicalName(), "Searching for '" + searchValue + "' ...");
-        
         _lastSearchQuery = searchValue;
-        
-        final String searchQuery = searchValue.toLowerCase();
 
-        // Save search query
-        GeneralStorage.getShared().saveSearchQuery(searchQuery);
-
-        // Start search process
-        _view.updateSearchQueryResults(searchQuery, new ArrayList<AudioTrack>(), _context.getResources().getString(R.string.search_hint_searching));
-
-        // Use background thread to retrieve the search results
-        // Then, update the view on the main thread
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                _searchResults = _audioInfo.searchForTracks(searchQuery);
-
-                Handler mainHandler = new Handler(Looper.getMainLooper());
-
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run()
-                    {
-                        Log.v(SearchPresenter.class.getCanonicalName(), "Retrieved search results, updating view");
-                        
-                        _view.updateSearchQueryResults(searchQuery, _searchResults, null);
-                    }
-                };
-
-                mainHandler.post(myRunnable);
-            }
-        });
-
-        thread.start();
+        searchForQuery();
     }
 
     @Override
@@ -250,13 +216,50 @@ public class SearchPresenter implements BasePresenter
         
     }
 
+    private void searchForQuery()
+    {
+        String searchValue = _lastSearchQuery;
+
+        Log.v(SearchPresenter.class.getCanonicalName(), "Searching for '" + searchValue + "' ...");
+
+        _lastSearchQuery = searchValue;
+
+        final String searchQuery = searchValue.toLowerCase();
+
+        // Save search query
+        GeneralStorage.getShared().saveSearchQuery(searchQuery);
+
+        // Start search process
+        _view.updateSearchQueryResults(searchQuery, new ArrayList<AudioTrack>(), _context.getResources().getString(R.string.search_hint_searching));
+
+        // Use background thread to retrieve the search results
+        // Then, update the view on the main thread
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                _searchResults = _audioInfo.searchForTracks(searchQuery);
+
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        Log.v(SearchPresenter.class.getCanonicalName(), "Retrieved search results, updating view");
+
+                        _view.updateSearchQueryResults(searchQuery, _searchResults, null);
+                    }
+                };
+
+                mainHandler.post(myRunnable);
+            }
+        });
+
+        thread.start();
+    }
+
     private void openPlayerScreen(@NonNull AudioTrack clickedTrack)
     {
-        if (!_running)
-        {
-            return;
-        }
-        
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         
         try {
@@ -272,11 +275,6 @@ public class SearchPresenter implements BasePresenter
 
     private void playNewTrack(@NonNull AudioTrack clickedTrack)
     {
-        if (!_running)
-        {
-            return;
-        }
-        
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         AudioPlaylist searchPlaylist;
         
@@ -317,21 +315,11 @@ public class SearchPresenter implements BasePresenter
 
     private void playFirstTime(@NonNull AudioPlaylist playlist)
     {
-        if (!_running)
-        {
-            return;
-        }
-        
         playNew(playlist);
     }
 
     private void playNew(@NonNull AudioPlaylist playlist)
     {
-        if (!_running)
-        {
-            return;
-        }
-        
         Player player = Player.getShared();
 
         try {
