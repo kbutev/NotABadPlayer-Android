@@ -46,6 +46,8 @@ public class SettingsPresenter implements BasePresenter
         {
             throw new IllegalStateException("SettingsPresenter: view has not been set");
         }
+
+        Log.v(SettingsPresenter.class.getCanonicalName(), "Start.");
         
         fetchData();
     }

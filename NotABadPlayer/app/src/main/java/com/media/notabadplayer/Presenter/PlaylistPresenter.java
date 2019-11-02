@@ -52,6 +52,8 @@ public class PlaylistPresenter implements BasePresenter {
         {
             throw new IllegalStateException("PlaylistPresenter: view has not been set");
         }
+
+        Log.v(PlaylistPresenter.class.getCanonicalName(), "Start.");
         
         _view.onPlaylistLoad(_playlist);
     }

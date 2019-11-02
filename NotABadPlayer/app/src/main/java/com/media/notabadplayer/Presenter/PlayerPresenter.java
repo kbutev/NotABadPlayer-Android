@@ -42,6 +42,8 @@ public class PlayerPresenter implements BasePresenter
         {
             throw new IllegalStateException("PlayerPresenter: view has not been set");
         }
+
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Start.");
         
         Player player = Player.getShared();
         AudioPlaylist currentPlaylist = player.getPlaylist();

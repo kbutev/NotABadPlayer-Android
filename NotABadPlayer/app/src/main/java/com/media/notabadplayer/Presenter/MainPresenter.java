@@ -2,6 +2,7 @@ package com.media.notabadplayer.Presenter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -35,6 +36,8 @@ public class MainPresenter implements BasePresenter {
         {
             throw new IllegalStateException("MainPresenter: view has not been set");
         }
+
+        Log.v(MainPresenter.class.getCanonicalName(), "Start.");
     }
 
     @Override
