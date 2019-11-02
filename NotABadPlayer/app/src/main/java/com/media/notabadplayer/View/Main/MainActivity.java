@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private QuickPlayerFragment _quickPlayer = null;
     private BasePresenter _quickPlayerPresenter = null;
+    private boolean _quickPlayerIsHidden = false;
     
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -301,6 +302,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     
     private void initMainUI()
     {
+        Log.v(MainActivity.class.getCanonicalName(), "Initializing main UI components...");
+
         // Bottom navigation menu
         BottomNavigationView navigationView = findViewById(R.id.navigation);
         
@@ -320,15 +323,33 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         }
 
         // Create quick player and it's presenter
-        _quickPlayerPresenter = new QuickPlayerPresenter(_audioLibrary);
-        _quickPlayer = QuickPlayerFragment.newInstance(_quickPlayerPresenter, this);
-        _quickPlayerPresenter.setView(_quickPlayer);
-        
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.quickPlayer, _quickPlayer).commit();
+        initQuickPlayer();
         
         // Set bottom navigation menu listener
         navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        Log.v(MainActivity.class.getCanonicalName(), "Main UI components initialized!");
+    }
+
+    private void initQuickPlayer()
+    {
+        _quickPlayerPresenter = new QuickPlayerPresenter(_audioLibrary);
+        _quickPlayer = QuickPlayerFragment.newInstance(_quickPlayerPresenter, this);
+        _quickPlayerPresenter.setView(_quickPlayer);
+
+        FragmentManager manager = getSupportFragmentManager();
+
+        if (!_quickPlayerIsHidden)
+        {
+            manager.beginTransaction().replace(R.id.quickPlayer, _quickPlayer).commit();
+        }
+        else
+        {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.quickPlayer, _quickPlayer);
+            transaction.detach(_quickPlayer);
+            transaction.commit();
+        }
     }
     
     private void selectAlbumsTab()
@@ -337,7 +358,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         int tabID = R.id.navigation_albums;
 
-        _tabNavigation.setCurrentTabTo(tabID, true);
+        _tabNavigation.setCurrentTabTo(tabID);
+        showQuickPlayer();
     }
 
     private void selectListsTab()
@@ -346,7 +368,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         int tabID = R.id.navigation_lists;
 
-        _tabNavigation.setCurrentTabTo(tabID, true);
+        _tabNavigation.setCurrentTabTo(tabID);
+        showQuickPlayer();
     }
 
     private void selectSearchTab()
@@ -355,7 +378,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         int tabID = R.id.navigation_search;
 
-        _tabNavigation.setCurrentTabTo(tabID, true);
+        _tabNavigation.setCurrentTabTo(tabID);
+        showQuickPlayer();
     }
 
     private void selectSettingsTab()
@@ -364,7 +388,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
         int tabID = R.id.navigation_settings;
 
-        _tabNavigation.setCurrentTabTo(tabID, false);
+        _tabNavigation.setCurrentTabTo(tabID);
+        hideQuickPlayer();
     }
 
     private void onTabItemSelected(int itemID)
@@ -514,6 +539,40 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     {
 
     }
+
+    private void showQuickPlayer()
+    {
+        _quickPlayerIsHidden = false;
+
+        if (_quickPlayer == null)
+        {
+            return;
+        }
+
+        if (_quickPlayer.getView() == null)
+        {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.attach(_quickPlayer);
+            transaction.commit();
+        }
+    }
+
+    private void hideQuickPlayer()
+    {
+        _quickPlayerIsHidden = true;
+
+        if (_quickPlayer == null)
+        {
+            return;
+        }
+
+        if (_quickPlayer.getView() != null)
+        {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.detach(_quickPlayer);
+            transaction.commit();
+        }
+    }
     
     private class TabNavigation {
         AppSettings.TabCachingPolicies cachingPolicy = AppSettings.TabCachingPolicies.ALBUMS_ONLY;
@@ -526,33 +585,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         private Map<Integer, CachedTab> cachedTabs = new HashMap<>();
         
-        private void setCurrentTabTo(int destinationTabID, boolean showQuickPlayer)
+        private void setCurrentTabTo(int destinationTabID)
         {
             willSelectTab(destinationTabID);
             selectTab(destinationTabID);
             didSelectTab(destinationTabID);
-            
-            if (_quickPlayer != null)
-            {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                
-                if (showQuickPlayer)
-                {
-                    if (_quickPlayer.getView() == null)
-                    {
-                        transaction.attach(_quickPlayer);
-                    }
-                }
-                else
-                {
-                    if (_quickPlayer.getView() != null)
-                    {
-                        transaction.detach(_quickPlayer);
-                    }
-                }
-                
-                transaction.commit();
-            }
         }
         
         private void willSelectTab(int destinationTabID)
