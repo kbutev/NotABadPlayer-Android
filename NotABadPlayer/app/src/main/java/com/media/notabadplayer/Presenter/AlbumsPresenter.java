@@ -15,9 +15,10 @@ import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Storage.AudioLibrary;
 import com.media.notabadplayer.View.BaseView;
 
-public class AlbumsPresenter implements BasePresenter {
+public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListener {
     private BaseView _view;
     
     private @NonNull AudioInfo _audioInfo;
@@ -54,13 +55,17 @@ public class AlbumsPresenter implements BasePresenter {
 
         Log.v(AlbumsPresenter.class.getCanonicalName(), "Start.");
 
+        AudioLibrary.getShared().registerLibraryChangesListener(this);
+
         fetchData();
     }
 
     @Override
     public void onDestroy()
     {
+        Log.v(AlbumsPresenter.class.getCanonicalName(), "Destroyed.");
 
+        AudioLibrary.getShared().unregisterLibraryChangesListener(this);
     }
 
     @Override
@@ -245,5 +250,12 @@ public class AlbumsPresenter implements BasePresenter {
     public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
     {
 
+    }
+
+    @Override
+    public void onMediaLibraryChanged()
+    {
+        // Stay up to date with the latest library data
+        fetchData();
     }
 }
