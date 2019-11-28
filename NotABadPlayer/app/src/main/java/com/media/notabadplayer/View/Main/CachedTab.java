@@ -49,9 +49,4 @@ public class CachedTab {
 
         return new CachedTab(tab, presenter, tabSubview, tabSubviewName);
     }
-    
-    public void alertPresenter()
-    {
-        //presenter
-    }
 }

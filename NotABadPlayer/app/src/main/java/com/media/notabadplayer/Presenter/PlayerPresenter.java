@@ -76,6 +76,12 @@ public class PlayerPresenter implements BasePresenter
     }
 
     @Override
+    public void onDestroy()
+    {
+
+    }
+
+    @Override
     public void fetchData()
     {
 
