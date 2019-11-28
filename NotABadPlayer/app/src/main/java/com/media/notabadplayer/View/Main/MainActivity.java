@@ -581,7 +581,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         private int currentTabID = 0;
         
         private int previousTabID = 0;
-        private @Nullable BaseView previousTab = null;
+        private @Nullable BaseView previousTabView = null;
         
         private Map<Integer, CachedTab> cachedTabs = new HashMap<>();
         
@@ -596,7 +596,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         {
             cacheCurrentTab();
             
-            // As soon as we cache the tab, we no longer need the backstack
+            // As soon as we cache the tab, clear the backstack
             clearCurrentTabBackStack();
         }
 
@@ -605,7 +605,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             if (currentTab != null)
             {
                 previousTabID = currentTabID;
-                previousTab = currentTab.tab;
+                previousTabView = currentTab.tab;
             }
             
             currentTabID = destinationTabID;
@@ -638,7 +638,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         private void didSelectTab(int destinationTabID)
         {
-            if (previousTab == null)
+            if (previousTabView == null)
             {
                 replaceCurrentTab();
                 return;
@@ -731,7 +731,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         private void deselectTab(int tabID)
         {
-            if (previousTab == null)
+            if (previousTabView == null)
             {
                 return;
             }
@@ -740,12 +740,21 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             
             if (cacheContains(tabID))
             {
-                transaction.hide((Fragment) previousTab);
+                transaction.hide((Fragment) previousTabView);
                 transaction.commit();
                 return;
             }
 
-            transaction.remove((Fragment) previousTab);
+            // Since tab is getting removed, alert the presenter of its destruction
+            CachedTab previousTab = cachedTabs.get(previousTabID);
+
+            if (previousTab != null)
+            {
+                previousTab.presenter.onDestroy();
+            }
+
+            // Remove view
+            transaction.remove((Fragment) previousTabView);
             transaction.commit();
         }
         

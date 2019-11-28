@@ -68,6 +68,12 @@ public class SearchPresenter implements BasePresenter
     }
 
     @Override
+    public void onDestroy()
+    {
+
+    }
+
+    @Override
     public void fetchData()
     {
         

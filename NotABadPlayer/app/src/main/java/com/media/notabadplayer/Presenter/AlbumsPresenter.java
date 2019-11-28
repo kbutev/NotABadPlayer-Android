@@ -58,6 +58,12 @@ public class AlbumsPresenter implements BasePresenter {
     }
 
     @Override
+    public void onDestroy()
+    {
+
+    }
+
+    @Override
     public void fetchData()
     {
         if (_fetchingData)
