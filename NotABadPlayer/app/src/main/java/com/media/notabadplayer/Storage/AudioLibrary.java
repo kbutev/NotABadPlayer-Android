@@ -2,13 +2,17 @@ package com.media.notabadplayer.Storage;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import android.app.Application;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,7 +30,7 @@ import com.media.notabadplayer.Utilities.MediaSorting;
 // Before using the audio library, you MUST call initialize().
 // Dependant on storage access permission:
 // Make sure you have access to user storage before using the audio library.
-public class AudioLibrary implements AudioInfo {
+public class AudioLibrary extends ContentObserver implements AudioInfo {
     public static int ALBUM_TRACK_CACHE_CAPACITY = 30;
 
     private static AudioLibrary singleton;
@@ -36,9 +40,18 @@ public class AudioLibrary implements AudioInfo {
     private final ArrayList<AudioAlbum> _albums = new ArrayList<>();
     
     private final SortedMap<String, List<AudioTrack>> _albumTracks = new TreeMap<>();
+
+    private final HashSet<ChangesListener> _changesListeners = new HashSet<>();
+
+    public interface ChangesListener {
+        void onMediaLibraryChanged();
+    }
     
     private AudioLibrary()
     {
+        // The handler decides which thread the callbacks will be performed on
+        super(new Handler(Looper.getMainLooper()));
+
         Log.v(AudioLibrary.class.getCanonicalName(), "Initializing...");
 
         _context = PlayerApplication.getShared();
@@ -357,5 +370,51 @@ public class AudioLibrary implements AudioInfo {
         cursor.close();
         
         return new AudioTrack(filePath, title, artist, albumTitle, albumId, albumCover, trackNum, duration, source);
+    }
+
+    // # Library changes
+
+    public void registerLibraryChangesListener(@NonNull ChangesListener listener)
+    {
+        // Register once, the singleton itself
+        if (_changesListeners.size() == 0)
+        {
+            getContext().getContentResolver().registerContentObserver(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, true, this);
+        }
+
+        _changesListeners.add(listener);
+    }
+
+    public void unregisterLibraryChangesListener(@NonNull ChangesListener listener)
+    {
+        _changesListeners.remove(listener);
+
+        if (_changesListeners.size() == 0)
+        {
+            getContext().getContentResolver().unregisterContentObserver(this);
+        }
+    }
+
+    // # Library changes
+
+    @Override
+    public boolean deliverSelfNotifications() {
+        return true;
+    }
+
+    @Override
+    public void onChange(boolean selfChange) {
+        super.onChange(selfChange);
+
+        Log.v(AudioLibrary.class.getCanonicalName(), "Device media library was changed! Reloading album data...");
+
+        // Reload library
+        load();
+
+        // Alert listeners
+        for (ChangesListener listener : _changesListeners)
+        {
+            listener.onMediaLibraryChanged();
+        }
     }
 }
