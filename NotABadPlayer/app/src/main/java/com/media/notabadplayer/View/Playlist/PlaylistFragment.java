@@ -358,6 +358,12 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
+    public void onDeviceLibraryChanged()
+    {
+
+    }
+
+    @Override
     public void onFetchDataErrorEncountered(@NonNull Exception error)
     {
 

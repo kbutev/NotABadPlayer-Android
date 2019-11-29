@@ -3,10 +3,12 @@ package com.media.notabadplayer.Utilities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class AlertWindows {
-    public static void showAlert(Context context,
-                                 int title, int description, int actionName, DialogInterface.OnClickListener action)
+    public static void showAlert(@NonNull Context context,
+                                 int title, int description, int actionName, @Nullable DialogInterface.OnClickListener action)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         
@@ -30,8 +32,8 @@ public class AlertWindows {
         alert.show();
     }
 
-    public static void showAlert(Context context,
-                                 String title, String description, String actionName, DialogInterface.OnClickListener action)
+    public static void showAlert(@NonNull Context context,
+                                 @Nullable String title, @Nullable String description, @Nullable String actionName, @Nullable DialogInterface.OnClickListener action)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -55,9 +57,9 @@ public class AlertWindows {
         alert.show();
     }
 
-    public static void showAlert(Context context,
+    public static void showAlert(@NonNull Context context,
                                  int title, int description,
-                                 int actionName, DialogInterface.OnClickListener action,
+                                 int actionName, @Nullable DialogInterface.OnClickListener action,
                                  int cancelName)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -90,10 +92,10 @@ public class AlertWindows {
         alert.show();
     }
 
-    public static void showAlert(Context context,
-                                 String title, String description,
-                                 String actionName, DialogInterface.OnClickListener action,
-                                 String cancelName)
+    public static void showAlert(@NonNull Context context,
+                                 @Nullable String title, @Nullable String description,
+                                 @Nullable String actionName, @Nullable DialogInterface.OnClickListener action,
+                                 @Nullable String cancelName)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 

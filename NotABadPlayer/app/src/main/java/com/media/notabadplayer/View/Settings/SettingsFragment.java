@@ -656,6 +656,12 @@ public class SettingsFragment extends Fragment implements BaseView
     }
 
     @Override
+    public void onDeviceLibraryChanged()
+    {
+
+    }
+
+    @Override
     public void onFetchDataErrorEncountered(@NonNull Exception error)
     {
         if (getView() == null)
