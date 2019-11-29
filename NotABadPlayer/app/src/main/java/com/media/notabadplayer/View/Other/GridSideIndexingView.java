@@ -82,12 +82,11 @@ public class GridSideIndexingView extends View {
         
         if (_selectionIndexer == null || titles.size() == 0)
         {
-            setVisibility(View.INVISIBLE);
-            fadeOutTextCharacter();
+            hide();
             return;
         }
 
-        setVisibility(View.VISIBLE);
+        show();
         
         Object[] sectionsArr = _selectionIndexer.getSections();
         
@@ -99,6 +98,12 @@ public class GridSideIndexingView extends View {
         }
         
         invalidate();
+    }
+
+    public void clear()
+    {
+        _alphabet.clear();
+        hide();
     }
     
     public @NonNull ArrayList<Character> getAlphabet()
@@ -223,5 +228,16 @@ public class GridSideIndexingView extends View {
     public void fadeOutTextCharacter()
     {
         UIAnimations.getShared().animateFadeOut(_context, _indexingTextCharacter);
+    }
+
+    private void show()
+    {
+        setVisibility(View.VISIBLE);
+    }
+
+    private void hide()
+    {
+        setVisibility(View.INVISIBLE);
+        fadeOutTextCharacter();
     }
 }
