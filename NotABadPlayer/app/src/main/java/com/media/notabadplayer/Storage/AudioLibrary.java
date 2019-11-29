@@ -242,6 +242,19 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     
     public @NonNull List<AudioTrack> searchForTracks(@NonNull String query)
     {
+        synchronized (_albumTracks)
+        {
+            if (_albums.size() == 0)
+            {
+                return new ArrayList<>();
+            }
+        }
+
+        if (query.isEmpty())
+        {
+            return new ArrayList<>();
+        }
+
         Context context = getContext();
         
         ArrayList<AudioTrack> albumTracks = new ArrayList<>();

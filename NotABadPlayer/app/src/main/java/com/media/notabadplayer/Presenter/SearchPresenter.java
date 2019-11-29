@@ -60,9 +60,11 @@ public class SearchPresenter implements BasePresenter
         // Restore last search query from storage
         String searchQuery = GeneralStorage.getShared().retrieveSearchQuery();
 
-        if (searchQuery != null && searchQuery.length() > 0)
+        // Search only when app is already running
+        if (searchQuery != null && searchQuery.length() > 0 && _running)
         {
             _lastSearchQuery = searchQuery;
+
             searchForQuery();
         }
     }
@@ -82,7 +84,14 @@ public class SearchPresenter implements BasePresenter
     @Override
     public void onAppStateChange(AppState state)
     {
+        boolean previousRunningState = _running;
+
         _running = state.isRunning();
+
+        if (_running && !previousRunningState)
+        {
+            searchForQuery();
+        }
     }
     
     @Override
