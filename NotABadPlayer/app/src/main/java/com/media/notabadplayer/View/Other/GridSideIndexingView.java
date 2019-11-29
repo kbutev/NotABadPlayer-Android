@@ -20,6 +20,7 @@ import com.media.notabadplayer.Utilities.UIAnimations;
 
 public class GridSideIndexingView extends View {
     public static final int BOTTOM_PADDING = 10;
+    public static final int ALPHABET_CAPACITY = 24;
     
     private @NonNull Context _context;
     
@@ -104,7 +105,7 @@ public class GridSideIndexingView extends View {
     private void updateAlphabet(ArrayList<String> titles)
     {
         _alphabet.clear();
-        
+
         for (int e = 0; e < titles.size(); e++)
         {
             String title = titles.get(e);
@@ -117,6 +118,11 @@ public class GridSideIndexingView extends View {
                 {
                     _alphabet.add(firstChar);
                 }
+            }
+
+            if (_alphabet.size() >= ALPHABET_CAPACITY)
+            {
+                break;
             }
         }
 

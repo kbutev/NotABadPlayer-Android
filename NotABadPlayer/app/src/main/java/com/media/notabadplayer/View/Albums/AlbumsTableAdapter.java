@@ -116,16 +116,22 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     }
     
     @Override
-    public int getPositionForSection(int sectionIndex) 
+    public int getPositionForSection(int selectedIndex)
     {
+        ArrayList<Character> alphabet = _sideSelector.getAlphabet();
+
+        // Check for invalid index
+        if (selectedIndex >= alphabet.size()) {
+            return 0;
+        }
+
         // Select the first album whose title first char matches the selected index char
         int position = 0;
-        ArrayList<Character> alphabet = _sideSelector.getAlphabet();
-        Character selectedCharacterIndex = alphabet.get(sectionIndex);
+        Character selectedCharacter = alphabet.get(selectedIndex);
         
         for (int e = 0; e < _albums.size(); e++)
         {
-            if (_albums.get(e).albumTitle.charAt(0) == selectedCharacterIndex)
+            if (_albums.get(e).albumTitle.charAt(0) == selectedCharacter)
             {
                 position = e;
                 break;
