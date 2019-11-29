@@ -58,15 +58,7 @@ public class SearchPresenter implements BasePresenter
         Log.v(SearchPresenter.class.getCanonicalName(), "Start.");
 
         // Restore last search query from storage
-        String searchQuery = GeneralStorage.getShared().retrieveSearchQuery();
-
-        // Search only when app is already running
-        if (searchQuery != null && searchQuery.length() > 0 && _running)
-        {
-            _lastSearchQuery = searchQuery;
-
-            searchForQuery();
-        }
+        restoreSearchQueryFromStorage();
     }
 
     @Override
@@ -90,7 +82,7 @@ public class SearchPresenter implements BasePresenter
 
         if (_running && !previousRunningState)
         {
-            searchForQuery();
+            restoreSearchQueryFromStorage();
         }
     }
     
@@ -355,5 +347,21 @@ public class SearchPresenter implements BasePresenter
         }
 
         _view.updatePlayerScreen(playlist);
+    }
+
+    private void restoreSearchQueryFromStorage()
+    {
+        String searchQuery = GeneralStorage.getShared().retrieveSearchQuery();
+
+        if (searchQuery != null && searchQuery.length() > 0)
+        {
+            _lastSearchQuery = searchQuery;
+
+            // Search only when app is already running
+            if (_running)
+            {
+                searchForQuery();
+            }
+        }
     }
 }
