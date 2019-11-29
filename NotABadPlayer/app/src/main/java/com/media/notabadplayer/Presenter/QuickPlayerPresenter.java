@@ -166,7 +166,7 @@ public class QuickPlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onSearchQuery(@NonNull String searchValue)
+    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter)
     {
 
     }

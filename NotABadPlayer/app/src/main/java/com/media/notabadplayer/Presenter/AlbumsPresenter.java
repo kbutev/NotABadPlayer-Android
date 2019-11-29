@@ -211,7 +211,7 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
     }
 
     @Override
-    public void onSearchQuery(@NonNull String searchValue)
+    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter)
     {
 
     }

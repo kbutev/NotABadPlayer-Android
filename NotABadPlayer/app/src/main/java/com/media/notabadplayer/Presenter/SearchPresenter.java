@@ -12,6 +12,7 @@ import android.util.Log;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
+import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
@@ -27,6 +28,7 @@ public class SearchPresenter implements BasePresenter
     private @NonNull AudioInfo _audioInfo;
     private List<AudioTrack> _searchResults = new ArrayList<>();
     private @Nullable String _lastSearchQuery = null;
+    private SearchFilter _lastSearchFilter = SearchFilter.Title;
 
     private boolean _running = false;
     
@@ -168,7 +170,7 @@ public class SearchPresenter implements BasePresenter
     }
     
     @Override
-    public void onSearchQuery(@NonNull String searchValue)
+    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter)
     {
         if (!_running)
         {
@@ -178,11 +180,14 @@ public class SearchPresenter implements BasePresenter
         // Skip if we already searched for this
         if (_lastSearchQuery != null) {
             if (searchValue.equals(_lastSearchQuery)) {
-                return;
+                if (_lastSearchFilter == filter) {
+                    return;
+                }
             }
         }
 
         _lastSearchQuery = searchValue;
+        _lastSearchFilter = filter;
 
         searchForQuery();
     }
@@ -225,31 +230,31 @@ public class SearchPresenter implements BasePresenter
 
     private void searchForQuery()
     {
-        String searchValue = _lastSearchQuery;
-
-        if (searchValue == null)
+        if (_lastSearchQuery == null)
         {
             return;
         }
 
-        Log.v(SearchPresenter.class.getCanonicalName(), "Searching for '" + searchValue + "' ...");
+        Log.v(SearchPresenter.class.getCanonicalName(), "Searching for '" + _lastSearchQuery + "' ...");
 
-        _lastSearchQuery = searchValue;
-
-        final String searchQuery = searchValue.toLowerCase();
+        final String searchQuery = _lastSearchQuery.toLowerCase();
+        final SearchFilter searchFilter = _lastSearchFilter;
 
         // Save search query
-        GeneralStorage.getShared().saveSearchQuery(searchQuery);
+        GeneralStorage storage = GeneralStorage.getShared();
+        storage.saveSearchQuery(searchQuery);
+        storage.saveSearchQueryFilter(searchFilter);
 
         // Start search process
-        _view.updateSearchQueryResults(searchQuery, new ArrayList<AudioTrack>(), _context.getResources().getString(R.string.search_hint_searching));
+        String searchString = _context.getResources().getString(R.string.search_state_searching);
+        _view.updateSearchQueryResults(searchQuery, searchFilter, new ArrayList<AudioTrack>(), searchString);
 
         // Use background thread to retrieve the search results
         // Then, update the view on the main thread
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                _searchResults = _audioInfo.searchForTracks(searchQuery);
+                _searchResults = _audioInfo.searchForTracks(searchQuery, searchFilter);
 
                 Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -259,7 +264,7 @@ public class SearchPresenter implements BasePresenter
                     {
                         Log.v(SearchPresenter.class.getCanonicalName(), "Retrieved search results, updating view");
 
-                        _view.updateSearchQueryResults(searchQuery, _searchResults, null);
+                        _view.updateSearchQueryResults(searchQuery, searchFilter, _searchResults, null);
                     }
                 };
 
@@ -351,11 +356,15 @@ public class SearchPresenter implements BasePresenter
 
     private void restoreSearchQueryFromStorage()
     {
-        String searchQuery = GeneralStorage.getShared().retrieveSearchQuery();
+        GeneralStorage storage = GeneralStorage.getShared();
+
+        String searchQuery = storage.retrieveSearchQuery();
+        SearchFilter searchFilter = storage.retrieveSearchQueryFilter();
 
         if (searchQuery != null && searchQuery.length() > 0)
         {
             _lastSearchQuery = searchQuery;
+            _lastSearchFilter = searchFilter;
 
             // Search only when app is already running
             if (_running)

@@ -44,7 +44,10 @@
     <string name="search_hint">Search for track</string>
     <string name="search_results_tip">search results</string>
     <string name="search_results_tip_no_results">no results</string>
-    <string name="search_hint_searching">Searching...</string>
+    <string name="search_state_searching">Searching...</string>
+    <string name="search_filter_title">Title</string>
+    <string name="search_filter_album">Album</string>
+    <string name="search_filter_artist">Artist</string>
 
     <!-- Settings tab -->
     <string name="settings_appearance">Appearance</string>

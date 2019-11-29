@@ -13,17 +13,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
@@ -34,6 +35,7 @@ import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.AlertWindows;
@@ -51,16 +53,21 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     
     private EditText _searchField;
     private ImageButton _searchFieldClearButton;
-    private TextView _searchTip;
+    private TextView _searchState;
     private ListView _searchResultsList;
     private ProgressBar _progressIndicator;
+    private RadioButton _searchByTrack;
+    private RadioButton _searchByAlbum;
+    private RadioButton _searchByArtist;
     
     private @Nullable SearchListAdapter _searchResultsAdapter;
     private @Nullable Parcelable _searchResultsState;
+
+    private SearchFilter _searchFilter;
     
     public SearchFragment()
     {
-        
+        _searchFilter = SearchFilter.Title;
     }
     
     public static @NonNull SearchFragment newInstance(@NonNull BasePresenter presenter)
@@ -78,9 +85,12 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
         // Setup UI
         _searchField = root.findViewById(R.id.searchField);
         _searchFieldClearButton = root.findViewById(R.id.searchFieldClearButton);
-        _searchTip = root.findViewById(R.id.searchTip);
+        _searchState = root.findViewById(R.id.searchState);
         _searchResultsList = root.findViewById(R.id.searchResultsList);
         _progressIndicator = root.findViewById(R.id.progressIndicator);
+        _searchByTrack = root.findViewById(R.id.searchByTrack);
+        _searchByAlbum = root.findViewById(R.id.searchByAlbum);
+        _searchByArtist = root.findViewById(R.id.searchByArtist);
         
         initUI();
         
@@ -149,7 +159,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
             {
                 if ((actionId & EditorInfo.IME_MASK_ACTION) != 0)
                 {
-                    _presenter.onSearchQuery(_searchField.getText().toString());
+                    performSearch();
                 }
                 
                 return false;
@@ -180,6 +190,36 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
                 _searchResultsAdapter.selectItem(view, position);
 
                 _presenter.onSearchResultClick(position);
+            }
+        });
+
+        _searchByTrack.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    _searchFilter = SearchFilter.Title;
+                    performSearch();
+                }
+            }
+        });
+
+        _searchByAlbum.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    _searchFilter = SearchFilter.Album;
+                    performSearch();
+                }
+            }
+        });
+
+        _searchByArtist.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    _searchFilter = SearchFilter.Artist;
+                    performSearch();
+                }
             }
         });
     }
@@ -276,7 +316,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
+    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<AudioTrack> songs, @Nullable String searchState)
     {
         Context context = getContext();
 
@@ -287,13 +327,19 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
 
         _searchField.setText(searchQuery);
 
-        _searchTip.setVisibility(View.VISIBLE);
+        if (_searchFilter != filter)
+        {
+            _searchFilter = filter;
+            checkCorrectSearchFilterRadioButton(filter);
+        }
 
-        if (searchTip != null)
+        _searchState.setVisibility(View.VISIBLE);
+
+        if (searchState != null)
         {
             showProgressIndicator();
 
-            _searchTip.setText(searchTip);
+            _searchState.setText(searchState);
         }
         else
         {
@@ -301,11 +347,11 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
 
             if (songs.size() > 0)
             {
-                _searchTip.setText(String.valueOf(songs.size()) + " " + getResources().getString(R.string.search_results_tip));
+                _searchState.setText(String.valueOf(songs.size()) + " " + getResources().getString(R.string.search_results_tip));
             }
             else
             {
-                _searchTip.setText(R.string.search_results_tip_no_results);
+                _searchState.setText(R.string.search_results_tip_no_results);
             }
         }
 
@@ -413,6 +459,11 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
 
         AlertWindows.showAlert(getContext(), R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
     }
+
+    private void performSearch()
+    {
+        _presenter.onSearchQuery(_searchField.getText().toString(), _searchFilter);
+    }
     
     private void showProgressIndicator()
     {
@@ -422,5 +473,21 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     private void hideProgressIndicator()
     {
         _progressIndicator.setVisibility(View.GONE);
+    }
+
+    private void checkCorrectSearchFilterRadioButton(SearchFilter filter)
+    {
+        switch (filter)
+        {
+            case Title:
+                _searchByTrack.setChecked(true);
+                break;
+            case Album:
+                _searchByAlbum.setChecked(true);
+                break;
+            case Artist:
+                _searchByArtist.setChecked(true);
+                break;
+        }
     }
 }

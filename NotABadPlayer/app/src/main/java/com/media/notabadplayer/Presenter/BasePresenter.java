@@ -36,7 +36,7 @@ public interface BasePresenter {
     void onPlaylistItemDelete(int index);
     
     void onSearchResultClick(int index);
-    void onSearchQuery(@NonNull String searchValue);
+    void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter);
     
     void onAppSettingsReset();
     void onAppThemeChange(AppSettings.AppTheme themeValue);

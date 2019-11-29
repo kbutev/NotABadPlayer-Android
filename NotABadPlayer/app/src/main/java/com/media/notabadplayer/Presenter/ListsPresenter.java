@@ -14,6 +14,7 @@ import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
+import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
@@ -233,7 +234,7 @@ public class ListsPresenter implements BasePresenter
     }
 
     @Override
-    public void onSearchQuery(@NonNull String searchValue) 
+    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter)
     {
 
     }

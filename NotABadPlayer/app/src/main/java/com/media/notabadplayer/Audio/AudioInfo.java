@@ -7,11 +7,12 @@ import android.support.annotation.Nullable;
 
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Constants.SearchFilter;
 
 public interface AudioInfo {
     @NonNull List<AudioAlbum> getAlbums();
-    @Nullable AudioAlbum getAlbumByID(String identifier);
-    @NonNull List<AudioTrack> getAlbumTracks(AudioAlbum album);
-    @NonNull List<AudioTrack> searchForTracks(String query);
-    @Nullable AudioTrack findTrackByPath(Uri path);
+    @Nullable AudioAlbum getAlbumByID(@NonNull String identifier);
+    @NonNull List<AudioTrack> getAlbumTracks(@NonNull AudioAlbum album);
+    @NonNull List<AudioTrack> searchForTracks(@NonNull String query, SearchFilter filter);
+    @Nullable AudioTrack findTrackByPath(@NonNull Uri path);
 }
