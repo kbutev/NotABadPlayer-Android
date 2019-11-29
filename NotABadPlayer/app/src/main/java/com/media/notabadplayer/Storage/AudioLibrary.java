@@ -23,6 +23,7 @@ import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Audio.Model.AudioTrackSource;
+import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.PlayerApplication;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
@@ -241,7 +242,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         return albumTracks;
     }
     
-    private void storeTracksIntoCache(@NonNull String albumID, List<AudioTrack> tracks)
+    private void storeTracksIntoCache(@NonNull String albumID, @NonNull List<AudioTrack> tracks)
     {
         synchronized (_lock)
         {
@@ -256,7 +257,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         }
     }
     
-    public @NonNull List<AudioTrack> searchForTracks(@NonNull String query)
+    public @NonNull List<AudioTrack> searchForTracks(@NonNull String query, @NonNull SearchFilter filter)
     {
         if (query.isEmpty())
         {
@@ -277,8 +278,26 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.TRACK
         };
-        
-        String selection = MediaStore.Audio.Media.TITLE + " LIKE ?";
+
+        String selectionFilter;
+
+        switch (filter)
+        {
+            case Title:
+                selectionFilter = MediaStore.Audio.Media.TITLE;
+                break;
+            case Album:
+                selectionFilter = MediaStore.Audio.Media.ALBUM;
+                break;
+            case Artist:
+                selectionFilter = MediaStore.Audio.Media.ARTIST;
+                break;
+            default:
+                selectionFilter = MediaStore.Audio.Media.TITLE;
+                break;
+        }
+
+        String selection = selectionFilter + " LIKE ?";
         String[] selectionArgs = new String[] {""};
 
         String[] words = query.split(" ");

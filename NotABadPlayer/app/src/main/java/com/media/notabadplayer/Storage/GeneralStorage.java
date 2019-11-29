@@ -16,6 +16,7 @@ import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.PlayerApplication;
@@ -209,6 +210,7 @@ public class GeneralStorage
         saveCachingPolicy(AppSettings.TabCachingPolicies.ALBUMS_ONLY);
 
         saveSearchQuery("");
+        saveSearchQueryFilter(SearchFilter.Title);
         
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
@@ -372,6 +374,32 @@ public class GeneralStorage
     public String retrieveSearchQuery()
     {
         return getSharedPreferences().getString("searchQuery", "");
+    }
+
+    public void saveSearchQueryFilter(SearchFilter searchFilter)
+    {
+        SharedPreferences preferences = getSharedPreferences();
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putString("searchQueryFilter", searchFilter.name());
+
+        editor.apply();
+    }
+
+    public SearchFilter retrieveSearchQueryFilter()
+    {
+        SharedPreferences preferences = getSharedPreferences();
+
+        String searchFilter = preferences.getString("searchQueryFilter", "");
+
+        try {
+            return SearchFilter.valueOf(searchFilter);
+        }
+        catch (Exception e) {
+
+        }
+
+        return SearchFilter.Title;
     }
 
     public void saveSettingsAction(ApplicationInput input, ApplicationAction action)

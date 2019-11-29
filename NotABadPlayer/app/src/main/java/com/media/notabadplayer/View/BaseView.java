@@ -22,7 +22,7 @@ public interface BaseView {
     void openPlayerScreen(@NonNull AudioPlaylist playlist);
     void updatePlayerScreen(@NonNull AudioPlaylist playlist);
     
-    void updateSearchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip);
+    void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<AudioTrack> songs, @Nullable String searchState);
 
     void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage);
     void onResetAppSettings();

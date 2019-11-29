@@ -46,13 +46,51 @@
                 app:layout_constraintRight_toRightOf="parent"
                 android:gravity="center_vertical"/>
         </android.support.constraint.ConstraintLayout>
-        
-        <Space
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="5dp" />
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:gravity="center"
+                android:orientation="horizontal" >
+                <RadioButton
+                    android:id="@+id/searchByTrack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableLeft="@android:drawable/btn_radio"
+                    android:text="@string/search_filter_title"
+                    android:textSize="12sp"
+                    android:textColor="?primaryTextColor"
+                    android:checked="true"/>
+                <RadioButton
+                    android:id="@+id/searchByAlbum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableLeft="@android:drawable/btn_radio"
+                    android:text="@string/search_filter_album"
+                    android:textSize="12sp"
+                    android:textColor="?primaryTextColor"/>
+                <RadioButton
+                    android:id="@+id/searchByArtist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableLeft="@android:drawable/btn_radio"
+                    android:text="@string/search_filter_artist"
+                    android:textSize="12sp"
+                    android:textColor="?primaryTextColor"/>
+            </RadioGroup>
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/searchTip"
+            android:id="@+id/searchState"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"

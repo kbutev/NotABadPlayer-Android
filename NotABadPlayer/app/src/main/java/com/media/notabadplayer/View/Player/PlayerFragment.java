@@ -547,7 +547,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, @NonNull List<AudioTrack> songs, @Nullable String searchTip)
+    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<AudioTrack> songs, @Nullable String searchState)
     {
 
     }
