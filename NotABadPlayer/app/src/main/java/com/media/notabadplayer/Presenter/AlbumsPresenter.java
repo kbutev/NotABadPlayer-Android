@@ -255,6 +255,11 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
     @Override
     public void onMediaLibraryChanged()
     {
+        if (_view != null)
+        {
+            _view.onDeviceLibraryChanged();
+        }
+
         // Stay up to date with the latest library data
         fetchData();
     }

@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -47,7 +48,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     
     public AlbumsFragment()
     {
-        
+
     }
     
     public static @NonNull AlbumsFragment newInstance(@NonNull BasePresenter presenter)
@@ -179,7 +180,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     {
         Log.v(AlbumsFragment.class.getCanonicalName(), "Media albums received. Updating table data.");
 
-        _progressIndicator.setVisibility(View.GONE);
+        hideProgressIndicator();
         
         Context context = getContext();
 
@@ -262,6 +263,14 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
+    public void onDeviceLibraryChanged()
+    {
+        showProgressIndicator();
+
+        Toast.makeText(getActivity(), R.string.toast_device_library_changed, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void onFetchDataErrorEncountered(@NonNull Exception error)
     {
         if (getView() == null)
@@ -283,5 +292,15 @@ public class AlbumsFragment extends Fragment implements BaseView
         };
 
         AlertWindows.showAlert(getContext(), R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
+    }
+
+    private void showProgressIndicator()
+    {
+        _progressIndicator.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressIndicator()
+    {
+        _progressIndicator.setVisibility(View.GONE);
     }
 }

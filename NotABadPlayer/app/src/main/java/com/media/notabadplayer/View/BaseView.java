@@ -29,6 +29,7 @@ public interface BaseView {
     void onAppThemeChanged(AppSettings.AppTheme appTheme);
     void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting);
     void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar showVolumeBar);
+    void onDeviceLibraryChanged();
     
     void onFetchDataErrorEncountered(@NonNull Exception error);
     void onPlayerErrorEncountered(@NonNull Exception error);

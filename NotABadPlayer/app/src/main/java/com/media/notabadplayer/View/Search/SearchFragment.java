@@ -391,6 +391,12 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
+    public void onDeviceLibraryChanged()
+    {
+
+    }
+
+    @Override
     public void onFetchDataErrorEncountered(@NonNull Exception error)
     {
 
