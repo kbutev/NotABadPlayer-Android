@@ -11,6 +11,19 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/noTracksLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="?primaryTextColor"
+        android:textSize="20sp"
+        android:text="@string/error_no_tracks_on_device"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
     
     <GridView
         android:id="@+id/primaryAreaGrid"

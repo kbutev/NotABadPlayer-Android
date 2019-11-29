@@ -45,6 +45,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     private GridSideIndexingView _tableSideIndexingView;
     private TextView _indexingTextCharacter;
     private ProgressBar _progressIndicator;
+    private TextView _noTracksLabel;
     
     public AlbumsFragment()
     {
@@ -67,6 +68,7 @@ public class AlbumsFragment extends Fragment implements BaseView
         _tableSideIndexingView = root.findViewById(R.id.tableSideIndexingView);
         _indexingTextCharacter = root.findViewById(R.id.indexingTextCharacter);
         _progressIndicator = root.findViewById(R.id.progressIndicator);
+        _noTracksLabel = root.findViewById(R.id.noTracksLabel);
         
         initUI();
         
@@ -189,6 +191,14 @@ public class AlbumsFragment extends Fragment implements BaseView
             return;
         }
 
+        if (albums.size() == 0)
+        {
+            handleNoTracksOnDevice();
+            return;
+        }
+
+        hideNoTracksLabel();
+
         _tableAdapter = new AlbumsTableAdapter(context, albums, _tableSideIndexingView);
         _table.setAdapter(_tableAdapter);
         
@@ -302,5 +312,25 @@ public class AlbumsFragment extends Fragment implements BaseView
     private void hideProgressIndicator()
     {
         _progressIndicator.setVisibility(View.GONE);
+    }
+
+    private void showNoTracksLabel()
+    {
+        _noTracksLabel.setVisibility(View.VISIBLE);
+    }
+
+    private void hideNoTracksLabel()
+    {
+        _noTracksLabel.setVisibility(View.INVISIBLE);
+    }
+
+    private void handleNoTracksOnDevice()
+    {
+        Log.v(AlbumsFragment.class.getCanonicalName(), "No tracks were found on the device. Alert user.");
+
+        showNoTracksLabel();
+        _tableAdapter = null;
+        _table.setAdapter(null);
+        _tableSideIndexingView.start(_table, _indexingTextCharacter, new ArrayList<String>());
     }
 }
