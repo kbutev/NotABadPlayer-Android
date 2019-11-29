@@ -235,6 +235,11 @@ public class SearchPresenter implements BasePresenter
     {
         String searchValue = _lastSearchQuery;
 
+        if (searchValue == null)
+        {
+            return;
+        }
+
         Log.v(SearchPresenter.class.getCanonicalName(), "Searching for '" + searchValue + "' ...");
 
         _lastSearchQuery = searchValue;
