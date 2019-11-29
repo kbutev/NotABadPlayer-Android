@@ -1,6 +1,5 @@
 package com.media.notabadplayer.Storage;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -84,7 +83,9 @@ public class GeneralStorage
             SharedPreferences.Editor editor = getSharedPreferences().edit();
             editor.putBoolean("firstTime", false);
             editor.apply();
-            
+
+            clearCurrentlySelectedNavigationTab();
+
             resetDefaultSettingsValues();
         }
     }
@@ -626,6 +627,14 @@ public class GeneralStorage
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("selected_navigation_tab", tabId);
+        editor.apply();
+    }
+
+    public void clearCurrentlySelectedNavigationTab()
+    {
+        SharedPreferences preferences = getSharedPreferences();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("selected_navigation_tab", 0);
         editor.apply();
     }
     

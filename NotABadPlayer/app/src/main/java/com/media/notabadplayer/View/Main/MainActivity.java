@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         GeneralStorage storage = GeneralStorage.getShared();
         int defaultSelectionId = storage.getCurrentlySelectedNavigationTab();
 
-        if (defaultSelectionId == 0)
+        if (!isTabIdValid(defaultSelectionId))
         {
             onTabItemSelected(DEFAULT_SELECTED_TAB_ID);
             navigationView.setSelectedItemId(DEFAULT_SELECTED_TAB_ID);
@@ -351,7 +351,15 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             transaction.commit();
         }
     }
-    
+
+    private boolean isTabIdValid(int tabId)
+    {
+        return tabId == R.id.navigation_albums ||
+                tabId == R.id.navigation_lists ||
+                tabId == R.id.navigation_search ||
+                tabId == R.id.navigation_settings;
+    }
+
     private void selectAlbumsTab()
     {
         Log.v(MainActivity.class.getCanonicalName(), "Select albums tab");
