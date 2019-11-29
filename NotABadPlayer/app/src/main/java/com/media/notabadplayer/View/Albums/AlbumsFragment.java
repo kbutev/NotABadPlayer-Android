@@ -331,6 +331,6 @@ public class AlbumsFragment extends Fragment implements BaseView
         showNoTracksLabel();
         _tableAdapter = null;
         _table.setAdapter(null);
-        _tableSideIndexingView.start(_table, _indexingTextCharacter, new ArrayList<String>());
+        _tableSideIndexingView.clear();
     }
 }
