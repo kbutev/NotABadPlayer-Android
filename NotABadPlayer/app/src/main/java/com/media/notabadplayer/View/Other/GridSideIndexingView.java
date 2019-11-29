@@ -72,7 +72,7 @@ public class GridSideIndexingView extends View {
         _paint.setTextAlign(Paint.Align.LEFT);
     }
     
-    public void start(@NonNull GridView list, @NonNull TextView textCharacter, ArrayList<String> titles)
+    public void start(@NonNull GridView list, @NonNull TextView textCharacter, @NonNull ArrayList<String> titles)
     {
         updateAlphabet(titles);
         
@@ -80,10 +80,14 @@ public class GridSideIndexingView extends View {
         _indexingTextCharacter = textCharacter;
         _selectionIndexer = (SectionIndexer) list.getAdapter();
         
-        if (_selectionIndexer == null)
+        if (_selectionIndexer == null || titles.size() == 0)
         {
+            setVisibility(View.INVISIBLE);
+            fadeOutTextCharacter();
             return;
         }
+
+        setVisibility(View.VISIBLE);
         
         Object[] sectionsArr = _selectionIndexer.getSections();
         
