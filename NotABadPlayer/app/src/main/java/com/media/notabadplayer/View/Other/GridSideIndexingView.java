@@ -97,12 +97,12 @@ public class GridSideIndexingView extends View {
         invalidate();
     }
     
-    public ArrayList<Character> getAlphabet()
+    public @NonNull ArrayList<Character> getAlphabet()
     {
         return _alphabet;
     }
 
-    private void updateAlphabet(ArrayList<String> titles)
+    private void updateAlphabet(@NonNull ArrayList<String> titles)
     {
         _alphabet.clear();
 
