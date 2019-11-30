@@ -1,12 +1,11 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.StringUtilities;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AudioTrackBuilder {
     public static @NonNull BaseAudioTrackBuilderNode start()
@@ -19,17 +18,17 @@ public class AudioTrackBuilder {
         return new AudioTrackBuilderNode(prototype);
     }
 
-    public static @NonNull List<BaseAudioTrack> buildLatestVersionFromSerializedData(String data) throws Exception
+    public static @NonNull List<BaseAudioTrack> buildListLatestVersionFromSerializedData(String data) throws Exception
     {
-        return buildFromSerializedData(data);
+        return buildArrayListFromSerializedData(data);
     }
 
-    public static @NonNull List<BaseAudioTrack> buildVersion1FromSerializedData(String data) throws Exception
+    public static @NonNull List<BaseAudioTrack> buildListVersion1FromSerializedData(String data) throws Exception
     {
-        return buildFromSerializedData(data);
+        return buildArrayListFromSerializedData(data);
     }
 
-    public static @NonNull List<BaseAudioTrack> buildFromSerializedData(String data) throws Exception
+    public static @NonNull List<BaseAudioTrack> buildArrayListFromSerializedData(String data) throws Exception
     {
         Object result = Serializing.deserializeObject(data);
 

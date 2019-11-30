@@ -2,10 +2,7 @@ package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.StringUtilities;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -148,37 +145,51 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
         return date;
     }
 
-    @Override
-    public @NonNull String serialize() throws Exception {
-        return Serializing.serializeObject(this);
-    }
-
     // # Utilities
 
     private BaseAudioTrackDate buildDefaultAudioTrackDate()
     {
         final Date date = new Date();
 
-        return new BaseAudioTrackDate() {
-            @Override
-            @NonNull public Date getAdded() {
-                return date;
-            }
+        return new AudioTrackV1Date(date, date, null, null);
+    }
+}
 
-            @Override
-            @NonNull public Date getModified() {
-                return date;
-            }
+class AudioTrackV1Date implements BaseAudioTrackDate, Serializable {
+    private final @NonNull Date added;
+    private final @NonNull Date modified;
+    private final @Nullable Date firstPlayed;
+    private final @Nullable Date lastPlayed;
 
-            @Override
-            @Nullable public Date getFirstPlayed() {
-                return null;
-            }
+    AudioTrackV1Date(@NonNull Date added, @NonNull Date modified, @Nullable Date firstPlayed, @Nullable Date lastPlayed)
+    {
+        this.added = added;
+        this.modified = modified;
+        this.firstPlayed = firstPlayed;
+        this.lastPlayed = lastPlayed;
+    }
 
-            @Override
-            @Nullable public Date getLastPlayed() {
-                return null;
-            }
-        };
+    @Override
+    public @NonNull Date getAdded()
+    {
+        return added;
+    }
+
+    @Override
+    public @NonNull Date getModified()
+    {
+        return modified;
+    }
+
+    @Override
+    public @Nullable Date getFirstPlayed()
+    {
+        return firstPlayed;
+    }
+
+    @Override
+    public @Nullable Date getLastPlayed()
+    {
+        return lastPlayed;
     }
 }

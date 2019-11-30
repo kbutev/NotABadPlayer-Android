@@ -6,21 +6,21 @@ import java.util.List;
 
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 
 public interface BaseView {
-    void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist);
+    void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist);
     
     void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums);
 
-    void onPlaylistLoad(@NonNull AudioPlaylist playlist);
+    void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist);
 
-    void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists);
+    void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists);
     
-    void openPlayerScreen(@NonNull AudioPlaylist playlist);
-    void updatePlayerScreen(@NonNull AudioPlaylist playlist);
+    void openPlayerScreen(@NonNull BaseAudioPlaylist playlist);
+    void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist);
     
     void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState);
 

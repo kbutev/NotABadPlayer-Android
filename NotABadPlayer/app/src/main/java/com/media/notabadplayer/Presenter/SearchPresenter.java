@@ -10,13 +10,15 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
@@ -101,7 +103,7 @@ public class SearchPresenter implements BasePresenter
     }
 
     @Override
-    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
+    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
         
     }
@@ -160,8 +162,8 @@ public class SearchPresenter implements BasePresenter
         {
             playNewTrack(clickedTrack);
         }
-        
-        AudioPlaylist audioPlayerPlaylist = Player.getShared().getPlaylist();
+
+        BaseAudioPlaylist audioPlayerPlaylist = Player.getShared().getPlaylist();
         
         if (audioPlayerPlaylist != null)
         {
@@ -280,7 +282,13 @@ public class SearchPresenter implements BasePresenter
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         
         try {
-            AudioPlaylist searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+            node.setName(searchPlaylistName);
+            node.setTracks(_searchResults);
+            node.setStartingTrack(clickedTrack);
+
+            // Try to build
+            BaseAudioPlaylist searchPlaylist = node.build();
 
             Log.v(SearchPresenter.class.getCanonicalName(), "Opening player screen");
 
@@ -293,17 +301,22 @@ public class SearchPresenter implements BasePresenter
     private void playNewTrack(@NonNull BaseAudioTrack clickedTrack)
     {
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
-        AudioPlaylist searchPlaylist;
+        BaseAudioPlaylist searchPlaylist;
         
         try {
-            searchPlaylist = new AudioPlaylist(searchPlaylistName, _searchResults, clickedTrack);
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+            node.setName(searchPlaylistName);
+            node.setTracks(_searchResults);
+            node.setStartingTrack(clickedTrack);
+
+            searchPlaylist = node.build();
         } catch (Exception e) {
             Log.v(SearchPresenter.class.getCanonicalName(), "Error: Could not play track: " + e.toString());
             return;
         }
         
         Player player = Player.getShared();
-        AudioPlaylist currentPlaylist = player.getPlaylist();
+        BaseAudioPlaylist currentPlaylist = player.getPlaylist();
 
         if (currentPlaylist != null)
         {
@@ -330,12 +343,12 @@ public class SearchPresenter implements BasePresenter
         playFirstTime(searchPlaylist);
     }
 
-    private void playFirstTime(@NonNull AudioPlaylist playlist)
+    private void playFirstTime(@NonNull BaseAudioPlaylist playlist)
     {
         playNew(playlist);
     }
 
-    private void playNew(@NonNull AudioPlaylist playlist)
+    private void playNew(@NonNull BaseAudioPlaylist playlist)
     {
         Player player = Player.getShared();
 

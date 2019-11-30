@@ -19,7 +19,9 @@ import com.media.notabadplayer.Audio.AudioPlayerHistory;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlayerObservers;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.PlayerApplication;
 import com.media.notabadplayer.Storage.GeneralStorage;
@@ -124,7 +126,7 @@ public class Player implements AudioPlayer {
             restorePlayHistoryFromStorage();
 
             // Alert observers of the current state
-            AudioPlaylist playlist = getPlaylist();
+            BaseAudioPlaylist playlist = getPlaylist();
 
             if (playlist != null)
             {
@@ -170,7 +172,7 @@ public class Player implements AudioPlayer {
         setPlayOrder(playOrder);
 
         // Restore playlist
-        AudioPlaylist playlist = storage.retrievePlayerStateCurrentPlaylist();
+        BaseAudioPlaylist playlist = storage.retrievePlayerStateCurrentPlaylist();
 
         if (playlist != null)
         {
@@ -215,7 +217,7 @@ public class Player implements AudioPlayer {
     }
 
     @Override
-    public @Nullable AudioPlaylist getPlaylist()
+    public @Nullable BaseAudioPlaylist getPlaylist()
     {
         return getPlayer().getPlaylist();
     }
@@ -239,7 +241,7 @@ public class Player implements AudioPlayer {
     }
 
     @Override
-    public void playPlaylist(@NonNull AudioPlaylist playlist) throws Exception
+    public void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception
     {
         getPlayer().playPlaylist(playlist);
     }
@@ -416,7 +418,7 @@ public class Player implements AudioPlayer {
             return getPlayer().playHistory().getPlayHistory();
         }
         
-        public @Nullable AudioPlaylist getPlayHistoryAsPlaylist(@NonNull String playlistName)
+        public @Nullable BaseAudioPlaylist getPlayHistoryAsPlaylist(@NonNull String playlistName)
         {
             List<BaseAudioTrack> tracks = getPlayer().playHistory().getPlayHistory();
             
@@ -424,8 +426,17 @@ public class Player implements AudioPlayer {
             {
                 return null;
             }
-            
-            return new AudioPlaylist(playlistName, tracks);
+
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+            node.setName(playlistName);
+            node.setTracks(tracks);
+
+            // Try to build
+            try {
+                return node.build();
+            } catch (Exception e) {
+                return null;
+            }
         }
 
         @Override

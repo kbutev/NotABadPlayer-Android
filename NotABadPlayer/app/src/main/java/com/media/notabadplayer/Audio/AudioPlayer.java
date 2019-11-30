@@ -4,17 +4,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 
 public interface AudioPlayer
 {
     boolean isPlaying();
     boolean isCompletelyStopped();
-    @Nullable AudioPlaylist getPlaylist();
+    @Nullable BaseAudioPlaylist getPlaylist();
     boolean hasPlaylist();
     AudioPlayOrder getPlayOrder();
     void setPlayOrder(AudioPlayOrder order);
-    void playPlaylist(@NonNull AudioPlaylist playlist) throws Exception;
+    void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception;
     void resume();
     void pause();
     void stop();

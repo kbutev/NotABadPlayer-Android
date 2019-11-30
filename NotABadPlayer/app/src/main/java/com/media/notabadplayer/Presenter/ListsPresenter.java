@@ -10,11 +10,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
-import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
@@ -27,7 +26,7 @@ public class ListsPresenter implements BasePresenter
     
     private @NonNull AudioInfo _audioInfo;
     
-    private List<AudioPlaylist> _playlists = new ArrayList<>();
+    private List<BaseAudioPlaylist> _playlists = new ArrayList<>();
     
     private final String _historyPlaylistName;
 
@@ -94,15 +93,15 @@ public class ListsPresenter implements BasePresenter
                 
                 if (running)
                 {
-                    ArrayList<AudioPlaylist> lists = GeneralStorage.getShared().getUserPlaylists();
-                    AudioPlaylist recentlyPlayed = Player.getShared().playHistory.getPlayHistoryAsPlaylist(_historyPlaylistName);
+                    List<BaseAudioPlaylist> lists = GeneralStorage.getShared().getUserPlaylists();
+                    BaseAudioPlaylist recentlyPlayed = Player.getShared().playHistory.getPlayHistoryAsPlaylist(_historyPlaylistName);
                     
                     if (recentlyPlayed != null)
                     {
                         lists.add(0, recentlyPlayed);
                     }
 
-                    final ArrayList<AudioPlaylist> data = lists;
+                    final List<BaseAudioPlaylist> data = lists;
                     
                     myRunnable = new Runnable() {
                         @Override
@@ -164,8 +163,8 @@ public class ListsPresenter implements BasePresenter
         {
             return;
         }
-        
-        AudioPlaylist playlist = _playlists.get(index);
+
+        BaseAudioPlaylist playlist = _playlists.get(index);
 
         Log.v(ListsPresenter.class.getCanonicalName(), "Open playlist '" + playlist.getName() + "'");
 
@@ -173,7 +172,7 @@ public class ListsPresenter implements BasePresenter
     }
 
     @Override
-    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
+    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
         
     }
@@ -216,7 +215,7 @@ public class ListsPresenter implements BasePresenter
 
             if (_playlists.size() > 0)
             {
-                ArrayList<AudioPlaylist> playlists = new ArrayList<>(_playlists);
+                ArrayList<BaseAudioPlaylist> playlists = new ArrayList<>(_playlists);
 
                 playlists.remove(0);
 

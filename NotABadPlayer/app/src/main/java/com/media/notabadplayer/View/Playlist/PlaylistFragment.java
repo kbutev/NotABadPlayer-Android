@@ -21,10 +21,10 @@ import android.widget.TextView;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.AlertWindows;
@@ -203,7 +203,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
     {
 
     }
@@ -215,7 +215,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void onPlaylistLoad(@NonNull AudioPlaylist playlist)
+    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
     {
         Context context = getContext();
 
@@ -232,7 +232,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         _albumTitleHeader.setText(playlist.getName());
         
         // Scroll down to the currently playing track
-        AudioPlaylist audioPlaylist = Player.getShared().getPlaylist();
+        BaseAudioPlaylist audioPlaylist = Player.getShared().getPlaylist();
 
         if (audioPlaylist != null && audioPlaylist.getName().equals(playlist.getName()))
         {
@@ -248,13 +248,13 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists)
+    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
         Activity a = getActivity();
         
@@ -270,7 +270,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
+    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
 
     }

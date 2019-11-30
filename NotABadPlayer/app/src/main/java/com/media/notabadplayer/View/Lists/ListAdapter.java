@@ -14,12 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.common.base.Function;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.R;
 
 class ListAdapter extends BaseAdapter
 {
-    private List<AudioPlaylist> _playlists;
+    private List<BaseAudioPlaylist> _playlists;
 
     private Context _context;
     
@@ -28,7 +28,7 @@ class ListAdapter extends BaseAdapter
     private @NonNull Function<Integer, Void> _onRemoveButton;
 
     public ListAdapter(@NonNull Context context,
-                       @NonNull List<AudioPlaylist> playlists,
+                       @NonNull List<BaseAudioPlaylist> playlists,
                        @NonNull Function<Integer, Void> onRemoveButton)
     {
         this._playlists = playlists;
@@ -60,7 +60,7 @@ class ListAdapter extends BaseAdapter
             convertView = LayoutInflater.from(_context).inflate(R.layout.item_playlist, parent, false);
         }
 
-        AudioPlaylist playlist = _playlists.get(position);
+        BaseAudioPlaylist playlist = _playlists.get(position);
         String artCover = "";
         
         if (playlist.size() > 0)

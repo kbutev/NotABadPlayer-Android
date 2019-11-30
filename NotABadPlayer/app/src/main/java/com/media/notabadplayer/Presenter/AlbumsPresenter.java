@@ -10,7 +10,9 @@ import android.util.Log;
 
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -157,9 +159,17 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
 
         List<BaseAudioTrack> tracks = _audioInfo.getAlbumTracks(album);
 
-        AudioPlaylist playlist = new AudioPlaylist(album.albumTitle, tracks);
+        BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+        node.setName(album.albumTitle);
+        node.setTracks(tracks);
 
-        _view.openPlaylistScreen(_audioInfo, playlist);
+        // Try to build
+        try {
+            BaseAudioPlaylist playlist = node.build();
+            _view.openPlaylistScreen(_audioInfo, playlist);
+        } catch (Exception e) {
+            Log.v(AlbumsPresenter.class.getCanonicalName(), "Error: Failed to create a playlist for the clicked album track");
+        }
     }
 
     @Override
@@ -169,7 +179,7 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
     }
 
     @Override
-    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
+    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
         
     }

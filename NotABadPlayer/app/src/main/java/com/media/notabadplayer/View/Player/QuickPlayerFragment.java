@@ -22,10 +22,10 @@ import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
@@ -119,7 +119,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         else
         {
             // Player may not be loaded yet, retrieve some dummy values from the general storage
-            AudioPlaylist playlist = GeneralStorage.getShared().retrievePlayerStateCurrentPlaylist();
+            BaseAudioPlaylist playlist = GeneralStorage.getShared().retrievePlayerStateCurrentPlaylist();
             
             if (playlist != null)
             {
@@ -371,7 +371,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
     {
         // Forward request to the application's root view
         if (_rootView != null)
@@ -387,23 +387,24 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void onPlaylistLoad(@NonNull AudioPlaylist playlist)
+    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists)
+    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("playlist", Serializing.serializeObject(playlist));
+        String serializedData = Serializing.serializeObject(playlist);
+        intent.putExtra("playlist", serializedData);
         startActivity(intent);
 
         // Transition animation
@@ -416,7 +417,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
+    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
 
     }

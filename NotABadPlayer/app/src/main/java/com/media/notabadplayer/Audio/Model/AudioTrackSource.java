@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Storage.GeneralStorage;
@@ -39,7 +40,8 @@ public class AudioTrackSource implements Serializable
         return !isAlbum();
     }
 
-    public @Nullable AudioPlaylist getSourcePlaylist(@NonNull AudioInfo audioInfo, @Nullable BaseAudioTrack playingTrack)
+    public @Nullable
+    BaseAudioPlaylist getSourcePlaylist(@NonNull AudioInfo audioInfo, @Nullable BaseAudioTrack playingTrack)
     {
         if (isAlbum())
         {
@@ -51,7 +53,7 @@ public class AudioTrackSource implements Serializable
             }
 
             try {
-                return new AudioPlaylist(album.albumTitle, audioInfo.getAlbumTracks(album), playingTrack);
+                return new AudioPlaylistV1(album.albumTitle, audioInfo.getAlbumTracks(album), playingTrack);
             } catch (Exception e1) {
                 
             }
@@ -59,16 +61,16 @@ public class AudioTrackSource implements Serializable
         
         if (isPlaylist())
         {
-            ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
+            List<BaseAudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
             
             for (int e = 0; e < playlists.size(); e++)
             {
                 if (_value.equals(playlists.get(e).getName()))
                 {
-                    AudioPlaylist pl = playlists.get(e);
+                    BaseAudioPlaylist pl = playlists.get(e);
 
                     try {
-                        return new AudioPlaylist(pl.getName(), pl.getTracks(), playingTrack);
+                        return new AudioPlaylistV1(pl.getName(), pl.getTracks(), playingTrack);
                     } catch (Exception e2) {
 
                     }
