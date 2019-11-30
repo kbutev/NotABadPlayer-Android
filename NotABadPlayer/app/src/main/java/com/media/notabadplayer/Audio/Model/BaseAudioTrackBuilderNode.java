@@ -2,6 +2,8 @@ package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
 
+import java.util.Date;
+
 public interface BaseAudioTrackBuilderNode {
     @NonNull BaseAudioTrack build() throws Exception;
 
@@ -22,5 +24,8 @@ public interface BaseAudioTrackBuilderNode {
     void setNumberOfTimesPlayed(int count);
     void setTotalTimePlayed(int count);
 
-    void setDate(@NonNull BaseAudioTrackDate value);
+    void setDateAdded(@NonNull Date value);
+    void setDateModified(@NonNull Date value);
+    void setDateFirstPlayed(@NonNull Date value);
+    void setDateLastAdded(@NonNull Date value);
 }

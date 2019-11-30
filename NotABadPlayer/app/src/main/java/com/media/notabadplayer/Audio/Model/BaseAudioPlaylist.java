@@ -19,6 +19,7 @@ public interface BaseAudioPlaylist extends Serializable {
     @NonNull BaseAudioTrack getPlayingTrack();
 
     boolean isAlbumPlaylist();
+    boolean isTemporaryPlaylist();
     boolean isPlayingFirstTrack();
     boolean isPlayingLastTrack();
 

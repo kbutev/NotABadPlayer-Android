@@ -97,10 +97,10 @@ class ListAdapter extends BaseAdapter
         String tracksText = _context.getResources().getString(R.string.albums_tracks);
         description.setText(String.valueOf(playlist.size()) + " " + tracksText);
         
-        // Remove button is displayed only in edit mode and is never displayed for position one
+        // Remove button is never displayed for temporary playlists
         ImageButton removeButton = listItem.findViewById(R.id.removeButton);
         
-        if (_editMode && position != 0)
+        if (_editMode && !playlist.isTemporaryPlaylist())
         {
             removeButton.setVisibility(View.VISIBLE);
             

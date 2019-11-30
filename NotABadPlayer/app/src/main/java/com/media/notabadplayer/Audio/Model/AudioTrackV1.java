@@ -147,11 +147,16 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
 
     // # Utilities
 
-    private BaseAudioTrackDate buildDefaultAudioTrackDate()
+    public static BaseAudioTrackDate buildDefaultAudioTrackDate()
     {
         final Date date = new Date();
 
         return new AudioTrackV1Date(date, date, null, null);
+    }
+
+    public static BaseAudioTrackDate buildDefaultAudioTrackDate(@NonNull Date added, @NonNull Date modified, @Nullable Date firstPlayed, @Nullable Date lastPlayed)
+    {
+        return new AudioTrackV1Date(added, modified, firstPlayed, lastPlayed);
     }
 }
 
