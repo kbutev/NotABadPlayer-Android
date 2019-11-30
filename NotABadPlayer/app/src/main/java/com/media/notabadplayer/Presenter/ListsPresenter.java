@@ -231,8 +231,16 @@ public class ListsPresenter implements BasePresenter
             {
                 ArrayList<BaseAudioPlaylist> playlists = new ArrayList<>(_playlists);
 
-                playlists.remove(0);
+                // Remove the temporary lists before saving (recently played/added playlists)
+                for (BaseAudioPlaylist playlist : _playlists)
+                {
+                    if (playlist.isTemporaryPlaylist())
+                    {
+                        playlists.remove(playlist);
+                    }
+                }
 
+                // Save to storage
                 GeneralStorage.getShared().saveUserPlaylists(playlists);
                 
                 updatePlaylistsData();
