@@ -13,10 +13,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.AudioTrackBuilder;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Controls.ApplicationAction;
@@ -116,16 +117,16 @@ public class GeneralStorage
             String version = "1.0";
             
             Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from first version to version " + version);
-            
-            Object result = Serializing.deserializeObject(preferences.getString("user_playlists", ""));
-            
-            if (result != null)
-            {
-                ArrayList<AudioPlaylist> playlistsArray = objectToPlaylistsArray(result);
 
-                if (playlistsArray != null)
-                {
-                    saveUserPlaylists(playlistsArray);
+            String playlistsData = preferences.getString("user_playlists", "");
+            
+            if (playlistsData != null)
+            {
+                try {
+                    List<BaseAudioPlaylist> result = AudioPlaylistBuilder.buildArrayListFromSerializedData(playlistsData);
+                    saveUserPlaylists(result);
+                } catch (Exception e) {
+                    Log.v(GeneralStorage.class.getCanonicalName(), "Failed to migrate user playlists: " + e.toString());
                 }
             }
 
@@ -303,7 +304,7 @@ public class GeneralStorage
         Log.v(GeneralStorage.class.getCanonicalName(), "Saved audio player state to storage.");
     }
 
-    public @Nullable AudioPlaylist retrievePlayerStateCurrentPlaylist()
+    public @Nullable BaseAudioPlaylist retrievePlayerStateCurrentPlaylist()
     {
         SharedPreferences preferences = getSharedPreferences();
 
@@ -312,12 +313,12 @@ public class GeneralStorage
         // Restore playlist
         Object result = Serializing.deserializeObject(playlistData);
 
-        if (!(result instanceof AudioPlaylist))
+        if (!(result instanceof BaseAudioPlaylist))
         {
             return null;
         }
 
-        return (AudioPlaylist)result;
+        return (BaseAudioPlaylist)result;
     }
 
     public AudioPlayOrder retrievePlayerStatePlayOrder()
@@ -387,7 +388,7 @@ public class GeneralStorage
         }
 
         try {
-            return AudioTrackBuilder.buildFromSerializedData(data);
+            return AudioTrackBuilder.buildArrayListFromSerializedData(data);
         } catch (Exception e) {
             Log.v(GeneralStorage.class.getCanonicalName(), "Failed to retrieve player play history from storage: " + e.toString());
         }
@@ -515,36 +516,30 @@ public class GeneralStorage
         editor.apply();
     }
 
-    public @NonNull ArrayList<AudioPlaylist> getUserPlaylists()
+    public @NonNull List<BaseAudioPlaylist> getUserPlaylists()
     {
         SharedPreferences preferences = getSharedPreferences();
-        
-        try {
-            Object result = Serializing.deserializeObject(preferences.getString("user_playlists", ""));
-            
-            ArrayList<AudioPlaylist> playlistsArray = objectToPlaylistsArray(result);
 
-            if (playlistsArray == null)
-            {
-                Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not deserialize user playlists");
-                return new ArrayList<>();
-            }
-            
-            return playlistsArray;
+        try {
+            String data = preferences.getString("user_playlists", "");
+
+            List<BaseAudioPlaylist> result = AudioPlaylistBuilder.buildArrayListFromSerializedData(data);
+
+            return result;
         }
         catch (Exception e)
         {
-            
+
         }
         
         return new ArrayList<>();
     }
 
-    public void saveUserPlaylists(@NonNull ArrayList<AudioPlaylist> playlists)
+    public void saveUserPlaylists(@NonNull List<BaseAudioPlaylist> playlists)
     {
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("user_playlists", Serializing.serializeObject(playlists));
+        editor.putString("user_playlists", Serializing.serializeObject(new ArrayList<>(playlists)));
         editor.apply();
     }
 
@@ -729,29 +724,5 @@ public class GeneralStorage
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("caching_policy", value.name());
         editor.apply();
-    }
-
-    private static ArrayList<AudioPlaylist> objectToPlaylistsArray(Object object)
-    {
-        if (object instanceof ArrayList)
-        {
-            ArrayList array = (ArrayList)object;
-
-            if (array.size() > 0)
-            {
-                if (array.get(0) instanceof AudioPlaylist)
-                {
-                    @SuppressWarnings("unchecked")
-                    ArrayList<AudioPlaylist> playlistsArray = (ArrayList<AudioPlaylist>)object;
-                    return playlistsArray;
-                }
-            }
-            else
-            {
-                return new ArrayList<>();
-            }
-        }
-
-        return null;
     }
 }

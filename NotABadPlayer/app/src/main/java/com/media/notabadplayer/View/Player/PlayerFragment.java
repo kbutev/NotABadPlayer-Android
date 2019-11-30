@@ -22,10 +22,10 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -512,7 +512,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
     {
 
     }
@@ -524,25 +524,25 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void onPlaylistLoad(@NonNull AudioPlaylist playlist)
+    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists)
+    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(@NonNull AudioPlaylist playlist) 
+    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
         
     }
 
     @Override
-    public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
+    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
         updateMediaInfo(playlist.getPlayingTrack());
     }

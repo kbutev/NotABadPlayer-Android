@@ -3,7 +3,7 @@ package com.media.notabadplayer.Presenter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -26,7 +26,7 @@ public interface BasePresenter {
     
     void onAlbumItemClick(int index);
     void onPlaylistItemClick(int index);
-    void onOpenPlayer(@Nullable AudioPlaylist playlist);
+    void onOpenPlayer(@Nullable BaseAudioPlaylist playlist);
     
     void onPlayerButtonClick(ApplicationInput input);
     void onPlayOrderButtonClick();

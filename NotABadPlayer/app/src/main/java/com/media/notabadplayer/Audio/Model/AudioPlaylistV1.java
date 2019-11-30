@@ -3,7 +3,6 @@ package com.media.notabadplayer.Audio.Model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,7 +14,7 @@ import java.util.Random;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
-public class AudioPlaylist implements Serializable
+public class AudioPlaylistV1 implements BaseAudioPlaylist, Serializable
 {
     private final @NonNull String _name;
     
@@ -26,7 +25,7 @@ public class AudioPlaylist implements Serializable
     
     transient private Random _random;
 
-    public AudioPlaylist(@NonNull String name, @NonNull List<BaseAudioTrack> tracks)
+    public AudioPlaylistV1(@NonNull String name, @NonNull List<BaseAudioTrack> tracks)
     {
         if (tracks.size() == 0)
         {
@@ -59,14 +58,14 @@ public class AudioPlaylist implements Serializable
             try {
                 _tracks.add(clone.build());
             } catch (Exception exc) {
-                Log.v(AudioPlaylist.class.getCanonicalName(), "Failed to copy audio track " + track.getFilePath());
+                Log.v(AudioPlaylistV1.class.getCanonicalName(), "Failed to copy audio track " + track.getFilePath());
             }
         }
 
         _random = new Random();
     }
     
-    public AudioPlaylist(@NonNull String name, @NonNull BaseAudioTrack startWithTrack)
+    public AudioPlaylistV1(@NonNull String name, @NonNull BaseAudioTrack startWithTrack)
     {
         this(name, trackAsAList(startWithTrack));
         
@@ -76,24 +75,24 @@ public class AudioPlaylist implements Serializable
         }
     }
     
-    public AudioPlaylist(@NonNull String name,
-                         @NonNull List<BaseAudioTrack> tracks,
-                         @Nullable BaseAudioTrack startWithTrack) throws Exception
+    public AudioPlaylistV1(@NonNull String name,
+                           @NonNull List<BaseAudioTrack> tracks,
+                           @Nullable BaseAudioTrack startWithTrack) throws Exception
     {
         this(name, tracks, startWithTrack, AppSettings.TrackSorting.NONE);
     }
 
-    public AudioPlaylist(@NonNull String name,
-                         @NonNull List<BaseAudioTrack> tracks,
-                         AppSettings.TrackSorting sorting)
+    public AudioPlaylistV1(@NonNull String name,
+                           @NonNull List<BaseAudioTrack> tracks,
+                           AppSettings.TrackSorting sorting)
     {
         this(name, MediaSorting.sortTracks(tracks, sorting));
     }
     
-    public AudioPlaylist(@NonNull String name,
-                         @NonNull List<BaseAudioTrack> tracks,
-                         @Nullable BaseAudioTrack startWithTrack,
-                         AppSettings.TrackSorting sorting) throws Exception
+    public AudioPlaylistV1(@NonNull String name,
+                           @NonNull List<BaseAudioTrack> tracks,
+                           @Nullable BaseAudioTrack startWithTrack,
+                           AppSettings.TrackSorting sorting) throws Exception
     {
         this(name, MediaSorting.sortTracks(tracks, sorting));
 
@@ -113,9 +112,9 @@ public class AudioPlaylist implements Serializable
     @Override
     public boolean equals(Object o)
     {
-        if (o instanceof AudioPlaylist)
+        if (o instanceof AudioPlaylistV1)
         {
-            AudioPlaylist playlist = (AudioPlaylist)o;
+            AudioPlaylistV1 playlist = (AudioPlaylistV1)o;
             
             return _name.equals(playlist._name) && _playingTrackPosition == playlist._playingTrackPosition && _tracks.equals(playlist._tracks);
         }
@@ -123,75 +122,82 @@ public class AudioPlaylist implements Serializable
         return false;
     }
 
-    public @NonNull AudioPlaylist sortedPlaylist(AppSettings.TrackSorting sorting)
-    {
-        AudioPlaylist playlist = new AudioPlaylist(getName(), getTracks(), sorting);
-        playlist.goToTrack(getPlayingTrack());
-        return playlist;
-    }
-    
     private static ArrayList<BaseAudioTrack> trackAsAList(@NonNull BaseAudioTrack track)
     {
         ArrayList<BaseAudioTrack> tracks = new ArrayList<>();
         tracks.add(track);
         return tracks;
     }
-    
-    public String getName()
+
+    // # BaseAudioPlaylist
+
+    @Override
+    public @NonNull String getName()
     {
         return _name;
     }
-    
+
+    @Override
     public int size()
     {
         return _tracks.size();
     }
-    
-    public @NonNull ArrayList<BaseAudioTrack> getTracks()
-    {
-        return new ArrayList<>(_tracks);
-    }
-    
-    public final BaseAudioTrack getTrack(int index)
-    {
-        return _tracks.get(index);
-    }
-    
+
+    @Override
     public boolean isPlaying()
     {
         return _playing;
     }
-    
+
+    @Override
+    public @NonNull ArrayList<BaseAudioTrack> getTracks()
+    {
+        return new ArrayList<>(_tracks);
+    }
+
+    @Override
+    public @NonNull BaseAudioTrack getTrack(int index)
+    {
+        return _tracks.get(index);
+    }
+
+    @Override
+    public boolean hasTrack(@NonNull BaseAudioTrack track)
+    {
+        return _tracks.contains(track);
+    }
+
+    @Override
     public @NonNull BaseAudioTrack getPlayingTrack()
     {
         return _tracks.get(_playingTrackPosition);
     }
-    
+
+    @Override
     public boolean isAlbumPlaylist()
     {
         return _name.equals(_tracks.get(0).getAlbumTitle());
     }
-    
+
+    @Override
     public boolean isPlayingFirstTrack()
     {
         return _playingTrackPosition == 0;
     }
 
+    @Override
     public boolean isPlayingLastTrack()
     {
         return _playingTrackPosition + 1 == _tracks.size();
     }
 
-    public boolean hasTrack(@NonNull BaseAudioTrack track)
-    {
-        return _tracks.contains(track);
-    }
-    
+    @Override
     public void playCurrent()
     {
         _playing = true;
     }
-    
+
+    @Override
     public void goToTrack(@NonNull BaseAudioTrack track)
     {
         int index = -1;
@@ -212,10 +218,11 @@ public class AudioPlaylist implements Serializable
         }
         else
         {
-            Log.v(AudioPlaylist.class.getCanonicalName(), "Cannot go to track, tracks list does not contain given track " + track.getFilePath());
+            Log.v(AudioPlaylistV1.class.getCanonicalName(), "Cannot go to track, tracks list does not contain given track " + track.getFilePath());
         }
     }
-    
+
+    @Override
     public void goToTrackBasedOnPlayOrder(AudioPlayOrder playOrder)
     {
         _playing = true;
@@ -239,6 +246,7 @@ public class AudioPlaylist implements Serializable
         }
     }
 
+    @Override
     public void goToNextPlayingTrack()
     {
         _playing = true;
@@ -254,6 +262,7 @@ public class AudioPlaylist implements Serializable
         }
     }
 
+    @Override
     public void goToNextPlayingTrackRepeat()
     {
         _playing = true;
@@ -270,6 +279,7 @@ public class AudioPlaylist implements Serializable
         }
     }
 
+    @Override
     public void goToPreviousPlayingTrack()
     {
         _playing = true;
@@ -284,7 +294,8 @@ public class AudioPlaylist implements Serializable
             _playingTrackPosition--;
         }
     }
-    
+
+    @Override
     public void goToTrackByShuffle()
     {
         _playing = true;
@@ -293,7 +304,17 @@ public class AudioPlaylist implements Serializable
         int max = _tracks.size()-1;
         _playingTrackPosition = _random.nextInt((max - min) + 1) + min;
     }
-    
+
+    @Override
+    public @NonNull BaseAudioPlaylist sortedPlaylist(AppSettings.TrackSorting sorting)
+    {
+        AudioPlaylistV1 playlist = new AudioPlaylistV1(getName(), getTracks(), sorting);
+        playlist.goToTrack(getPlayingTrack());
+        return playlist;
+    }
+
+    // # Serializable
+
     private void writeObject(@NonNull ObjectOutputStream out) throws IOException
     {
         out.defaultWriteObject();

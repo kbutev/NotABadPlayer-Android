@@ -6,9 +6,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -18,16 +20,16 @@ import com.media.notabadplayer.View.BaseView;
 public class PlaylistPresenter implements BasePresenter {
     private BaseView _view;
 
-    private final @NonNull AudioPlaylist _playlist;
+    private final @NonNull BaseAudioPlaylist _playlist;
 
     private @NonNull AudioInfo _audioInfo;
     
-    public PlaylistPresenter(@NonNull AudioPlaylist playlist, @NonNull AudioInfo audioInfo)
+    public PlaylistPresenter(@NonNull BaseAudioPlaylist playlist, @NonNull AudioInfo audioInfo)
     {
         // Sort playlist
         // Sort only playlists of type album
         AppSettings.TrackSorting sorting = GeneralStorage.getShared().getTrackSortingValue();
-        AudioPlaylist sortedPlaylist = playlist.isAlbumPlaylist() ? playlist.sortedPlaylist(sorting) : playlist;
+        BaseAudioPlaylist sortedPlaylist = playlist.isAlbumPlaylist() ? playlist.sortedPlaylist(sorting) : playlist;
 
         _playlist = sortedPlaylist;
 
@@ -106,7 +108,7 @@ public class PlaylistPresenter implements BasePresenter {
     }
 
     @Override
-    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
+    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
         
     }
@@ -195,7 +197,13 @@ public class PlaylistPresenter implements BasePresenter {
         ArrayList<BaseAudioTrack> tracks = _playlist.getTracks();
 
         try {
-            AudioPlaylist playlist = new AudioPlaylist(playlistName, tracks, clickedTrack);
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+            node.setName(playlistName);
+            node.setTracks(tracks);
+            node.setStartingTrack(clickedTrack);
+
+            // Try to build
+            BaseAudioPlaylist playlist = node.build();
 
             Log.v(PlaylistPresenter.class.getCanonicalName(), "Opening player screen");
 
@@ -209,18 +217,24 @@ public class PlaylistPresenter implements BasePresenter {
     {
         String playlistName = _playlist.getName();
         ArrayList<BaseAudioTrack> tracks = _playlist.getTracks();
-        
-        AudioPlaylist playlistToPlay;
+
+        BaseAudioPlaylist playlistToPlay;
         
         try {
-            playlistToPlay = new AudioPlaylist(playlistName, tracks, clickedTrack);
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+            node.setName(playlistName);
+            node.setTracks(tracks);
+            node.setStartingTrack(clickedTrack);
+
+            // Try to build
+            playlistToPlay = node.build();
         } catch (Exception e) {
             Log.v(PlaylistPresenter.class.getCanonicalName(), "Error: Could not play track: " + e.toString());
             return;
         }
 
         Player player = Player.getShared();
-        AudioPlaylist currentPlaylist = player.getPlaylist();
+        BaseAudioPlaylist currentPlaylist = player.getPlaylist();
 
         if (currentPlaylist != null)
         {
@@ -247,12 +261,12 @@ public class PlaylistPresenter implements BasePresenter {
         playFirstTime(playlistToPlay);
     }
 
-    private void playFirstTime(@NonNull AudioPlaylist playlist)
+    private void playFirstTime(@NonNull BaseAudioPlaylist playlist)
     {
         playNew(playlist);
     }
 
-    private void playNew(@NonNull AudioPlaylist playlist)
+    private void playNew(@NonNull BaseAudioPlaylist playlist)
     {
         Player player = Player.getShared();
 

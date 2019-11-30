@@ -11,7 +11,7 @@ import com.media.notabadplayer.Audio.AudioPlayerHistory;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlayerObservers;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 
 public class AudioPlayerDummy implements AudioPlayer {
@@ -34,7 +34,7 @@ public class AudioPlayerDummy implements AudioPlayer {
     }
 
     @Override
-    public @Nullable AudioPlaylist getPlaylist() {
+    public @Nullable BaseAudioPlaylist getPlaylist() {
         return null;
     }
 
@@ -54,7 +54,7 @@ public class AudioPlayerDummy implements AudioPlayer {
     }
 
     @Override
-    public void playPlaylist(@NonNull AudioPlaylist playlist) throws Exception {
+    public void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception {
 
     }
     

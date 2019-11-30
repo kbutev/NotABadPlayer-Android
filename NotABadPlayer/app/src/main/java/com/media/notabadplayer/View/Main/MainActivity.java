@@ -20,6 +20,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
+import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
@@ -29,7 +32,6 @@ import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Presenter.ListsPresenter;
 import com.media.notabadplayer.Presenter.QuickPlayerPresenter;
 import com.media.notabadplayer.Storage.AudioLibrary;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
@@ -275,14 +277,24 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             return;
         }
 
-        AudioPlaylist playlist = track.getSource().getSourcePlaylist(_audioLibrary, track);
+        BaseAudioPlaylist playlist = track.getSource().getSourcePlaylist(_audioLibrary, track);
 
         if (playlist == null)
         {
-            playlist = new AudioPlaylist(track.getTitle(), track);
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+            node.setName(track.getTitle());
+            node.setStartingTrack(track);
+
+            // Try to build
+            try {
+                playlist = node.build();
+            } catch (Exception e) {
+                Log.v(MainActivity.class.getCanonicalName(), "Error: cannot start app with given track, failed to build playlist");
+                return;
+            }
         }
-        
-        AudioPlaylist currentPlaylist = Player.getShared().getPlaylist();
+
+        BaseAudioPlaylist currentPlaylist = Player.getShared().getPlaylist();
         
         if (currentPlaylist != null)
         {
@@ -435,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
     {
         // When not on the settings tab, let the view handle the request
         if (_tabNavigation.currentTabID != R.id.navigation_settings)
@@ -461,25 +473,25 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void onPlaylistLoad(@NonNull AudioPlaylist playlist)
+    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists)
+    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
+    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
 
     }

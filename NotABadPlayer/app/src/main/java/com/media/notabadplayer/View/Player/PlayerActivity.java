@@ -20,9 +20,9 @@ import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Utilities.AudioPlayerNoiseSuppression;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
@@ -55,7 +55,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
 
         // Audio model - retrieve from intent
         String intentData = getIntent().getStringExtra("playlist");
-        AudioPlaylist playlist = (AudioPlaylist) Serializing.deserializeObject(intentData);
+        BaseAudioPlaylist playlist = (BaseAudioPlaylist) Serializing.deserializeObject(intentData);
 
         if (playlist == null)
         {
@@ -143,7 +143,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         return super.onKeyDown(keyCode, event);
     }
     
-    private void initUI(@NonNull AudioPlaylist playlist)
+    private void initUI(@NonNull BaseAudioPlaylist playlist)
     {
         _presenter = new PlayerPresenter(playlist);
         _fragment = PlayerFragment.newInstance(_presenter);
@@ -154,7 +154,7 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull AudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
     {
 
     }
@@ -166,25 +166,25 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void onPlaylistLoad(@NonNull AudioPlaylist playlist)
+    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void onUserPlaylistsLoad(@NonNull List<AudioPlaylist> playlists)
+    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
     {
 
     }
     
     @Override
-    public void openPlayerScreen(@NonNull AudioPlaylist playlist)
+    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
 
     }
 
     @Override
-    public void updatePlayerScreen(@NonNull AudioPlaylist playlist)
+    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
 
     }

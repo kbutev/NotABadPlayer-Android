@@ -18,9 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.StringUtilities;
 import com.media.notabadplayer.Utilities.UIAnimations;
@@ -37,7 +37,7 @@ class PlaylistListAdapter extends BaseAdapter
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
     
-    public PlaylistListAdapter(@NonNull Context context, @NonNull AudioPlaylist playlist)
+    public PlaylistListAdapter(@NonNull Context context, @NonNull BaseAudioPlaylist playlist)
     {
         this._context = context;
         this._playlistName = playlist.getName();
@@ -159,8 +159,8 @@ class PlaylistListAdapter extends BaseAdapter
         
         // Select playing track
         boolean isPlayingTrack = false;
-        
-        AudioPlaylist playlist = Player.getShared().getPlaylist();
+
+        BaseAudioPlaylist playlist = Player.getShared().getPlaylist();
         
         if (playlist != null)
         {

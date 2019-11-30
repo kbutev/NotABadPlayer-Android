@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
@@ -17,9 +17,9 @@ import com.media.notabadplayer.View.BaseView;
 public class PlayerPresenter implements BasePresenter
 {
     private BaseView _view;
-    private @NonNull AudioPlaylist _playlist;
+    private @NonNull BaseAudioPlaylist _playlist;
     
-    public PlayerPresenter(@NonNull AudioPlaylist playlist)
+    public PlayerPresenter(@NonNull BaseAudioPlaylist playlist)
     {
         _playlist = playlist;
     }
@@ -46,7 +46,7 @@ public class PlayerPresenter implements BasePresenter
         Log.v(PlayerPresenter.class.getCanonicalName(), "Start.");
         
         Player player = Player.getShared();
-        AudioPlaylist currentPlaylist = player.getPlaylist();
+        BaseAudioPlaylist currentPlaylist = player.getPlaylist();
         
         if (currentPlaylist != null)
         {
@@ -106,7 +106,7 @@ public class PlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onOpenPlayer(@Nullable AudioPlaylist playlist)
+    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
 
     }
@@ -205,19 +205,19 @@ public class PlayerPresenter implements BasePresenter
 
     }
 
-    private void playFirstTime(@NonNull AudioPlaylist playlist)
+    private void playFirstTime(@NonNull BaseAudioPlaylist playlist)
     {
         playNew(playlist);
     }
 
-    private void playContinue(@NonNull AudioPlaylist playlist)
+    private void playContinue(@NonNull BaseAudioPlaylist playlist)
     {
         Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player without changing current audio player state");
 
         _view.updatePlayerScreen(playlist);
     }
 
-    private void playNew(@NonNull AudioPlaylist playlist)
+    private void playNew(@NonNull BaseAudioPlaylist playlist)
     {
         String newPlaylistName = playlist.getName();
         BaseAudioTrack newTrack = playlist.getPlayingTrack();

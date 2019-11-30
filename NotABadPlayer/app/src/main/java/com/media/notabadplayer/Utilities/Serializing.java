@@ -32,7 +32,7 @@ public class Serializing
         }
         catch (Exception e)
         {
-            
+            Log.v(Serializable.class.getCanonicalName(),"Failed to serialize object: " + e.toString());
         }
         
         return null;

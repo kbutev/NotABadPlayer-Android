@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -18,9 +19,11 @@ import java.util.List;
 import com.google.common.base.Function;
 
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
-import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
@@ -30,7 +33,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
 {
     private List<AudioAlbum> _albums;
     
-    private @Nullable AudioPlaylist _playlist;
+    private @Nullable BaseAudioPlaylist _playlist;
     private @NonNull ArrayList<BaseAudioTrack> _playlistTracks = new ArrayList<>();
     
     private Button _cancelButton;
@@ -165,9 +168,19 @@ public class CreatePlaylistActivity extends AppCompatActivity
             name = "Playlist";
         }
 
-        _playlistTracks.add(track);
+        ArrayList<BaseAudioTrack> playlistTracks = new ArrayList<>(_playlistTracks);
+        playlistTracks.add(track);
 
-        _playlist = new AudioPlaylist(name, _playlistTracks);
+        BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+        node.setName(name);
+        node.setTracks(playlistTracks);
+
+        // Try to build
+        try {
+            _playlist = node.build();
+        } catch (Exception e) {
+            Log.v(CreatePlaylistActivity.class.getCanonicalName(), "Failed to rebuild playlist");
+        }
     }
 
     private void removeFromPlaylist(@NonNull BaseAudioTrack track)
@@ -179,11 +192,20 @@ public class CreatePlaylistActivity extends AppCompatActivity
             name = "Playlist";
         }
 
-        _playlistTracks.remove(track);
+        ArrayList<BaseAudioTrack> playlistTracks = new ArrayList<>(_playlistTracks);
+        playlistTracks.remove(track);
 
-        if (!_playlistTracks.isEmpty())
+        if (!playlistTracks.isEmpty())
         {
-            _playlist = new AudioPlaylist(name, _playlistTracks);
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+            node.setName(name);
+            node.setTracks(playlistTracks);
+
+            try {
+                _playlist = node.build();
+            } catch (Exception e) {
+                Log.v(CreatePlaylistActivity.class.getCanonicalName(), "Failed to rebuild playlist");
+            }
         }
         else
         {
@@ -200,7 +222,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
             return;
         }
         
-        ArrayList<AudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
+        List<BaseAudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
         
         if (playlists == null)
         {
@@ -227,7 +249,20 @@ public class CreatePlaylistActivity extends AppCompatActivity
         }
         
         // Successful save
-        playlists.add(new AudioPlaylist(name, _playlistTracks));
+        BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+        node.setName(name);
+        node.setTracks(_playlistTracks);
+
+        // Try to build
+        try {
+            BaseAudioPlaylist playlist = node.build();
+
+            playlists.add(playlist);
+        } catch (Exception e) {
+            Log.v(CreatePlaylistActivity.class.getCanonicalName(), "Failed to save playlist to storage");
+            showUnknownErrorDialog();
+            return;
+        }
 
         GeneralStorage.getShared().saveUserPlaylists(playlists);
         
@@ -307,6 +342,11 @@ public class CreatePlaylistActivity extends AppCompatActivity
     private void showNameTakenDialog()
     {
         AlertWindows.showAlert(this, 0, R.string.playlist_dialog_taken_name, R.string.ok, null);
+    }
+
+    private void showUnknownErrorDialog()
+    {
+        AlertWindows.showAlert(this, 0, R.string.error_unknown, R.string.ok, null);
     }
 
     private void hideKeyboard()
