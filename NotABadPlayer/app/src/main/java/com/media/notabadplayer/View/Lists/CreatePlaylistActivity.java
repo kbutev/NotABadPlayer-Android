@@ -178,6 +178,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         // Try to build
         try {
             _playlist = node.build();
+            _playlistTracks.add(track);
         } catch (Exception e) {
             Log.v(CreatePlaylistActivity.class.getCanonicalName(), "Failed to rebuild playlist");
         }
@@ -203,6 +204,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
 
             try {
                 _playlist = node.build();
+                _playlistTracks.remove(track);
             } catch (Exception e) {
                 Log.v(CreatePlaylistActivity.class.getCanonicalName(), "Failed to rebuild playlist");
             }
@@ -215,7 +217,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
     
     private void savePlaylist()
     {
-        if (_playlist == null)
+        if (_playlist == null || _playlistTracks.size() == 0)
         {
             hideKeyboard();
             showNoTracksDialog();
