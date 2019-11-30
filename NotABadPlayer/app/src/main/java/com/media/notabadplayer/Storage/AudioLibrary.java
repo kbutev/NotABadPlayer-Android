@@ -38,14 +38,16 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
     private final Object _lock = new Object();
 
-    private boolean _loaded;
-    
     private Application _context;
-    
+
+    // List of all albums
+    private boolean _albumsLoaded;
     private final ArrayList<AudioAlbum> _albums = new ArrayList<>();
-    
+
+    // Album id : list of audio tracks
     private final SortedMap<String, List<AudioTrack>> _albumTracks = new TreeMap<>();
 
+    // Alerted when the device library is changed
     private final HashSet<ChangesListener> _changesListeners = new HashSet<>();
 
     public interface ChangesListener {
@@ -59,7 +61,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
         Log.v(AudioLibrary.class.getCanonicalName(), "Initializing...");
 
-        _loaded = false;
+        _albumsLoaded = false;
 
         _context = PlayerApplication.getShared();
 
@@ -86,11 +88,13 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         return _context;
     }
 
+    // # Init
+
     public void loadIfNecessary()
     {
         synchronized (_lock)
         {
-            if (_loaded)
+            if (_albumsLoaded)
             {
                 return;
             }
@@ -101,6 +105,9 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     
     public void load()
     {
+        // Load whatever is needed to operate the library
+        // Albums will be loaded and stored, since they hold huge amount of information
+
         synchronized (_lock)
         {
             Context context = getContext();
@@ -139,10 +146,12 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
             Log.v(AudioLibrary.class.getCanonicalName(), "Successfully loaded " +  String.valueOf(_albums.size()) + " albums from media store.");
 
-            _loaded = true;
+            _albumsLoaded = true;
         }
     }
-    
+
+    // # Album info
+
     public @NonNull List<AudioAlbum> getAlbums()
     {
         loadIfNecessary();
@@ -241,7 +250,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         
         return albumTracks;
     }
-    
+
     private void storeTracksIntoCache(@NonNull String albumID, @NonNull List<AudioTrack> tracks)
     {
         synchronized (_lock)
@@ -256,7 +265,9 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             }
         }
     }
-    
+
+    // # Search
+
     public @NonNull List<AudioTrack> searchForTracks(@NonNull String query, @NonNull SearchFilter filter)
     {
         if (query.isEmpty())
