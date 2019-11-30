@@ -445,7 +445,11 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     public void onPlayerStop()
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_play);
-        clearMediaInfo();
+
+        if (!Player.getShared().hasPlaylist())
+        {
+            clearMediaInfo();
+        }
     }
     
     @Override
