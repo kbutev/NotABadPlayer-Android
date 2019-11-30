@@ -12,16 +12,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.R;
 
 public class CreatePlaylistTracksAdapter extends BaseAdapter
 {
-    private ArrayList<AudioTrack> _tracks;
+    private ArrayList<BaseAudioTrack> _tracks;
 
     private Context _context;
 
-    public CreatePlaylistTracksAdapter(@NonNull Context context, @NonNull ArrayList<AudioTrack> tracks)
+    public CreatePlaylistTracksAdapter(@NonNull Context context, @NonNull ArrayList<BaseAudioTrack> tracks)
     {
         this._tracks = tracks;
         this._context = context;
@@ -52,14 +52,14 @@ public class CreatePlaylistTracksAdapter extends BaseAdapter
         }
 
         View listItem = convertView;
-        
-        AudioTrack track = _tracks.get(position);
+
+        BaseAudioTrack track = _tracks.get(position);
 
         ImageView cover = listItem.findViewById(R.id.albumCover);
 
-        if (!track.artCover.isEmpty())
+        if (!track.getArtCover().isEmpty())
         {
-            String uri = Uri.decode(track.artCover);
+            String uri = Uri.decode(track.getArtCover());
 
             if (uri != null)
             {
@@ -76,10 +76,10 @@ public class CreatePlaylistTracksAdapter extends BaseAdapter
         }
 
         TextView title = listItem.findViewById(R.id.title);
-        title.setText(track.title);
+        title.setText(track.getTitle());
 
         TextView description = listItem.findViewById(R.id.description);
-        description.setText(track.duration);
+        description.setText(track.getDuration());
 
         return listItem;
     }

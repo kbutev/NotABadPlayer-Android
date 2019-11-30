@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.R;
 
 public class CreatePlaylistAlbumsAdapter extends BaseAdapter
@@ -31,14 +31,14 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
     private int _selectedAlbumPosition;
     private LinearLayout _selectedAlbum;
     private CreatePlaylistAlbumsTracksAdapter _selectedAlbumAdapter;
-    private List<AudioTrack> _selectedTracks = new ArrayList<>();
+    private List<BaseAudioTrack> _selectedTracks = new ArrayList<>();
     
-    private @NonNull Function<AudioTrack, Void> _onItemClick;
+    private @NonNull Function<BaseAudioTrack, Void> _onItemClick;
     
     public CreatePlaylistAlbumsAdapter(@NonNull Context context,
                                        @NonNull AudioInfo audioInfo,
                                        @NonNull List<AudioAlbum> albums,
-                                       @NonNull Function<AudioTrack, Void> onItemClick)
+                                       @NonNull Function<BaseAudioTrack, Void> onItemClick)
     {
         this._albums = albums;
         this._context = context;
@@ -151,7 +151,7 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         TextView title = listItem.findViewById(R.id.title);
         title.setText(album.albumTitle);
 
-        final List<AudioTrack> tracks = _audioInfo.getAlbumTracks(album);
+        final List<BaseAudioTrack> tracks = _audioInfo.getAlbumTracks(album);
         
         if (tracks.size() > 0)
         {
@@ -211,7 +211,7 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         notifyDataSetChanged();
     }
 
-    public void selectTrack(AudioTrack track)
+    public void selectTrack(@NonNull BaseAudioTrack track)
     {
         if (!_selectedTracks.contains(track))
         {
@@ -220,7 +220,7 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         }
     }
     
-    public void deselectTrack(AudioTrack track)
+    public void deselectTrack(@NonNull BaseAudioTrack track)
     {
         if (_selectedTracks.contains(track))
         {
@@ -230,14 +230,14 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 
     public class CreatePlaylistAlbumsTracksAdapter extends BaseAdapter
     {
-        private @NonNull List<AudioTrack> _tracks;
-        private @NonNull List<AudioTrack> _selectedTracks;
+        private @NonNull List<BaseAudioTrack> _tracks;
+        private @NonNull List<BaseAudioTrack> _selectedTracks;
 
         private Context _context;
 
         public CreatePlaylistAlbumsTracksAdapter(@NonNull Context context,
-                                                 @NonNull List<AudioTrack> tracks, 
-                                                 @NonNull List<AudioTrack> selectedTracks)
+                                                 @NonNull List<BaseAudioTrack> tracks,
+                                                 @NonNull List<BaseAudioTrack> selectedTracks)
         {
             this._tracks = tracks;
             this._selectedTracks = selectedTracks;
@@ -270,11 +270,11 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 
             View listItem = convertView;
 
-            AudioTrack track = _tracks.get(position);
+            BaseAudioTrack track = _tracks.get(position);
             boolean selected = hasSelectedItem(track);
             
             TextView title = listItem.findViewById(R.id.title);
-            title.setText(track.title);
+            title.setText(track.getTitle());
             
             if (!selected)
             {
@@ -286,7 +286,7 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
             }
             
             TextView description = listItem.findViewById(R.id.description);
-            description.setText(track.duration);
+            description.setText(track.getDuration());
 
             if (!selected)
             {
@@ -300,12 +300,12 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
             return listItem;
         }
         
-        public boolean hasSelectedItem(AudioTrack track)
+        public boolean hasSelectedItem(@NonNull BaseAudioTrack track)
         {
             return _selectedTracks.contains(track);
         }
         
-        public void selectTrack(AudioTrack track)
+        public void selectTrack(@NonNull BaseAudioTrack track)
         {
             if (!hasSelectedItem(track))
             {

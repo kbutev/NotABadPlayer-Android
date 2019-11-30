@@ -24,7 +24,7 @@ import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.Presenter.BasePresenter;
@@ -332,7 +332,7 @@ public class ListsFragment extends Fragment implements BaseView {
     }
 
     @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<AudioTrack> songs, @Nullable String searchState)
+    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
     {
 
     }

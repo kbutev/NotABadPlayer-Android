@@ -6,9 +6,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -85,7 +85,7 @@ public class PlaylistPresenter implements BasePresenter {
     @Override
     public void onPlaylistItemClick(int index)
     {
-        ArrayList<AudioTrack> tracks = _playlist.getTracks();
+        ArrayList<BaseAudioTrack> tracks = _playlist.getTracks();
 
         if (index < 0 || index >= tracks.size())
         {
@@ -93,7 +93,7 @@ public class PlaylistPresenter implements BasePresenter {
             return;
         }
 
-        AudioTrack clickedTrack = tracks.get(index);
+        BaseAudioTrack clickedTrack = tracks.get(index);
 
         if (GeneralStorage.getShared().getOpenPlayerOnPlayValue().openForPlaylist())
         {
@@ -189,10 +189,10 @@ public class PlaylistPresenter implements BasePresenter {
 
     }
 
-    private void openPlayerScreen(@NonNull AudioTrack clickedTrack)
+    private void openPlayerScreen(@NonNull BaseAudioTrack clickedTrack)
     {
         String playlistName = _playlist.getName();
-        ArrayList<AudioTrack> tracks = _playlist.getTracks();
+        ArrayList<BaseAudioTrack> tracks = _playlist.getTracks();
 
         try {
             AudioPlaylist playlist = new AudioPlaylist(playlistName, tracks, clickedTrack);
@@ -205,10 +205,10 @@ public class PlaylistPresenter implements BasePresenter {
         }
     }
 
-    private void playNewTrack(@NonNull AudioTrack clickedTrack)
+    private void playNewTrack(@NonNull BaseAudioTrack clickedTrack)
     {
         String playlistName = _playlist.getName();
-        ArrayList<AudioTrack> tracks = _playlist.getTracks();
+        ArrayList<BaseAudioTrack> tracks = _playlist.getTracks();
         
         AudioPlaylist playlistToPlay;
         
@@ -225,13 +225,13 @@ public class PlaylistPresenter implements BasePresenter {
         if (currentPlaylist != null)
         {
             String newPlaylistName = playlistToPlay.getName();
-            AudioTrack newTrack = playlistToPlay.getPlayingTrack();
+            BaseAudioTrack newTrack = playlistToPlay.getPlayingTrack();
 
             // Current playing playlist or track does not match the state of the presenter's playlist?
             if (!playlistToPlay.equals(currentPlaylist))
             {
                 // Change the audio player playlist to equal the presenter's playlist
-                Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "' from playlist '" + newPlaylistName + "'");
+                Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + newTrack.getTitle() + "' from playlist '" + newPlaylistName + "'");
                 playNew(playlistToPlay);
 
                 return;
@@ -243,7 +243,7 @@ public class PlaylistPresenter implements BasePresenter {
         }
 
         // Set audio player playlist for the first time and play its track
-        Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + _playlist.getPlayingTrack().title + "' from playlist '" + _playlist.getName() + " for the first time");
+        Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + _playlist.getPlayingTrack().getTitle() + "' from playlist '" + _playlist.getName() + " for the first time");
         playFirstTime(playlistToPlay);
     }
 

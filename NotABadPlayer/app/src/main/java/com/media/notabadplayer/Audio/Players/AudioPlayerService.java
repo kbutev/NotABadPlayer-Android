@@ -31,7 +31,7 @@ import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlayerObservers;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.Main.MainActivity;
@@ -161,7 +161,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     @Override
     public void playPlaylist(@NonNull AudioPlaylist playlist) throws Exception
     {
-        AudioTrack previousTrack = _playlist != null ? _playlist.getPlayingTrack() : null;
+        BaseAudioTrack previousTrack = _playlist != null ? _playlist.getPlayingTrack() : null;
 
         try {
             playTrack(playlist.getPlayingTrack(), previousTrack, true);
@@ -173,11 +173,11 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         _playlist.playCurrent();
     }
 
-    private void playTrack(@NonNull AudioTrack newTrack, AudioTrack previousTrack, boolean usePlayHistory) throws Exception
+    private void playTrack(@NonNull BaseAudioTrack newTrack, @Nullable BaseAudioTrack previousTrack, boolean usePlayHistory) throws Exception
     {
         boolean isPlaying = _player.isPlaying();
         
-        Uri path = Uri.parse(Uri.decode(newTrack.filePath));
+        Uri path = Uri.parse(Uri.decode(newTrack.getFilePath()));
 
         _player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -194,7 +194,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             // If track cannot be played, go back to previous track
             if (previousTrack != null)
             {
-                Uri pathOfPreviousTrack = Uri.parse(Uri.decode(previousTrack.filePath));
+                Uri pathOfPreviousTrack = Uri.parse(Uri.decode(previousTrack.getFilePath()));
 
                 try {
                     _player.reset();
@@ -218,7 +218,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             throw e;
         }
 
-        Log.v(AudioPlayer.class.getCanonicalName(), "Playing track: " + newTrack.title);
+        Log.v(AudioPlayer.class.getCanonicalName(), "Playing track: " + newTrack.getTitle());
 
         if (usePlayHistory)
         {
@@ -338,8 +338,8 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         {
             return;
         }
-        
-        AudioTrack previousTrack = _playlist.getPlayingTrack();
+
+        BaseAudioTrack previousTrack = _playlist.getPlayingTrack();
         
         _playlist.goToNextPlayingTrack();
 
@@ -374,7 +374,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             return;
         }
 
-        AudioTrack previousTrack = _playlist.getPlayingTrack();
+        BaseAudioTrack previousTrack = _playlist.getPlayingTrack();
         
         _playlist.goToPreviousPlayingTrack();
 
@@ -409,7 +409,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             return;
         }
 
-        AudioTrack previousTrack = _playlist.getPlayingTrack();
+        BaseAudioTrack previousTrack = _playlist.getPlayingTrack();
         
         _playlist.goToTrackBasedOnPlayOrder(_playOrder);
 
@@ -444,7 +444,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             return;
         }
 
-        AudioTrack previousTrack = _playlist.getPlayingTrack();
+        BaseAudioTrack previousTrack = _playlist.getPlayingTrack();
         
         _playlist.goToTrackByShuffle();
 
@@ -731,7 +731,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             observer.onPlayOrderChange(_playOrder);
         }
 
-        private void onPlay(AudioTrack track)
+        private void onPlay(@NonNull BaseAudioTrack track)
         {
             for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPlay(track);}
         }
@@ -746,12 +746,12 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerStop();}
         }
 
-        private void onResume(AudioTrack track)
+        private void onResume(@NonNull BaseAudioTrack track)
         {
             for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerResume(track);}
         }
 
-        private void onPause(AudioTrack track)
+        private void onPause(@NonNull BaseAudioTrack track)
         {
             for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPause(track);}
         }
@@ -764,16 +764,16 @@ public class AudioPlayerService extends Service implements AudioPlayer {
 
     public class PlayHistory implements AudioPlayerHistory
     {
-        private ArrayList<AudioTrack> _playHistory = new ArrayList<>();
+        private ArrayList<BaseAudioTrack> _playHistory = new ArrayList<>();
 
         @Override
-        public @NonNull List<AudioTrack> getPlayHistory()
+        public @NonNull List<BaseAudioTrack> getPlayHistory()
         {
             return _playHistory;
         }
 
         @Override
-        public void setList(@NonNull List<AudioTrack> playHistory)
+        public void setList(@NonNull List<BaseAudioTrack> playHistory)
         {
             _playHistory = new ArrayList<>(playHistory);
         }
@@ -790,10 +790,10 @@ public class AudioPlayerService extends Service implements AudioPlayer {
 
             _playHistory.remove(0);
 
-            AudioTrack previousTrack = _playlist.getPlayingTrack();
-            AudioTrack previouslyPlayed = _playHistory.get(0);
+            BaseAudioTrack previousTrack = _playlist.getPlayingTrack();
+            BaseAudioTrack previouslyPlayed = _playHistory.get(0);
 
-            AudioPlaylist playlist = previouslyPlayed.source.getSourcePlaylist(audioInfo, previouslyPlayed);
+            AudioPlaylist playlist = previouslyPlayed.getSource().getSourcePlaylist(audioInfo, previouslyPlayed);
 
             if (playlist == null)
             {
@@ -811,10 +811,10 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             }
         }
 
-        private void addTrack(@NonNull AudioTrack newTrack)
+        private void addTrack(@NonNull BaseAudioTrack newTrack)
         {
             // Make sure that the history tracks are unique
-            for (AudioTrack track : _playHistory)
+            for (BaseAudioTrack track : _playHistory)
             {
                 if (track.equals(newTrack))
                 {
@@ -912,10 +912,10 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             _notificationSuffix = resources.getString(R.string.notification_title_suffix);
         }
         
-        private void showNotificationForPlayingTrack(@NonNull AudioTrack track, boolean isPlaying)
+        private void showNotificationForPlayingTrack(@NonNull BaseAudioTrack track, boolean isPlaying)
         {
-            String playingTrackName = track.title;
-            String content = _notificationPrefix + playingTrackName + _notificationSuffix + track.albumTitle;
+            String playingTrackName = track.getTitle();
+            String content = _notificationPrefix + playingTrackName + _notificationSuffix + track.getAlbumTitle();
             
             showNotification(content, isPlaying);
         }

@@ -22,10 +22,10 @@ import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
@@ -33,6 +33,7 @@ import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.LooperService;
 import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.Serializing;
+import com.media.notabadplayer.Utilities.StringUtilities;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -267,7 +268,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         
         _mediaBar.setProgress((int)newPosition);
         
-        _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
+        _labelDurationCurrent.setText(StringUtilities.secondsToString(currentPosition));
     }
     
     private void clearMediaInfo()
@@ -278,21 +279,21 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         _labelDurationTotal.setText(R.string.player_zero_timer);
     }
 
-    private void updateMediaInfo(AudioTrack playingTrack)
+    private void updateMediaInfo(@Nullable BaseAudioTrack playingTrack)
     {
         if (playingTrack != null)
         {
-            if (!playingTrack.artCover.isEmpty())
+            if (!playingTrack.getArtCover().isEmpty())
             {
-                _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.artCover)));
+                _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.getArtCover())));
             }
             else
             {
                 _imageCover.setImageDrawable(getResources().getDrawable(R.drawable.cover_art_none));
             }
 
-            _labelTitle.setText(playingTrack.title);
-            _labelDurationTotal.setText(playingTrack.duration);
+            _labelTitle.setText(playingTrack.getTitle());
+            _labelDurationTotal.setText(playingTrack.getDuration());
             
             updatePlayButtonState();
         }
@@ -421,13 +422,13 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<AudioTrack> songs, @Nullable String searchState)
+    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
     {
 
     }
 
     @Override
-    public void onPlayerPlay(@NonNull AudioTrack current)
+    public void onPlayerPlay(@NonNull BaseAudioTrack current)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
         updateMediaInfo(current);
@@ -447,14 +448,14 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
     
     @Override
-    public void onPlayerPause(@NonNull AudioTrack track)
+    public void onPlayerPause(@NonNull BaseAudioTrack track)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_play);
         updateMediaInfo(track);
     }
     
     @Override
-    public void onPlayerResume(@NonNull AudioTrack track)
+    public void onPlayerResume(@NonNull BaseAudioTrack track)
     {
         _buttonPlay.setBackgroundResource(R.drawable.media_pause);
         updateMediaInfo(track);

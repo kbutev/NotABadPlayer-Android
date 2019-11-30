@@ -2,6 +2,8 @@ package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,14 +19,14 @@ public class AudioPlaylist implements Serializable
 {
     private final @NonNull String _name;
     
-    private @NonNull ArrayList<AudioTrack> _tracks;
+    private @NonNull ArrayList<BaseAudioTrack> _tracks;
     
     private boolean _playing;
     private int _playingTrackPosition;
     
     transient private Random _random;
 
-    public AudioPlaylist(@NonNull String name, @NonNull List<AudioTrack> tracks)
+    public AudioPlaylist(@NonNull String name, @NonNull List<BaseAudioTrack> tracks)
     {
         if (tracks.size() == 0)
         {
@@ -32,25 +34,39 @@ public class AudioPlaylist implements Serializable
         }
 
         _name = name;
+
+        // Fill the list with all the given tracks,
+        // just so we can determine if its an album list or not
         _tracks = new ArrayList<>(tracks);
         _playing = false;
         _playingTrackPosition = 0;
 
-        // Set proper source value
+        // Is album list?
         boolean isAlbumList = isAlbumPlaylist();
         _tracks = new ArrayList<>();
-        AudioTrack firstTrack = tracks.get(0);
+
+        // Copy the given tracks
+        BaseAudioTrack firstTrack = tracks.get(0);
 
         for (int e = 0; e < tracks.size(); e++)
         {
-            AudioTrackSource source = isAlbumList ? AudioTrackSource.createAlbumSource(firstTrack.albumID) : AudioTrackSource.createPlaylistSource(_name);
-            _tracks.add(new AudioTrack(tracks.get(e), source));
+            AudioTrackSource source = isAlbumList ? AudioTrackSource.createAlbumSource(firstTrack.getAlbumID()) : AudioTrackSource.createPlaylistSource(_name);
+
+            BaseAudioTrack track = tracks.get(e);
+            BaseAudioTrackBuilderNode clone = AudioTrackBuilder.start(track);
+            clone.setSource(source);
+
+            try {
+                _tracks.add(clone.build());
+            } catch (Exception exc) {
+                Log.v(AudioPlaylist.class.getCanonicalName(), "Failed to copy audio track " + track.getFilePath());
+            }
         }
 
         _random = new Random();
     }
     
-    public AudioPlaylist(@NonNull String name, @NonNull AudioTrack startWithTrack)
+    public AudioPlaylist(@NonNull String name, @NonNull BaseAudioTrack startWithTrack)
     {
         this(name, trackAsAList(startWithTrack));
         
@@ -61,22 +77,22 @@ public class AudioPlaylist implements Serializable
     }
     
     public AudioPlaylist(@NonNull String name,
-                         @NonNull List<AudioTrack> tracks,
-                         @Nullable AudioTrack startWithTrack) throws Exception
+                         @NonNull List<BaseAudioTrack> tracks,
+                         @Nullable BaseAudioTrack startWithTrack) throws Exception
     {
         this(name, tracks, startWithTrack, AppSettings.TrackSorting.NONE);
     }
 
     public AudioPlaylist(@NonNull String name,
-                         @NonNull List<AudioTrack> tracks,
+                         @NonNull List<BaseAudioTrack> tracks,
                          AppSettings.TrackSorting sorting)
     {
         this(name, MediaSorting.sortTracks(tracks, sorting));
     }
     
     public AudioPlaylist(@NonNull String name,
-                         @NonNull List<AudioTrack> tracks,
-                         @Nullable AudioTrack startWithTrack,
+                         @NonNull List<BaseAudioTrack> tracks,
+                         @Nullable BaseAudioTrack startWithTrack,
                          AppSettings.TrackSorting sorting) throws Exception
     {
         this(name, MediaSorting.sortTracks(tracks, sorting));
@@ -114,9 +130,9 @@ public class AudioPlaylist implements Serializable
         return playlist;
     }
     
-    private static ArrayList<AudioTrack> trackAsAList(@NonNull AudioTrack track)
+    private static ArrayList<BaseAudioTrack> trackAsAList(@NonNull BaseAudioTrack track)
     {
-        ArrayList<AudioTrack> tracks = new ArrayList<>();
+        ArrayList<BaseAudioTrack> tracks = new ArrayList<>();
         tracks.add(track);
         return tracks;
     }
@@ -131,12 +147,12 @@ public class AudioPlaylist implements Serializable
         return _tracks.size();
     }
     
-    public @NonNull ArrayList<AudioTrack> getTracks()
+    public @NonNull ArrayList<BaseAudioTrack> getTracks()
     {
         return new ArrayList<>(_tracks);
     }
     
-    public final AudioTrack getTrack(int index)
+    public final BaseAudioTrack getTrack(int index)
     {
         return _tracks.get(index);
     }
@@ -146,14 +162,14 @@ public class AudioPlaylist implements Serializable
         return _playing;
     }
     
-    public @NonNull AudioTrack getPlayingTrack()
+    public @NonNull BaseAudioTrack getPlayingTrack()
     {
         return _tracks.get(_playingTrackPosition);
     }
     
     public boolean isAlbumPlaylist()
     {
-        return _name.equals(_tracks.get(0).albumTitle);
+        return _name.equals(_tracks.get(0).getAlbumTitle());
     }
     
     public boolean isPlayingFirstTrack()
@@ -166,9 +182,9 @@ public class AudioPlaylist implements Serializable
         return _playingTrackPosition + 1 == _tracks.size();
     }
 
-    public boolean hasTrack(@NonNull AudioTrack track)
+    public boolean hasTrack(@NonNull BaseAudioTrack track)
     {
-        return _tracks.indexOf(track) != -1;
+        return _tracks.contains(track);
     }
     
     public void playCurrent()
@@ -176,14 +192,27 @@ public class AudioPlaylist implements Serializable
         _playing = true;
     }
     
-    public void goToTrack(@NonNull AudioTrack track)
+    public void goToTrack(@NonNull BaseAudioTrack track)
     {
-        int index = _tracks.indexOf(track);
+        int index = -1;
+
+        for (BaseAudioTrack t : _tracks)
+        {
+            if (t.equals(track))
+            {
+                index = _tracks.indexOf(t);
+                break;
+            }
+        }
         
         if (index != -1)
         {
             _playing = true;
             _playingTrackPosition = index;
+        }
+        else
+        {
+            Log.v(AudioPlaylist.class.getCanonicalName(), "Cannot go to track, tracks list does not contain given track " + track.getFilePath());
         }
     }
     

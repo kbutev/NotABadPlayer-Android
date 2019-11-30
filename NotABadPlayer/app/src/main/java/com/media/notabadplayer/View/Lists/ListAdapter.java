@@ -65,7 +65,7 @@ class ListAdapter extends BaseAdapter
         
         if (playlist.size() > 0)
         {
-            artCover = playlist.getTrack(0).artCover;
+            artCover = playlist.getTrack(0).getArtCover();
         }
         
         View listItem = convertView;

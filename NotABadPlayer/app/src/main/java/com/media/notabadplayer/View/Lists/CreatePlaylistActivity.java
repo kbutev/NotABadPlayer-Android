@@ -18,9 +18,9 @@ import java.util.List;
 import com.google.common.base.Function;
 
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
@@ -31,7 +31,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
     private List<AudioAlbum> _albums;
     
     private @Nullable AudioPlaylist _playlist;
-    private @NonNull ArrayList<AudioTrack> _playlistTracks = new ArrayList<>();
+    private @NonNull ArrayList<BaseAudioTrack> _playlistTracks = new ArrayList<>();
     
     private Button _cancelButton;
     private Button _doneButton;
@@ -88,9 +88,9 @@ public class CreatePlaylistActivity extends AppCompatActivity
             }
         });
         
-        Function<AudioTrack, Void> onTrackClick = new Function<AudioTrack, Void>() {
+        Function<BaseAudioTrack, Void> onTrackClick = new Function<BaseAudioTrack, Void>() {
             @Override
-            public Void apply(@NullableDecl AudioTrack input) {
+            public Void apply(@NullableDecl BaseAudioTrack input) {
                 if (!playlistTracksContain(input))
                 {
                     addToPlaylist(input);
@@ -128,7 +128,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         _addedTracksList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AudioTrack track = _playlistTracks.get(position);
+                BaseAudioTrack track = _playlistTracks.get(position);
                 removeFromPlaylist(track);
                 _albumsAdapter.deselectTrack(track);
                 updateAddedTracks();
@@ -146,12 +146,12 @@ public class CreatePlaylistActivity extends AppCompatActivity
         _albumsAdapter.notifyDataSetChanged();
     }
     
-    private boolean playlistTracksContain(AudioTrack track)
+    private boolean playlistTracksContain(@NonNull BaseAudioTrack track)
     {
         return _playlistTracks.contains(track);
     }
     
-    private void addToPlaylist(AudioTrack track)
+    private void addToPlaylist(@NonNull BaseAudioTrack track)
     {
         if (_playlistTracks.contains(track))
         {
@@ -170,7 +170,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         _playlist = new AudioPlaylist(name, _playlistTracks);
     }
 
-    private void removeFromPlaylist(AudioTrack track)
+    private void removeFromPlaylist(@NonNull BaseAudioTrack track)
     {
         String name = _nameField.getText().toString();
 

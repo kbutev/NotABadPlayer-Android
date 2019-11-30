@@ -10,13 +10,13 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
@@ -26,7 +26,7 @@ public class SearchPresenter implements BasePresenter
     private BaseView _view;
     private @NonNull Context _context;
     private @NonNull AudioInfo _audioInfo;
-    private List<AudioTrack> _searchResults = new ArrayList<>();
+    private List<BaseAudioTrack> _searchResults = new ArrayList<>();
     private @Nullable String _lastSearchQuery = null;
     private SearchFilter _lastSearchFilter = SearchFilter.Title;
 
@@ -149,8 +149,8 @@ public class SearchPresenter implements BasePresenter
             Log.v(SearchPresenter.class.getCanonicalName(), "Error: invalid clicked search index");
             return;
         }
-        
-        AudioTrack clickedTrack = _searchResults.get(index);
+
+        BaseAudioTrack clickedTrack = _searchResults.get(index);
 
         if (GeneralStorage.getShared().getOpenPlayerOnPlayValue().openForSearch())
         {
@@ -247,7 +247,7 @@ public class SearchPresenter implements BasePresenter
 
         // Start search process
         String searchString = _context.getResources().getString(R.string.search_state_searching);
-        _view.updateSearchQueryResults(searchQuery, searchFilter, new ArrayList<AudioTrack>(), searchString);
+        _view.updateSearchQueryResults(searchQuery, searchFilter, new ArrayList<BaseAudioTrack>(), searchString);
 
         // Use background thread to retrieve the search results
         // Then, update the view on the main thread
@@ -275,7 +275,7 @@ public class SearchPresenter implements BasePresenter
         thread.start();
     }
 
-    private void openPlayerScreen(@NonNull AudioTrack clickedTrack)
+    private void openPlayerScreen(@NonNull BaseAudioTrack clickedTrack)
     {
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         
@@ -290,7 +290,7 @@ public class SearchPresenter implements BasePresenter
         }
     }
 
-    private void playNewTrack(@NonNull AudioTrack clickedTrack)
+    private void playNewTrack(@NonNull BaseAudioTrack clickedTrack)
     {
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
         AudioPlaylist searchPlaylist;
@@ -308,13 +308,13 @@ public class SearchPresenter implements BasePresenter
         if (currentPlaylist != null)
         {
             String newPlaylistName = searchPlaylist.getName();
-            AudioTrack newTrack = searchPlaylist.getPlayingTrack();
+            BaseAudioTrack newTrack = searchPlaylist.getPlayingTrack();
 
             // Current playing playlist or track does not match the state of the presenter's playlist?
             if (!searchPlaylist.equals(currentPlaylist))
             {
                 // Change the audio player playlist to equal the presenter's playlist
-                Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + newTrack.title + "' from playlist '" + newPlaylistName + "'");
+                Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + newTrack.getTitle() + "' from playlist '" + newPlaylistName + "'");
                 playNew(searchPlaylist);
 
                 return;
@@ -326,7 +326,7 @@ public class SearchPresenter implements BasePresenter
         }
         
         // Set audio player playlist for the first time and play its track
-        Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + searchPlaylist.getPlayingTrack().title + "' for the first time");
+        Log.v(SearchPresenter.class.getCanonicalName(), "Playing track '" + searchPlaylist.getPlayingTrack().getTitle() + "' for the first time");
         playFirstTime(searchPlaylist);
     }
 

@@ -2,6 +2,7 @@ package com.media.notabadplayer.Storage;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.SortedMap;
@@ -21,8 +22,10 @@ import android.util.Log;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Model.AudioTrackBuilder;
 import com.media.notabadplayer.Audio.Model.AudioTrackSource;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrackBuilderNode;
 import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.PlayerApplication;
 import com.media.notabadplayer.Utilities.MediaSorting;
@@ -45,7 +48,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     private final ArrayList<AudioAlbum> _albums = new ArrayList<>();
 
     // Album id : list of audio tracks
-    private final SortedMap<String, List<AudioTrack>> _albumTracks = new TreeMap<>();
+    private final SortedMap<String, List<BaseAudioTrack>> _albumTracks = new TreeMap<>();
 
     // Alerted when the device library is changed
     private final HashSet<ChangesListener> _changesListeners = new HashSet<>();
@@ -53,7 +56,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     public interface ChangesListener {
         void onMediaLibraryChanged();
     }
-    
+
     private AudioLibrary()
     {
         // The handler decides which thread the callbacks will be performed on
@@ -67,7 +70,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
         Log.v(AudioLibrary.class.getCanonicalName(), "Initialized!");
     }
-    
+
     public synchronized static AudioLibrary getShared()
     {
         if (singleton == null)
@@ -77,7 +80,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
         return singleton;
     }
-    
+
     private @NonNull Application getContext()
     {
         if (_context == null)
@@ -102,7 +105,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
         load();
     }
-    
+
     public void load()
     {
         // Load whatever is needed to operate the library
@@ -111,7 +114,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         synchronized (_lock)
         {
             Context context = getContext();
-            
+
             Log.v(AudioLibrary.class.getCanonicalName(), "Loading albums from media store...");
 
             _albums.clear();
@@ -161,11 +164,11 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             return Collections.unmodifiableList(_albums);
         }
     }
-    
+
     public @Nullable AudioAlbum getAlbumByID(@NonNull String identifier)
     {
         List<AudioAlbum> albums = getAlbums();
-        
+
         for (AudioAlbum album: albums)
         {
             if (album.albumID.equals(identifier))
@@ -173,11 +176,11 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
                 return album;
             }
         }
-        
+
         return null;
     }
 
-    public @NonNull List<AudioTrack> getAlbumTracks(@NonNull AudioAlbum album)
+    public @NonNull List<BaseAudioTrack> getAlbumTracks(@NonNull AudioAlbum album)
     {
         synchronized (_lock)
         {
@@ -188,9 +191,9 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         }
 
         Context context = getContext();
-        
-        ArrayList<AudioTrack> albumTracks = new ArrayList<>();
-        
+
+        ArrayList<BaseAudioTrack> albumTracks = new ArrayList<>();
+
         String projection[] = {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.TITLE,
@@ -200,18 +203,18 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.TRACK
         };
-        
+
         String selection = "is_music != 0";
-        
-        if (Integer.parseInt(album.albumID) > 0) 
+
+        if (Integer.parseInt(album.albumID) > 0)
         {
             selection = selection + " and album_id = " + album.albumID;
         }
-        
+
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection, selection, null, null);
-        
+
         if (cursor == null)
         {
             return new ArrayList<>();
@@ -223,7 +226,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         int albumTitleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
         int trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
         int durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
-        
+
         while (cursor.moveToNext())
         {
             String filePath = cursor.getString(dataColumn);
@@ -232,26 +235,34 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             String albumTitle = cursor.getString(albumTitleColumn);
             int trackNum = cursor.getInt(trackNumColumn);
             double duration = cursor.getLong(durationColumn) / 1000.0;
-            
-            albumTracks.add(new AudioTrack(filePath, 
-                            title,
-                            artist,
-                            albumTitle,
-                            album.albumID,
-                            album.albumCover,
-                            trackNum, 
-                            duration,
-                            AudioTrackSource.createAlbumSource(album.albumID)));
+
+            BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
+            node.setFilePath(filePath);
+            node.setTitle(title);
+            node.setArtist(artist);
+            node.setAlbumTitle(albumTitle);
+            node.setAlbumID(album.albumID);
+            node.setArtCover(album.albumCover);
+            node.setTrackNum(trackNum);
+            node.setDuration(duration);
+            node.setSource(AudioTrackSource.createAlbumSource(album.albumID));
+
+            try {
+                BaseAudioTrack result = node.build();
+                albumTracks.add(result);
+            } catch (Exception e) {
+
+            }
         }
 
         cursor.close();
 
         storeTracksIntoCache(album.albumID, albumTracks);
-        
+
         return albumTracks;
     }
 
-    private void storeTracksIntoCache(@NonNull String albumID, @NonNull List<AudioTrack> tracks)
+    private void storeTracksIntoCache(@NonNull String albumID, @NonNull List<BaseAudioTrack> tracks)
     {
         synchronized (_lock)
         {
@@ -268,7 +279,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
     // # Search
 
-    public @NonNull List<AudioTrack> searchForTracks(@NonNull String query, @NonNull SearchFilter filter)
+    public @NonNull List<BaseAudioTrack> searchForTracks(@NonNull String query, @NonNull SearchFilter filter)
     {
         if (query.isEmpty())
         {
@@ -276,9 +287,9 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         }
 
         Context context = getContext();
-        
-        ArrayList<AudioTrack> albumTracks = new ArrayList<>();
-        
+
+        ArrayList<BaseAudioTrack> albumTracks = new ArrayList<>();
+
         String projection[] = {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.TITLE,
@@ -312,23 +323,23 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         String[] selectionArgs = new String[] {""};
 
         String[] words = query.split(" ");
-        
-        for (int i = 0; i < words.length; i++) 
+
+        for (int i = 0; i < words.length; i++)
         {
             selectionArgs[0] += "%" + words[i] + "%";
         }
-        
+
         String orderBy = null;
 
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection, selection, selectionArgs, orderBy);
-        
+
         if (cursor == null)
         {
             return new ArrayList<>();
         }
-        
+
         int dataColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
         int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
         int artistColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
@@ -336,7 +347,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         int albumIDColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
         int trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
         int durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
-        
+
         while (cursor.moveToNext())
         {
             String filePath = cursor.getString(dataColumn);
@@ -347,34 +358,42 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             double duration = cursor.getLong(durationColumn) / 1000.0;
             String albumID = cursor.getString(albumIDColumn);
             AudioAlbum album = getAlbumByID(albumID);
-            
+
             if (album == null)
             {
                 continue;
             }
-            
+
             String albumCover = album.albumCover;
-            
-            albumTracks.add(new AudioTrack(filePath,
-                            title, 
-                            artist, 
-                            albumTitle,
-                            albumID,
-                            albumCover,
-                            trackNum,
-                            duration,
-                            AudioTrackSource.createAlbumSource(album.albumID)));
+
+            BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
+            node.setFilePath(filePath);
+            node.setTitle(title);
+            node.setArtist(artist);
+            node.setAlbumTitle(albumTitle);
+            node.setAlbumID(album.albumID);
+            node.setArtCover(albumCover);
+            node.setTrackNum(trackNum);
+            node.setDuration(duration);
+            node.setSource(AudioTrackSource.createAlbumSource(album.albumID));
+
+            try {
+                BaseAudioTrack result = node.build();
+                albumTracks.add(result);
+            } catch (Exception e) {
+
+            }
         }
 
         cursor.close();
-        
+
         return albumTracks;
     }
 
-    public AudioTrack findTrackByPath(@NonNull Uri path)
+    public @Nullable BaseAudioTrack findTrackByPath(@NonNull Uri path)
     {
         Context context = getContext();
-        
+
         String projection[] = {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.TITLE,
@@ -389,12 +408,12 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         Cursor cursor = context.getContentResolver().query(
                 path,
                 projection, null, null, null);
-        
+
         if (cursor == null)
         {
             return null;
         }
-        
+
         cursor.moveToNext();
 
         int dataColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
@@ -404,7 +423,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         int albumIDColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
         int trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
         int durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
-        
+
         String filePath = cursor.getString(dataColumn);
         String title = cursor.getString(titleColumn);
         String artist = cursor.getString(artistColumn);
@@ -415,12 +434,37 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         AudioAlbum album = getAlbumByID(albumId);
 
         AudioTrackSource source = album != null ? AudioTrackSource.createAlbumSource(album.albumID) : AudioTrackSource.createPlaylistSource(title);
-        
+
         String albumCover = album != null ? album.albumCover : "";
-        
+
         cursor.close();
-        
-        return new AudioTrack(filePath, title, artist, albumTitle, albumId, albumCover, trackNum, duration, source);
+
+        BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
+        node.setFilePath(filePath);
+        node.setTitle(title);
+        node.setArtist(artist);
+        node.setAlbumTitle(albumTitle);
+        node.setAlbumID(album.albumID);
+        node.setArtCover(albumCover);
+        node.setTrackNum(trackNum);
+        node.setDuration(duration);
+        node.setSource(source);
+
+        try {
+            BaseAudioTrack result = node.build();
+            return result;
+        } catch (Exception e) {
+
+        }
+
+        return null;
+    }
+
+    // # Recently added
+
+    public List<BaseAudioTrack> findTrackByPath()
+    {
+        return new ArrayList<BaseAudioTrack>();
     }
 
     // # Library changes

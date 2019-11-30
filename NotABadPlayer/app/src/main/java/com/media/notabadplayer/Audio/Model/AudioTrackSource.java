@@ -39,7 +39,7 @@ public class AudioTrackSource implements Serializable
         return !isAlbum();
     }
 
-    public @Nullable AudioPlaylist getSourcePlaylist(@NonNull AudioInfo audioInfo, @Nullable AudioTrack playingTrack)
+    public @Nullable AudioPlaylist getSourcePlaylist(@NonNull AudioInfo audioInfo, @Nullable BaseAudioTrack playingTrack)
     {
         if (isAlbum())
         {

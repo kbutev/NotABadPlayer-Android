@@ -1,16 +1,18 @@
 package com.media.notabadplayer.Utilities;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 
 public class MediaSorting {
-    public static ArrayList<AudioTrack> sortTracks(List<AudioTrack> tracks, AppSettings.TrackSorting sorting)
+    public static ArrayList<BaseAudioTrack> sortTracks(@NonNull List<BaseAudioTrack> tracks, AppSettings.TrackSorting sorting)
     {
         switch (sorting)
         {
@@ -31,7 +33,7 @@ public class MediaSorting {
         return new ArrayList<>(tracks);
     }
 
-    public static void sortAlbums(List<AudioAlbum> albums, AppSettings.AlbumSorting sorting)
+    public static void sortAlbums(@NonNull List<AudioAlbum> albums, AppSettings.AlbumSorting sorting)
     {
         switch (sorting)
         {
@@ -41,47 +43,47 @@ public class MediaSorting {
         }
     }
     
-    public static void sortTracksByTrackNumber(List<AudioTrack> tracks)
+    public static void sortTracksByTrackNumber(@NonNull List<BaseAudioTrack> tracks)
     {
-        Collections.sort(tracks, new Comparator<AudioTrack>() {
+        Collections.sort(tracks, new Comparator<BaseAudioTrack>() {
             @Override
-            public int compare(AudioTrack o1, AudioTrack o2) {
-                return Integer.parseInt(o1.trackNum) - Integer.parseInt(o2.trackNum);
+            public int compare(BaseAudioTrack o1, BaseAudioTrack o2) {
+                return o1.getTrackNum() - o2.getTrackNum();
             }
         });
     }
 
-    public static void sortTracksByTitle(List<AudioTrack> tracks)
+    public static void sortTracksByTitle(@NonNull List<BaseAudioTrack> tracks)
     {
-        Collections.sort(tracks, new Comparator<AudioTrack>() {
+        Collections.sort(tracks, new Comparator<BaseAudioTrack>() {
             @Override
-            public int compare(AudioTrack o1, AudioTrack o2) {
-                return o1.title.compareTo(o2.title);
+            public int compare(BaseAudioTrack o1, BaseAudioTrack o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
             }
         });
     }
 
-    public static void sortTracksByLongest(List<AudioTrack> tracks)
+    public static void sortTracksByLongest(@NonNull List<BaseAudioTrack> tracks)
     {
-        Collections.sort(tracks, new Comparator<AudioTrack>() {
+        Collections.sort(tracks, new Comparator<BaseAudioTrack>() {
             @Override
-            public int compare(AudioTrack o1, AudioTrack o2) {
-                return (int)(o2.durationInSeconds - o1.durationInSeconds);
+            public int compare(BaseAudioTrack o1, BaseAudioTrack o2) {
+                return (int)(o2.getDurationInSeconds() - o1.getDurationInSeconds());
             }
         });
     }
 
-    public static void sortTracksByShortest(List<AudioTrack> tracks)
+    public static void sortTracksByShortest(@NonNull List<BaseAudioTrack> tracks)
     {
-        Collections.sort(tracks, new Comparator<AudioTrack>() {
+        Collections.sort(tracks, new Comparator<BaseAudioTrack>() {
             @Override
-            public int compare(AudioTrack o1, AudioTrack o2) {
-                return (int)(o1.durationInSeconds - o2.durationInSeconds);
+            public int compare(BaseAudioTrack o1, BaseAudioTrack o2) {
+                return (int)(o1.getDurationInSeconds() - o2.getDurationInSeconds());
             }
         });
     }
     
-    public static void sortAlbumsByTitle(List<AudioAlbum> albums)
+    public static void sortAlbumsByTitle(@NonNull List<AudioAlbum> albums)
     {
         Collections.sort(albums, new Comparator<AudioAlbum>() {
             @Override
@@ -91,7 +93,7 @@ public class MediaSorting {
         });
     }
 
-    public static void sortAlbumsByPopularity(List<AudioAlbum> albums)
+    public static void sortAlbumsByPopularity(@NonNull List<AudioAlbum> albums)
     {
         Collections.sort(albums, new Comparator<AudioAlbum>() {
             @Override

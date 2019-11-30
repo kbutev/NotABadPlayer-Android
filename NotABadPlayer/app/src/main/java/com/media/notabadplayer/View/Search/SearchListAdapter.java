@@ -9,7 +9,6 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,23 +16,23 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.UIAnimations;
 
 public class SearchListAdapter extends BaseAdapter
 {
     private Context _context;
-    private List<AudioTrack> _tracks;
+    private List<BaseAudioTrack> _tracks;
 
     private HashSet<View> _listViews = new HashSet<>();
 
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
 
-    public SearchListAdapter(@NonNull Context context, List<AudioTrack> tracks)
+    public SearchListAdapter(@NonNull Context context, List<BaseAudioTrack> tracks)
     {
         this._context = context;
         this._tracks = tracks;
@@ -70,13 +69,13 @@ public class SearchListAdapter extends BaseAdapter
         _listViews.add(convertView);
         
         // Item update
-        AudioTrack item = (AudioTrack) getItem(position);
+        BaseAudioTrack item = (BaseAudioTrack) getItem(position);
         
         ImageView cover = listItem.findViewById(R.id.albumCover);
         
-        if (!item.artCover.isEmpty())
+        if (!item.getArtCover().isEmpty())
         {
-            cover.setImageURI(Uri.parse(Uri.decode(item.artCover)));
+            cover.setImageURI(Uri.parse(Uri.decode(item.getArtCover())));
         }
         else
         {
@@ -84,13 +83,13 @@ public class SearchListAdapter extends BaseAdapter
         }
         
         TextView title = listItem.findViewById(R.id.title);
-        title.setText(item.title);
+        title.setText(item.getTitle());
 
         TextView albumTitle = listItem.findViewById(R.id.albumTitle);
-        albumTitle.setText(item.albumTitle);
+        albumTitle.setText(item.getAlbumTitle());
 
         TextView duration = listItem.findViewById(R.id.duration);
-        duration.setText(item.duration);
+        duration.setText(item.getDuration());
 
         // Select playing track
         boolean isPlayingTrack = false;
@@ -99,7 +98,7 @@ public class SearchListAdapter extends BaseAdapter
 
         if (playlist != null)
         {
-            AudioTrack track = playlist.getPlayingTrack();
+            BaseAudioTrack track = playlist.getPlayingTrack();
 
             if (track.equals(item))
             {
@@ -123,13 +122,13 @@ public class SearchListAdapter extends BaseAdapter
         return listItem;
     }
 
-    public boolean isItemSelectedForTrack(@NonNull AudioTrack track)
+    public boolean isItemSelectedForTrack(@NonNull BaseAudioTrack track)
     {
         int position = -1;
 
         for (int e = 0; e < _tracks.size(); e++)
         {
-            AudioTrack listTrack = _tracks.get(e);
+            BaseAudioTrack listTrack = _tracks.get(e);
 
             if (listTrack.equals(track))
             {
