@@ -22,11 +22,11 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
@@ -34,6 +34,7 @@ import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.LooperService;
 import com.media.notabadplayer.Utilities.LooperClient;
+import com.media.notabadplayer.Utilities.StringUtilities;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
@@ -346,7 +347,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         updatePlayOrderButtonState();
     }
 
-    public void updateUIState(@NonNull AudioTrack track)
+    public void updateUIState(@NonNull BaseAudioTrack track)
     {
         updateMediaInfo(track);
         updateSoftUIState();
@@ -364,7 +365,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             _mediaBar.setProgress((int)newMediaBarPosition);
         }
         
-        _labelDurationCurrent.setText(AudioTrack.secondsToString(currentPosition));
+        _labelDurationCurrent.setText(StringUtilities.secondsToString(currentPosition));
         
         // Volume bar & image update
         if (_volumeBar.getVisibility() == View.VISIBLE)
@@ -402,23 +403,23 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         }
     }
     
-    private void updateMediaInfo(AudioTrack playingTrack)
+    private void updateMediaInfo(BaseAudioTrack playingTrack)
     {
         if (playingTrack != null)
         {
-            if (!playingTrack.artCover.isEmpty())
+            if (!playingTrack.getArtCover().isEmpty())
             {
-                _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.artCover)));
+                _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.getArtCover())));
             }
             else
             {
                 _imageCover.setImageDrawable(getResources().getDrawable(R.drawable.cover_art_none));
             }
             
-            _labelTitle.setText(playingTrack.title);
-            _labelAlbum.setText(playingTrack.albumTitle);
-            _labelArtist.setText(playingTrack.artist);
-            _labelDurationTotal.setText(playingTrack.duration);
+            _labelTitle.setText(playingTrack.getTitle());
+            _labelAlbum.setText(playingTrack.getAlbumTitle());
+            _labelArtist.setText(playingTrack.getArtist());
+            _labelDurationTotal.setText(playingTrack.getDuration());
             
             updatePlayButtonState();
         }
@@ -547,13 +548,13 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<AudioTrack> songs, @Nullable String searchState)
+    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
     {
 
     }
     
     @Override
-    public void onPlayerPlay(@NonNull AudioTrack current)
+    public void onPlayerPlay(@NonNull BaseAudioTrack current)
     {
         updateMediaInfo(current);
         updatePlayButtonState();
@@ -572,14 +573,13 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public void onPlayerPause(@NonNull AudioTrack track)
+    public void onPlayerPause(@NonNull BaseAudioTrack track)
     {
-
         updatePlayButtonState();
     }
     
     @Override
-    public void onPlayerResume(@NonNull AudioTrack track)
+    public void onPlayerResume(@NonNull BaseAudioTrack track)
     {
         updatePlayButtonState();
     }

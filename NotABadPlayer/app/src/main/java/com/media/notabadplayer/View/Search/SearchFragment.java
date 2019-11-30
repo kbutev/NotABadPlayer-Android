@@ -30,10 +30,10 @@ import android.widget.TextView;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
@@ -316,7 +316,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<AudioTrack> songs, @Nullable String searchState)
+    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
     {
         Context context = getContext();
 
@@ -361,7 +361,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void onPlayerPlay(@NonNull AudioTrack current)
+    public void onPlayerPlay(@NonNull BaseAudioTrack current)
     {
         if (_searchResultsAdapter == null)
         {
@@ -389,13 +389,13 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void onPlayerPause(@NonNull AudioTrack track)
+    public void onPlayerPause(@NonNull BaseAudioTrack track)
     {
 
     }
 
     @Override
-    public void onPlayerResume(@NonNull AudioTrack track)
+    public void onPlayerResume(@NonNull BaseAudioTrack track)
     {
 
     }

@@ -18,17 +18,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.StringUtilities;
 import com.media.notabadplayer.Utilities.UIAnimations;
 
 class PlaylistListAdapter extends BaseAdapter
 {
     private Context _context;
     private String _playlistName;
-    private ArrayList<AudioTrack> _tracks;
+    private ArrayList<BaseAudioTrack> _tracks;
     private boolean _isPlaylist;
 
     private HashSet<View> _listViews = new HashSet<>();
@@ -77,12 +78,12 @@ class PlaylistListAdapter extends BaseAdapter
             TextView albumTitle = header.findViewById(R.id.albumTitle);
             TextView albumArtist = header.findViewById(R.id.albumArtist);
             TextView albumDescription = header.findViewById(R.id.albumDescription);
-            
-            AudioTrack track = _tracks.get(0);
 
-            if (!track.artCover.isEmpty() && !_isPlaylist)
+            BaseAudioTrack track = _tracks.get(0);
+
+            if (!track.getArtCover().isEmpty() && !_isPlaylist)
             {
-                String uri = Uri.decode(track.artCover);
+                String uri = Uri.decode(track.getArtCover());
                 
                 if (uri != null)
                 {
@@ -97,10 +98,10 @@ class PlaylistListAdapter extends BaseAdapter
             
             albumTitle.setText(_playlistName);
             
-            if (!track.artist.isEmpty() && !_isPlaylist)
+            if (!track.getArtist().isEmpty() && !_isPlaylist)
             {
                 albumArtist.setVisibility(View.VISIBLE);
-                albumArtist.setText(track.artist);
+                albumArtist.setText(track.getArtist());
             }
             else
             {
@@ -124,11 +125,11 @@ class PlaylistListAdapter extends BaseAdapter
         // Item (follow position > 0)
         position--;
 
-        AudioTrack item = (AudioTrack) getItem(position);
+        BaseAudioTrack item = (BaseAudioTrack) getItem(position);
 
-        String dataTitle = item.title;
-        String dataTrackNum = item.trackNum;
-        String dataDuration = item.duration;
+        String dataTitle = item.getTitle();
+        String dataTrackNum = String.valueOf(item.getTrackNum());
+        String dataDuration = item.getDuration();
         
         TextView title = checkNotNull((TextView)listItem.findViewById(R.id.title), "Base adapter is expecting a valid text view for position " + String.valueOf(position) + "/" + String.valueOf(_tracks.size()));
         
@@ -163,8 +164,8 @@ class PlaylistListAdapter extends BaseAdapter
         
         if (playlist != null)
         {
-            AudioTrack track = playlist.getPlayingTrack();
-            
+            BaseAudioTrack track = playlist.getPlayingTrack();
+
             if (track.equals(item))
             {
                 isPlayingTrack = true;
@@ -191,24 +192,24 @@ class PlaylistListAdapter extends BaseAdapter
     {
         double totalDuration = 0;
         
-        for (AudioTrack track: _tracks) 
+        for (BaseAudioTrack track: _tracks)
         {
-            totalDuration += track.durationInSeconds;
+            totalDuration += track.getDurationInSeconds();
         }
         
         String tracks = _context.getResources().getString(R.string.albums_tracks);
         String total_duration = _context.getResources().getString(R.string.albums_total_duration);
         
-        return String.valueOf(_tracks.size()) + " " + tracks + ", " + total_duration + " " + AudioTrack.secondsToString(totalDuration);
+        return String.valueOf(_tracks.size()) + " " + tracks + ", " + total_duration + " " + StringUtilities.secondsToString(totalDuration);
     }
 
-    public boolean isItemSelectedForTrack(@NonNull AudioTrack track)
+    public boolean isItemSelectedForTrack(@NonNull BaseAudioTrack track)
     {
         int position = -1;
 
         for (int e = 0; e < _tracks.size(); e++)
         {
-            AudioTrack listTrack = _tracks.get(e);
+            BaseAudioTrack listTrack = _tracks.get(e);
 
             if (listTrack.equals(track))
             {

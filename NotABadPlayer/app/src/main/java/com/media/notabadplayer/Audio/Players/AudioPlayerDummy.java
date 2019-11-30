@@ -12,7 +12,7 @@ import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlayerObservers;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 
 public class AudioPlayerDummy implements AudioPlayer {
     private final AudioPlayerObservers observers;
@@ -190,12 +190,12 @@ public class AudioPlayerDummy implements AudioPlayer {
 
     public class PlayHistory implements AudioPlayerHistory
     {
-        public @NonNull List<AudioTrack> getPlayHistory()
+        public @NonNull List<BaseAudioTrack> getPlayHistory()
         {
             return new ArrayList<>();
         }
 
-        public void setList(@NonNull List<AudioTrack> playHistory)
+        public void setList(@NonNull List<BaseAudioTrack> playHistory)
         {
             
         }

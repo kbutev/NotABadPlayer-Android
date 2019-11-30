@@ -11,7 +11,7 @@ import android.util.Log;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -155,7 +155,7 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
         
         Log.v(AlbumsPresenter.class.getCanonicalName(), "Open '" + album.albumTitle + "' album");
 
-        List<AudioTrack> tracks = _audioInfo.getAlbumTracks(album);
+        List<BaseAudioTrack> tracks = _audioInfo.getAlbumTracks(album);
 
         AudioPlaylist playlist = new AudioPlaylist(album.albumTitle, tracks);
 

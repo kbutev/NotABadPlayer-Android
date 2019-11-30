@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.R;
@@ -29,7 +30,6 @@ import com.media.notabadplayer.Presenter.ListsPresenter;
 import com.media.notabadplayer.Presenter.QuickPlayerPresenter;
 import com.media.notabadplayer.Storage.AudioLibrary;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
@@ -266,8 +266,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private void startAppWithTrack(@NonNull Uri path)
     {
         Log.v(MainActivity.class.getCanonicalName(), "Launching player with initial track...");
-        
-        AudioTrack track = _audioLibrary.findTrackByPath(path);
+
+        BaseAudioTrack track = _audioLibrary.findTrackByPath(path);
 
         if (track == null)
         {
@@ -275,11 +275,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             return;
         }
 
-        AudioPlaylist playlist = track.source.getSourcePlaylist(_audioLibrary, track);
+        AudioPlaylist playlist = track.getSource().getSourcePlaylist(_audioLibrary, track);
 
         if (playlist == null)
         {
-            playlist = new AudioPlaylist(track.title, track);
+            playlist = new AudioPlaylist(track.getTitle(), track);
         }
         
         AudioPlaylist currentPlaylist = Player.getShared().getPlaylist();
@@ -485,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<AudioTrack> songs, @Nullable String searchState)
+    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
     {
 
     }

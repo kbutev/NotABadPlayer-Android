@@ -20,7 +20,7 @@ import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.AudioPlayerObservers;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.PlayerApplication;
 import com.media.notabadplayer.Storage.GeneralStorage;
 
@@ -128,7 +128,7 @@ public class Player implements AudioPlayer {
 
             if (playlist != null)
             {
-                AudioTrack track = playlist.getPlayingTrack();
+                BaseAudioTrack track = playlist.getPlayingTrack();
 
                 for (AudioPlayerObserver observer : observers._observers)
                 {
@@ -195,7 +195,7 @@ public class Player implements AudioPlayer {
 
     private void restorePlayHistoryFromStorage()
     {
-        ArrayList<AudioTrack> history = GeneralStorage.getShared().retrievePlayerPlayHistoryState();
+        List<BaseAudioTrack> history = GeneralStorage.getShared().retrievePlayerPlayHistoryState();
 
         if (history != null)
         {
@@ -411,14 +411,14 @@ public class Player implements AudioPlayer {
     public class PlayHistory implements AudioPlayerHistory
     {
         @Override
-        public @NonNull List<AudioTrack> getPlayHistory()
+        public @NonNull List<BaseAudioTrack> getPlayHistory()
         {
             return getPlayer().playHistory().getPlayHistory();
         }
         
         public @Nullable AudioPlaylist getPlayHistoryAsPlaylist(@NonNull String playlistName)
         {
-            List<AudioTrack> tracks = getPlayer().playHistory().getPlayHistory();
+            List<BaseAudioTrack> tracks = getPlayer().playHistory().getPlayHistory();
             
             if (tracks.size() == 0)
             {
@@ -429,7 +429,7 @@ public class Player implements AudioPlayer {
         }
 
         @Override
-        public void setList(@NonNull List<AudioTrack> playHistory)
+        public void setList(@NonNull List<BaseAudioTrack> playHistory)
         {
             getPlayer().playHistory().setList(playHistory);
         }

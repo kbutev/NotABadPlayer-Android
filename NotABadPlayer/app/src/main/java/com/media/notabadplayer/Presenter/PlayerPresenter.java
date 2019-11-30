@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
@@ -50,28 +50,28 @@ public class PlayerPresenter implements BasePresenter
         
         if (currentPlaylist != null)
         {
-            AudioTrack newTrack = _playlist.getPlayingTrack();
-            AudioTrack currentTrack = currentPlaylist.getPlayingTrack();
+            BaseAudioTrack newTrack = _playlist.getPlayingTrack();
+            BaseAudioTrack currentTrack = currentPlaylist.getPlayingTrack();
 
             // Current playing playlist or track does not match the state of the presenter's playlist?
             if (!_playlist.equals(currentPlaylist))
             {
                 // Change the audio player playlist to equal the presenter's playlist
-                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen and playing track '" + newTrack.title + "'");
+                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen and playing track '" + newTrack.getTitle() + "'");
                 playNew(_playlist);
 
                 return;
             }
             
             // Just open screen
-            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen with current audio player track '" + currentTrack.title + "'");
+            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen with current audio player track '" + currentTrack.getTitle() + "'");
             playContinue(currentPlaylist);
             
             return;
         }
 
         // Set audio player playlist for the first time and play its track
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen for the first time and playing track '" + _playlist.getPlayingTrack().title + "'");
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen for the first time and playing track '" + _playlist.getPlayingTrack().getTitle() + "'");
         playFirstTime(_playlist);
     }
 
@@ -220,9 +220,9 @@ public class PlayerPresenter implements BasePresenter
     private void playNew(@NonNull AudioPlaylist playlist)
     {
         String newPlaylistName = playlist.getName();
-        AudioTrack newTrack = playlist.getPlayingTrack();
+        BaseAudioTrack newTrack = playlist.getPlayingTrack();
 
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.title + "'");
+        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.getTitle() + "'");
 
         Player player = Player.getShared();
 

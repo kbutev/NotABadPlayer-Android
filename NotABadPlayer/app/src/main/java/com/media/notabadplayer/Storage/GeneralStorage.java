@@ -3,6 +3,7 @@ package com.media.notabadplayer.Storage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import android.app.Application;
 import android.content.Context;
@@ -12,9 +13,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Model.AudioTrackBuilder;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Controls.ApplicationAction;
@@ -174,6 +176,21 @@ public class GeneralStorage
             
             preferencesVersion = version;
         }
+
+        // Migrate to 1.4
+        if (preferencesVersion.equals("1.3"))
+        {
+            String version = "1.4";
+
+            Log.v(GeneralStorage.class.getCanonicalName(), "Migrating settings from version " + preferencesVersion + " to version " + version);
+
+            // Class AudioTrack was completely changed, it can no longer be deserialized by older versions
+            // Wipe out any data containing audio tracks
+            clearPlayerPlayHistoryState();
+            clearUserPlaylists();
+
+            preferencesVersion = version;
+        }
         
         Log.v(GeneralStorage.class.getCanonicalName(), "Successfully migrated settings values!");
     }
@@ -282,6 +299,8 @@ public class GeneralStorage
         editor.putInt("player_current_position", player.getCurrentPositionMSec());
 
         editor.apply();
+
+        Log.v(GeneralStorage.class.getCanonicalName(), "Saved audio player state to storage.");
     }
 
     public @Nullable AudioPlaylist retrievePlayerStateCurrentPlaylist()
@@ -337,19 +356,28 @@ public class GeneralStorage
         
         SharedPreferences.Editor editor = preferences.edit();
         
-        ArrayList<AudioTrack> history = new ArrayList<>(player.playHistory.getPlayHistory());
+        ArrayList<BaseAudioTrack> history = new ArrayList<>(player.playHistory.getPlayHistory());
 
         editor.putString("player_play_history", Serializing.serializeObject(history));
         
         editor.apply();
-        
-        Log.v(GeneralStorage.class.getCanonicalName(), "Saved audio player state to storage.");
     }
 
-    public @Nullable ArrayList<AudioTrack> retrievePlayerPlayHistoryState()
+    public void clearPlayerPlayHistoryState()
     {
         SharedPreferences preferences = getSharedPreferences();
-        Player player = Player.getShared();
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putString("player_play_history", null);
+
+        editor.apply();
+
+        Log.v(GeneralStorage.class.getCanonicalName(), "Cleared audio player history from storage.");
+    }
+
+    public @Nullable List<BaseAudioTrack> retrievePlayerPlayHistoryState()
+    {
+        SharedPreferences preferences = getSharedPreferences();
         
         String data = preferences.getString("player_play_history", "");
 
@@ -358,7 +386,13 @@ public class GeneralStorage
             return null;
         }
 
-        return objectToTracksArray(Serializing.deserializeObject(data));
+        try {
+            return AudioTrackBuilder.buildFromSerializedData(data);
+        } catch (Exception e) {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Failed to retrieve player play history from storage: " + e.toString());
+        }
+
+        return null;
     }
 
     public void saveSearchQuery(String searchQuery)
@@ -511,6 +545,14 @@ public class GeneralStorage
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("user_playlists", Serializing.serializeObject(playlists));
+        editor.apply();
+    }
+
+    public void clearUserPlaylists()
+    {
+        SharedPreferences preferences = getSharedPreferences();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("user_playlists", null);
         editor.apply();
     }
 
@@ -688,13 +730,13 @@ public class GeneralStorage
         editor.putString("caching_policy", value.name());
         editor.apply();
     }
-    
+
     private static ArrayList<AudioPlaylist> objectToPlaylistsArray(Object object)
     {
         if (object instanceof ArrayList)
         {
             ArrayList array = (ArrayList)object;
-            
+
             if (array.size() > 0)
             {
                 if (array.get(0) instanceof AudioPlaylist)
@@ -707,26 +749,6 @@ public class GeneralStorage
             else
             {
                 return new ArrayList<>();
-            }
-        }
-        
-        return null;
-    }
-
-    private static ArrayList<AudioTrack> objectToTracksArray(Object object)
-    {
-        if (object instanceof ArrayList)
-        {
-            ArrayList array = (ArrayList)object;
-
-            if (array.size() > 0)
-            {
-                if (array.get(0) instanceof AudioTrack)
-                {
-                    @SuppressWarnings("unchecked")
-                    ArrayList<AudioTrack> tracksArray = (ArrayList<AudioTrack>)object;
-                    return tracksArray;
-                }
             }
         }
 

@@ -21,10 +21,10 @@ import android.widget.TextView;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.Model.AudioPlaylist;
-import com.media.notabadplayer.Audio.Model.AudioTrack;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.AlertWindows;
@@ -236,7 +236,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
 
         if (audioPlaylist != null && audioPlaylist.getName().equals(playlist.getName()))
         {
-            AudioTrack playingTrack = audioPlaylist.getPlayingTrack();
+            BaseAudioTrack playingTrack = audioPlaylist.getPlayingTrack();
 
             int index = playlist.getTracks().indexOf(playingTrack);
 
@@ -276,13 +276,13 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
     
     @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<AudioTrack> songs, @Nullable String searchState)
+    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
     {
         
     }
     
     @Override
-    public void onPlayerPlay(@NonNull AudioTrack current)
+    public void onPlayerPlay(@NonNull BaseAudioTrack current)
     {
         if (_tableAdapter == null)
         {
@@ -310,13 +310,13 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void onPlayerPause(@NonNull AudioTrack track)
+    public void onPlayerPause(@NonNull BaseAudioTrack track)
     {
         
     }
 
     @Override
-    public void onPlayerResume(@NonNull AudioTrack track)
+    public void onPlayerResume(@NonNull BaseAudioTrack track)
     {
         
     }
