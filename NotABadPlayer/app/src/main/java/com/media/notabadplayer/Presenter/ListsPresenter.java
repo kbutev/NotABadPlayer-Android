@@ -10,13 +10,17 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
+import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
+import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.AudioLibrary;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
 
@@ -29,6 +33,7 @@ public class ListsPresenter implements BasePresenter
     private List<BaseAudioPlaylist> _playlists = new ArrayList<>();
     
     private final String _historyPlaylistName;
+    private final String _recentlyAddedPlaylistName;
 
     private boolean _running = false;
     
@@ -37,7 +42,8 @@ public class ListsPresenter implements BasePresenter
     public ListsPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo)
     {
         _audioInfo = audioInfo;
-        _historyPlaylistName = context.getResources().getString(R.string.playlist_name_recently_played);
+        _historyPlaylistName = context.getResources().getString(R.string.playlist_name_history);
+        _recentlyAddedPlaylistName = context.getResources().getString(R.string.playlist_name_recently_added);
     }
     
     @Override
@@ -94,6 +100,14 @@ public class ListsPresenter implements BasePresenter
                 if (running)
                 {
                     List<BaseAudioPlaylist> lists = GeneralStorage.getShared().getUserPlaylists();
+
+                    BaseAudioPlaylist recentlyAdded = getRecentlyAddedPlaylist();
+
+                    if (recentlyAdded != null)
+                    {
+                        lists.add(0, recentlyAdded);
+                    }
+
                     BaseAudioPlaylist recentlyPlayed = Player.getShared().playHistory.getPlayHistoryAsPlaylist(_historyPlaylistName);
                     
                     if (recentlyPlayed != null)
@@ -277,5 +291,26 @@ public class ListsPresenter implements BasePresenter
     private void updatePlaylistsData()
     {
         _view.onUserPlaylistsLoad(_playlists);
+    }
+
+    private @Nullable BaseAudioPlaylist getRecentlyAddedPlaylist()
+    {
+        List<BaseAudioTrack> recentlyAddedTracks = AudioLibrary.getShared().getRecentlyAddedTracks();
+
+        if (recentlyAddedTracks.size() > 0)
+        {
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+            node.setName(_recentlyAddedPlaylistName);
+            node.setTracks(recentlyAddedTracks);
+            node.setIsTemporaryPlaylist(true);
+
+            try {
+                return node.build();
+            } catch (Exception exc) {
+
+            }
+        }
+
+        return null;
     }
 }

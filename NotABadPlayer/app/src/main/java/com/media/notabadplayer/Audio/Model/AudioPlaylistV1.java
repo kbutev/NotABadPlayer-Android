@@ -22,7 +22,9 @@ public class AudioPlaylistV1 implements BaseAudioPlaylist, Serializable
     
     private boolean _playing;
     private int _playingTrackPosition;
-    
+
+    private boolean _temporary;
+
     transient private Random _random;
 
     public AudioPlaylistV1(@NonNull String name, @NonNull List<BaseAudioTrack> tracks)
@@ -177,6 +179,17 @@ public class AudioPlaylistV1 implements BaseAudioPlaylist, Serializable
     public boolean isAlbumPlaylist()
     {
         return _name.equals(_tracks.get(0).getAlbumTitle());
+    }
+
+    @Override
+    public boolean isTemporaryPlaylist()
+    {
+        return _temporary;
+    }
+
+    public void setIsTemporatyPlaylist(boolean temporary)
+    {
+        _temporary = temporary;
     }
 
     @Override

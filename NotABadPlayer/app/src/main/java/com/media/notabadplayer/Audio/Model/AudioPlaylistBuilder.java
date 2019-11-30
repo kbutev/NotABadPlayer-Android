@@ -55,12 +55,14 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
     private List<BaseAudioTrack> tracks;
     private AppSettings.TrackSorting sorting;
     private @Nullable BaseAudioTrack startWithTrack;
+    private boolean isTemporary;
 
     AudioPlaylistBuilderNode()
     {
         name = "";
         tracks = new ArrayList<>();
         sorting = AppSettings.TrackSorting.NONE;
+        isTemporary = false;
     }
 
     @Override
@@ -71,13 +73,19 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
             // Playlist with one single track
             if (tracks.size() == 0)
             {
-                return new AudioPlaylistV1(name, startWithTrack);
+                AudioPlaylistV1 playlist = new AudioPlaylistV1(name, startWithTrack);
+                playlist.setIsTemporatyPlaylist(isTemporary);
+                return playlist;
             }
 
-            return new AudioPlaylistV1(name, tracks, startWithTrack, sorting);
+            AudioPlaylistV1 playlist = new AudioPlaylistV1(name, tracks, startWithTrack, sorting);
+            playlist.setIsTemporatyPlaylist(isTemporary);
+            return playlist;
         }
 
-        return new AudioPlaylistV1(name, tracks, sorting);
+        AudioPlaylistV1 playlist = new AudioPlaylistV1(name, tracks, sorting);
+        playlist.setIsTemporatyPlaylist(isTemporary);
+        return playlist;
     }
 
     @Override
@@ -102,5 +110,11 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
     public void setStartingTrack(@Nullable BaseAudioTrack startWithTrack)
     {
         this.startWithTrack = startWithTrack;
+    }
+
+    @Override
+    public void setIsTemporaryPlaylist(boolean temporary)
+    {
+        isTemporary = temporary;
     }
 }

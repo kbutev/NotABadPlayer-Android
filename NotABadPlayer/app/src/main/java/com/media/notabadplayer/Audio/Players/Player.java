@@ -430,6 +430,7 @@ public class Player implements AudioPlayer {
             BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
             node.setName(playlistName);
             node.setTracks(tracks);
+            node.setIsTemporaryPlaylist(true);
 
             // Try to build
             try {

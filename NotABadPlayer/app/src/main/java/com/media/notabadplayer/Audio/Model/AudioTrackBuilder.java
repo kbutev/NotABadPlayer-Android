@@ -2,6 +2,7 @@ package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.media.notabadplayer.Utilities.Serializing;
@@ -147,8 +148,39 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     }
 
     @Override
-    public void setDate(@NonNull BaseAudioTrackDate value) {
-        this.track.date = value;
+    public void setDateAdded(@NonNull Date value)
+    {
+        this.track.date = AudioTrackV1.buildDefaultAudioTrackDate(value,
+                this.track.date.getModified(),
+                this.track.date.getFirstPlayed(),
+                this.track.date.getLastPlayed());
+    }
+
+    @Override
+    public void setDateModified(@NonNull Date value)
+    {
+        this.track.date = AudioTrackV1.buildDefaultAudioTrackDate(this.track.date.getAdded(),
+                value,
+                this.track.date.getFirstPlayed(),
+                this.track.date.getLastPlayed());
+    }
+
+    @Override
+    public void setDateFirstPlayed(@NonNull Date value)
+    {
+        this.track.date = AudioTrackV1.buildDefaultAudioTrackDate(this.track.date.getAdded(),
+                this.track.date.getModified(),
+                value,
+                this.track.date.getLastPlayed());
+    }
+
+    @Override
+    public void setDateLastAdded(@NonNull Date value)
+    {
+        this.track.date = AudioTrackV1.buildDefaultAudioTrackDate(this.track.date.getAdded(),
+                this.track.date.getModified(),
+                this.track.date.getFirstPlayed(),
+                value);
     }
 }
 
