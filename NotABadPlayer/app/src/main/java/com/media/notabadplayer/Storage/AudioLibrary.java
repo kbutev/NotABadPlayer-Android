@@ -100,6 +100,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
     // # Init
 
+    @Override
     public void loadIfNecessary()
     {
         synchronized (_lock)
@@ -113,6 +114,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         load();
     }
 
+    @Override
     public void load()
     {
         // Load whatever is needed to operate the library
@@ -162,6 +164,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
     // # Album info
 
+    @Override
     public @NonNull List<AudioAlbum> getAlbums()
     {
         loadIfNecessary();
@@ -172,6 +175,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         }
     }
 
+    @Override
     public @Nullable AudioAlbum getAlbumByID(@NonNull String identifier)
     {
         List<AudioAlbum> albums = getAlbums();
@@ -187,6 +191,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         return null;
     }
 
+    @Override
     public @NonNull List<BaseAudioTrack> getAlbumTracks(@NonNull AudioAlbum album)
     {
         synchronized (_lock)
@@ -295,6 +300,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
     // # Search
 
+    @Override
     public @NonNull List<BaseAudioTrack> searchForTracks(@NonNull String query, @NonNull SearchFilter filter)
     {
         if (query.isEmpty())
@@ -415,6 +421,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         return albumTracks;
     }
 
+    @Override
     public @Nullable BaseAudioTrack findTrackByPath(@NonNull Uri path)
     {
         Context context = getContext();
