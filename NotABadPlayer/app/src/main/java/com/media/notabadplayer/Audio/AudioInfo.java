@@ -10,6 +10,9 @@ import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Constants.SearchFilter;
 
 public interface AudioInfo {
+    void loadIfNecessary();
+    void load();
+
     @NonNull List<AudioAlbum> getAlbums();
     @Nullable AudioAlbum getAlbumByID(@NonNull String identifier);
     @NonNull List<BaseAudioTrack> getAlbumTracks(@NonNull AudioAlbum album);
