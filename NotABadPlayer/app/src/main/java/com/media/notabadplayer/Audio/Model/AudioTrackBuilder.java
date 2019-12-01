@@ -72,7 +72,6 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
         this.track.albumID = prototype.getAlbumID();
         this.track.artCover = prototype.getArtCover();
         this.track.trackNum = prototype.getTrackNum();
-        this.track.duration = prototype.getDuration();
         this.track.durationInSeconds = prototype.getDurationInSeconds();
         this.track.source = prototype.getSource();
         this.track.lyrics = prototype.getLyrics();
@@ -124,7 +123,6 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     @Override
     public void setDuration(double duration) {
         this.track.durationInSeconds = duration;
-        this.track.duration = StringUtilities.secondsToString(duration);
     }
 
     @Override
