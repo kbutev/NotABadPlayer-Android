@@ -12,7 +12,6 @@ public interface BaseAudioPlaylistBuilderNode {
 
     void setName(@NonNull String name);
     void setTracks(@NonNull List<BaseAudioTrack> tracks);
-    void setSorting(AppSettings.TrackSorting sorting);
     void setStartingTrack(@Nullable BaseAudioTrack startWithTrack);
 
     void setIsTemporaryPlaylist(boolean temporary);

@@ -2,12 +2,11 @@ package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Utilities.Serializing;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AudioPlaylistBuilder {
     public static @NonNull BaseAudioPlaylistBuilderNode start()
@@ -15,17 +14,17 @@ public class AudioPlaylistBuilder {
         return new AudioPlaylistBuilderNode();
     }
 
-    public static @NonNull ArrayList<BaseAudioPlaylist> buildListLatestVersionFromSerializedData(String data) throws Exception
+    public static @NonNull ArrayList<BaseAudioPlaylist> buildArrayListLatestVersionFromSerializedData(@NonNull String data) throws Exception
     {
         return buildArrayListFromSerializedData(data);
     }
 
-    public static @NonNull ArrayList<BaseAudioPlaylist> buildListVersion1FromSerializedData(String data) throws Exception
+    public static @NonNull ArrayList<BaseAudioPlaylist> buildArrayListVersion1FromSerializedData(@NonNull String data) throws Exception
     {
         return buildArrayListFromSerializedData(data);
     }
 
-    public static @NonNull ArrayList<BaseAudioPlaylist> buildArrayListFromSerializedData(String data) throws Exception
+    public static @NonNull ArrayList<BaseAudioPlaylist> buildArrayListFromSerializedData(@NonNull String data) throws Exception
     {
         Object result = Serializing.deserializeObject(data);
 
@@ -98,12 +97,6 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
     public void setTracks(@NonNull List<BaseAudioTrack> tracks)
     {
         this.tracks = tracks;
-    }
-
-    @Override
-    public void setSorting(AppSettings.TrackSorting sorting)
-    {
-        this.sorting = sorting;
     }
 
     @Override
