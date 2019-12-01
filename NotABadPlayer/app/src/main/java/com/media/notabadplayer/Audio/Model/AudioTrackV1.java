@@ -20,7 +20,6 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     public int trackNum;
 
     public double durationInSeconds;
-    public @NonNull String duration;
 
     public @NonNull AudioTrackSource source;
 
@@ -38,8 +37,6 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
         albumTitle = "";
         albumID = "";
         artCover = "";
-
-        duration = StringUtilities.secondsToString(0);
 
         source = AudioTrackSource.createAlbumSource("");
 
@@ -117,7 +114,7 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
 
     @Override
     public @NonNull String getDuration() {
-        return duration;
+        return StringUtilities.secondsToString(durationInSeconds);
     }
 
     @Override
