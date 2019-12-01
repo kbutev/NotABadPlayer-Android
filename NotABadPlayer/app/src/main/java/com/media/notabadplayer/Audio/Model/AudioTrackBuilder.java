@@ -3,10 +3,8 @@ package com.media.notabadplayer.Audio.Model;
 import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import com.media.notabadplayer.Utilities.Serializing;
-import com.media.notabadplayer.Utilities.StringUtilities;
 
 public class AudioTrackBuilder {
     public static @NonNull BaseAudioTrackBuilderNode start()
@@ -19,17 +17,17 @@ public class AudioTrackBuilder {
         return new AudioTrackBuilderNode(prototype);
     }
 
-    public static @NonNull List<BaseAudioTrack> buildListLatestVersionFromSerializedData(String data) throws Exception
+    public static @NonNull ArrayList<BaseAudioTrack> buildArrayListLatestVersionFromSerializedData(@NonNull String data) throws Exception
     {
         return buildArrayListFromSerializedData(data);
     }
 
-    public static @NonNull List<BaseAudioTrack> buildListVersion1FromSerializedData(String data) throws Exception
+    public static @NonNull ArrayList<BaseAudioTrack> buildArrayListVersion1FromSerializedData(@NonNull String data) throws Exception
     {
         return buildArrayListFromSerializedData(data);
     }
 
-    public static @NonNull List<BaseAudioTrack> buildArrayListFromSerializedData(String data) throws Exception
+    public static @NonNull ArrayList<BaseAudioTrack> buildArrayListFromSerializedData(@NonNull String data) throws Exception
     {
         Object result = Serializing.deserializeObject(data);
 
@@ -42,7 +40,7 @@ public class AudioTrackBuilder {
                 if (array.get(0) instanceof AudioTrackV1)
                 {
                     @SuppressWarnings("unchecked")
-                    List<BaseAudioTrack> tracksArray = (List<BaseAudioTrack>)result;
+                    ArrayList<BaseAudioTrack> tracksArray = (ArrayList<BaseAudioTrack>)result;
                     return tracksArray;
                 }
 
@@ -81,7 +79,7 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     }
 
     @Override
-    @NonNull public BaseAudioTrack build() throws Exception {
+    public @NonNull BaseAudioTrack build() throws Exception {
         return this.track;
     }
 
