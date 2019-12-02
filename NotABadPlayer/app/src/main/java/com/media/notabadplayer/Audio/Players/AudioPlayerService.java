@@ -1,5 +1,6 @@
 package com.media.notabadplayer.Audio.Players;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import android.app.Notification;
@@ -34,6 +35,7 @@ import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.MutableAudioPlaylist;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.Main.MainActivity;
@@ -51,7 +53,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     private AudioPlayerService.NotificationCenter _notificationCenter;
     
     private android.media.MediaPlayer _player;
-    private BaseAudioPlaylist _playlist;
+    private MutableAudioPlaylist _playlist;
     private AudioPlayOrder _playOrder = AudioPlayOrder.FORWARDS;
 
     private boolean _muted;
@@ -138,11 +140,17 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     }
 
     @Override
-    public @Nullable BaseAudioPlaylist getPlaylist()
+    public @Nullable MutableAudioPlaylist getPlaylist()
     {
         return _playlist;
     }
 
+    @Override
+    public @Nullable MutableAudioPlaylist getMutablePlaylistCopy()
+    {
+        return null;
+    }
+    
     @Override
     public boolean hasPlaylist() {return _playlist != null;}
 
@@ -171,7 +179,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             throw e;
         }
 
-        _playlist = playlist;
+        _playlist = AudioPlaylistBuilder.buildMutableFromImmutable(playlist);
         _playlist.playCurrent();
     }
 
@@ -795,18 +803,23 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             BaseAudioTrack previousTrack = _playlist.getPlayingTrack();
             BaseAudioTrack previouslyPlayed = _playHistory.get(0);
 
-            BaseAudioPlaylist playlist = previouslyPlayed.getSource().getSourcePlaylist(audioInfo, previouslyPlayed);
+            BaseAudioPlaylist sourcePlaylist = previouslyPlayed.getSource().getSourcePlaylist(audioInfo, previouslyPlayed);
+            MutableAudioPlaylist playlist;
 
-            if (playlist == null)
+            if (sourcePlaylist == null)
             {
+                // Create a playlist with just one track
                 String playlistName = getContext().getResources().getString(R.string.playlist_name_previously_played);
 
                 BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
                 node.setName(playlistName);
-                node.setStartingTrack(previouslyPlayed);
-
-                // Try to build
-                playlist = node.build();
+                node.setTracksToOneTrack(previouslyPlayed);
+                
+                playlist = node.buildMutable();
+            }
+            else
+            {
+                playlist = AudioPlaylistBuilder.buildMutableFromImmutable(sourcePlaylist);
             }
 
             try {

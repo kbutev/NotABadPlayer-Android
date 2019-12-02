@@ -13,6 +13,7 @@ import com.media.notabadplayer.Audio.AudioPlayerObservers;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.MutableAudioPlaylist;
 
 public class AudioPlayerDummy implements AudioPlayer {
     private final AudioPlayerObservers observers;
@@ -38,6 +39,11 @@ public class AudioPlayerDummy implements AudioPlayer {
         return null;
     }
 
+    @Override
+    public @Nullable MutableAudioPlaylist getMutablePlaylistCopy() {
+        return null;
+    }
+    
     @Override
     public boolean hasPlaylist() {
         return false;

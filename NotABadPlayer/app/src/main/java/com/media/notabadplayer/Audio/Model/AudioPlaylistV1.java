@@ -14,11 +14,11 @@ import java.util.Random;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
-public class AudioPlaylistV1 implements BaseAudioPlaylist, Serializable
+public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
 {
     private final @NonNull String _name;
     
-    private @NonNull ArrayList<BaseAudioTrack> _tracks;
+    private @NonNull List<BaseAudioTrack> _tracks;
     
     private boolean _playing;
     private int _playingTrackPosition;
@@ -26,7 +26,7 @@ public class AudioPlaylistV1 implements BaseAudioPlaylist, Serializable
     private boolean _temporary;
 
     transient private Random _random;
-
+    
     public AudioPlaylistV1(@NonNull String name, @NonNull List<BaseAudioTrack> tracks)
     {
         if (tracks.size() == 0)
@@ -67,21 +67,19 @@ public class AudioPlaylistV1 implements BaseAudioPlaylist, Serializable
         _random = new Random();
     }
     
-    public AudioPlaylistV1(@NonNull String name, @NonNull BaseAudioTrack startWithTrack)
-    {
-        this(name, trackAsAList(startWithTrack));
-        
-        if (hasTrack(startWithTrack))
-        {
-            goToTrack(startWithTrack);
-        }
-    }
-    
     public AudioPlaylistV1(@NonNull String name,
                            @NonNull List<BaseAudioTrack> tracks,
                            @Nullable BaseAudioTrack startWithTrack) throws Exception
     {
         this(name, tracks, startWithTrack, AppSettings.TrackSorting.NONE);
+    }
+
+    public AudioPlaylistV1(@NonNull String name,
+                           @NonNull List<BaseAudioTrack> tracks,
+                           int startWithTrackIndex) throws Exception
+    {
+        // Exception out of bounds should be handled by the caller
+        this(name, tracks, tracks.get(startWithTrackIndex), AppSettings.TrackSorting.NONE);
     }
 
     public AudioPlaylistV1(@NonNull String name,
@@ -152,9 +150,9 @@ public class AudioPlaylistV1 implements BaseAudioPlaylist, Serializable
     }
 
     @Override
-    public @NonNull ArrayList<BaseAudioTrack> getTracks()
+    public @NonNull List<BaseAudioTrack> getTracks()
     {
-        return new ArrayList<>(_tracks);
+        return _tracks;
     }
 
     @Override
@@ -170,26 +168,15 @@ public class AudioPlaylistV1 implements BaseAudioPlaylist, Serializable
     }
 
     @Override
+    public int getPlayingTrackIndex()
+    {
+        return _playingTrackPosition;
+    }
+    
+    @Override
     public @NonNull BaseAudioTrack getPlayingTrack()
     {
         return _tracks.get(_playingTrackPosition);
-    }
-
-    @Override
-    public boolean isAlbumPlaylist()
-    {
-        return _name.equals(_tracks.get(0).getAlbumTitle());
-    }
-
-    @Override
-    public boolean isTemporaryPlaylist()
-    {
-        return _temporary;
-    }
-
-    public void setIsTemporatyPlaylist(boolean temporary)
-    {
-        _temporary = temporary;
     }
 
     @Override
@@ -202,6 +189,23 @@ public class AudioPlaylistV1 implements BaseAudioPlaylist, Serializable
     public boolean isPlayingLastTrack()
     {
         return _playingTrackPosition + 1 == _tracks.size();
+    }
+    
+    @Override
+    public boolean isAlbumPlaylist()
+    {
+        return _name.equals(_tracks.get(0).getAlbumTitle());
+    }
+    
+    @Override
+    public boolean isTemporaryPlaylist()
+    {
+        return _temporary;
+    }
+
+    public void setIsTemporatyPlaylist(boolean temporary)
+    {
+        _temporary = temporary;
     }
 
     @Override
@@ -233,6 +237,17 @@ public class AudioPlaylistV1 implements BaseAudioPlaylist, Serializable
         {
             Log.v(AudioPlaylistV1.class.getCanonicalName(), "Cannot go to track, tracks list does not contain given track " + track.getFilePath());
         }
+    }
+
+    @Override
+    public void goToTrackAt(int trackIndex)
+    {
+        if (trackIndex < 0 || trackIndex >= _tracks.size())
+        {
+            return;
+        }
+        
+        goToTrack(_tracks.get(trackIndex));
     }
 
     @Override

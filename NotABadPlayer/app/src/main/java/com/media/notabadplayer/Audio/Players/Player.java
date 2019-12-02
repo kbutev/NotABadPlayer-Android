@@ -23,6 +23,7 @@ import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.MutableAudioPlaylist;
 import com.media.notabadplayer.PlayerApplication;
 import com.media.notabadplayer.Storage.GeneralStorage;
 
@@ -172,7 +173,7 @@ public class Player implements AudioPlayer {
         setPlayOrder(playOrder);
 
         // Restore playlist
-        BaseAudioPlaylist playlist = storage.retrievePlayerStateCurrentPlaylist();
+        MutableAudioPlaylist playlist = storage.retrievePlayerStateCurrentPlaylist();
 
         if (playlist != null)
         {
@@ -221,6 +222,24 @@ public class Player implements AudioPlayer {
     {
         return getPlayer().getPlaylist();
     }
+
+    @Override
+    public @Nullable MutableAudioPlaylist getMutablePlaylistCopy()
+    {
+        BaseAudioPlaylist playlist = getPlaylist();
+        
+        if (playlist == null)
+        {
+            return null;
+        }
+        
+        try {
+            return AudioPlaylistBuilder.buildMutableFromImmutable(playlist);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 
     @Override
     public boolean hasPlaylist()

@@ -1,6 +1,7 @@
 package com.media.notabadplayer.Presenter;
 
-import java.util.ArrayList;
+import java.util.List;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -87,7 +88,7 @@ public class PlaylistPresenter implements BasePresenter {
     @Override
     public void onPlaylistItemClick(int index)
     {
-        ArrayList<BaseAudioTrack> tracks = _playlist.getTracks();
+        List<BaseAudioTrack> tracks = _playlist.getTracks();
 
         if (index < 0 || index >= tracks.size())
         {
@@ -193,38 +194,31 @@ public class PlaylistPresenter implements BasePresenter {
 
     private void openPlayerScreen(@NonNull BaseAudioTrack clickedTrack)
     {
-        String playlistName = _playlist.getName();
-        ArrayList<BaseAudioTrack> tracks = _playlist.getTracks();
+        BaseAudioPlaylist playlist;
 
         try {
-            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
-            node.setName(playlistName);
-            node.setTracks(tracks);
-            node.setStartingTrack(clickedTrack);
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start(_playlist);
+            node.setPlayingTrack(clickedTrack);
 
             // Try to build
-            BaseAudioPlaylist playlist = node.build();
-
-            Log.v(PlaylistPresenter.class.getCanonicalName(), "Opening player screen");
-
-            _view.openPlayerScreen(playlist);
+            playlist = node.build();
         } catch (Exception e) {
             Log.v(PlaylistPresenter.class.getCanonicalName(), "Error: Could not open player screen: " + e.toString());
+            return;
         }
+
+        Log.v(PlaylistPresenter.class.getCanonicalName(), "Opening player screen");
+
+        _view.openPlayerScreen(playlist);
     }
 
     private void playNewTrack(@NonNull BaseAudioTrack clickedTrack)
     {
-        String playlistName = _playlist.getName();
-        ArrayList<BaseAudioTrack> tracks = _playlist.getTracks();
-
         BaseAudioPlaylist playlistToPlay;
         
         try {
-            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
-            node.setName(playlistName);
-            node.setTracks(tracks);
-            node.setStartingTrack(clickedTrack);
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start(_playlist);
+            node.setPlayingTrack(clickedTrack);
 
             // Try to build
             playlistToPlay = node.build();

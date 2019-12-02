@@ -280,22 +280,25 @@ public class SearchPresenter implements BasePresenter
     private void openPlayerScreen(@NonNull BaseAudioTrack clickedTrack)
     {
         String searchPlaylistName = _context.getResources().getString(R.string.playlist_name_search_results);
+        BaseAudioPlaylist searchPlaylist;
         
         try {
+            // Build a playlist with the search results and the clicked track as
+            // the playing track
             BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
             node.setName(searchPlaylistName);
             node.setTracks(_searchResults);
-            node.setStartingTrack(clickedTrack);
+            node.setPlayingTrack(clickedTrack);
 
-            // Try to build
-            BaseAudioPlaylist searchPlaylist = node.build();
-
-            Log.v(SearchPresenter.class.getCanonicalName(), "Opening player screen");
-
-            _view.openPlayerScreen(searchPlaylist);
+            searchPlaylist = node.build();
         } catch (Exception e) {
             Log.v(SearchPresenter.class.getCanonicalName(), "Error: Could not open player screen: " + e.toString());
+            return;
         }
+
+        Log.v(SearchPresenter.class.getCanonicalName(), "Opening player screen");
+
+        _view.openPlayerScreen(searchPlaylist);
     }
 
     private void playNewTrack(@NonNull BaseAudioTrack clickedTrack)
@@ -304,10 +307,12 @@ public class SearchPresenter implements BasePresenter
         BaseAudioPlaylist searchPlaylist;
         
         try {
+            // Build a playlist with the search results and the clicked track as
+            // the playing track
             BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
             node.setName(searchPlaylistName);
             node.setTracks(_searchResults);
-            node.setStartingTrack(clickedTrack);
+            node.setPlayingTrack(clickedTrack);
 
             searchPlaylist = node.build();
         } catch (Exception e) {

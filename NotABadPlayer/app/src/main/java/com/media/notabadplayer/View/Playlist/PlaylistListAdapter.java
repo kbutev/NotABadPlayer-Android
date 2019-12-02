@@ -1,8 +1,8 @@
 package com.media.notabadplayer.View.Playlist;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -29,7 +29,7 @@ class PlaylistListAdapter extends BaseAdapter
 {
     private Context _context;
     private String _playlistName;
-    private ArrayList<BaseAudioTrack> _tracks;
+    private List<BaseAudioTrack> _tracks;
     private boolean _isPlaylist;
 
     private HashSet<View> _listViews = new HashSet<>();

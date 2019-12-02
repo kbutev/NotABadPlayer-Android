@@ -9,10 +9,14 @@ import java.util.List;
 
 public interface BaseAudioPlaylistBuilderNode {
     @NonNull BaseAudioPlaylist build() throws Exception;
+    @NonNull MutableAudioPlaylist buildMutable() throws Exception;
 
     void setName(@NonNull String name);
     void setTracks(@NonNull List<BaseAudioTrack> tracks);
-    void setStartingTrack(@Nullable BaseAudioTrack startWithTrack);
+    void setTracksToOneTrack(@NonNull BaseAudioTrack singleTrack);
 
+    void setPlayingTrack(@NonNull BaseAudioTrack playingTrack);
+    void setPlayingTrackPosition(int trackIndex);
+    
     void setIsTemporaryPlaylist(boolean temporary);
 }
