@@ -149,7 +149,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         }
 
         try {
-            return AudioPlaylistBuilder.buildMutableFromImmutable(_playlist);
+            return AudioPlaylistBuilder.start(_playlist).build();
         } catch (Exception e) {
             return null;
         }
