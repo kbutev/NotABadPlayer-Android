@@ -12,7 +12,6 @@ public interface AudioPlayer
     boolean isPlaying();
     boolean isCompletelyStopped();
     @Nullable BaseAudioPlaylist getPlaylist();
-    @Nullable MutableAudioPlaylist getMutablePlaylistCopy();
     boolean hasPlaylist();
     AudioPlayOrder getPlayOrder();
     void setPlayOrder(AudioPlayOrder order);

@@ -285,16 +285,25 @@ public class GeneralStorage
     public void savePlayerState()
     {
         Player player = Player.getShared();
+        BaseAudioPlaylist playlist = player.getPlaylist();
 
-        if (!player.hasPlaylist())
+        if (playlist == null)
         {
             Log.v(GeneralStorage.class.getCanonicalName(), "Cannot save player state yet, its not initialized yet!");
             return;
         }
 
         SharedPreferences.Editor editor = getSharedPreferences().edit();
+        MutableAudioPlaylist playlistToSave;
 
-        editor.putString("player_current_playlist", Serializing.serializeObject(player.getMutablePlaylistCopy()));
+        try {
+            playlistToSave = AudioPlaylistBuilder.buildMutableFromImmutable(playlist);
+        } catch (Exception e) {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Failed to save player state, playlist could not be serialized!");
+            return;
+        }
+
+        editor.putString("player_current_playlist", Serializing.serializeObject(playlistToSave));
 
         editor.putString("player_play_order", player.getPlayOrder().name());
 
