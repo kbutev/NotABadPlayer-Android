@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         {
             BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
             node.setName(track.getTitle());
-            node.setStartingTrack(track);
+            node.setTracksToOneTrack(track);
 
             // Try to build
             try {

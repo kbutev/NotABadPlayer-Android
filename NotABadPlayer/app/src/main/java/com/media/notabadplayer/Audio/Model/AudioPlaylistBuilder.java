@@ -14,6 +14,16 @@ public class AudioPlaylistBuilder {
         return new AudioPlaylistBuilderNode();
     }
 
+    public static @NonNull BaseAudioPlaylistBuilderNode start(@NonNull BaseAudioPlaylist prototype)
+    {
+        return new AudioPlaylistBuilderNode(prototype);
+    }
+
+    public static @NonNull MutableAudioPlaylist buildMutableFromImmutable(@NonNull BaseAudioPlaylist prototype) throws Exception
+    {
+        return new AudioPlaylistBuilderNode(prototype).buildMutable();
+    }
+    
     public static @NonNull ArrayList<BaseAudioPlaylist> buildArrayListLatestVersionFromSerializedData(@NonNull String data) throws Exception
     {
         return buildArrayListFromSerializedData(data);
@@ -50,40 +60,62 @@ public class AudioPlaylistBuilder {
 }
 
 class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
-    private String name;
-    private List<BaseAudioTrack> tracks;
-    private AppSettings.TrackSorting sorting;
-    private @Nullable BaseAudioTrack startWithTrack;
+    private @NonNull String name;
+    private @NonNull List<BaseAudioTrack> tracks;
+    private @Nullable BaseAudioTrack playingTrack;
+    private int playlingTrackIndex;
     private boolean isTemporary;
 
     AudioPlaylistBuilderNode()
     {
         name = "";
         tracks = new ArrayList<>();
-        sorting = AppSettings.TrackSorting.NONE;
+        playlingTrackIndex = -1;
         isTemporary = false;
+    }
+
+    AudioPlaylistBuilderNode(@NonNull BaseAudioPlaylist prototype)
+    {
+        name = prototype.getName();
+        tracks = prototype.getTracks();
+        playlingTrackIndex = prototype.isPlaying() ? prototype.getPlayingTrackIndex() : -1;
+        isTemporary = prototype.isTemporaryPlaylist();
     }
 
     @Override
     public @NonNull BaseAudioPlaylist build() throws Exception
     {
-        if (startWithTrack != null)
-        {
-            // Playlist with one single track
-            if (tracks.size() == 0)
-            {
-                AudioPlaylistV1 playlist = new AudioPlaylistV1(name, startWithTrack);
-                playlist.setIsTemporatyPlaylist(isTemporary);
-                return playlist;
-            }
+        return buildMutable();
+    }
 
-            AudioPlaylistV1 playlist = new AudioPlaylistV1(name, tracks, startWithTrack, sorting);
-            playlist.setIsTemporatyPlaylist(isTemporary);
-            return playlist;
+    @Override
+    public @NonNull MutableAudioPlaylist buildMutable() throws Exception
+    {
+        if (tracks.size() == 0)
+        {
+            throw new IllegalArgumentException("Cannot build playlist with zero tracks");
         }
 
-        AudioPlaylistV1 playlist = new AudioPlaylistV1(name, tracks, sorting);
+        AudioPlaylistV1 playlist;
+        
+        if (playingTrack != null)
+        {
+            playlist = new AudioPlaylistV1(name, tracks, playingTrack);
+        }
+        else if (playlingTrackIndex != -1)
+        {
+            if (playlingTrackIndex < 0 || playlingTrackIndex >= tracks.size())
+            {
+                throw new IllegalArgumentException("Cannot build playlist with invalid play track index");
+            }
+
+            playlist = new AudioPlaylistV1(name, tracks, playlingTrackIndex);
+        } else {
+            playlist = new AudioPlaylistV1(name, tracks);
+        }
+        
         playlist.setIsTemporatyPlaylist(isTemporary);
+        
         return playlist;
     }
 
@@ -100,9 +132,23 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
     }
 
     @Override
-    public void setStartingTrack(@Nullable BaseAudioTrack startWithTrack)
+    public void setTracksToOneTrack(@NonNull BaseAudioTrack singleTrack)
     {
-        this.startWithTrack = startWithTrack;
+        ArrayList<BaseAudioTrack> tracks = new ArrayList<>();
+        tracks.add(singleTrack);
+        this.tracks = tracks;
+    }
+    
+    @Override
+    public void setPlayingTrack(@NonNull BaseAudioTrack playingTrack)
+    {
+        this.playingTrack = playingTrack;
+    }
+    
+    @Override
+    public void setPlayingTrackPosition(int trackIndex)
+    {
+        this.playlingTrackIndex = trackIndex;
     }
 
     @Override

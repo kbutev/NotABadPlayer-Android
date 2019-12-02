@@ -17,6 +17,7 @@ import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.AudioTrackBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.MutableAudioPlaylist;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.SearchFilter;
@@ -293,7 +294,7 @@ public class GeneralStorage
 
         SharedPreferences.Editor editor = getSharedPreferences().edit();
 
-        editor.putString("player_current_playlist", Serializing.serializeObject(player.getPlaylist()));
+        editor.putString("player_current_playlist", Serializing.serializeObject(player.getMutablePlaylistCopy()));
 
         editor.putString("player_play_order", player.getPlayOrder().name());
 
@@ -304,7 +305,7 @@ public class GeneralStorage
         Log.v(GeneralStorage.class.getCanonicalName(), "Saved audio player state to storage.");
     }
 
-    public @Nullable BaseAudioPlaylist retrievePlayerStateCurrentPlaylist()
+    public @Nullable MutableAudioPlaylist retrievePlayerStateCurrentPlaylist()
     {
         SharedPreferences preferences = getSharedPreferences();
 
@@ -313,12 +314,12 @@ public class GeneralStorage
         // Restore playlist
         Object result = Serializing.deserializeObject(playlistData);
 
-        if (!(result instanceof BaseAudioPlaylist))
+        if (!(result instanceof MutableAudioPlaylist))
         {
             return null;
         }
 
-        return (BaseAudioPlaylist)result;
+        return (MutableAudioPlaylist)result;
     }
 
     public AudioPlayOrder retrievePlayerStatePlayOrder()
