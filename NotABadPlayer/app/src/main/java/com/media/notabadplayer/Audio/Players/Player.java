@@ -224,24 +224,6 @@ public class Player implements AudioPlayer {
     }
 
     @Override
-    public @Nullable MutableAudioPlaylist getMutablePlaylistCopy()
-    {
-        BaseAudioPlaylist playlist = getPlaylist();
-        
-        if (playlist == null)
-        {
-            return null;
-        }
-        
-        try {
-            return AudioPlaylistBuilder.buildMutableFromImmutable(playlist);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-
-    @Override
     public boolean hasPlaylist()
     {
         return getPlayer().hasPlaylist();

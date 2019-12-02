@@ -140,15 +140,19 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     }
 
     @Override
-    public @Nullable MutableAudioPlaylist getPlaylist()
+    public @Nullable BaseAudioPlaylist getPlaylist()
     {
-        return _playlist;
-    }
+        // Return a copy, since MutableAudioPlaylist is not thread safe
+        if (_playlist == null)
+        {
+            return null;
+        }
 
-    @Override
-    public @Nullable MutableAudioPlaylist getMutablePlaylistCopy()
-    {
-        return null;
+        try {
+            return AudioPlaylistBuilder.buildMutableFromImmutable(_playlist);
+        } catch (Exception e) {
+            return null;
+        }
     }
     
     @Override

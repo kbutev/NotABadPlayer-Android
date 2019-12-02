@@ -38,11 +38,6 @@ public class AudioPlayerDummy implements AudioPlayer {
     public @Nullable BaseAudioPlaylist getPlaylist() {
         return null;
     }
-
-    @Override
-    public @Nullable MutableAudioPlaylist getMutablePlaylistCopy() {
-        return null;
-    }
     
     @Override
     public boolean hasPlaylist() {
