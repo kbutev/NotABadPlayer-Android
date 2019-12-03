@@ -1,13 +1,11 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.media.notabadplayer.Utilities.StringUtilities;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Date;
 
 public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     public @NonNull String filePath;
@@ -25,7 +23,7 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
 
     public @NonNull String lyrics;
     public int numberOfTimesPlayed;
-    public @NonNull BaseAudioTrackDate date;
+    public @NonNull AudioTrackDate date;
     public double lastPlayedPosition;
 
     public AudioTrackV1()
@@ -40,7 +38,7 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
 
         lyrics = "";
 
-        date = buildDefaultAudioTrackDate();
+        date = AudioTrackDateBuilder.buildDefault();
     }
     
     @Override
@@ -136,60 +134,7 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     }
 
     @Override
-    public @NonNull BaseAudioTrackDate getDate() {
+    public @NonNull AudioTrackDate getDate() {
         return date;
-    }
-
-    // # Utilities
-
-    public static BaseAudioTrackDate buildDefaultAudioTrackDate()
-    {
-        final Date date = new Date();
-
-        return new AudioTrackV1Date(date, date, null, null);
-    }
-
-    public static BaseAudioTrackDate buildDefaultAudioTrackDate(@NonNull Date added, @NonNull Date modified, @Nullable Date firstPlayed, @Nullable Date lastPlayed)
-    {
-        return new AudioTrackV1Date(added, modified, firstPlayed, lastPlayed);
-    }
-}
-
-class AudioTrackV1Date implements BaseAudioTrackDate, Serializable {
-    private final @NonNull Date added;
-    private final @NonNull Date modified;
-    private final @Nullable Date firstPlayed;
-    private final @Nullable Date lastPlayed;
-
-    AudioTrackV1Date(@NonNull Date added, @NonNull Date modified, @Nullable Date firstPlayed, @Nullable Date lastPlayed)
-    {
-        this.added = added;
-        this.modified = modified;
-        this.firstPlayed = firstPlayed;
-        this.lastPlayed = lastPlayed;
-    }
-
-    @Override
-    public @NonNull Date getAdded()
-    {
-        return added;
-    }
-
-    @Override
-    public @NonNull Date getModified()
-    {
-        return modified;
-    }
-
-    @Override
-    public @Nullable Date getFirstPlayed()
-    {
-        return firstPlayed;
-    }
-
-    @Override
-    public @Nullable Date getLastPlayed()
-    {
-        return lastPlayed;
     }
 }

@@ -146,7 +146,7 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     @Override
     public void setDateAdded(@NonNull Date value)
     {
-        this.track.date = AudioTrackV1.buildDefaultAudioTrackDate(value,
+        this.track.date = AudioTrackDateBuilder.build(value,
                 this.track.date.getModified(),
                 this.track.date.getFirstPlayed(),
                 this.track.date.getLastPlayed());
@@ -155,7 +155,7 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     @Override
     public void setDateModified(@NonNull Date value)
     {
-        this.track.date = AudioTrackV1.buildDefaultAudioTrackDate(this.track.date.getAdded(),
+        this.track.date = AudioTrackDateBuilder.build(this.track.date.getAdded(),
                 value,
                 this.track.date.getFirstPlayed(),
                 this.track.date.getLastPlayed());
@@ -164,7 +164,7 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     @Override
     public void setDateFirstPlayed(@NonNull Date value)
     {
-        this.track.date = AudioTrackV1.buildDefaultAudioTrackDate(this.track.date.getAdded(),
+        this.track.date = AudioTrackDateBuilder.build(this.track.date.getAdded(),
                 this.track.date.getModified(),
                 value,
                 this.track.date.getLastPlayed());
@@ -173,7 +173,7 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     @Override
     public void setDateLastAdded(@NonNull Date value)
     {
-        this.track.date = AudioTrackV1.buildDefaultAudioTrackDate(this.track.date.getAdded(),
+        this.track.date = AudioTrackDateBuilder.build(this.track.date.getAdded(),
                 this.track.date.getModified(),
                 this.track.date.getFirstPlayed(),
                 value);
