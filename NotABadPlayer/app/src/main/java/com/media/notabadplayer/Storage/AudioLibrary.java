@@ -372,7 +372,8 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
                 MediaStore.Audio.Media.ALBUM_ID,
                 MediaStore.Audio.Media.DISPLAY_NAME,
                 MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.TRACK
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.BOOKMARK
         };
 
         Cursor cursor = context.getContentResolver().query(path, projection, selection, selectionArgs, null);
@@ -391,6 +392,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         int albumIDColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
         int trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
         int durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
+        int bookmarkColumn = cursor.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);
 
         while (cursor.moveToNext())
         {
@@ -403,6 +405,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             String albumID = cursor.getString(albumIDColumn);
             int trackNum = cursor.getInt(trackNumColumn);
             double duration = cursor.getLong(durationColumn) / 1000.0;
+            double lastPlayedPosition = cursor.getLong(bookmarkColumn) / 1000.0;
 
             @Nullable AudioAlbum album = getAlbumByID(albumID);
             String albumCover = album != null ? album.albumCover : "";
@@ -422,6 +425,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
             node.setDateAdded(dateAdded);
             node.setDateModified(dateModified);
+            node.setLastPlayedPosition(lastPlayedPosition);
 
             try {
                 BaseAudioTrack result = node.build();

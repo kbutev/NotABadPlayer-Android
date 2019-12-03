@@ -20,7 +20,8 @@ public interface BaseAudioTrack extends Serializable {
     @NonNull String getLyrics();
 
     int getNumberOfTimesPlayed();
-    double getTotalTimePlayed();
 
     @NonNull BaseAudioTrackDate getDate();
+
+    double getLastPlayedPosition();
 }
