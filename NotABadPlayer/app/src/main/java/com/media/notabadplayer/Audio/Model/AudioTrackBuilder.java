@@ -74,8 +74,8 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
         this.track.source = prototype.getSource();
         this.track.lyrics = prototype.getLyrics();
         this.track.numberOfTimesPlayed = prototype.getNumberOfTimesPlayed();
-        this.track.totalTimesPlayed = prototype.getTotalTimePlayed();
         this.track.date = prototype.getDate();
+        this.track.lastPlayedPosition = prototype.getLastPlayedPosition();
     }
 
     @Override
@@ -139,8 +139,8 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     }
 
     @Override
-    public void setTotalTimePlayed(int count) {
-        this.track.totalTimesPlayed = count;
+    public void setLastPlayedPosition(double position) {
+        this.track.lastPlayedPosition = position;
     }
 
     @Override

@@ -20,10 +20,8 @@ public interface BaseAudioTrackBuilderNode {
     void setSource(AudioTrackSource source);
 
     void setLyrics(@NonNull String value);
-
     void setNumberOfTimesPlayed(int count);
-    void setTotalTimePlayed(int count);
-
+    void setLastPlayedPosition(double position);
     void setDateAdded(@NonNull Date value);
     void setDateModified(@NonNull Date value);
     void setDateFirstPlayed(@NonNull Date value);

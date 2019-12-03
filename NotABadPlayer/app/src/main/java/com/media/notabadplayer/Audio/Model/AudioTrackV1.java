@@ -24,11 +24,9 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     public @NonNull AudioTrackSource source;
 
     public @NonNull String lyrics;
-
     public int numberOfTimesPlayed;
-    public double totalTimesPlayed;
-
     public @NonNull BaseAudioTrackDate date;
+    public double lastPlayedPosition;
 
     public AudioTrackV1()
     {
@@ -133,8 +131,8 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     }
 
     @Override
-    public double getTotalTimePlayed() {
-        return totalTimesPlayed;
+    public double getLastPlayedPosition() {
+        return lastPlayedPosition;
     }
 
     @Override
