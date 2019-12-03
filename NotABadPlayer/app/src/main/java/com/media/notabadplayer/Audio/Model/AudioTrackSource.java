@@ -132,45 +132,54 @@ public class AudioTrackSource implements Serializable
 }
 
 class AudioTrackSourceCache {
+    private final Object _lock = new Object();
+
     private HashSet<AudioTrackSource> _sourceCache = new HashSet<>();
     private HashSet<String> _sourceValuesCache = new HashSet<>();
 
     public @NonNull AudioTrackSource getFlyweight(@NonNull AudioTrackSource trackSource)
     {
-        // Return from cache, if already cached
-        for (AudioTrackSource source : _sourceCache)
+        synchronized (_lock)
         {
-            if (source.equals(trackSource))
+            // Return from cache, if already cached
+            for (AudioTrackSource source : _sourceCache)
             {
-                return source;
+                if (source.equals(trackSource))
+                {
+                    return source;
+                }
             }
+
+            // Otherwise add the given value and return it
+            _sourceCache.add(trackSource);
+
+            return trackSource;
         }
-
-        // Otherwise add the given value and return it
-        _sourceCache.add(trackSource);
-
-        return trackSource;
     }
 
     public String getSourceValueFlyweight(@Nullable String value)
     {
-        if (value == null)
+        synchronized (_lock)
         {
-            return null;
-        }
 
-        // Return from cache, if already cached
-        for (String sourceValue : _sourceValuesCache)
-        {
-            if (sourceValue.equals(value))
+            if (value == null)
             {
-                return sourceValue;
+                return null;
             }
+
+            // Return from cache, if already cached
+            for (String sourceValue : _sourceValuesCache)
+            {
+                if (sourceValue.equals(value))
+                {
+                    return sourceValue;
+                }
+            }
+
+            // Otherwise add the given value and return it
+            _sourceValuesCache.add(value);
+
+            return value;
         }
-
-        // Otherwise add the given value and return it
-        _sourceValuesCache.add(value);
-
-        return value;
     }
 }

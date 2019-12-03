@@ -31,6 +31,8 @@ public class AudioTrackDateBuilder {
 }
 
 class AudioTrackDateBuilderCache {
+    private final Object _lock = new Object();
+
     private Date _cacheInitDate = new Date();
 
     private AudioTrackDate _default = new AudioTrackDate(_cacheInitDate, _cacheInitDate, null, null);
@@ -50,26 +52,29 @@ class AudioTrackDateBuilderCache {
 
     @NonNull AudioTrackDate getFlyweight(@NonNull Date added, @NonNull Date modified, @Nullable Date firstPlayed, @Nullable Date lastPlayed)
     {
-        Date addedFlyweight = getDateFlyweight(added);
-        Date modifiedFlyweight = getDateFlyweight(modified);
-        Date firstPlayedFlyweight = getDateFlyweight(firstPlayed);
-        Date lastPlayedFlyweight = getDateFlyweight(lastPlayed);
-
-        // Return from cache, if already cached
-        AudioTrackDate audioDate = new AudioTrackDate(addedFlyweight, modifiedFlyweight, firstPlayedFlyweight, lastPlayedFlyweight);
-
-        for (AudioTrackDate date : _audioDatesCache)
+        synchronized (_lock)
         {
-            if (date.equals(audioDate))
+            Date addedFlyweight = getDateFlyweight(added);
+            Date modifiedFlyweight = getDateFlyweight(modified);
+            Date firstPlayedFlyweight = getDateFlyweight(firstPlayed);
+            Date lastPlayedFlyweight = getDateFlyweight(lastPlayed);
+
+            // Return from cache, if already cached
+            AudioTrackDate audioDate = new AudioTrackDate(addedFlyweight, modifiedFlyweight, firstPlayedFlyweight, lastPlayedFlyweight);
+
+            for (AudioTrackDate date : _audioDatesCache)
             {
-                return date;
+                if (date.equals(audioDate))
+                {
+                    return date;
+                }
             }
+
+            // Otherwise add the given value and return it
+            _audioDatesCache.add(audioDate);
+
+            return audioDate;
         }
-
-        // Otherwise add the given value and return it
-        _audioDatesCache.add(audioDate);
-
-        return audioDate;
     }
 
     private Date getDateFlyweight(@Nullable Date value)
