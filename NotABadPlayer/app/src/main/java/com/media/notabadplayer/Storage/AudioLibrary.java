@@ -215,7 +215,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 selection,
                 null,
-                1);
+                Integer.MAX_VALUE);
 
         storeTracksIntoCache(album.albumID, result);
 
