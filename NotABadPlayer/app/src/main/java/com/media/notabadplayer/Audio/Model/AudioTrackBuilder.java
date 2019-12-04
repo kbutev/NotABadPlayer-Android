@@ -1,6 +1,8 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -54,14 +56,15 @@ public class AudioTrackBuilder {
 
 class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     private static BaseAudioTrack genericOrigin = new AudioTrackV1();
+    private static Date genericDate = new Date();
     
-    private BaseAudioTrack template;
+    private @NonNull BaseAudioTrack template;
     
     private AudioTrackV1 result;
-    private Date resultDateAdded;
-    private Date resultDateModified;
-    private Date resultDateFirstPlayed;
-    private Date resultDateLastPlayed;
+    private @NonNull Date resultDateAdded = genericDate;
+    private @NonNull Date resultDateModified = genericDate;
+    private @Nullable Date resultDateFirstPlayed;
+    private @Nullable Date resultDateLastPlayed;
     
     AudioTrackBuilderNode()
     {
@@ -87,24 +90,11 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     
     @Override
     public void reset() {
-        this.result = new AudioTrackV1();
-        this.result.filePath = template.getFilePath();
-        this.result.title = template.getTitle();
-        this.result.artist = template.getArtist();
-        this.result.albumTitle = template.getAlbumTitle();
-        this.result.albumID = template.getAlbumID();
-        this.result.artCover = template.getArtCover();
-        this.result.trackNum = template.getTrackNum();
-        this.result.durationInSeconds = template.getDurationInSeconds();
-        this.result.source = template.getSource();
-        this.result.lyrics = template.getLyrics();
-        this.result.numberOfTimesPlayed = template.getNumberOfTimesPlayed();
-        this.result.date = template.getDate();
-        this.result.lastPlayedPosition = template.getLastPlayedPosition();
-        this.resultDateAdded = template.getDate().getAdded();
-        this.resultDateModified = template.getDate().getModified();
-        this.resultDateFirstPlayed = template.getDate().getFirstPlayed();
-        this.resultDateLastPlayed = template.getDate().getLastPlayed();
+        this.result = new AudioTrackV1(template);
+        this.resultDateAdded = this.result.getDate().getAdded();
+        this.resultDateModified = this.result.getDate().getModified();
+        this.resultDateFirstPlayed = this.result.getDate().getFirstPlayed();
+        this.resultDateLastPlayed = this.result.getDate().getLastPlayed();
     }
 
     @Override
