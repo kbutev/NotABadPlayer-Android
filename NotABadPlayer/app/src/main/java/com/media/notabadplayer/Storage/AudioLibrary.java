@@ -383,6 +383,8 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             return tracks;
         }
 
+        BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
+
         int dataColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
         int dateAddedColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
         int dateModifiedColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);
@@ -411,8 +413,9 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             String albumCover = album != null ? album.albumCover : "";
 
             AudioTrackSource source = album != null ? AudioTrackSource.createAlbumSource(albumID) : AudioTrackSource.createPlaylistSource(title);
-
-            BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
+            
+            node.reset();
+            
             node.setFilePath(filePath);
             node.setTitle(title);
             node.setArtist(artist);
