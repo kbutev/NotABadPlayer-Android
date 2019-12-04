@@ -6,6 +6,7 @@ import java.util.Date;
 
 public interface BaseAudioTrackBuilderNode {
     @NonNull BaseAudioTrack build() throws Exception;
+    void reset();
 
     void setFilePath(@NonNull String value);
 

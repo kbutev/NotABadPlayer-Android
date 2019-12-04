@@ -53,129 +53,140 @@ public class AudioTrackBuilder {
 }
 
 class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
-    private AudioTrackV1 track;
+    private static BaseAudioTrack genericOrigin = new AudioTrackV1();
+    
+    private BaseAudioTrack template;
+    
+    private AudioTrackV1 result;
 
     AudioTrackBuilderNode()
     {
-        this.track = new AudioTrackV1();
+        this.template = genericOrigin;
+        reset();
     }
 
     AudioTrackBuilderNode(@NonNull BaseAudioTrack prototype)
     {
-        this.track = new AudioTrackV1();
-        this.track.filePath = prototype.getFilePath();
-        this.track.title = prototype.getTitle();
-        this.track.artist = prototype.getArtist();
-        this.track.albumTitle = prototype.getAlbumTitle();
-        this.track.albumID = prototype.getAlbumID();
-        this.track.artCover = prototype.getArtCover();
-        this.track.trackNum = prototype.getTrackNum();
-        this.track.durationInSeconds = prototype.getDurationInSeconds();
-        this.track.source = prototype.getSource();
-        this.track.lyrics = prototype.getLyrics();
-        this.track.numberOfTimesPlayed = prototype.getNumberOfTimesPlayed();
-        this.track.date = prototype.getDate();
-        this.track.lastPlayedPosition = prototype.getLastPlayedPosition();
+        this.template = prototype;
+        reset();
     }
 
     @Override
     public @NonNull BaseAudioTrack build() throws Exception {
-        return this.track;
+        return this.result;
+    }
+    
+    @Override
+    public void reset() {
+        this.result = new AudioTrackV1();
+        this.result.filePath = template.getFilePath();
+        this.result.title = template.getTitle();
+        this.result.artist = template.getArtist();
+        this.result.albumTitle = template.getAlbumTitle();
+        this.result.albumID = template.getAlbumID();
+        this.result.artCover = template.getArtCover();
+        this.result.trackNum = template.getTrackNum();
+        this.result.durationInSeconds = template.getDurationInSeconds();
+        this.result.source = template.getSource();
+        this.result.lyrics = template.getLyrics();
+        this.result.numberOfTimesPlayed = template.getNumberOfTimesPlayed();
+        this.result.date = template.getDate();
+        this.result.lastPlayedPosition = template.getLastPlayedPosition();
     }
 
     @Override
     public void setFilePath(@NonNull String value) {
-        this.track.filePath = value;
+        this.result.filePath = value;
     }
 
     @Override
     public void setTitle(@NonNull String value) {
-        this.track.title = value;
+        this.result.title = value;
     }
 
     @Override
     public void setArtist(@NonNull String value) {
-        this.track.artist = value;
+        this.result.artist = value;
     }
 
     @Override
     public void setAlbumTitle(@NonNull String value) {
-        this.track.albumTitle = value;
+        this.result.albumTitle = value;
     }
 
     @Override
     public void setAlbumID(@NonNull String value) {
-        this.track.albumID = value;
+        this.result.albumID = value;
     }
 
     @Override
     public void setArtCover(@NonNull String value) {
-        this.track.artCover = value;
+        this.result.artCover = value;
     }
 
     @Override
     public void setTrackNum(int number) {
-        this.track.trackNum = number;
+        this.result.trackNum = number;
     }
 
     @Override
     public void setDuration(double duration) {
-        this.track.durationInSeconds = duration;
+        this.result.durationInSeconds = duration;
     }
 
     @Override
     public void setSource(AudioTrackSource source) {
-        this.track.source = source;
+        this.result.source = source;
     }
 
     @Override
     public void setLyrics(@NonNull String value) {
-        this.track.lyrics = value;
+        this.result.lyrics = value;
     }
 
     @Override
     public void setNumberOfTimesPlayed(int count) {
-        this.track.numberOfTimesPlayed = count;
+        this.result.numberOfTimesPlayed = count;
     }
 
     @Override
     public void setLastPlayedPosition(double position) {
-        this.track.lastPlayedPosition = position;
+        this.result.lastPlayedPosition = position;
     }
 
     @Override
     public void setDateAdded(@NonNull Date value)
     {
-        this.track.date = AudioTrackDateBuilder.build(value,
-                this.track.date.getModified(),
-                this.track.date.getFirstPlayed(),
-                this.track.date.getLastPlayed());
+        this.result.date = AudioTrackDateBuilder.build(value,
+                this.result.date.getModified(),
+                this.result.date.getFirstPlayed(),
+                this.result.date.getLastPlayed());
     }
 
     @Override
     public void setDateModified(@NonNull Date value)
     {
-        this.track.date = AudioTrackDateBuilder.build(this.track.date.getAdded(),
+        this.result.date = AudioTrackDateBuilder.build(this.result.date.getAdded(),
                 value,
-                this.track.date.getFirstPlayed(),
-                this.track.date.getLastPlayed());
+                this.result.date.getFirstPlayed(),
+                this.result.date.getLastPlayed());
     }
 
     @Override
     public void setDateFirstPlayed(@NonNull Date value)
     {
-        this.track.date = AudioTrackDateBuilder.build(this.track.date.getAdded(),
-                this.track.date.getModified(),
+        this.result.date = AudioTrackDateBuilder.build(this.result.date.getAdded(),
+                this.result.date.getModified(),
                 value,
-                this.track.date.getLastPlayed());
+                this.result.date.getLastPlayed());
     }
 
     @Override
     public void setDateLastAdded(@NonNull Date value)
     {
-        this.track.date = AudioTrackDateBuilder.build(this.track.date.getAdded(),
-                this.track.date.getModified(),
-                this.track.date.getFirstPlayed(),
+        this.result.date = AudioTrackDateBuilder.build(this.result.date.getAdded(),
+                this.result.date.getModified(),
+                this.result.date.getFirstPlayed(),
                 value);
     }
 }
