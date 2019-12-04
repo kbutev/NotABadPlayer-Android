@@ -46,12 +46,12 @@ class AudioTrackDate implements Serializable {
             return false;
         }
 
-        if (safeEquals(this.firstPlayed, otherDate.firstPlayed))
+        if (!safeEquals(this.firstPlayed, otherDate.firstPlayed))
         {
             return false;
         }
 
-        if (safeEquals(this.lastPlayed, otherDate.lastPlayed))
+        if (!safeEquals(this.lastPlayed, otherDate.lastPlayed))
         {
             return false;
         }
