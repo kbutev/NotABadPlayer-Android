@@ -44,10 +44,14 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     public AudioTrackV1(final BaseAudioTrack prototype)
     {
         filePath = prototype.getFilePath();
+        title = prototype.getTitle();
         artist = prototype.getArtist();
         albumTitle = prototype.getAlbumTitle();
         albumID = prototype.getAlbumID();
         artCover = prototype.getArtCover();
+        trackNum = prototype.getTrackNum();
+
+        durationInSeconds = prototype.getDurationInSeconds();
 
         source = prototype.getSource();
 
