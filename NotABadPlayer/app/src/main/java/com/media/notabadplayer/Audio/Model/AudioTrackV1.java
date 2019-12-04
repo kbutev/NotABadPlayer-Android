@@ -35,10 +35,26 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
         artCover = "";
 
         source = AudioTrackSource.createAlbumSource("");
-
+        
         lyrics = "";
-
         date = AudioTrackDateBuilder.buildDefault();
+        lastPlayedPosition = 0;
+    }
+
+    public AudioTrackV1(final BaseAudioTrack prototype)
+    {
+        filePath = prototype.getFilePath();
+        artist = prototype.getArtist();
+        albumTitle = prototype.getAlbumTitle();
+        albumID = prototype.getAlbumID();
+        artCover = prototype.getArtCover();
+
+        source = prototype.getSource();
+
+        lyrics = prototype.getLyrics();
+        numberOfTimesPlayed = prototype.getNumberOfTimesPlayed();
+        date = prototype.getDate();
+        lastPlayedPosition = prototype.getLastPlayedPosition();
     }
     
     @Override
