@@ -36,6 +36,7 @@ import com.media.notabadplayer.Utilities.MediaSorting;
 // Make sure you have access to user storage before using the audio library.
 public class AudioLibrary extends ContentObserver implements AudioInfo {
     public static int ALBUM_TRACK_CACHE_CAPACITY = 30;
+    public static int SEARCH_TRACKS_CAP = 1000;
     public static int RECENTLY_ADDED_CAP = 100;
     public static int RECENTLY_ADDED_PREDICATE_DAYS_DIFFERENCE = 30;
 
@@ -282,7 +283,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 selection,
                 selectionArgs,
-                Integer.MAX_VALUE);
+                SEARCH_TRACKS_CAP);
     }
 
     @Override
