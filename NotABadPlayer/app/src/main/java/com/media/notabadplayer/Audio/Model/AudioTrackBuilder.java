@@ -56,7 +56,7 @@ public class AudioTrackBuilder {
 
 class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     private static BaseAudioTrack genericOrigin = new AudioTrackV1();
-    private static Date genericDate = new Date();
+    private static Date genericDate = AudioTrackDateBuilder.getGenericDate();
     
     private @NonNull BaseAudioTrack template;
     
