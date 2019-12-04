@@ -26,5 +26,5 @@ public interface BaseAudioTrackBuilderNode {
     void setDateAdded(@NonNull Date value);
     void setDateModified(@NonNull Date value);
     void setDateFirstPlayed(@NonNull Date value);
-    void setDateLastAdded(@NonNull Date value);
+    void setDateLastPlayed(@NonNull Date value);
 }

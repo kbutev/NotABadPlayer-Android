@@ -58,7 +58,11 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     private BaseAudioTrack template;
     
     private AudioTrackV1 result;
-
+    private Date resultDateAdded;
+    private Date resultDateModified;
+    private Date resultDateFirstPlayed;
+    private Date resultDateLastPlayed;
+    
     AudioTrackBuilderNode()
     {
         this.template = genericOrigin;
@@ -73,6 +77,11 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
 
     @Override
     public @NonNull BaseAudioTrack build() throws Exception {
+        this.result.date = AudioTrackDateBuilder.build(this.resultDateAdded,
+                this.resultDateModified,
+                this.resultDateFirstPlayed,
+                this.resultDateLastPlayed);
+        
         return this.result;
     }
     
@@ -92,6 +101,10 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
         this.result.numberOfTimesPlayed = template.getNumberOfTimesPlayed();
         this.result.date = template.getDate();
         this.result.lastPlayedPosition = template.getLastPlayedPosition();
+        this.resultDateAdded = template.getDate().getAdded();
+        this.resultDateModified = template.getDate().getModified();
+        this.resultDateFirstPlayed = template.getDate().getFirstPlayed();
+        this.resultDateLastPlayed = template.getDate().getLastPlayed();
     }
 
     @Override
@@ -157,37 +170,25 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     @Override
     public void setDateAdded(@NonNull Date value)
     {
-        this.result.date = AudioTrackDateBuilder.build(value,
-                this.result.date.getModified(),
-                this.result.date.getFirstPlayed(),
-                this.result.date.getLastPlayed());
+        this.resultDateAdded = value;
     }
 
     @Override
     public void setDateModified(@NonNull Date value)
     {
-        this.result.date = AudioTrackDateBuilder.build(this.result.date.getAdded(),
-                value,
-                this.result.date.getFirstPlayed(),
-                this.result.date.getLastPlayed());
+        this.resultDateModified = value;
     }
 
     @Override
     public void setDateFirstPlayed(@NonNull Date value)
     {
-        this.result.date = AudioTrackDateBuilder.build(this.result.date.getAdded(),
-                this.result.date.getModified(),
-                value,
-                this.result.date.getLastPlayed());
+        this.resultDateFirstPlayed = value;
     }
 
     @Override
-    public void setDateLastAdded(@NonNull Date value)
+    public void setDateLastPlayed(@NonNull Date value)
     {
-        this.result.date = AudioTrackDateBuilder.build(this.result.date.getAdded(),
-                this.result.date.getModified(),
-                this.result.date.getFirstPlayed(),
-                value);
+        this.resultDateLastPlayed = value;
     }
 }
 
