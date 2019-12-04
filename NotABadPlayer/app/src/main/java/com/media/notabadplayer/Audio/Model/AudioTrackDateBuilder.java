@@ -18,6 +18,11 @@ public class AudioTrackDateBuilder {
     {
         return getCache().getFlyweight(added, modified, firstPlayed, lastPlayed);
     }
+    
+    public static @NonNull Date getGenericDate()
+    {
+        return getCache().getDefault().getAdded();
+    }
 
     private static synchronized @NonNull AudioTrackDateBuilderCache getCache()
     {
