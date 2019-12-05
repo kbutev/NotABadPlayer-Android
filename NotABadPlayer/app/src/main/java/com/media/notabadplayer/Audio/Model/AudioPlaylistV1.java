@@ -18,7 +18,7 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
 {
     private final @NonNull String _name;
     
-    private @NonNull List<BaseAudioTrack> _tracks;
+    private final @NonNull List<BaseAudioTrack> _tracks;
     
     private boolean _playing;
     private int _playingTrackPosition;
@@ -26,6 +26,16 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
     private boolean _temporary;
 
     transient private Random _random;
+
+    public AudioPlaylistV1(@NonNull BaseAudioPlaylist prototype)
+    {
+        _name = prototype.getName();
+        _tracks = prototype.getTracks();
+        _playing = prototype.isPlaying();
+        _playingTrackPosition = prototype.getPlayingTrackIndex();
+        _temporary = prototype.isTemporaryPlaylist();
+        _random = new Random();
+    }
     
     public AudioPlaylistV1(@NonNull String name, @NonNull List<BaseAudioTrack> tracks)
     {
@@ -44,7 +54,7 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
 
         // Is album list?
         boolean isAlbumList = isAlbumPlaylist();
-        _tracks = new ArrayList<>();
+        _tracks.clear();
 
         // Copy the given tracks
         BaseAudioTrack firstTrack = tracks.get(0);
