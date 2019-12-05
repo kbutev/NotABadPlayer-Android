@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Utilities.Serializing;
 
 public class AudioPlaylistBuilder {
@@ -114,7 +113,7 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
             playlist = new AudioPlaylistV1(name, tracks);
         }
         
-        playlist.setIsTemporatyPlaylist(isTemporary);
+        playlist.setIsTemporaryPlaylist(isTemporary);
         
         return playlist;
     }
