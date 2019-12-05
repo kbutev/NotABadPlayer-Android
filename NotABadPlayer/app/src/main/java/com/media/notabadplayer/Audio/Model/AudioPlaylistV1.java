@@ -140,13 +140,6 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
         return false;
     }
 
-    private static ArrayList<BaseAudioTrack> trackAsAList(@NonNull BaseAudioTrack track)
-    {
-        ArrayList<BaseAudioTrack> tracks = new ArrayList<>();
-        tracks.add(track);
-        return tracks;
-    }
-
     // # BaseAudioPlaylist
 
     @Override
@@ -221,7 +214,7 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
         return _temporary;
     }
 
-    public void setIsTemporatyPlaylist(boolean temporary)
+    public void setIsTemporaryPlaylist(boolean temporary)
     {
         _temporary = temporary;
     }
