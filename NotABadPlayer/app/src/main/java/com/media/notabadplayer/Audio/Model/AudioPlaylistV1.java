@@ -56,16 +56,24 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
         boolean isAlbumList = isAlbumPlaylist();
         _tracks.clear();
 
-        // Copy the given tracks
+        // Make sure that all tracks have the correct source
         BaseAudioTrack firstTrack = tracks.get(0);
+
+        AudioTrackSource thisSource = isAlbumList ? AudioTrackSource.createAlbumSource(firstTrack.getAlbumID()) : AudioTrackSource.createPlaylistSource(_name);
 
         for (int e = 0; e < tracks.size(); e++)
         {
-            AudioTrackSource source = isAlbumList ? AudioTrackSource.createAlbumSource(firstTrack.getAlbumID()) : AudioTrackSource.createPlaylistSource(_name);
-
             BaseAudioTrack track = tracks.get(e);
+            AudioTrackSource trackSource = track.getSource();
+
+            if (trackSource.equals(thisSource))
+            {
+                _tracks.add(track);
+                continue;
+            }
+
             BaseAudioTrackBuilderNode clone = AudioTrackBuilder.start(track);
-            clone.setSource(source);
+            clone.setSource(thisSource);
 
             try {
                 _tracks.add(clone.build());

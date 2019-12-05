@@ -68,6 +68,11 @@ public class AudioTrackSource implements Serializable
         return HashUtilities.hashObjects(_value, _isAlbumSource);
     }
 
+    public @NonNull String getValue()
+    {
+        return _value;
+    }
+
     public boolean isAlbum()
     {
         return _isAlbumSource;

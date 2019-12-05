@@ -246,7 +246,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
 
     private void updateSoftUIState()
     {
-        if (_player.getPlaylist() == null)
+        if (!_player.hasPlaylist())
         {
             return;
         }
