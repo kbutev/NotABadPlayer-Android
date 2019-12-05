@@ -226,7 +226,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _write.sortedPlaylist(sorting);
+            return _read.sortedPlaylist(sorting);
         }
     }
 
