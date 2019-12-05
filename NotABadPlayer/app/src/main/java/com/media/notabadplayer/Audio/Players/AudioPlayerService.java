@@ -55,7 +55,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     private AudioPlayerService.NotificationCenter _notificationCenter;
     
     private android.media.MediaPlayer _player;
-    private @Nullable SafeMutableAudioPlaylist __playlist;
+    private @Nullable SafeMutableAudioPlaylist __unsafePlaylist;
     private AudioPlayOrder _playOrder = AudioPlayOrder.FORWARDS;
 
     private boolean _muted;
@@ -158,7 +158,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     {
         synchronized (_lock)
         {
-            return __playlist;
+            return __unsafePlaylist;
         }
     }
 
@@ -166,7 +166,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     {
         synchronized (_lock)
         {
-            __playlist = playlist;
+            __unsafePlaylist = playlist;
         }
     }
 
