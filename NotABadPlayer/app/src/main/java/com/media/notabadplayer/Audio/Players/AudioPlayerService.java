@@ -55,7 +55,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     private AudioPlayerService.NotificationCenter _notificationCenter;
     
     private android.media.MediaPlayer _player;
-    private @Nullable SafeMutableAudioPlaylist _playlist;
+    private @Nullable SafeMutableAudioPlaylist __playlist;
     private AudioPlayOrder _playOrder = AudioPlayOrder.FORWARDS;
 
     private boolean _muted;
@@ -158,7 +158,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     {
         synchronized (_lock)
         {
-            return _playlist;
+            return __playlist;
         }
     }
 
@@ -166,7 +166,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     {
         synchronized (_lock)
         {
-            _playlist = playlist;
+            __playlist = playlist;
         }
     }
 
@@ -187,7 +187,8 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     @Override
     public void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception
     {
-        BaseAudioTrack previousTrack = _playlist != null ? _playlist.getPlayingTrack() : null;
+        SafeMutableAudioPlaylist currentPlaylist = getSafeMutablePlaylist();
+        BaseAudioTrack previousTrack = currentPlaylist != null ? currentPlaylist.getPlayingTrack() : null;
 
         try {
             playTrack(playlist.getPlayingTrack(), previousTrack, true);
