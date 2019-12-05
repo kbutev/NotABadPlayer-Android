@@ -195,8 +195,9 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             throw e;
         }
 
-        setSafeMutablePlaylist(SafeMutableAudioPlaylist.build(AudioPlaylistBuilder.buildMutableFromImmutable(playlist)));
-        _playlist.playCurrent();
+        SafeMutableAudioPlaylist newPlaylist = SafeMutableAudioPlaylist.build(AudioPlaylistBuilder.buildMutableFromImmutable(playlist));
+        setSafeMutablePlaylist(newPlaylist);
+        newPlaylist.playCurrent();
     }
 
     private void playTrack(@NonNull BaseAudioTrack newTrack, @Nullable BaseAudioTrack previousTrack, boolean usePlayHistory) throws Exception
