@@ -109,7 +109,7 @@
     
     <!-- Errors -->
     <string name="error">Error</string>
-    <string name="error_unknown">Unknown error occured.</string>
+    <string name="error_unknown">Unknown error occurred.</string>
     <string name="error_need_storage_permission">You cannot use the player without giving read storage permissions!</string>
     <string name="error_invalid_file">Invalid file.</string>
     <string name="error_invalid_file_play">Cannot play file.</string>
