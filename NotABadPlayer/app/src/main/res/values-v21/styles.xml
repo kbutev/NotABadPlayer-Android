@@ -29,6 +29,7 @@
         <item name="genericBorderBackgroundColor">@color/genericBorderBackground</item>
         <item name="albumTitleHeaderBackgroundColor">@color/albumTitleHeaderBackground</item>
         <item name="borderOutlineColor">@color/borderOutline</item>
+        <item name="verticalScrollBarColor">@color/verticalScrollBar</item>
     </style>
     <style name="Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="android:statusBarColor">@color/statusBarColorInverted</item>
@@ -59,6 +60,7 @@
         <item name="genericBorderBackgroundColor">@color/genericBorderBackgroundInverted</item>
         <item name="albumTitleHeaderBackgroundColor">@color/albumTitleHeaderBackgroundInverted</item>
         <item name="borderOutlineColor">@color/borderOutlineInverted</item>
+        <item name="verticalScrollBarColor">@color/verticalScrollBarInverted</item>
     </style>
     <style name="Mix" parent="Theme.AppCompat.NoActionBar">
         <item name="android:statusBarColor">@color/statusBarColor</item>
@@ -89,6 +91,7 @@
         <item name="genericBorderBackgroundColor">@color/genericBorderBackground</item>
         <item name="albumTitleHeaderBackgroundColor">@color/albumTitleHeaderBackground</item>
         <item name="borderOutlineColor">@color/borderOutline</item>
+        <item name="verticalScrollBarColor">@color/verticalScrollBar</item>
     </style>
 
     <!-- Splash screen image -->

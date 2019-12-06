@@ -102,4 +102,8 @@
 
     <!-- Effects -->
     <color name="animationSelectionEffect">#4CAF50</color>
+
+    <!-- Scroll bar -->
+    <color name="verticalScrollBar">#6A6C6C6C</color>
+    <color name="verticalScrollBarInverted">#5BFFC107</color>
 </resources>

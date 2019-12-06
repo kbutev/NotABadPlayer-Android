@@ -1,0 +1,9 @@
+<shape android:shape="rectangle"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="45"
+        android:centerColor="?verticalScrollBarColor"
+        android:endColor="?verticalScrollBarColor"
+        android:startColor="?verticalScrollBarColor" />
+    <corners android:radius="20dp" />
+</shape>

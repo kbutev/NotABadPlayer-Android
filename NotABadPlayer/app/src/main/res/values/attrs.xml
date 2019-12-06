@@ -19,6 +19,7 @@
     <attr name="genericButtonTextColor" format="reference|color"/>
     <attr name="settingsButtonTextColor" format="reference|color"/>
     <attr name="gridSideIndexingTextColor" format="reference|color"/>
+    <attr name="verticalScrollBarColor" format="reference|color"/>
     
     <!-- Background references -->
     <attr name="baseBackgroundColor" format="reference|color"/>
