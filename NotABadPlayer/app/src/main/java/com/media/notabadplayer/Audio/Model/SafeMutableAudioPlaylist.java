@@ -203,20 +203,20 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     }
 
     @Override
-    public boolean isAlbumPlaylist()
+    public boolean isAlbum()
     {
         synchronized (_lock)
         {
-            return _read.isAlbumPlaylist();
+            return _read.isAlbum();
         }
     }
 
     @Override
-    public boolean isTemporaryPlaylist()
+    public boolean isTemporary()
     {
         synchronized (_lock)
         {
-            return _read.isTemporaryPlaylist();
+            return _read.isTemporary();
         }
     }
 

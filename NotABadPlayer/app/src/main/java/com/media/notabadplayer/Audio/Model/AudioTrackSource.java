@@ -95,7 +95,16 @@ public class AudioTrackSource implements Serializable
             }
 
             try {
-                return new AudioPlaylistV1(album.albumTitle, audioInfo.getAlbumTracks(album), playingTrack);
+                BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+                node.setName(album.albumTitle);
+                node.setTracks(audioInfo.getAlbumTracks(album));
+
+                if (playingTrack != null)
+                {
+                    node.setPlayingTrack(playingTrack);
+                }
+
+                return node.build();
             } catch (Exception e1) {
                 
             }
@@ -109,10 +118,19 @@ public class AudioTrackSource implements Serializable
             {
                 if (_value.equals(playlists.get(e).getName()))
                 {
-                    BaseAudioPlaylist pl = playlists.get(e);
+                    BaseAudioPlaylist playlist = playlists.get(e);
 
                     try {
-                        return new AudioPlaylistV1(pl.getName(), pl.getTracks(), playingTrack);
+                        BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+                        node.setName(playlist.getName());
+                        node.setTracks(playlist.getTracks());
+
+                        if (playingTrack != null)
+                        {
+                            node.setPlayingTrack(playingTrack);
+                        }
+
+                        return node.build();
                     } catch (Exception e2) {
 
                     }

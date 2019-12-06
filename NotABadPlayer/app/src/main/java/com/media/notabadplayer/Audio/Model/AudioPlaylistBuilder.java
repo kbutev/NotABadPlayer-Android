@@ -1,7 +1,7 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,15 +61,15 @@ public class AudioPlaylistBuilder {
 class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
     private @NonNull String name;
     private @NonNull List<BaseAudioTrack> tracks;
-    private @Nullable BaseAudioTrack playingTrack;
-    private int playlingTrackIndex;
+    private boolean isPlaying;
+    private int playingTrackIndex;
     private boolean isTemporary;
 
     AudioPlaylistBuilderNode()
     {
         name = "";
         tracks = new ArrayList<>();
-        playlingTrackIndex = -1;
+        playingTrackIndex = 0;
         isTemporary = false;
     }
 
@@ -77,8 +77,9 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
     {
         name = prototype.getName();
         tracks = prototype.getTracks();
-        playlingTrackIndex = prototype.isPlaying() ? prototype.getPlayingTrackIndex() : -1;
-        isTemporary = prototype.isTemporaryPlaylist();
+        isPlaying = prototype.isPlaying();
+        playingTrackIndex = prototype.getPlayingTrackIndex();
+        isTemporary = prototype.isTemporary();
     }
 
     @Override
@@ -95,27 +96,7 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
             throw new IllegalArgumentException("Cannot build playlist with zero tracks");
         }
 
-        AudioPlaylistV1 playlist;
-        
-        if (playingTrack != null)
-        {
-            playlist = new AudioPlaylistV1(name, tracks, playingTrack);
-        }
-        else if (playlingTrackIndex != -1)
-        {
-            if (playlingTrackIndex < 0 || playlingTrackIndex >= tracks.size())
-            {
-                throw new IllegalArgumentException("Cannot build playlist with invalid play track index");
-            }
-
-            playlist = new AudioPlaylistV1(name, tracks, playlingTrackIndex);
-        } else {
-            playlist = new AudioPlaylistV1(name, tracks);
-        }
-        
-        playlist.setIsTemporaryPlaylist(isTemporary);
-        
-        return playlist;
+        return new AudioPlaylistV1(name, tracks, playingTrackIndex, isPlaying, isTemporary);
     }
 
     @Override
@@ -141,13 +122,27 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
     @Override
     public void setPlayingTrack(@NonNull BaseAudioTrack playingTrack)
     {
-        this.playingTrack = playingTrack;
+        int index = tracks.indexOf(playingTrack);
+
+        if (index == -1)
+        {
+            this.playingTrackIndex = 0;
+            return;
+        }
+
+        this.playingTrackIndex = index;
     }
     
     @Override
     public void setPlayingTrackPosition(int trackIndex)
     {
-        this.playlingTrackIndex = trackIndex;
+        this.playingTrackIndex = trackIndex;
+    }
+
+    @Override
+    public void setIsPlaying(boolean playing)
+    {
+        this.isPlaying = playing;
     }
 
     @Override
