@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:overScrollMode="never"/>
+            android:scrollbarThumbVertical="@drawable/vertical_scroll_bar"/>
     </LinearLayout>
 
 </RelativeLayout>

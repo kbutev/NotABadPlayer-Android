@@ -34,7 +34,7 @@
         android:numColumns="2"
         android:gravity="center"
         android:listSelector="@android:color/transparent"
-        android:overScrollMode="never"/>
+        android:scrollbarThumbVertical="@null"/>
     
     <FrameLayout
         android:layout_width="30dp"
