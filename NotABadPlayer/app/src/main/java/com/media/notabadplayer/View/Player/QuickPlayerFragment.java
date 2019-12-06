@@ -160,6 +160,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     {
         _mediaBar.setMax(MEDIA_BAR_MAX_VALUE);
         _mediaBar.setProgress(1); // Set to a non-zero value, to prevent weird UI drawable glitch
+        _mediaBar.setProgress(0);
         _mediaBar.setEnabled(false);
         
         _buttonPlay.setOnClickListener(new View.OnClickListener() {
