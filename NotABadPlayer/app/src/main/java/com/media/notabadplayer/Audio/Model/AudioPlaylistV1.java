@@ -45,14 +45,12 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
         }
 
         _name = name;
-
-        // Fill the list with all the given tracks,
-        // just so we can determine if its an album list or not
-        _tracks = new ArrayList<>(tracks);
+        _tracks = new ArrayList<>();
         _playing = false;
         _playingTrackPosition = 0;
 
         // Is album list?
+        _tracks.add(tracks.get(0)); // Add one track just so we can determine isAlbumPlaylist()
         boolean isAlbumList = isAlbumPlaylist();
         _tracks.clear();
 
