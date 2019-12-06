@@ -38,6 +38,10 @@ Design patterns:
 
 * Bridge - Player class is abstraction while AudioPlayerService & AudioPlayerDummy are implementation.
 
+* Flyweight - some audio models such as AudioTrackSource and AudioTrackDate are shared between other classes for lower memory usage
+
+* Builder - used to build audio models, in order to reduce the complexity and to add support for future variatuins of these models: AudioPlaylistV1 may have have a newer implementetion V2, V3, V4...
+
 General design:
 
 * CPU and energy efficient, memory ineffecient since the audio information is retrieved once and reused when trying to use the audio player
