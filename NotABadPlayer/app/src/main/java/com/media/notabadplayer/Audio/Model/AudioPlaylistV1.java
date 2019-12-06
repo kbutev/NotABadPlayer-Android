@@ -1,7 +1,6 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,26 +16,21 @@ import com.media.notabadplayer.Utilities.MediaSorting;
 public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
 {
     private final @NonNull String _name;
-    
     private final @NonNull List<BaseAudioTrack> _tracks;
-    
     private boolean _playing;
     private int _playingTrackPosition;
-
     private boolean _temporary;
-
     transient private Random _random;
 
-    public AudioPlaylistV1(@NonNull BaseAudioPlaylist prototype)
+    public AudioPlaylistV1(@NonNull MutableAudioPlaylist prototype)
     {
         _name = prototype.getName();
-        _tracks = prototype.getTracks();
+        _tracks = new ArrayList<>(prototype.getTracks());
         _playing = prototype.isPlaying();
         _playingTrackPosition = prototype.getPlayingTrackIndex();
-        _temporary = prototype.isTemporaryPlaylist();
-        _random = new Random();
+        _temporary = prototype.isTemporary();
     }
-    
+
     public AudioPlaylistV1(@NonNull String name, @NonNull List<BaseAudioTrack> tracks)
     {
         if (tracks.size() == 0)
@@ -50,8 +44,8 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
         _playingTrackPosition = 0;
 
         // Is album list?
-        _tracks.add(tracks.get(0)); // Add one track just so we can determine isAlbumPlaylist()
-        boolean isAlbumList = isAlbumPlaylist();
+        _tracks.add(tracks.get(0)); // Add one track just so we can determine isAlbum()
+        boolean isAlbumList = isAlbum();
         _tracks.clear();
 
         // Make sure that all tracks have the correct source
@@ -85,44 +79,20 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
     
     public AudioPlaylistV1(@NonNull String name,
                            @NonNull List<BaseAudioTrack> tracks,
-                           @Nullable BaseAudioTrack startWithTrack) throws Exception
+                           int startWithTrackIndex,
+                           boolean startPlaying,
+                           boolean temporaryList) throws Exception
     {
-        this(name, tracks, startWithTrack, AppSettings.TrackSorting.NONE);
-    }
+        this(name, tracks);
 
-    public AudioPlaylistV1(@NonNull String name,
-                           @NonNull List<BaseAudioTrack> tracks,
-                           int startWithTrackIndex) throws Exception
-    {
-        // Exception out of bounds should be handled by the caller
-        this(name, tracks, tracks.get(startWithTrackIndex), AppSettings.TrackSorting.NONE);
-    }
-
-    public AudioPlaylistV1(@NonNull String name,
-                           @NonNull List<BaseAudioTrack> tracks,
-                           AppSettings.TrackSorting sorting)
-    {
-        this(name, MediaSorting.sortTracks(tracks, sorting));
-    }
-    
-    public AudioPlaylistV1(@NonNull String name,
-                           @NonNull List<BaseAudioTrack> tracks,
-                           @Nullable BaseAudioTrack startWithTrack,
-                           AppSettings.TrackSorting sorting) throws Exception
-    {
-        this(name, MediaSorting.sortTracks(tracks, sorting));
-
-        if (startWithTrack != null)
+        if (startWithTrackIndex < 0 || startWithTrackIndex >= tracks.size())
         {
-            if (hasTrack(startWithTrack))
-            {
-                goToTrack(startWithTrack);
-            }
-            else
-            {
-                throw new IllegalArgumentException("Playlist cannot be created with a starting track not included in the given tracks");
-            }
+            throw new IllegalArgumentException("Playlist cannot be created with a starting track not included in the given tracks");
         }
+
+        _playing = startPlaying;
+        _playingTrackPosition = startWithTrackIndex;
+        _temporary = temporaryList;
     }
 
     @Override
@@ -201,20 +171,15 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
     }
     
     @Override
-    public boolean isAlbumPlaylist()
+    public boolean isAlbum()
     {
         return _name.equals(_tracks.get(0).getAlbumTitle());
     }
     
     @Override
-    public boolean isTemporaryPlaylist()
+    public boolean isTemporary()
     {
         return _temporary;
-    }
-
-    public void setIsTemporaryPlaylist(boolean temporary)
-    {
-        _temporary = temporary;
     }
 
     @Override
@@ -345,10 +310,15 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
     @Override
     public @NonNull BaseAudioPlaylist sortedPlaylist(AppSettings.TrackSorting sorting)
     {
-        AudioPlaylistV1 playlist = new AudioPlaylistV1(getName(), getTracks(), sorting);
-        playlist.goToTrack(getPlayingTrack());
-        return playlist;
-    }
+        List<BaseAudioTrack> tracks = MediaSorting.sortTracks(getTracks(), sorting);
+
+        try {
+            return new AudioPlaylistV1(getName(), tracks, _playingTrackPosition, _playing, _temporary);
+        } catch (Exception e) {
+            // This should never fail, but we need to handle this case
+            return this;
+        }
+}
 
     // # Serializable
 

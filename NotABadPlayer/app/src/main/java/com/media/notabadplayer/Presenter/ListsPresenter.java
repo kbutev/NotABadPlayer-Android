@@ -234,7 +234,7 @@ public class ListsPresenter implements BasePresenter
                 // Remove the temporary lists before saving (recently played/added playlists)
                 for (BaseAudioPlaylist playlist : _playlists)
                 {
-                    if (playlist.isTemporaryPlaylist())
+                    if (playlist.isTemporary())
                     {
                         playlists.remove(playlist);
                     }

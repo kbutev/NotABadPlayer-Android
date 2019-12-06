@@ -17,6 +17,7 @@ public interface BaseAudioPlaylistBuilderNode {
 
     void setPlayingTrack(@NonNull BaseAudioTrack playingTrack);
     void setPlayingTrackPosition(int trackIndex);
-    
+
+    void setIsPlaying(boolean playing);
     void setIsTemporaryPlaylist(boolean temporary);
 }

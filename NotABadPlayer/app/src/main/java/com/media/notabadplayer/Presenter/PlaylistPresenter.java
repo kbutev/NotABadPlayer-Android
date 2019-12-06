@@ -30,7 +30,7 @@ public class PlaylistPresenter implements BasePresenter {
         // Sort playlist
         // Sort only playlists of type album
         AppSettings.TrackSorting sorting = GeneralStorage.getShared().getTrackSortingValue();
-        BaseAudioPlaylist sortedPlaylist = playlist.isAlbumPlaylist() ? playlist.sortedPlaylist(sorting) : playlist;
+        BaseAudioPlaylist sortedPlaylist = playlist.isAlbum() ? playlist.sortedPlaylist(sorting) : playlist;
 
         _playlist = sortedPlaylist;
 

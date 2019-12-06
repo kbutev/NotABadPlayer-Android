@@ -100,7 +100,7 @@ class ListAdapter extends BaseAdapter
         // Remove button is never displayed for temporary playlists
         ImageButton removeButton = listItem.findViewById(R.id.removeButton);
         
-        if (_editMode && !playlist.isTemporaryPlaylist())
+        if (_editMode && !playlist.isTemporary())
         {
             removeButton.setVisibility(View.VISIBLE);
             

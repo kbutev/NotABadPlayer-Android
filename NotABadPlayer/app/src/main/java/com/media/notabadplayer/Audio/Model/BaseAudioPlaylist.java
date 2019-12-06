@@ -21,8 +21,8 @@ public interface BaseAudioPlaylist extends Serializable {
     boolean isPlayingFirstTrack();
     boolean isPlayingLastTrack();
 
-    boolean isAlbumPlaylist();
-    boolean isTemporaryPlaylist();
+    boolean isAlbum();
+    boolean isTemporary();
 
     @NonNull BaseAudioPlaylist sortedPlaylist(AppSettings.TrackSorting sorting);
 }
