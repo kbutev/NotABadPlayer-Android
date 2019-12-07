@@ -12,8 +12,13 @@
         <ImageView
             android:id="@+id/albumCover"
             android:layout_width="48dp"
-            android:layout_height="64dp"
-            android:src="@drawable/cover_art_none"/>
+            android:layout_height="52dp"
+            android:src="@drawable/cover_art_none"
+            android:scaleType="fitXY"/>
+
+        <Space
+            android:layout_width="6dp"
+            android:layout_height="0dp" />
 
         <TextView
             android:id="@+id/title"
