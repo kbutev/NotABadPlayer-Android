@@ -94,6 +94,11 @@ public class CreatePlaylistActivity extends AppCompatActivity
         Function<BaseAudioTrack, Void> onTrackClick = new Function<BaseAudioTrack, Void>() {
             @Override
             public Void apply(@NullableDecl BaseAudioTrack input) {
+                if (input == null)
+                {
+                    return null;
+                }
+
                 if (!playlistTracksContain(input))
                 {
                     addToPlaylist(input);
@@ -149,8 +154,13 @@ public class CreatePlaylistActivity extends AppCompatActivity
         _albumsAdapter.notifyDataSetChanged();
     }
     
-    private boolean playlistTracksContain(@NonNull BaseAudioTrack track)
+    private boolean playlistTracksContain(@Nullable BaseAudioTrack track)
     {
+        if (track == null)
+        {
+            return false;
+        }
+
         return _playlistTracks.contains(track);
     }
     
@@ -212,6 +222,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         else
         {
             _playlist = null;
+            _playlistTracks.clear();
         }
     }
     
@@ -225,12 +236,7 @@ public class CreatePlaylistActivity extends AppCompatActivity
         }
         
         List<BaseAudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
-        
-        if (playlists == null)
-        {
-            playlists = new ArrayList<>();
-        }
-        
+
         String name = _nameField.getText().toString();
         
         // Must not have empty name
