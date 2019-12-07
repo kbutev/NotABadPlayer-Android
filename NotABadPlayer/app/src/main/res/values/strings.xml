@@ -116,5 +116,5 @@
     <string name="error_no_tracks_on_device">No tracks were found on your device</string>
 
     <!-- Toasts -->
-    <string name="toast_device_library_changed">Device library changed in the background.</string>
+    <string name="toast_device_library_changed">Device library changed</string>
 </resources>
