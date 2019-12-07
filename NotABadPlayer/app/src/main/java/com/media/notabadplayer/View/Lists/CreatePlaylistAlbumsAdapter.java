@@ -64,9 +64,8 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         return position;
     }
 
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
+    public @NonNull View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
     {
         if (_selectedAlbumPosition == position)
         {
@@ -166,7 +165,7 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
                 View view = _selectedAlbumAdapter.getView(i, null, _selectedAlbum);
                 _selectedAlbum.addView(view);
                 
-                final Integer index = i;
+                final int index = i;
                 
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -222,10 +221,7 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
     
     public void deselectTrack(@NonNull BaseAudioTrack track)
     {
-        if (_selectedTracks.contains(track))
-        {
-            _selectedTracks.remove(track);
-        }
+        _selectedTracks.remove(track);
     }
 
     public class CreatePlaylistAlbumsTracksAdapter extends BaseAdapter
