@@ -2,6 +2,8 @@ package com.media.notabadplayer.View.Albums;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -275,6 +277,12 @@ public class AlbumsFragment extends Fragment implements BaseView
     @Override
     public void onDeviceLibraryChanged()
     {
+        Activity activity = getActivity();
+
+        if (activity == null || !activity.hasWindowFocus()) {
+            return;
+        }
+
         showProgressIndicator();
 
         Toast.makeText(getActivity(), R.string.toast_device_library_changed, Toast.LENGTH_LONG).show();
