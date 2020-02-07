@@ -137,7 +137,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     @Override
     public boolean isCompletelyStopped()
     {
-        SafeMutableAudioPlaylist playlist = getSafeMutablePlaylist();
+        MutableAudioPlaylist playlist = getSafeMutablePlaylist();
         return playlist == null || !playlist.isPlaying();
     }
 
@@ -154,7 +154,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         return getSafeMutablePlaylist() != null;
     }
 
-    public @Nullable SafeMutableAudioPlaylist getSafeMutablePlaylist()
+    private @Nullable SafeMutableAudioPlaylist getSafeMutablePlaylist()
     {
         synchronized (_lock)
         {
@@ -162,7 +162,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         }
     }
 
-    public void setSafeMutablePlaylist(@NonNull SafeMutableAudioPlaylist playlist)
+    private void setSafeMutablePlaylist(@NonNull SafeMutableAudioPlaylist playlist)
     {
         synchronized (_lock)
         {
@@ -185,16 +185,15 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     }
 
     @Override
-    public void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception
+    public synchronized void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception
     {
-        SafeMutableAudioPlaylist currentPlaylist = getSafeMutablePlaylist();
+        // Synchronized: make sure only one client enters this at a time, to make sure that the player
+        // and player service are synchronized
+        
+        MutableAudioPlaylist currentPlaylist = getSafeMutablePlaylist();
         BaseAudioTrack previousTrack = currentPlaylist != null ? currentPlaylist.getPlayingTrack() : null;
 
-        try {
-            playTrack(playlist.getPlayingTrack(), previousTrack, true);
-        } catch (Exception e) {
-            throw e;
-        }
+        playTrack(playlist.getPlayingTrack(), previousTrack, true);
 
         SafeMutableAudioPlaylist newPlaylist = SafeMutableAudioPlaylist.build(AudioPlaylistBuilder.buildMutableFromImmutable(playlist));
         setSafeMutablePlaylist(newPlaylist);
@@ -261,7 +260,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     @Override
     public void resume()
     {
-        SafeMutableAudioPlaylist playlist = getSafeMutablePlaylist();
+        MutableAudioPlaylist playlist = getSafeMutablePlaylist();
 
         if (playlist == null)
         {
@@ -290,7 +289,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     @Override
     public void pause()
     {
-        SafeMutableAudioPlaylist playlist = getSafeMutablePlaylist();
+        MutableAudioPlaylist playlist = getSafeMutablePlaylist();
 
         if (playlist == null)
         {
@@ -366,7 +365,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     @Override
     public void playNext() throws Exception
     {
-        SafeMutableAudioPlaylist playlist = getSafeMutablePlaylist();
+        MutableAudioPlaylist playlist = getSafeMutablePlaylist();
 
         if (playlist == null)
         {
@@ -403,7 +402,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     @Override
     public void playPrevious() throws Exception
     {
-        SafeMutableAudioPlaylist playlist = getSafeMutablePlaylist();
+        MutableAudioPlaylist playlist = getSafeMutablePlaylist();
 
         if (playlist == null)
         {
@@ -440,7 +439,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     @Override
     public void playNextBasedOnPlayOrder() throws Exception
     {
-        SafeMutableAudioPlaylist playlist = getSafeMutablePlaylist();
+        MutableAudioPlaylist playlist = getSafeMutablePlaylist();
 
         if (playlist == null)
         {
@@ -477,7 +476,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     @Override
     public void shuffle() throws Exception
     {
-        SafeMutableAudioPlaylist playlist = getSafeMutablePlaylist();
+        MutableAudioPlaylist playlist = getSafeMutablePlaylist();
 
         if (playlist == null)
         {
@@ -693,7 +692,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
 
     private void performBroadcastAction(@NonNull String value)
     {
-        SafeMutableAudioPlaylist playlist = getSafeMutablePlaylist();
+        MutableAudioPlaylist playlist = getSafeMutablePlaylist();
 
         if (playlist == null)
         {
@@ -823,7 +822,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         {
             stop();
 
-            SafeMutableAudioPlaylist playlist = getSafeMutablePlaylist();
+            MutableAudioPlaylist playlist = getSafeMutablePlaylist();
 
             if (playlist == null)
             {

@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.media.notabadplayer.Constants.AppSettings;
 
+// Describes a playlist model.
+// Thread safe: no
 public interface BaseAudioPlaylist extends Serializable {
     @NonNull String getName();
     int size();
