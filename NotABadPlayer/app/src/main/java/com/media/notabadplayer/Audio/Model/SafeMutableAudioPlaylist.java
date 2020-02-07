@@ -5,10 +5,13 @@ import java.util.List;
 
 import com.media.notabadplayer.Constants.AppSettings;
 
+// Wraps a single playlist that can be mutated at any time.
+// Very memory/cpu efficient, use copy() to quickly get a copy of the latest playlist data.
+// Thread safe: yes
 public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     private @NonNull final Object _lock = new Object();
 
-    private @NonNull MutableAudioPlaylist _write;
+    private @NonNull final MutableAudioPlaylist _write;
     private @NonNull MutableAudioPlaylist _read;
 
     public static SafeMutableAudioPlaylist build(@NonNull MutableAudioPlaylist prototype) throws Exception {
@@ -27,15 +30,16 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
             return _read;
         }
     }
-
+    
     @Override
     public void playCurrent()
     {
         synchronized (_lock)
         {
             _write.playCurrent();
-            updateReadPlaylist();
         }
+        
+        updateReadPlaylist();
     }
 
     @Override
@@ -44,8 +48,9 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
         synchronized (_lock)
         {
             _write.goToTrack(track);
-            updateReadPlaylist();
         }
+        
+        updateReadPlaylist();
     }
 
     @Override
@@ -54,8 +59,9 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
         synchronized (_lock)
         {
             _write.goToTrackAt(trackIndex);
-            updateReadPlaylist();
         }
+        
+        updateReadPlaylist();
     }
 
     @Override
@@ -64,8 +70,9 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
         synchronized (_lock)
         {
             _write.goToTrackBasedOnPlayOrder(playOrder);
-            updateReadPlaylist();
         }
+        
+        updateReadPlaylist();
     }
 
     @Override
@@ -74,8 +81,9 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
         synchronized (_lock)
         {
             _write.goToNextPlayingTrack();
-            updateReadPlaylist();
         }
+        
+        updateReadPlaylist();
     }
 
     @Override
@@ -84,8 +92,9 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
         synchronized (_lock)
         {
             _write.goToNextPlayingTrackRepeat();
-            updateReadPlaylist();
         }
+        
+        updateReadPlaylist();
     }
 
     @Override
@@ -94,8 +103,9 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
         synchronized (_lock)
         {
             _write.goToPreviousPlayingTrack();
-            updateReadPlaylist();
         }
+        
+        updateReadPlaylist();
     }
 
     @Override
@@ -104,8 +114,9 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
         synchronized (_lock)
         {
             _write.goToTrackByShuffle();
-            updateReadPlaylist();
         }
+        
+        updateReadPlaylist();
     }
 
     @NonNull
