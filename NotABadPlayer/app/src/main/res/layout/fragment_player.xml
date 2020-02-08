@@ -16,10 +16,12 @@
         android:orientation="horizontal">
         <LinearLayout
             android:id="@+id/volumeBarLeft"
-            android:layout_width="24dp"
+            android:layout_width="38dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
             android:layout_gravity="center"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
             android:orientation="vertical"
             android:visibility="invisible">
             <com.media.notabadplayer.View.Player.VerticalSeekBar
@@ -31,7 +33,7 @@
                 android:thumb="@drawable/volumebar_seek_thumb"/>
             <ImageView
                 android:id="@+id/volumeBarLeftIcon"
-                android:layout_width="32dp"
+                android:layout_width="30dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:src="@drawable/volume_icon"
@@ -44,16 +46,16 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="0.6"
-            android:layout_marginLeft="2px"
-            android:layout_marginRight="2px"
             android:src="@drawable/cover_art_none"
             android:scaleType="fitXY"/>
         <LinearLayout
             android:id="@+id/volumeBarRight"
-            android:layout_width="24dp"
+            android:layout_width="38dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
             android:layout_gravity="center"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
             android:orientation="vertical"
             android:visibility="invisible">
             <com.media.notabadplayer.View.Player.VerticalSeekBar
@@ -66,8 +68,8 @@
                 android:background="@null"/>
             <ImageView
                 android:id="@+id/volumeBarRightIcon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center"
                 android:src="@drawable/volume_icon"
                 app:tint="?playerButtonsTintColor"
