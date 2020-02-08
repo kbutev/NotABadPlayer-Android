@@ -1,5 +1,6 @@
 package com.media.notabadplayer.Storage;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -7,7 +8,6 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.media.notabadplayer.Audio.Model.AudioPlaylistV1;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Utilities.Serializing;
 
@@ -28,6 +28,13 @@ public class FavoritesStorage {
     
     FavoritesStorage(@NonNull SharedPreferences preferences) {
         this._preferences = preferences;
+    }
+    
+    public @NonNull List<FavoriteStorageItem> getItems() {
+        synchronized (_lock)
+        {
+            return new ArrayList<>(_items);
+        }
     }
     
     public @NonNull Date getLastTimeUpdate() {

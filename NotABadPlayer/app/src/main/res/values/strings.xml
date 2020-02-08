@@ -49,6 +49,7 @@
 
     <string name="playlist_name_history">Recently played</string>
     <string name="playlist_name_recently_added">Recently added</string>
+    <string name="playlist_name_favorites">Favorites</string>
     <string name="playlist_name_previously_played">Previously Played</string>
     <string name="playlist_name_search_results">Search Results</string>
     

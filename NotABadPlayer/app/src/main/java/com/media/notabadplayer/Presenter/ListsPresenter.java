@@ -34,6 +34,7 @@ public class ListsPresenter implements BasePresenter
     
     private final String _historyPlaylistName;
     private final String _recentlyAddedPlaylistName;
+    private final String _favoritesPlaylistName;
 
     private boolean _running = false;
     
@@ -44,6 +45,7 @@ public class ListsPresenter implements BasePresenter
         _audioInfo = audioInfo;
         _historyPlaylistName = context.getResources().getString(R.string.playlist_name_history);
         _recentlyAddedPlaylistName = context.getResources().getString(R.string.playlist_name_recently_added);
+        _favoritesPlaylistName = context.getResources().getString(R.string.playlist_name_favorites);
     }
     
     @Override
@@ -113,6 +115,13 @@ public class ListsPresenter implements BasePresenter
                     if (recentlyPlayed != null)
                     {
                         lists.add(0, recentlyPlayed);
+                    }
+
+                    BaseAudioPlaylist favorites = getFavoritesPlaylist();
+
+                    if (favorites != null)
+                    {
+                        lists.add(0, favorites);
                     }
 
                     final List<BaseAudioPlaylist> data = lists;
@@ -316,6 +325,27 @@ public class ListsPresenter implements BasePresenter
             BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
             node.setName(_recentlyAddedPlaylistName);
             node.setTracks(recentlyAddedTracks);
+            node.setIsTemporaryPlaylist(true);
+
+            try {
+                return node.build();
+            } catch (Exception exc) {
+
+            }
+        }
+
+        return null;
+    }
+
+    private @Nullable BaseAudioPlaylist getFavoritesPlaylist()
+    {
+        List<BaseAudioTrack> favoriteTracks = AudioLibrary.getShared().getFavoriteTracks();
+
+        if (favoriteTracks.size() > 0)
+        {
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
+            node.setName(_favoritesPlaylistName);
+            node.setTracks(favoriteTracks);
             node.setIsTemporaryPlaylist(true);
 
             try {

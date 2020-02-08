@@ -303,13 +303,19 @@ public class AlbumsFragment extends Fragment implements BaseView
     @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
+        Context context = getContext();
+        
+        if (context == null) {
+            return;
+        }
+        
         DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 _table.invalidateViews();
             }
         };
 
-        AlertWindows.showAlert(getContext(), R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
+        AlertWindows.showAlert(context, R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
     }
 
     private void showProgressIndicator()
