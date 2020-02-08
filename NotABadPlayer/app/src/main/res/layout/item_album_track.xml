@@ -8,7 +8,7 @@
     android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="48dp"
+        android:layout_width="32dp"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
@@ -21,7 +21,7 @@
     </LinearLayout>
     
     <Space
-        android:layout_width="5dp"
+        android:layout_width="4dp"
         android:layout_height="wrap_content" />
     
     <LinearLayout
