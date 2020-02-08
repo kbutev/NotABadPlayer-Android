@@ -38,6 +38,7 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
@@ -45,7 +46,7 @@ import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
-public class SearchFragment extends Fragment implements BaseView, AudioPlayerObserver
+public class SearchFragment extends Fragment implements BaseView, AudioPlayerObserver, SearchListFavoritesChecker
 {
     Player _player = Player.getShared();
     
@@ -355,7 +356,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
             }
         }
 
-        _searchResultsAdapter = new SearchListAdapter(context, songs);
+        _searchResultsAdapter = new SearchListAdapter(context, songs, this);
         _searchResultsList.setAdapter(_searchResultsAdapter);
         _searchResultsList.invalidateViews();
     }
@@ -451,13 +452,25 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
+        Context context = getContext();
+        
+        if (context == null) {
+            return;
+        }
+        
         DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 _searchResultsList.invalidateViews();
             }
         };
 
-        AlertWindows.showAlert(getContext(), R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
+        AlertWindows.showAlert(context, R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
+    }
+
+    @Override
+    public boolean isMarkedFavorite(@NonNull BaseAudioTrack track)
+    {
+        return GeneralStorage.getShared().favorites.isMarkedFavorite(track);
     }
 
     private void performSearch()

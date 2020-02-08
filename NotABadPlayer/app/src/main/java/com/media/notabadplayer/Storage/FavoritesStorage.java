@@ -137,18 +137,18 @@ public class FavoritesStorage {
             String data = _preferences.getString(STORAGE_KEY, "");
             
             if (data == null || data.isEmpty()) {
-                Log.v(GeneralStorage.class.getCanonicalName(), "Failed to unarchive favorite items from storage");
+                Log.v(FavoritesStorage.class.getCanonicalName(), "Failed to unarchive favorite items from storage");
                 return;
             }
 
             try {
                 _items = deserializeTracks(data);
             } catch (Exception e) {
-                Log.v(GeneralStorage.class.getCanonicalName(), "Failed to unarchive favorite items from storage");
+                Log.v(FavoritesStorage.class.getCanonicalName(), "Failed to unarchive favorite items from storage");
                 return;
             }
             
-            Log.v(GeneralStorage.class.getCanonicalName(), "Retrieved " + String.valueOf(_items.size()) + " favorite items from storage");
+            Log.v(FavoritesStorage.class.getCanonicalName(), "Retrieved " + String.valueOf(_items.size()) + " favorite items from storage");
         }
     }
     
@@ -159,7 +159,7 @@ public class FavoritesStorage {
             String data = Serializing.serializeObject(_items);
             
             if (data == null) {
-                Log.v(GeneralStorage.class.getCanonicalName(), "Failed to archive favorite items to storage");
+                Log.v(FavoritesStorage.class.getCanonicalName(), "Failed to archive favorite items to storage");
                 return;
             }
 
@@ -178,7 +178,7 @@ public class FavoritesStorage {
 
             if (array.size() > 0)
             {
-                if (array.get(0) instanceof AudioPlaylistV1)
+                if (array.get(0) instanceof FavoriteStorageItem)
                 {
                     @SuppressWarnings("unchecked")
                     ArrayList<FavoriteStorageItem> items = (ArrayList<FavoriteStorageItem>)result;

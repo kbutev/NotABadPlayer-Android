@@ -22,20 +22,25 @@ import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.UIAnimations;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class SearchListAdapter extends BaseAdapter
 {
     private Context _context;
     private List<BaseAudioTrack> _tracks;
 
+    private @NonNull SearchListFavoritesChecker _favoritesChecker;
+    
     private HashSet<View> _listViews = new HashSet<>();
 
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
 
-    public SearchListAdapter(@NonNull Context context, List<BaseAudioTrack> tracks)
+    public SearchListAdapter(@NonNull Context context, @NonNull List<BaseAudioTrack> tracks, @Nullable SearchListFavoritesChecker checker)
     {
         this._context = context;
         this._tracks = tracks;
+        this._favoritesChecker = checker != null ? checker : new SearchListAdapter.DummyFavoritesChecker();
     }
     
     public int getCount()
@@ -90,6 +95,14 @@ public class SearchListAdapter extends BaseAdapter
 
         TextView duration = listItem.findViewById(R.id.duration);
         duration.setText(item.getDuration());
+
+        ImageView favoriteIcon = listItem.findViewById(R.id.favoriteIcon);
+
+        if (_favoritesChecker.isMarkedFavorite(item)) {
+            favoriteIcon.setVisibility(View.VISIBLE);
+        } else {
+            favoriteIcon.setVisibility(View.GONE);
+        }
 
         // Select playing track
         boolean isPlayingTrack = false;
@@ -166,6 +179,12 @@ public class SearchListAdapter extends BaseAdapter
         {
             View child = iterator.next();
             child.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+        }
+    }
+
+    class DummyFavoritesChecker implements SearchListFavoritesChecker {
+        public boolean isMarkedFavorite(@NonNull BaseAudioTrack track) {
+            return false;
         }
     }
 }
