@@ -58,6 +58,8 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     private TextView _labelTitle;
     private TextView _labelAlbum;
     private TextView _labelArtist;
+    private View _markFavoriteButton;
+    private ImageView _markFavoriteImage;
     private SeekBar _mediaBar;
     private TextView _labelDurationCurrent;
     private TextView _labelDurationTotal;
@@ -90,6 +92,8 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _labelTitle = root.findViewById(R.id.songTitle);
         _labelAlbum = root.findViewById(R.id.songAlbum);
         _labelArtist = root.findViewById(R.id.songArtist);
+        _markFavoriteButton = root.findViewById(R.id.markFavoriteButton);
+        _markFavoriteImage = root.findViewById(R.id.markFavoriteImage);
         _mediaBar = root.findViewById(R.id.mediaBar);
         _labelDurationCurrent = root.findViewById(R.id.durationCurrent);
         _labelDurationTotal = root.findViewById(R.id.durationTotal);
@@ -217,6 +221,14 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         {
             _volumeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.volume_icon_muted));
         }
+
+        _markFavoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean result = _presenter.onMarkOrUnmarkContextTrackFavorite();
+                markFavorite(result);
+            }
+        });
         
         _mediaBar.setMax(MEDIA_BAR_MAX_VALUE);
         _mediaBar.setProgress(1); // Set to a non-zero value, to prevent weird UI drawable glitch
@@ -347,9 +359,9 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         updatePlayOrderButtonState();
     }
 
-    public void updateUIState(@NonNull BaseAudioTrack track)
+    public void updateUIState(@NonNull BaseAudioTrack track, boolean isFavorite)
     {
-        updateMediaInfo(track);
+        updateMediaInfo(track, isFavorite);
         updateSoftUIState();
     }
 
@@ -403,26 +415,24 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         }
     }
     
-    private void updateMediaInfo(BaseAudioTrack playingTrack)
+    private void updateMediaInfo(@NonNull BaseAudioTrack playingTrack, boolean isFavorite)
     {
-        if (playingTrack != null)
+        if (!playingTrack.getArtCover().isEmpty())
         {
-            if (!playingTrack.getArtCover().isEmpty())
-            {
-                _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.getArtCover())));
-            }
-            else
-            {
-                _imageCover.setImageDrawable(getResources().getDrawable(R.drawable.cover_art_none));
-            }
-            
-            _labelTitle.setText(playingTrack.getTitle());
-            _labelAlbum.setText(playingTrack.getAlbumTitle());
-            _labelArtist.setText(playingTrack.getArtist());
-            _labelDurationTotal.setText(playingTrack.getDuration());
-            
-            updatePlayButtonState();
+            _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.getArtCover())));
         }
+        else
+        {
+            _imageCover.setImageDrawable(getResources().getDrawable(R.drawable.cover_art_none));
+        }
+
+        _labelTitle.setText(playingTrack.getTitle());
+        _labelAlbum.setText(playingTrack.getAlbumTitle());
+        _labelArtist.setText(playingTrack.getArtist());
+        _labelDurationTotal.setText(playingTrack.getDuration());
+
+        updatePlayButtonState();
+        markFavorite(isFavorite);
     }
     
     private void updatePlayButtonState()
@@ -458,6 +468,17 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             default:
                 _buttonPlayOrder.setBackgroundResource(R.drawable.media_order_forwards);
                 break;
+        }
+    }
+
+    public void markFavorite(boolean favorite) {
+        if (favorite)
+        {
+            _markFavoriteImage.setImageDrawable(getResources().getDrawable(R.drawable.shiny_star));
+        } 
+        else 
+        {
+            _markFavoriteImage.setImageDrawable(getResources().getDrawable(R.drawable.dark_star));
         }
     }
 
@@ -510,7 +531,11 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         _buttonPlayOrder.setClickable(false);
         _volumeIcon.setClickable(false);
     }
-
+    
+    private boolean isStorageMarkedFavorite(@NonNull BaseAudioTrack track) {
+        return GeneralStorage.getShared().favorites.isMarkedFavorite(track);
+    }
+    
     @Override
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
     {
@@ -544,7 +569,9 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     @Override
     public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
-        updateMediaInfo(playlist.getPlayingTrack());
+        BaseAudioTrack playing = playlist.getPlayingTrack();
+        
+        updateMediaInfo(playing, isStorageMarkedFavorite(playing));
     }
     
     @Override
@@ -556,7 +583,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     @Override
     public void onPlayerPlay(@NonNull BaseAudioTrack current)
     {
-        updateMediaInfo(current);
+        updateMediaInfo(current, isStorageMarkedFavorite(current));
         updatePlayButtonState();
     }
     
@@ -635,6 +662,12 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
+        Context context = getContext();
+        
+        if (context == null) {
+            return;
+        }
+        
         DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 FragmentActivity a = getActivity();
@@ -646,7 +679,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             }
         };
         
-        AlertWindows.showAlert(getContext(), R.string.error, R.string.error_invalid_file_play, R.string.ok, action);
+        AlertWindows.showAlert(context, R.string.error, R.string.error_invalid_file_play, R.string.ok, action);
     }
 
     @Override

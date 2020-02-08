@@ -32,6 +32,7 @@ public interface BasePresenter {
     void onPlayOrderButtonClick();
     void onOpenPlaylistButtonClick();
     void onPlayerVolumeSet(double value);
+    boolean onMarkOrUnmarkContextTrackFavorite();
     
     void onPlaylistItemDelete(int index);
     

@@ -12,6 +12,7 @@ import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
+import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.View.BaseView;
 
 public class PlayerPresenter implements BasePresenter
@@ -149,6 +150,27 @@ public class PlayerPresenter implements BasePresenter
     public void onPlayerVolumeSet(double value)
     {
         Player.getShared().setVolume((int)value);
+    }
+
+    @Override
+    public boolean onMarkOrUnmarkContextTrackFavorite()
+    {
+        BaseAudioPlaylist currentPlaylist = Player.getShared().getPlaylist();
+
+        if (currentPlaylist == null) {
+            return false;
+        }
+        
+        BaseAudioTrack playingTrack = currentPlaylist.getPlayingTrack();
+        boolean isFavorite = GeneralStorage.getShared().favorites.isMarkedFavorite(playingTrack);
+        
+        if (!isFavorite) {
+            GeneralStorage.getShared().favorites.markFavoriteForced(playingTrack);
+        } else {
+            GeneralStorage.getShared().favorites.unmarkFavorite(playingTrack);
+        }
+                
+        return !isFavorite;
     }
 
     @Override
