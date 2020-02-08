@@ -36,6 +36,7 @@ import com.media.notabadplayer.Utilities.MediaSorting;
 // Make sure you have access to user storage before using the audio library.
 public class AudioLibrary extends ContentObserver implements AudioInfo {
     public static int ALBUM_TRACK_CACHE_CAPACITY = 30;
+    public static int FAVORITES_TRACK_CAPACITY = FavoritesStorage.CAPACITY;
     public static int SEARCH_TRACKS_CAP = 1000;
     public static int RECENTLY_ADDED_CAP = 100;
     public static int RECENTLY_ADDED_PREDICATE_DAYS_DIFFERENCE = 30;
@@ -59,6 +60,8 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     // List of recently added tracks
     private boolean _recentlyAddedLoaded;
     private final ArrayList<BaseAudioTrack> _recentlyAdded = new ArrayList<>();
+    private @Nullable Date _favoritesLastUpdated = null;
+    private List<BaseAudioTrack> _favoriteTracks = new ArrayList<>();
 
     public interface ChangesListener {
         void onMediaLibraryChanged();
@@ -212,7 +215,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             selection = selection + " and album_id = " + album.albumID;
         }
 
-        List<BaseAudioTrack> result = fetchAndParseMediaStoreTracksData(context,
+        List<BaseAudioTrack> result = fetchAndParseMediaStoreTracksData(context, 
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 selection,
                 null,
@@ -352,18 +355,98 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
                     RECENTLY_ADDED_CAP));
         }
     }
+    
+    // # Favorite tracks
+
+    public @NonNull List<BaseAudioTrack> getFavoriteTracks()
+    {
+        loadIfNecessary();
+
+        Date lastStorageUpdate = GeneralStorage.getShared().favorites.getLastTimeUpdate();
+        
+        synchronized (_lock)
+        {
+            if (_favoritesLastUpdated != null) {
+                if (_favoritesLastUpdated.after(lastStorageUpdate)) {
+                    return _favoriteTracks;
+                }
+            }
+        }
+
+        List<BaseAudioTrack> tracks = loadFavoriteTracks();
+        
+        synchronized (_lock)
+        {
+            _favoriteTracks = tracks;
+            _favoritesLastUpdated = lastStorageUpdate;
+        }
+        
+        return new ArrayList<>(tracks);
+    }
+
+    private @NonNull List<BaseAudioTrack> loadFavoriteTracks()
+    {
+        List<FavoriteStorageItem> favorites = GeneralStorage.getShared().favorites.getItems();
+        
+        ArrayList<BaseAudioTrack> tracks = new ArrayList<>();
+
+        String projections[] = fetchMediaStoreProjections();
+
+        Context context = getContext();
+
+        String selection = "is_music != 0";
+
+        Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projections, selection, null, null);
+
+        if (cursor == null)
+        {
+            return tracks;
+        }
+
+        BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
+        AudioLibraryColumnIndexes indexes = new AudioLibraryColumnIndexes(cursor);
+
+        while (cursor.moveToNext())
+        {
+            // Check for cap
+            if (tracks.size() >= FAVORITES_TRACK_CAPACITY)
+            {
+                break;
+            }
+            
+            // Build tracks whose path matches the path of the favorite item
+            String path = cursor.getString(indexes.dataColumn);
+            
+            boolean pathMatch = false;
+            
+            for (FavoriteStorageItem favorite : favorites) {
+                if (path.equals(favorite.trackPath)) {
+                    pathMatch = true;
+                    break;
+                }
+            }
+            
+            if (!pathMatch) {
+                continue;
+            }
+            
+            try {
+                BaseAudioTrack result = buildTrackFromCursor(cursor, node, indexes);
+                tracks.add(result);
+            } catch (Exception e) {
+
+            }
+        }
+
+        cursor.close();
+        
+        return tracks;
+    }
 
     // # MediaStore fetch
 
-    private @NonNull List<BaseAudioTrack> fetchAndParseMediaStoreTracksData(@NonNull Context context,
-                                                                            @NonNull Uri path,
-                                                                            @Nullable String selection,
-                                                                            @Nullable String[] selectionArgs,
-                                                                            int cap)
-    {
-        ArrayList<BaseAudioTrack> tracks = new ArrayList<>();
-
-        String projection[] = {
+    String[] fetchMediaStoreProjections() {
+        String projections[] = {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.DATE_ADDED,
                 MediaStore.Audio.Media.DATE_MODIFIED,
@@ -376,8 +459,20 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
                 MediaStore.Audio.Media.TRACK,
                 MediaStore.Audio.Media.BOOKMARK
         };
+        return projections;
+    }
 
-        Cursor cursor = context.getContentResolver().query(path, projection, selection, selectionArgs, null);
+    @NonNull List<BaseAudioTrack> fetchAndParseMediaStoreTracksData(@NonNull Context context,
+                                                                    @NonNull Uri path,
+                                                                    @Nullable String selection,
+                                                                    @Nullable String[] selectionArgs,
+                                                                    int cap)
+    {
+        ArrayList<BaseAudioTrack> tracks = new ArrayList<>();
+
+        String projections[] = fetchMediaStoreProjections();
+
+        Cursor cursor = context.getContentResolver().query(path, projections, selection, selectionArgs, null);
 
         if (cursor == null)
         {
@@ -385,69 +480,67 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         }
 
         BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
-
-        int dataColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-        int dateAddedColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
-        int dateModifiedColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);
-        int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-        int artistColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-        int albumTitleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-        int albumIDColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
-        int trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
-        int durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
-        int bookmarkColumn = cursor.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);
+        AudioLibraryColumnIndexes indexes = new AudioLibraryColumnIndexes(cursor);
 
         while (cursor.moveToNext())
         {
-            String filePath = cursor.getString(dataColumn);
-            Date dateAdded = buildDateFromDatabaseLong(cursor.getLong(dateAddedColumn));
-            Date dateModified = buildDateFromDatabaseLong(cursor.getLong(dateModifiedColumn));
-            String title = cursor.getString(titleColumn);
-            String artist = cursor.getString(artistColumn);
-            String albumTitle = cursor.getString(albumTitleColumn);
-            String albumID = cursor.getString(albumIDColumn);
-            int trackNum = cursor.getInt(trackNumColumn);
-            double duration = cursor.getLong(durationColumn) / 1000.0;
-            double lastPlayedPosition = cursor.getLong(bookmarkColumn) / 1000.0;
-
-            @Nullable AudioAlbum album = getAlbumByID(albumID);
-            String albumCover = album != null ? album.albumCover : "";
-
-            AudioTrackSource source = album != null ? AudioTrackSource.createAlbumSource(albumID) : AudioTrackSource.createPlaylistSource(title);
-            
-            node.reset();
-            
-            node.setFilePath(filePath);
-            node.setTitle(title);
-            node.setArtist(artist);
-            node.setAlbumTitle(albumTitle);
-            node.setAlbumID(albumID);
-            node.setArtCover(albumCover);
-            node.setTrackNum(trackNum);
-            node.setDuration(duration);
-            node.setSource(source);
-
-            node.setDateAdded(dateAdded);
-            node.setDateModified(dateModified);
-            node.setLastPlayedPosition(lastPlayedPosition);
-
-            try {
-                BaseAudioTrack result = node.build();
-                tracks.add(result);
-            } catch (Exception e) {
-
-            }
-
             // Check for cap
             if (tracks.size() >= cap)
             {
                 break;
+            }
+            
+            try {
+                BaseAudioTrack result = buildTrackFromCursor(cursor, node, indexes);
+                tracks.add(result);
+            } catch (Exception e) {
+
             }
         }
 
         cursor.close();
 
         return tracks;
+    }
+    
+    @NonNull BaseAudioTrack buildTrackFromCursor(@NonNull Cursor cursor, @Nullable BaseAudioTrackBuilderNode reusableNode, @Nullable AudioLibraryColumnIndexes cIndexes) throws Exception {
+        BaseAudioTrackBuilderNode node = reusableNode != null ? reusableNode : AudioTrackBuilder.start();
+
+        AudioLibraryColumnIndexes indexes = cIndexes != null ? cIndexes : new AudioLibraryColumnIndexes(cursor);
+
+        String filePath = cursor.getString(indexes.dataColumn);
+        Date dateAdded = buildDateFromDatabaseLong(cursor.getLong(indexes.dateAddedColumn));
+        Date dateModified = buildDateFromDatabaseLong(cursor.getLong(indexes.dateModifiedColumn));
+        String title = cursor.getString(indexes.titleColumn);
+        String artist = cursor.getString(indexes.artistColumn);
+        String albumTitle = cursor.getString(indexes.albumTitleColumn);
+        String albumID = cursor.getString(indexes.albumIDColumn);
+        int trackNum = cursor.getInt(indexes.trackNumColumn);
+        double duration = cursor.getLong(indexes.durationColumn) / 1000.0;
+        double lastPlayedPosition = cursor.getLong(indexes.bookmarkColumn) / 1000.0;
+
+        @Nullable AudioAlbum album = getAlbumByID(albumID);
+        String albumCover = album != null ? album.albumCover : "";
+
+        AudioTrackSource source = album != null ? AudioTrackSource.createAlbumSource(albumID) : AudioTrackSource.createPlaylistSource(title);
+
+        node.reset();
+
+        node.setFilePath(filePath);
+        node.setTitle(title);
+        node.setArtist(artist);
+        node.setAlbumTitle(albumTitle);
+        node.setAlbumID(albumID);
+        node.setArtCover(albumCover);
+        node.setTrackNum(trackNum);
+        node.setDuration(duration);
+        node.setSource(source);
+
+        node.setDateAdded(dateAdded);
+        node.setDateModified(dateModified);
+        node.setLastPlayedPosition(lastPlayedPosition);
+
+        return node.build();
     }
 
     // # Library changes
@@ -505,5 +598,32 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     public long buildDatabaseLongDateFromDate(@NonNull Date date)
     {
         return (date.getTime() / 1000L);
+    }
+    
+    // Column indexes
+    class AudioLibraryColumnIndexes {
+        final int dataColumn;
+        final int dateAddedColumn;
+        final int dateModifiedColumn;
+        final int titleColumn;
+        final int artistColumn;
+        final int albumTitleColumn;
+        final int albumIDColumn;
+        final int trackNumColumn;
+        final int durationColumn;
+        final int bookmarkColumn;
+
+        AudioLibraryColumnIndexes(@NonNull Cursor cursor) {
+            dataColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+            dateAddedColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
+            dateModifiedColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);
+            titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+            artistColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+            albumTitleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+            albumIDColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+            trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
+            durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
+            bookmarkColumn = cursor.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);
+        }
     }
 }
