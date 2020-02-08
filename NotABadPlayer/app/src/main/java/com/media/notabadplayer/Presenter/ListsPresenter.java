@@ -216,6 +216,12 @@ public class ListsPresenter implements BasePresenter
     }
 
     @Override
+    public boolean onMarkOrUnmarkContextTrackFavorite()
+    {
+        return false;
+    }
+
+    @Override
     public void onPlaylistItemDelete(int index)
     {
         if (!_running)

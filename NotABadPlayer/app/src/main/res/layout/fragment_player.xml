@@ -44,6 +44,8 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="0.6"
+            android:layout_marginLeft="2px"
+            android:layout_marginRight="2px"
             android:src="@drawable/cover_art_none"
             android:scaleType="fitXY"/>
         <LinearLayout
@@ -82,7 +84,7 @@
         android:layout_marginRight="10dp"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_weight="0.25">
+        android:layout_weight="0.4">
         
         <TextView
             android:id="@+id/songTitle"
@@ -105,6 +107,21 @@
             android:textSize="14dp"
             android:textAppearance="@style/PlayerSubtext"
             android:singleLine="true"/>
+        <LinearLayout
+            android:id="@+id/markFavoriteButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="4dp"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:id="@+id/markFavoriteImage"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/dark_star"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -113,7 +130,7 @@
         android:layout_marginBottom="10dp"
         android:gravity="bottom"
         android:orientation="vertical"
-        android:layout_weight="0.5">
+        android:layout_weight="0.35">
 
         <SeekBar
             android:id="@+id/mediaBar"

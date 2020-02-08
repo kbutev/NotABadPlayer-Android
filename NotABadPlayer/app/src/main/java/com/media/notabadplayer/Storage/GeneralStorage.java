@@ -32,6 +32,8 @@ public class GeneralStorage
 {
     private static GeneralStorage singleton;
     
+    public final FavoritesStorage favorites;
+    
     private Application _context;
     private SharedPreferences _preferences;
     
@@ -49,6 +51,8 @@ public class GeneralStorage
         _context = PlayerApplication.getShared();
 
         _preferences = _context.getSharedPreferences(GeneralStorage.class.getCanonicalName(), Context.MODE_PRIVATE);
+
+        favorites = new FavoritesStorage(_preferences);
 
         detectFirstTimeLaunch();
 
