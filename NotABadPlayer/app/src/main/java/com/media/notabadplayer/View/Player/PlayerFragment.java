@@ -112,21 +112,26 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
             root.findViewById(R.id.volumeBarLeft).setVisibility(View.INVISIBLE);
             root.findViewById(R.id.volumeBarRight).setVisibility(View.INVISIBLE);
         }
+
+        boolean isLeftVolumeOn = showBarState == AppSettings.ShowVolumeBar.LEFT_SIDE;
+        boolean isRightVolumeOn = showBarState == AppSettings.ShowVolumeBar.RIGHT_SIDE;
         
-        if (showBarState == AppSettings.ShowVolumeBar.LEFT_SIDE)
+        if (isLeftVolumeOn)
         {
             _volumeBar = root.findViewById(R.id.volumeBarLeftSeek);
             _volumeIcon = root.findViewById(R.id.volumeBarLeftIcon);
             root.findViewById(R.id.volumeBarLeft).setVisibility(View.VISIBLE);
             root.findViewById(R.id.volumeBarRight).setVisibility(View.INVISIBLE);
-        }
-        
-        if (showBarState == AppSettings.ShowVolumeBar.RIGHT_SIDE)
-        {
+        } else if (isRightVolumeOn) {
             _volumeBar = root.findViewById(R.id.volumeBarRightSeek);
             _volumeIcon = root.findViewById(R.id.volumeBarRightIcon);
             root.findViewById(R.id.volumeBarRight).setVisibility(View.VISIBLE);
             root.findViewById(R.id.volumeBarLeft).setVisibility(View.INVISIBLE);
+        } else {
+            _volumeBar = root.findViewById(R.id.volumeBarRightSeek);
+            _volumeIcon = root.findViewById(R.id.volumeBarRightIcon);
+            root.findViewById(R.id.volumeBarRight).setVisibility(View.GONE);
+            root.findViewById(R.id.volumeBarLeft).setVisibility(View.GONE);
         }
         
         // Init UI
@@ -357,12 +362,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         
         // Update play order button state
         updatePlayOrderButtonState();
-    }
-
-    public void updateUIState(@NonNull BaseAudioTrack track, boolean isFavorite)
-    {
-        updateMediaInfo(track, isFavorite);
-        updateSoftUIState();
     }
 
     public void updateSoftUIState()
