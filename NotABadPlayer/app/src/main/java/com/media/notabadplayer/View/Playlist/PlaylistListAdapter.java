@@ -31,18 +31,21 @@ class PlaylistListAdapter extends BaseAdapter
     private String _playlistName;
     private List<BaseAudioTrack> _tracks;
     private boolean _isPlaylist;
+    
+    private @NonNull PlaylistListFavoritesChecker _favoritesChecker;
 
     private HashSet<View> _listViews = new HashSet<>();
 
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
     
-    public PlaylistListAdapter(@NonNull Context context, @NonNull BaseAudioPlaylist playlist)
+    public PlaylistListAdapter(@NonNull Context context, @NonNull BaseAudioPlaylist playlist, @Nullable PlaylistListFavoritesChecker checker)
     {
         this._context = context;
         this._playlistName = playlist.getName();
         this._tracks = playlist.getTracks();
         this._isPlaylist = !playlist.isAlbum();
+        this._favoritesChecker = checker != null ? checker : new DummyFavoritesChecker();
     }
     
     public int getCount()
@@ -157,6 +160,14 @@ class PlaylistListAdapter extends BaseAdapter
 
         duration.setText(dataDuration);
         
+        ImageView favoriteIcon = checkNotNull((ImageView)listItem.findViewById(R.id.favoriteIcon), "Base adapter is expecting a valid image view");
+        
+        if (_favoritesChecker.isMarkedFavorite(item)) {
+            favoriteIcon.setVisibility(View.VISIBLE);
+        } else {
+            favoriteIcon.setVisibility(View.GONE);
+        }
+        
         // Select playing track
         boolean isPlayingTrack = false;
 
@@ -247,6 +258,12 @@ class PlaylistListAdapter extends BaseAdapter
         {
             View child = iterator.next();
             child.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+        }
+    }
+    
+    class DummyFavoritesChecker implements PlaylistListFavoritesChecker {
+        public boolean isMarkedFavorite(@NonNull BaseAudioTrack track) {
+            return false;
         }
     }
 }
