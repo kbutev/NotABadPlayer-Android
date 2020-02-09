@@ -34,13 +34,19 @@
                 android:layout_marginLeft="2dp"
                 android:orientation="vertical">
                 
-                <TextView
-                    android:id="@+id/labelTitle"
+                <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/player_nothing_playing"
-                    android:textAppearance="@style/QuickPlayerText"
-                    android:singleLine="true"/>
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/labelTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/player_nothing_playing"
+                        android:textAppearance="@style/QuickPlayerText"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"/>
+                </FrameLayout>
                 
                 <LinearLayout
                     android:layout_width="wrap_content"

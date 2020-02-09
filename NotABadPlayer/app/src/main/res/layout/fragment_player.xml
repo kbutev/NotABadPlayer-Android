@@ -94,7 +94,9 @@
             android:layout_height="wrap_content"
             android:textSize="24dp"
             android:textAppearance="@style/PlayerTitleText"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"/>
         <TextView
             android:id="@+id/songAlbum"
             android:layout_width="wrap_content"
