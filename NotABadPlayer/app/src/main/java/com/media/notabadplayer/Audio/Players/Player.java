@@ -123,7 +123,7 @@ public class Player implements AudioPlayer {
             }
 
             // Restore audio state here
-            restorePlayerStateFromStorage(true);
+            restorePlayerStateFromStorage();
             restorePlayHistoryFromStorage();
 
             // Alert observers of the current state
@@ -164,7 +164,7 @@ public class Player implements AudioPlayer {
         return new AudioPlayerDummy(observers);
     }
 
-    private void restorePlayerStateFromStorage(boolean pause)
+    private void restorePlayerStateFromStorage()
     {
         GeneralStorage storage = GeneralStorage.getShared();
 
@@ -178,17 +178,11 @@ public class Player implements AudioPlayer {
         if (playlist != null)
         {
             try {
-                playPlaylist(playlist);
+                playPlaylistAndPauseImmediately(playlist);
             } catch (Exception e) {
                 Log.v(Player.class.getCanonicalName(), "Failed to restore the player state from storage.");
                 return;
             }
-        }
-
-        // Start player as paused?
-        if (pause && playlist != null)
-        {
-            pause();
         }
 
         // Restore play position
@@ -245,6 +239,11 @@ public class Player implements AudioPlayer {
     public void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception
     {
         getPlayer().playPlaylist(playlist);
+    }
+
+    @Override
+    public void playPlaylistAndPauseImmediately(@NonNull BaseAudioPlaylist playlist) throws Exception {
+        getPlayer().playPlaylistAndPauseImmediately(playlist);
     }
 
     @Override

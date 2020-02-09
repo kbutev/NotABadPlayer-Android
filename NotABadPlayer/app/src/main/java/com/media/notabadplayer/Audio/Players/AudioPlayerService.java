@@ -185,23 +185,37 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     }
 
     @Override
-    public synchronized void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception
+    public void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception
     {
-        // Synchronized: make sure only one client enters this at a time, to make sure that the player
-        // and player service are synchronized
-        
+        playPlaylist(playlist, false);
+    }
+
+    @Override
+    public void playPlaylistAndPauseImmediately(@NonNull BaseAudioPlaylist playlist) throws Exception {
+        playPlaylist(playlist, true);
+    }
+
+    private void playPlaylist(@NonNull BaseAudioPlaylist playlist, boolean pauseImmediately) throws Exception {
         MutableAudioPlaylist currentPlaylist = getSafeMutablePlaylist();
         BaseAudioTrack previousTrack = currentPlaylist != null ? currentPlaylist.getPlayingTrack() : null;
 
-        playTrack(playlist.getPlayingTrack(), previousTrack, true);
+        playTrack(playlist.getPlayingTrack(), previousTrack, pauseImmediately);
 
         SafeMutableAudioPlaylist newPlaylist = SafeMutableAudioPlaylist.build(AudioPlaylistBuilder.buildMutableFromImmutable(playlist));
         setSafeMutablePlaylist(newPlaylist);
         newPlaylist.playCurrent();
     }
 
-    private void playTrack(@NonNull BaseAudioTrack newTrack, @Nullable BaseAudioTrack previousTrack, boolean usePlayHistory) throws Exception
+    private void playTrack(@NonNull BaseAudioTrack newTrack, @Nullable BaseAudioTrack previousTrack) throws Exception
     {
+        playTrack(newTrack, previousTrack, false);
+    }
+
+    private synchronized void playTrack(@NonNull BaseAudioTrack newTrack, @Nullable BaseAudioTrack previousTrack, boolean pauseImmediately) throws Exception
+    {
+        // Synchronized: make sure only one client enters this at a time, to make sure that the player
+        // and player service are synchronized
+        
         boolean isPlaying = _player.isPlaying();
         
         Uri path = Uri.parse(Uri.decode(newTrack.getFilePath()));
@@ -213,6 +227,10 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             _player.setDataSource(getContext(), path);
             _player.prepare();
             _player.start();
+            
+            if (pauseImmediately) {
+                _player.pause();
+            }
         }
         catch (Exception e)
         {
@@ -229,7 +247,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
                     _player.prepare();
                     _player.start();
                     
-                    if (!isPlaying)
+                    if (pauseImmediately || !isPlaying)
                     {
                         _player.pause();
                     }
@@ -247,14 +265,15 @@ public class AudioPlayerService extends Service implements AudioPlayer {
 
         Log.v(AudioPlayer.class.getCanonicalName(), "Playing track: " + newTrack.getTitle());
 
-        if (usePlayHistory)
-        {
-            _playHistory.addTrack(newTrack);
-        }
+        _playHistory.addTrack(newTrack);
 
         _observers.onPlay(newTrack);
         
         _notificationCenter.showNotificationForPlayingTrack(newTrack, true);
+
+        if (pauseImmediately) {
+            _observers.onPause(newTrack);
+        }
     }
 
     @Override
@@ -381,7 +400,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing next track...");
 
             try {
-                playTrack(playlist.getPlayingTrack(), previousTrack, true);
+                playTrack(playlist.getPlayingTrack(), previousTrack);
             } catch (Exception e) {
                 Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play next, " + e.toString());
                 playlist.goToTrack(previousTrack);
@@ -418,7 +437,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing previous track...");
 
             try {
-                playTrack(playlist.getPlayingTrack(), previousTrack, true);
+                playTrack(playlist.getPlayingTrack(), previousTrack);
             } catch (Exception e) {
                 Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play previous, " + e.toString());
                 playlist.goToTrack(previousTrack);
@@ -455,7 +474,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing next track based on play order...");
 
             try {
-                playTrack(playlist.getPlayingTrack(), previousTrack, true);
+                playTrack(playlist.getPlayingTrack(), previousTrack);
             } catch (Exception e) {
                 Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play next based on play order, " + e.toString());
                 playlist.goToTrack(previousTrack);
@@ -492,7 +511,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             Log.v(AudioPlayer.class.getCanonicalName(), "Playing random track...");
 
             try {
-                playTrack(playlist.getPlayingTrack(), previousTrack, true);
+                playTrack(playlist.getPlayingTrack(), previousTrack);
             } catch (Exception e) {
                 Log.v(AudioPlayer.class.getCanonicalName(), "Error: cannot play random, " + e.toString());
                 playlist.goToTrack(previousTrack);

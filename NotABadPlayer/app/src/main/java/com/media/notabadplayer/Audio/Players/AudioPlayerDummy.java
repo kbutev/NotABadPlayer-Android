@@ -58,6 +58,11 @@ public class AudioPlayerDummy implements AudioPlayer {
     public void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception {
 
     }
+
+    @Override
+    public void playPlaylistAndPauseImmediately(@NonNull BaseAudioPlaylist playlist) throws Exception {
+        
+    }
     
     @Override
     public void resume() {

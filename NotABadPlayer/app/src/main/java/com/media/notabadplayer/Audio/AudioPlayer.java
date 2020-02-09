@@ -16,6 +16,7 @@ public interface AudioPlayer
     AudioPlayOrder getPlayOrder();
     void setPlayOrder(AudioPlayOrder order);
     void playPlaylist(@NonNull BaseAudioPlaylist playlist) throws Exception;
+    void playPlaylistAndPauseImmediately(@NonNull BaseAudioPlaylist playlist) throws Exception;
     void resume();
     void pause();
     void stop();
