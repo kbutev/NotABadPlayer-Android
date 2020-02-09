@@ -91,15 +91,17 @@ public class FavoritesStorage {
         
         synchronized (_lock) {
             // Make sure the capacity is not exceeded
-            if (_items.size() > CAPACITY) {
+            int size = _items.size();
+            
+            if (size > CAPACITY) {
                 if (!forced) {
                     throw new RuntimeException("Capacity exceeded");
                 }
                 
-                _items.remove(0);
+                _items.remove(size-1);
             }
 
-            _items.add(item);
+            _items.add(0, item);
             
             _lastTimeUpdate = new Date();
         }
