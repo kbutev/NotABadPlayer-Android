@@ -156,7 +156,7 @@ class ListAdapter extends BaseAdapter
         if (uri != null)
         {
             cover.setImageURI(Uri.parse(uri));
-            setCoverScale(cover, 1);
+            cover.setScaleType(ImageView.ScaleType.FIT_XY);
         }
         else
         {
@@ -167,7 +167,7 @@ class ListAdapter extends BaseAdapter
     void setCoverImageNone(@NonNull ImageView cover) 
     {
         cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.cover_art_none));
-        setCoverScale(cover, 1);
+        cover.setScaleType(ImageView.ScaleType.FIT_XY);
     }
     
     boolean setCoverImageCustom(@NonNull ImageView cover, @NonNull BaseAudioPlaylist playlist)
@@ -175,17 +175,11 @@ class ListAdapter extends BaseAdapter
         // Favorites playlist has a specific image cover
         String favoritesName = cover.getResources().getString(R.string.playlist_name_favorites);
         if (playlist.getName().equals(favoritesName)) {
-            cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.shiny_star));
-            setCoverScale(cover, 0.5);
+            cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.shiny_star_small));
+            cover.setScaleType(ImageView.ScaleType.CENTER);
             return true;
         }
         
         return false;
-    }
-    
-    void setCoverScale(@NonNull ImageView cover, double scale)
-    {
-        cover.setScaleX((float)scale);
-        cover.setScaleY((float)scale);
     }
 }
