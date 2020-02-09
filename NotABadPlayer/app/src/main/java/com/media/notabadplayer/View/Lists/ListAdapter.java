@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Lists;
 
+import java.net.URI;
 import java.util.List;
 import android.content.Context;
 import android.net.Uri;
@@ -61,34 +62,11 @@ class ListAdapter extends BaseAdapter
         }
 
         BaseAudioPlaylist playlist = _playlists.get(position);
-        String artCover = "";
-        
-        if (playlist.size() > 0)
-        {
-            artCover = playlist.getTrack(0).getArtCover();
-        }
         
         View listItem = convertView;
         
         ImageView cover = listItem.findViewById(R.id.albumCover);
-        
-        if (!artCover.isEmpty())
-        {
-            String uri = Uri.decode(artCover);
-
-            if (uri != null)
-            {
-                cover.setImageURI(Uri.parse(uri));
-            }
-            else
-            {
-                cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.cover_art_none));
-            }
-        }
-        else
-        {
-            cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.cover_art_none));
-        }
+        setCoverImage(cover, playlist);
         
         TextView title = listItem.findViewById(R.id.title);
         title.setText(playlist.getName());
@@ -140,5 +118,74 @@ class ListAdapter extends BaseAdapter
         _editMode = false;
 
         notifyDataSetChanged();
+    }
+    
+    void setCoverImage(@NonNull ImageView cover, @NonNull BaseAudioPlaylist playlist) {
+        // Temporary playlists may have a "fixed" image cover, try to use that
+        if (playlist.isTemporary())
+        {
+            boolean success = setCoverImageCustom(cover, playlist);
+            
+            if (success) 
+            {
+                return;
+            }
+        }
+        
+        String artCover = "";
+
+        if (playlist.size() > 0)
+        {
+            artCover = playlist.getTrack(0).getArtCover();
+        }
+        
+        if (!artCover.isEmpty())
+        {
+            setCover(cover, artCover);
+        }
+        else
+        {
+            setCoverImageNone(cover);
+        }
+    }
+    
+    void setCover(@NonNull ImageView cover, @Nullable String artCover)
+    {
+        String uri = Uri.decode(artCover);
+
+        if (uri != null)
+        {
+            cover.setImageURI(Uri.parse(uri));
+            setCoverScale(cover, 1);
+        }
+        else
+        {
+            setCoverImageNone(cover);
+        }
+    }
+    
+    void setCoverImageNone(@NonNull ImageView cover) 
+    {
+        cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.cover_art_none));
+        setCoverScale(cover, 1);
+    }
+    
+    boolean setCoverImageCustom(@NonNull ImageView cover, @NonNull BaseAudioPlaylist playlist)
+    {
+        // Favorites playlist has a specific image cover
+        String favoritesName = cover.getResources().getString(R.string.playlist_name_favorites);
+        if (playlist.getName().equals(favoritesName)) {
+            cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.shiny_star));
+            setCoverScale(cover, 0.5);
+            return true;
+        }
+        
+        return false;
+    }
+    
+    void setCoverScale(@NonNull ImageView cover, double scale)
+    {
+        cover.setScaleX((float)scale);
+        cover.setScaleY((float)scale);
     }
 }
