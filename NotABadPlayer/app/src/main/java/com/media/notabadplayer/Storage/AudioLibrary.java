@@ -2,11 +2,13 @@ package com.media.notabadplayer.Storage;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
 import android.app.Application;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -387,8 +389,9 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     private @NonNull List<BaseAudioTrack> loadFavoriteTracks()
     {
         List<FavoriteStorageItem> favorites = GeneralStorage.getShared().favorites.getItems();
-        
+
         ArrayList<BaseAudioTrack> tracks = new ArrayList<>();
+        ArrayList<FavoriteItem> items = new ArrayList<>();
 
         String projections[] = fetchMediaStoreProjections();
 
@@ -404,41 +407,53 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         }
 
         BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
-        AudioLibraryColumnIndexes indexes = new AudioLibraryColumnIndexes(cursor);
+        ColumnIndexes indexes = new ColumnIndexes(cursor);
 
         while (cursor.moveToNext())
         {
             // Check for cap
-            if (tracks.size() >= FAVORITES_TRACK_CAPACITY)
+            if (items.size() >= FAVORITES_TRACK_CAPACITY)
             {
                 break;
             }
             
             // Build tracks whose path matches the path of the favorite item
             String path = cursor.getString(indexes.dataColumn);
-            
-            boolean pathMatch = false;
+
+            FavoriteStorageItem matchingFavorite = null;
             
             for (FavoriteStorageItem favorite : favorites) {
                 if (path.equals(favorite.trackPath)) {
-                    pathMatch = true;
+                    matchingFavorite = favorite;
                     break;
                 }
             }
             
-            if (!pathMatch) {
+            if (matchingFavorite == null) {
                 continue;
             }
             
             try {
                 BaseAudioTrack result = buildTrackFromCursor(cursor, node, indexes);
-                tracks.add(result);
+                items.add(new FavoriteItem(matchingFavorite, result));
             } catch (Exception e) {
 
             }
         }
 
         cursor.close();
+        
+        // Sort by favorite date
+        Collections.sort(items, new Comparator<FavoriteItem>() {
+            @Override
+            public int compare(FavoriteItem o1, FavoriteItem o2) {
+                return o2.favorite.dateFavorited.compareTo(o1.favorite.dateFavorited);
+            }
+        });
+        
+        for (FavoriteItem item : items) {
+            tracks.add(item.track);
+        }
         
         return tracks;
     }
@@ -480,7 +495,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         }
 
         BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
-        AudioLibraryColumnIndexes indexes = new AudioLibraryColumnIndexes(cursor);
+        ColumnIndexes indexes = new ColumnIndexes(cursor);
 
         while (cursor.moveToNext())
         {
@@ -503,10 +518,10 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         return tracks;
     }
     
-    @NonNull BaseAudioTrack buildTrackFromCursor(@NonNull Cursor cursor, @Nullable BaseAudioTrackBuilderNode reusableNode, @Nullable AudioLibraryColumnIndexes cIndexes) throws Exception {
+    @NonNull BaseAudioTrack buildTrackFromCursor(@NonNull Cursor cursor, @Nullable BaseAudioTrackBuilderNode reusableNode, @Nullable ColumnIndexes cIndexes) throws Exception {
         BaseAudioTrackBuilderNode node = reusableNode != null ? reusableNode : AudioTrackBuilder.start();
 
-        AudioLibraryColumnIndexes indexes = cIndexes != null ? cIndexes : new AudioLibraryColumnIndexes(cursor);
+        ColumnIndexes indexes = cIndexes != null ? cIndexes : new ColumnIndexes(cursor);
 
         String filePath = cursor.getString(indexes.dataColumn);
         Date dateAdded = buildDateFromDatabaseLong(cursor.getLong(indexes.dateAddedColumn));
@@ -601,7 +616,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     }
     
     // Column indexes
-    class AudioLibraryColumnIndexes {
+    class ColumnIndexes {
         final int dataColumn;
         final int dateAddedColumn;
         final int dateModifiedColumn;
@@ -613,7 +628,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         final int durationColumn;
         final int bookmarkColumn;
 
-        AudioLibraryColumnIndexes(@NonNull Cursor cursor) {
+        ColumnIndexes(@NonNull Cursor cursor) {
             dataColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             dateAddedColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
             dateModifiedColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);
@@ -624,6 +639,17 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             trackNumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
             durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
             bookmarkColumn = cursor.getColumnIndex(MediaStore.Audio.Media.BOOKMARK);
+        }
+    }
+    
+    // Favorite item helper
+    class FavoriteItem {
+        final @NonNull FavoriteStorageItem favorite;
+        final @NonNull BaseAudioTrack track;
+
+        FavoriteItem(@NonNull FavoriteStorageItem favorite, @NonNull BaseAudioTrack track) {
+            this.favorite = favorite;
+            this.track = track;
         }
     }
 }
