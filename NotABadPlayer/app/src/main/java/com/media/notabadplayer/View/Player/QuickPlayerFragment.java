@@ -243,6 +243,13 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
         });
         
         updatePlayButtonState();
+
+        // Activate marquee
+        activateTitleMarquee(true);
+    }
+
+    private void activateTitleMarquee(boolean value) {
+        _labelTitle.setSelected(value);
     }
 
     private void updateSoftUIState()
@@ -293,7 +300,10 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
                 _imageCover.setImageDrawable(getResources().getDrawable(R.drawable.cover_art_none));
             }
 
-            _labelTitle.setText(playingTrack.getTitle());
+            if (!_labelTitle.getText().equals(playingTrack.getTitle())) {
+                _labelTitle.setText(playingTrack.getTitle());
+            }
+            
             _labelDurationTotal.setText(playingTrack.getDuration());
             
             updatePlayButtonState();

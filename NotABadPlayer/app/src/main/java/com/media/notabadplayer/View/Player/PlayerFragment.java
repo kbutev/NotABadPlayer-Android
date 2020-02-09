@@ -139,7 +139,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         
         return root;
     }
-
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -362,6 +362,13 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         
         // Update play order button state
         updatePlayOrderButtonState();
+        
+        // Activate marquee
+        activateTitleMarquee(true);
+    }
+
+    private void activateTitleMarquee(boolean value) {
+        _labelTitle.setSelected(value);
     }
 
     public void updateSoftUIState()
