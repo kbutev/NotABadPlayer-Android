@@ -129,6 +129,21 @@ public class FavoritesStorage {
         saveLocalStorage();
     }
     
+    public void unmarkOldestFavorite() {
+        updateLocalStorageIfNecessary();
+
+        synchronized (_lock) {
+            int size = _items.size();
+            
+            if (size > 0)
+            {
+                _items.remove(size-1);
+            }
+            
+            _lastTimeUpdate = new Date();
+        }
+    }
+    
     private void updateLocalStorageIfNecessary() {
         synchronized (_lock) {
             if (_favoritesLoaded) {
