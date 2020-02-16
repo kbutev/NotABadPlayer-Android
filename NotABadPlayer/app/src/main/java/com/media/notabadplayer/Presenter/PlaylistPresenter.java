@@ -11,6 +11,7 @@ import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
@@ -24,8 +25,9 @@ public class PlaylistPresenter implements BasePresenter {
     private final @NonNull BaseAudioPlaylist _playlist;
 
     private @NonNull AudioInfo _audioInfo;
+    private @NonNull OpenPlaylistOptions _options;
     
-    public PlaylistPresenter(@NonNull BaseAudioPlaylist playlist, @NonNull AudioInfo audioInfo)
+    public PlaylistPresenter(@NonNull BaseAudioPlaylist playlist, @NonNull AudioInfo audioInfo, @NonNull OpenPlaylistOptions options)
     {
         // Sort playlist
         // Sort only playlists of type album
@@ -35,6 +37,7 @@ public class PlaylistPresenter implements BasePresenter {
         _playlist = sortedPlaylist;
 
         _audioInfo = audioInfo;
+        _options = options;
     }
 
     @Override
