@@ -1,7 +1,6 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.media.notabadplayer.Utilities.StringUtilities;
 import java.io.IOException;
@@ -22,7 +21,11 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     public double durationInSeconds;
 
     private @NonNull AudioTrackSource source;
-    private @Nullable AudioTrackSource originalSource;
+    private @NonNull AudioTrackSource originalSource;
+    
+    // If the sources are set to a dummy value, this is true.
+    // The only case of this is when building with default constructor.
+    private boolean sourceIsDummy = false;
 
     public @NonNull String lyrics;
     public int numberOfTimesPlayed;
@@ -38,7 +41,8 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
         artCover = "";
 
         source = AudioTrackSource.createAlbumSource("");
-        originalSource = null;
+        originalSource = AudioTrackSource.createAlbumSource("");
+        sourceIsDummy = true;
         
         lyrics = "";
         date = AudioTrackDateBuilder.buildDefault();
@@ -59,6 +63,10 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
 
         source = prototype.getSource();
         originalSource = prototype.getOriginalSource();
+        
+        if (prototype instanceof AudioTrackV1) {
+            sourceIsDummy = ((AudioTrackV1)prototype).sourceIsDummy;
+        }
 
         lyrics = prototype.getLyrics();
         numberOfTimesPlayed = prototype.getNumberOfTimesPlayed();
@@ -97,10 +105,12 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     {
         this.source = source;
         
-        if (this.originalSource == null)
+        if (sourceIsDummy)
         {
-            this.originalSource = this.source;
+            originalSource = this.source;
         }
+        
+        sourceIsDummy = false;
     }
 
     // # BaseAudioTrack
