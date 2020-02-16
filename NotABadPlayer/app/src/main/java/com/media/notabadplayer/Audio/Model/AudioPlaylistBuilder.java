@@ -1,6 +1,7 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +63,13 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
     private @NonNull String name;
     private @NonNull List<BaseAudioTrack> tracks;
     private boolean isPlaying;
-    private int playingTrackIndex;
+    private @Nullable BaseAudioTrack playingTrack = null;
     private boolean isTemporary;
 
     AudioPlaylistBuilderNode()
     {
         name = "";
         tracks = new ArrayList<>();
-        playingTrackIndex = 0;
         isTemporary = false;
     }
 
@@ -78,7 +78,7 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
         name = prototype.getName();
         tracks = prototype.getTracks();
         isPlaying = prototype.isPlaying();
-        playingTrackIndex = prototype.getPlayingTrackIndex();
+        playingTrack = prototype.getPlayingTrack();
         isTemporary = prototype.isTemporary();
     }
 
@@ -96,7 +96,7 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
             throw new IllegalArgumentException("Cannot build playlist with zero tracks");
         }
 
-        return new AudioPlaylistV1(name, tracks, playingTrackIndex, isPlaying, isTemporary);
+        return new AudioPlaylistV1(name, tracks, playingTrack, isPlaying, isTemporary);
     }
 
     @Override
@@ -122,21 +122,7 @@ class AudioPlaylistBuilderNode implements BaseAudioPlaylistBuilderNode {
     @Override
     public void setPlayingTrack(@NonNull BaseAudioTrack playingTrack)
     {
-        int index = tracks.indexOf(playingTrack);
-
-        if (index == -1)
-        {
-            this.playingTrackIndex = 0;
-            return;
-        }
-
-        this.playingTrackIndex = index;
-    }
-    
-    @Override
-    public void setPlayingTrackPosition(int trackIndex)
-    {
-        this.playingTrackIndex = trackIndex;
+        this.playingTrack = playingTrack;
     }
 
     @Override

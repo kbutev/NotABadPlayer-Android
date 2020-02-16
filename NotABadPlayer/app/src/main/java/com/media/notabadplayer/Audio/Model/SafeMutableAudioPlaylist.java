@@ -1,6 +1,8 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
+
 import java.util.List;
 
 import com.media.notabadplayer.Constants.AppSettings;
@@ -21,12 +23,20 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     public SafeMutableAudioPlaylist(@NonNull MutableAudioPlaylist prototype) throws Exception {
         _write = AudioPlaylistBuilder.buildMutableFromImmutable(prototype);
         _read = AudioPlaylistBuilder.buildMutableFromImmutable(prototype);
+
+        if (!_read.getPlayingTrack().getTitle().equals(_write.getPlayingTrack().getTitle())) {
+            Log.v(SafeMutableAudioPlaylist.class.getCanonicalName(), "Failed to update read playlist, error: " );
+        }
     }
 
     public @NonNull MutableAudioPlaylist copy()
     {
         synchronized (_lock)
         {
+            if (!_read.getPlayingTrack().getTitle().equals(_write.getPlayingTrack().getTitle())) {
+                Log.v(SafeMutableAudioPlaylist.class.getCanonicalName(), "Failed to update read playlist, error: " );
+            }
+            
             return _read;
         }
     }
@@ -125,7 +135,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.getName();
+            return _write.getName();
         }
     }
 
@@ -134,7 +144,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.size();
+            return _write.size();
         }
     }
 
@@ -143,7 +153,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.isPlaying();
+            return _write.isPlaying();
         }
     }
 
@@ -153,7 +163,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.getTracks();
+            return _write.getTracks();
         }
     }
 
@@ -163,7 +173,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.getTrack(index);
+            return _write.getTrack(index);
         }
     }
 
@@ -172,7 +182,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.hasTrack(track);
+            return _write.hasTrack(track);
         }
     }
 
@@ -181,7 +191,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.getPlayingTrackIndex();
+            return _write.getPlayingTrackIndex();
         }
     }
 
@@ -191,7 +201,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.getPlayingTrack();
+            return _write.getPlayingTrack();
         }
     }
 
@@ -200,7 +210,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.isPlayingFirstTrack();
+            return _write.isPlayingFirstTrack();
         }
     }
 
@@ -209,7 +219,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.isPlayingLastTrack();
+            return _write.isPlayingLastTrack();
         }
     }
 
@@ -218,7 +228,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.isAlbum();
+            return _write.isAlbum();
         }
     }
 
@@ -227,7 +237,7 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.isTemporary();
+            return _write.isTemporary();
         }
     }
 
@@ -237,16 +247,23 @@ public class SafeMutableAudioPlaylist implements MutableAudioPlaylist {
     {
         synchronized (_lock)
         {
-            return _read.sortedPlaylist(sorting);
+            return _write.sortedPlaylist(sorting);
         }
     }
 
     private void updateReadPlaylist()
     {
         try {
-            _read = AudioPlaylistBuilder.buildMutableFromImmutable(_write);
+            synchronized (_lock)
+            {
+                _read = AudioPlaylistBuilder.buildMutableFromImmutable(_write);
+                
+                if (!_read.getPlayingTrack().getTitle().equals(_write.getPlayingTrack().getTitle())) {
+                    Log.v(SafeMutableAudioPlaylist.class.getCanonicalName(), "Failed to update read playlist, error: " );
+                }
+            }
         } catch (Exception e) {
-
+            Log.v(SafeMutableAudioPlaylist.class.getCanonicalName(), "Failed to update read playlist, error: " + e.toString());
         }
     }
 }
