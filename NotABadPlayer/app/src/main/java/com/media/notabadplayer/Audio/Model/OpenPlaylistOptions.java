@@ -34,4 +34,12 @@ public class OpenPlaylistOptions {
         options.displayTrackNumber = false;
         return options;
     }
+
+    public static @NonNull OpenPlaylistOptions buildRecentlyPlayed()
+    {
+        OpenPlaylistOptions options = new OpenPlaylistOptions();
+        options.displayDescriptionAlbumTitle = true;
+        options.displayTrackNumber = false;
+        return options;
+    }
 }
