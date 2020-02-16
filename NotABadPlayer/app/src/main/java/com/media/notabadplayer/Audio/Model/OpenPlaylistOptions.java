@@ -1,6 +1,8 @@
 package com.media.notabadplayer.Audio.Model;
 
 public class OpenPlaylistOptions {
+    public boolean openOriginalSourcePlaylist = false;
+    
     // Interface
     public boolean displayHeader = true;
     public boolean displayFavoriteIcon = true;
@@ -16,6 +18,7 @@ public class OpenPlaylistOptions {
     public static OpenPlaylistOptions buildFavorites()
     {
         OpenPlaylistOptions options = new OpenPlaylistOptions();
+        options.openOriginalSourcePlaylist = true;
         options.displayDescriptionAlbumTitle = true;
         return options;
     }

@@ -91,6 +91,7 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     @Override
     public void reset() {
         this.result = new AudioTrackV1(template);
+        
         this.resultDateAdded = this.result.getDate().getAdded();
         this.resultDateModified = this.result.getDate().getModified();
         this.resultDateFirstPlayed = this.result.getDate().getFirstPlayed();
@@ -138,8 +139,8 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     }
 
     @Override
-    public void setSource(AudioTrackSource source) {
-        this.result.source = source;
+    public void setSource(@NonNull AudioTrackSource source) {
+        this.result.setSource(source);
     }
 
     @Override
