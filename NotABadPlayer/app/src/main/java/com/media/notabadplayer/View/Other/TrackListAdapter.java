@@ -39,6 +39,8 @@ public abstract class TrackListAdapter extends BaseAdapter {
 
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
+    
+    private Player _player = Player.getShared();
 
     public TrackListAdapter(@NonNull Context context, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options, @Nullable TrackListFavoritesChecker checker)
     {
@@ -177,7 +179,7 @@ public abstract class TrackListAdapter extends BaseAdapter {
         // Select playing track
         boolean isPlayingTrack = false;
 
-        BaseAudioPlaylist playlist = Player.getShared().getPlaylist();
+        BaseAudioPlaylist playlist = _player.getPlaylist();
 
         if (playlist != null)
         {
