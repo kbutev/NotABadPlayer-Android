@@ -24,6 +24,7 @@ import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.R;
@@ -447,7 +448,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
         // When not on the settings tab, let the view handle the request
         if (_tabNavigation.currentTabID != R.id.navigation_settings)
@@ -460,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 
                 if (fragment.getView() != null)
                 {
-                    view.openPlaylistScreen(_audioLibrary, playlist);
+                    view.openPlaylistScreen(_audioLibrary, playlist, options);
                 }
             }
         }

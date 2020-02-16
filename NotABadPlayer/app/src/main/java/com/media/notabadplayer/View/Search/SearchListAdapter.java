@@ -21,22 +21,21 @@ import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.UIAnimations;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
 
 public class SearchListAdapter extends BaseAdapter
 {
     private Context _context;
     private List<BaseAudioTrack> _tracks;
 
-    private @NonNull SearchListFavoritesChecker _favoritesChecker;
+    private @NonNull TrackListFavoritesChecker _favoritesChecker;
     
     private HashSet<View> _listViews = new HashSet<>();
 
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
 
-    public SearchListAdapter(@NonNull Context context, @NonNull List<BaseAudioTrack> tracks, @Nullable SearchListFavoritesChecker checker)
+    public SearchListAdapter(@NonNull Context context, @NonNull List<BaseAudioTrack> tracks, @Nullable TrackListFavoritesChecker checker)
     {
         this._context = context;
         this._tracks = tracks;
@@ -87,14 +86,14 @@ public class SearchListAdapter extends BaseAdapter
             cover.setImageDrawable(parent.getResources().getDrawable(R.drawable.cover_art_none));
         }
         
-        TextView title = listItem.findViewById(R.id.title);
-        title.setText(item.getTitle());
+        TextView titleText = listItem.findViewById(R.id.titleText);
+        titleText.setText(item.getTitle());
 
-        TextView albumTitle = listItem.findViewById(R.id.albumTitle);
-        albumTitle.setText(item.getAlbumTitle());
+        TextView albumTitleText = listItem.findViewById(R.id.albumTitleText);
+        albumTitleText.setText(item.getAlbumTitle());
 
-        TextView duration = listItem.findViewById(R.id.duration);
-        duration.setText(item.getDuration());
+        TextView descriptionText = listItem.findViewById(R.id.descriptionText);
+        descriptionText.setText(item.getDuration());
 
         ImageView favoriteIcon = listItem.findViewById(R.id.favoriteIcon);
 
@@ -182,7 +181,7 @@ public class SearchListAdapter extends BaseAdapter
         }
     }
 
-    class DummyFavoritesChecker implements SearchListFavoritesChecker {
+    class DummyFavoritesChecker implements TrackListFavoritesChecker {
         public boolean isMarkedFavorite(@NonNull BaseAudioTrack track) {
             return false;
         }

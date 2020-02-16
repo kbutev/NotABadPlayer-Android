@@ -32,6 +32,7 @@ import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -43,10 +44,11 @@ import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
-public class SearchFragment extends Fragment implements BaseView, AudioPlayerObserver, SearchListFavoritesChecker
+public class SearchFragment extends Fragment implements BaseView, AudioPlayerObserver, TrackListFavoritesChecker
 {
     Player _player = Player.getShared();
     
@@ -238,7 +240,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
         FragmentActivity a = getActivity();
 
@@ -265,7 +267,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
         }
         
         BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo);
-        PlaylistFragment view = PlaylistFragment.newInstance(presenter);
+        PlaylistFragment view = PlaylistFragment.newInstance(presenter, options);
         presenter.setView(view);
 
         FragmentTransaction transaction = manager.beginTransaction();

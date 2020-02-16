@@ -28,6 +28,7 @@ import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.R;
@@ -141,7 +142,7 @@ public class AlbumsFragment extends Fragment implements BaseView
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
         FragmentActivity a = getActivity();
 
@@ -168,7 +169,7 @@ public class AlbumsFragment extends Fragment implements BaseView
         }
         
         BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo);
-        PlaylistFragment view = PlaylistFragment.newInstance(presenter);
+        PlaylistFragment view = PlaylistFragment.newInstance(presenter, options);
         presenter.setView(view);
 
         FragmentTransaction transaction = manager.beginTransaction();

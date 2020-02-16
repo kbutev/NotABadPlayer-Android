@@ -14,6 +14,7 @@ import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
@@ -191,7 +192,9 @@ public class ListsPresenter implements BasePresenter
 
         Log.v(ListsPresenter.class.getCanonicalName(), "Open playlist '" + playlist.getName() + "'");
 
-        _view.openPlaylistScreen(_audioInfo, playlist);
+        OpenPlaylistOptions appropriateOptions = getAppropriateOpenOptions(playlist);
+
+        _view.openPlaylistScreen(_audioInfo, playlist, appropriateOptions);
     }
 
     @Override
@@ -356,5 +359,19 @@ public class ListsPresenter implements BasePresenter
         }
 
         return null;
+    }
+    
+    private @NonNull OpenPlaylistOptions getAppropriateOpenOptions(@NonNull BaseAudioPlaylist playlist) 
+    {
+        if (!playlist.isTemporary()) {
+            return OpenPlaylistOptions.buildDefault();
+        }
+        
+        if (playlist.getName().equals(_favoritesPlaylistName)) 
+        {
+            return OpenPlaylistOptions.buildFavorites();
+        }
+
+        return OpenPlaylistOptions.buildDefault();
     }
 }

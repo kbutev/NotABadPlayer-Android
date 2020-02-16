@@ -23,6 +23,7 @@ import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -35,9 +36,10 @@ import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 
-public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient, PlaylistListFavoritesChecker
+public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient, TrackListFavoritesChecker
 {
     Player _player = Player.getShared();
     
@@ -49,15 +51,18 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     
     private TextView _albumTitleHeader;
     
+    private @NonNull OpenPlaylistOptions _adapterOptions;
+    
     public PlaylistFragment()
     {
-        
+        _adapterOptions = OpenPlaylistOptions.buildDefault();
     }
     
-    public static @NonNull PlaylistFragment newInstance(@NonNull BasePresenter presenter)
+    public static @NonNull PlaylistFragment newInstance(@NonNull BasePresenter presenter, @NonNull OpenPlaylistOptions options)
     {
         PlaylistFragment fragment = new PlaylistFragment();
         fragment._presenter = presenter;
+        fragment._adapterOptions = options;
         return fragment;
     }
 
@@ -204,7 +209,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
 
     }
@@ -226,7 +231,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         }
 
         // Table update
-        _tableAdapter = new PlaylistListAdapter(context, playlist, this);
+        _tableAdapter = new PlaylistListAdapter(context, playlist, _adapterOptions, this);
         _table.setAdapter(_tableAdapter);
 
         // Update album title header

@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/trackNum"
+            android:id="@+id/trackNumText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAppearance="@style/TrackNumber"
@@ -31,7 +31,7 @@
         android:layout_gravity="center_vertical">
         
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/ListItemText"
@@ -50,7 +50,7 @@
                 android:src="@drawable/shiny_star"
                 android:visibility="gone" />
             <TextView
-                android:id="@+id/duration"
+                android:id="@+id/descriptionText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/ListItemSubtext"
