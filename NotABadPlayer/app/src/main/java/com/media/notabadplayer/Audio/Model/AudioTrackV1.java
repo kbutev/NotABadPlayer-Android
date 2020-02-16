@@ -1,6 +1,8 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.media.notabadplayer.Utilities.StringUtilities;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,7 +21,8 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
 
     public double durationInSeconds;
 
-    public @NonNull AudioTrackSource source;
+    private @NonNull AudioTrackSource source;
+    private @Nullable AudioTrackSource originalSource;
 
     public @NonNull String lyrics;
     public int numberOfTimesPlayed;
@@ -35,6 +38,7 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
         artCover = "";
 
         source = AudioTrackSource.createAlbumSource("");
+        originalSource = null;
         
         lyrics = "";
         date = AudioTrackDateBuilder.buildDefault();
@@ -54,6 +58,7 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
         durationInSeconds = prototype.getDurationInSeconds();
 
         source = prototype.getSource();
+        originalSource = prototype.getOriginalSource();
 
         lyrics = prototype.getLyrics();
         numberOfTimesPlayed = prototype.getNumberOfTimesPlayed();
@@ -84,6 +89,18 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     private void readObject(@NonNull ObjectInputStream in) throws IOException,ClassNotFoundException 
     {
         in.defaultReadObject();
+    }
+    
+    // # Setters
+    
+    public void setSource(@NonNull AudioTrackSource source)
+    {
+        this.source = source;
+        
+        if (this.originalSource == null)
+        {
+            this.originalSource = this.source;
+        }
     }
 
     // # BaseAudioTrack
@@ -136,6 +153,11 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     @Override
     public @NonNull AudioTrackSource getSource() {
         return source;
+    }
+
+    @Override
+    public @NonNull AudioTrackSource getOriginalSource() {
+        return originalSource;
     }
 
     @Override

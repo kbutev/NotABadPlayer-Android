@@ -2,12 +2,14 @@ package com.media.notabadplayer.Presenter;
 
 import java.util.List;
 
+import android.media.MediaRecorder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
+import com.media.notabadplayer.Audio.Model.AudioTrackSource;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
@@ -223,10 +225,24 @@ public class PlaylistPresenter implements BasePresenter {
 
     private void playNewTrack(@NonNull BaseAudioTrack clickedTrack)
     {
+        // The playlist that will be played would be either the given playlist to the presenter
+        // or the source playlist of the clicked track
+        BaseAudioPlaylist playlistToBuild = _playlist;
+        
+        if (_options.openOriginalSourcePlaylist) {
+            AudioTrackSource originalSource = clickedTrack.getOriginalSource();
+            BaseAudioPlaylist source = originalSource.getSourcePlaylist(_audioInfo, clickedTrack);
+            
+            if (source != null)
+            {
+                playlistToBuild = source;
+            }
+        }
+        
         BaseAudioPlaylist playlistToPlay;
         
         try {
-            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start(_playlist);
+            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start(playlistToBuild);
             node.setPlayingTrack(clickedTrack);
 
             // Try to build

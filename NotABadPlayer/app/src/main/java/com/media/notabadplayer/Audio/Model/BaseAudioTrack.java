@@ -15,7 +15,13 @@ public interface BaseAudioTrack extends Serializable {
 
     double getDurationInSeconds();
     @NonNull String getDuration();
+    
+    // Describes the playlist of which this track is part of.
     @NonNull AudioTrackSource getSource();
+    
+    // If the track was moved from one playlist to another, it's @source value may have changed.
+    // This value never changes.
+    @NonNull AudioTrackSource getOriginalSource();
 
     @NonNull String getLyrics();
 
