@@ -377,6 +377,11 @@ public class ListsPresenter implements BasePresenter
             return OpenPlaylistOptions.buildRecentlyAdded();
         }
 
+        if (playlist.getName().equals(_historyPlaylistName))
+        {
+            return OpenPlaylistOptions.buildRecentlyPlayed();
+        }
+
         return OpenPlaylistOptions.buildDefault();
     }
 }
