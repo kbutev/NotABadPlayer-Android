@@ -372,6 +372,11 @@ public class ListsPresenter implements BasePresenter
             return OpenPlaylistOptions.buildFavorites();
         }
 
+        if (playlist.getName().equals(_recentlyAddedPlaylistName))
+        {
+            return OpenPlaylistOptions.buildRecentlyAdded();
+        }
+
         return OpenPlaylistOptions.buildDefault();
     }
 }
