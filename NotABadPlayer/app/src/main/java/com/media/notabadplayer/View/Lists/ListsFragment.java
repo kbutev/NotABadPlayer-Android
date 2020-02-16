@@ -264,7 +264,7 @@ public class ListsFragment extends Fragment implements BaseView {
             manager.popBackStackImmediate();
         }
 
-        BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo);
+        BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo, options);
         PlaylistFragment view = PlaylistFragment.newInstance(presenter, options);
         presenter.setView(view);
 

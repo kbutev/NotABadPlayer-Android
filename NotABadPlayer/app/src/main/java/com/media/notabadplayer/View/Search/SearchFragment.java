@@ -266,7 +266,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
             manager.popBackStackImmediate();
         }
         
-        BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo);
+        BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo, options);
         PlaylistFragment view = PlaylistFragment.newInstance(presenter, options);
         presenter.setView(view);
 
