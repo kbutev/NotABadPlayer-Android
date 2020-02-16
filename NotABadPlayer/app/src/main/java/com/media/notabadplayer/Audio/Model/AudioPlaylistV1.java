@@ -1,6 +1,8 @@
 package com.media.notabadplayer.Audio.Model;
 
+import android.media.AudioTrack;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -79,11 +81,17 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
     
     public AudioPlaylistV1(@NonNull String name,
                            @NonNull List<BaseAudioTrack> tracks,
-                           int startWithTrackIndex,
+                           @Nullable BaseAudioTrack playingTrack,
                            boolean startPlaying,
                            boolean temporaryList) throws Exception
     {
         this(name, tracks);
+        
+        int startWithTrackIndex = 0;
+        
+        if (playingTrack != null) {
+            startWithTrackIndex = tracks.indexOf(playingTrack);
+        }
 
         if (startWithTrackIndex < 0 || startWithTrackIndex >= tracks.size())
         {
@@ -131,7 +139,7 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
     @Override
     public @NonNull List<BaseAudioTrack> getTracks()
     {
-        return _tracks;
+        return new ArrayList<>(_tracks);
     }
 
     @Override
@@ -206,6 +214,7 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
         {
             _playing = true;
             _playingTrackPosition = index;
+            Log.v(AudioPlaylistV1.class.getCanonicalName(), "Go to track at index " + String.valueOf(index));
         }
         else
         {
@@ -311,9 +320,9 @@ public class AudioPlaylistV1 implements MutableAudioPlaylist, Serializable
     public @NonNull BaseAudioPlaylist sortedPlaylist(AppSettings.TrackSorting sorting)
     {
         List<BaseAudioTrack> tracks = MediaSorting.sortTracks(getTracks(), sorting);
-
+        
         try {
-            return new AudioPlaylistV1(getName(), tracks, _playingTrackPosition, _playing, _temporary);
+            return new AudioPlaylistV1(getName(), tracks, getPlayingTrack(), _playing, _temporary);
         } catch (Exception e) {
             // This should never fail, but we need to handle this case
             return this;
