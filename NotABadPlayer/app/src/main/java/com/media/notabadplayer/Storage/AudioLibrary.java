@@ -436,6 +436,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             try {
                 BaseAudioTrack result = buildTrackFromCursor(cursor, node, indexes);
                 items.add(new FavoriteItem(matchingFavorite, result));
+                node.reset();
             } catch (Exception e) {
 
             }
