@@ -24,6 +24,7 @@ import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
@@ -543,7 +544,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
     
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
 
     }

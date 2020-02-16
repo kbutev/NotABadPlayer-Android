@@ -1,9 +1,9 @@
-package com.media.notabadplayer.View.Playlist;
+package com.media.notabadplayer.View.Other;
 
 import android.support.annotation.NonNull;
 
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 
-interface PlaylistListFavoritesChecker {
+public interface TrackListFavoritesChecker {
     boolean isMarkedFavorite(@NonNull BaseAudioTrack track);
 }

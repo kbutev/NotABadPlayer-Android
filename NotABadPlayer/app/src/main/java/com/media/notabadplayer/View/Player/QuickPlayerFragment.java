@@ -24,6 +24,7 @@ import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -382,12 +383,12 @@ public class QuickPlayerFragment extends Fragment implements BaseView, AudioPlay
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
         // Forward request to the application's root view
         if (_rootView != null)
         {
-            _rootView.openPlaylistScreen(audioInfo, playlist);
+            _rootView.openPlaylistScreen(audioInfo, playlist, options);
         }
     }
 

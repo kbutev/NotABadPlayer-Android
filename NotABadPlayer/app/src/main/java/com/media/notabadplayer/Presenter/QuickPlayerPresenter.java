@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
@@ -143,7 +144,7 @@ public class QuickPlayerPresenter implements BasePresenter
         
         if (currentlyPlayingPlaylist != null)
         {
-            _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist);
+            _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist, OpenPlaylistOptions.buildDefault());
         }
     }
 

@@ -14,6 +14,7 @@ import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -166,7 +167,7 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
         // Try to build
         try {
             BaseAudioPlaylist playlist = node.build();
-            _view.openPlaylistScreen(_audioInfo, playlist);
+            _view.openPlaylistScreen(_audioInfo, playlist, OpenPlaylistOptions.buildDefault());
         } catch (Exception e) {
             Log.v(AlbumsPresenter.class.getCanonicalName(), "Error: Failed to create a playlist for the clicked album track");
         }
