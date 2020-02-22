@@ -25,13 +25,12 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
-import com.media.notabadplayer.Audio.AudioPlayerObserver;
+import com.media.notabadplayer.Audio.QuickPlayerObserver;
+import com.media.notabadplayer.Audio.QuickPlayerService;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
-import com.media.notabadplayer.Utilities.LooperService;
-import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
@@ -39,7 +38,7 @@ import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 
-public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient, TrackListFavoritesChecker
+public class PlaylistFragment extends Fragment implements BaseView, QuickPlayerObserver, TrackListFavoritesChecker
 {
     Player _player = Player.getShared();
     
@@ -87,9 +86,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
 
         _presenter.start();
 
-        _player.observers.attach(this);
-
-        startLooping();
+        QuickPlayerService.getShared().attach(this);
     }
     
     @Override
@@ -128,9 +125,7 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     {
         super.onDestroy();
 
-        _player.observers.detach(this);
-
-        stopLooping();
+        QuickPlayerService.getShared().detach(this);
     }
     
     private void initUI()
@@ -186,16 +181,6 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
                 UIAnimations.getShared().animateFadeIn(getContext(), _albumTitleHeader);
             }
         }
-    }
-
-    private void startLooping()
-    {
-        LooperService.getShared().subscribe(this);
-    }
-
-    private void stopLooping()
-    {
-        LooperService.getShared().unsubscribe(this);
     }
 
     public void enableInteraction()
@@ -334,6 +319,20 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
     }
 
     @Override
+    public void updateTime(double currentTime, double totalDuration)
+    {
+        FragmentActivity a = getActivity();
+
+        if (a != null)
+        {
+            if (a.hasWindowFocus())
+            {
+                updateUIState();
+            }
+        }
+    }
+
+    @Override
     public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
     {
 
@@ -393,20 +392,6 @@ public class PlaylistFragment extends Fragment implements BaseView, AudioPlayerO
         AlertWindows.showAlert(context, R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
     }
 
-    @Override
-    public void loop()
-    {
-        FragmentActivity a = getActivity();
-
-        if (a != null)
-        {
-            if (a.hasWindowFocus())
-            {
-                updateUIState();
-            }
-        }
-    }
-    
     @Override
     public boolean isMarkedFavorite(@NonNull BaseAudioTrack track) 
     {

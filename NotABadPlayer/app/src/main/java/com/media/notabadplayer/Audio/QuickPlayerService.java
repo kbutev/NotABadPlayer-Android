@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Audio.Players;
+package com.media.notabadplayer.Audio;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -6,12 +6,11 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.common.base.Function;
-import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
-import com.media.notabadplayer.Audio.QuickPlayerObserver;
+import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Utilities.LooperClient;
+import com.media.notabadplayer.Utilities.LooperService;
 
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
@@ -58,6 +57,8 @@ public class QuickPlayerService implements AudioPlayerObserver, LooperClient {
         }
         
         _player.observers().attach(this);
+
+        LooperService.getShared().subscribe(this);
     }
 
     private ArrayList<QuickPlayerObserver> observersCopy() 
@@ -66,8 +67,8 @@ public class QuickPlayerService implements AudioPlayerObserver, LooperClient {
             return new ArrayList<>(_observers);
         }
     }
-    
-    void attach(@NonNull QuickPlayerObserver observer) 
+
+    public void attach(@NonNull QuickPlayerObserver observer) 
     {
         startIfNotStarted();
         
@@ -79,8 +80,8 @@ public class QuickPlayerService implements AudioPlayerObserver, LooperClient {
             _observers.add(observer);
         }
     }
-    
-    void detach(@NonNull QuickPlayerObserver observer)
+
+    public void detach(@NonNull QuickPlayerObserver observer)
     {
         synchronized (lock) {
             _observers.remove(observer);
@@ -224,6 +225,11 @@ public class QuickPlayerService implements AudioPlayerObserver, LooperClient {
     }
     
     private void performOnMain(@NonNull final Function<Void, Void> callback) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            callback.apply(null);
+            return;
+        }
+        
         Handler mainHandler = new Handler(Looper.getMainLooper());
 
         Runnable myRunnable = new Runnable() {
