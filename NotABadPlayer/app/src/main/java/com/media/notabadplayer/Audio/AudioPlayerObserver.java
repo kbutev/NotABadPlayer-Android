@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 
+// Note: Delegation may be performed on a background thread.
 public interface AudioPlayerObserver {
     void onPlayerPlay(@NonNull BaseAudioTrack current);
     void onPlayerFinish();

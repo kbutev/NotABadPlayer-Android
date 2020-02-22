@@ -1,7 +1,9 @@
 package com.media.notabadplayer.Audio;
 
+import android.support.annotation.NonNull;
+
 public interface AudioPlayerObservers
 {
-    void attach(AudioPlayerObserver observer);
-    void detach(AudioPlayerObserver observer);
+    void attach(@NonNull AudioPlayerObserver observer);
+    void detach(@NonNull AudioPlayerObserver observer);
 }

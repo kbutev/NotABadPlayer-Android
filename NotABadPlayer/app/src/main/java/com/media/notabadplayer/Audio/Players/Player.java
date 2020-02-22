@@ -384,27 +384,33 @@ public class Player implements AudioPlayer {
 
     public class Observers implements AudioPlayerObservers
     {
+        private final Object lock = new Object();
+        
         // Have a copy of all the attached observers so they can be transfered from the dummy player
         // to the real audio player service
         private ArrayList<AudioPlayerObserver> _observers = new ArrayList<>();
 
         @Override
-        public void attach(AudioPlayerObserver observer)
+        public void attach(@NonNull AudioPlayerObserver observer)
         {
             getPlayer().observers().attach(observer);
             
-            if (_observers.contains(observer))
-            {
-                return;
-            }
+            synchronized (lock) {
+                if (_observers.contains(observer))
+                {
+                    return;
+                }
 
-            _observers.add(observer);
+                _observers.add(observer);
+            }
         }
 
         @Override
-        public void detach(AudioPlayerObserver observer)
+        public void detach(@NonNull AudioPlayerObserver observer)
         {
-            _observers.remove(observer);
+            synchronized (lock) {
+                _observers.remove(observer);
+            }
             
             getPlayer().observers().detach(observer);
         }
