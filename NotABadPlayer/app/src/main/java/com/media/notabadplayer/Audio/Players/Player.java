@@ -5,10 +5,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import java.net.UnknownServiceException;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.common.util.concurrent.UncheckedExecutionException;
@@ -107,13 +110,20 @@ public class Player implements AudioPlayer {
         
         Log.v(Player.class.getCanonicalName(), "Player starting...");
 
+        // Start the audio service
+        try {
+            _serviceBinding.startService();
+        } catch (Exception e) {
+            Log.e(Player.class.getCanonicalName(), "Failed to start audio service, error: " + e.toString());
+            return;
+        }
+
         synchronized (lock)
         {
             _audioInfo = audioInfo;
         }
-        
-        // Start the audio service
-        _serviceBinding.startService();
+
+        Log.v(Player.class.getCanonicalName(), "Player started!");
     }
     
     private AudioPlayer getPlayer()
@@ -481,7 +491,9 @@ public class Player implements AudioPlayer {
     }
     
     private class AudioPlayerServiceBinding {
-        private boolean shouldUnbind;
+        private final Object lock = new Object();
+        
+        private boolean _shouldUnbind;
         
         private ServiceConnection connection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service)
@@ -503,40 +515,51 @@ public class Player implements AudioPlayer {
             }
         };
         
-        private void startService()
+        private void startService() throws Exception
         {
-            if (shouldUnbind)
-            {
-                Log.e(AudioPlayerService.class.getCanonicalName(), "No need to start audio service, its already running!");
-                return;
+            synchronized (lock) {
+                if (_shouldUnbind)
+                {
+                    Log.e(AudioPlayerService.class.getCanonicalName(), "No need to start audio service, its already running!");
+                    return;
+                }
             }
             
             Log.e(AudioPlayerService.class.getCanonicalName(), "Starting audio service...");
             
             Intent intent = new Intent(_application, AudioPlayerService.class);
-            
+
             _application.startService(intent);
 
-            if (_application.bindService(intent, connection, Context.BIND_AUTO_CREATE)) 
+            if (_application.bindService(intent, connection, Context.BIND_AUTO_CREATE))
             {
-                shouldUnbind = true;
-            } 
-            else 
+                synchronized (lock) {
+                    _shouldUnbind = true;
+                }
+            }
+            else
             {
-                Log.e(AudioPlayerService.class.getCanonicalName(), "Failed to start audio service.");
+                throw new UnknownServiceException("Binding failed.");
             }
         }
         
         private void stopService()
         {
-            if (shouldUnbind)
-            {
-                Log.e(AudioPlayerService.class.getCanonicalName(), "Stopping audio service...");
-                
-                _application.unbindService(connection);
-                Intent intent = new Intent(_application, AudioPlayerService.class);
-                _application.stopService(intent);
-                shouldUnbind = false;
+            synchronized (lock) {
+                if (!_shouldUnbind)
+                {
+                    return;
+                }
+            }
+
+            Log.e(AudioPlayerService.class.getCanonicalName(), "Stopping audio service...");
+
+            _application.unbindService(connection);
+            Intent intent = new Intent(_application, AudioPlayerService.class);
+            _application.stopService(intent);
+            
+            synchronized (lock) {
+                _shouldUnbind = false;
             }
         }
     }
