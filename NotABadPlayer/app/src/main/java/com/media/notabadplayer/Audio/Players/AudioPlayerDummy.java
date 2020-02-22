@@ -19,9 +19,9 @@ public class AudioPlayerDummy implements AudioPlayer {
     private final AudioPlayerObservers observers;
     private final AudioPlayerHistory playHistory = new AudioPlayerDummy.PlayHistory();
 
-    AudioPlayerDummy(@Nullable AudioPlayerObservers observers)
+    AudioPlayerDummy(@NonNull AudioPlayerObservers observers)
     {
-        this.observers = observers != null ? observers : new AudioPlayerDummy.Observers();
+        this.observers = observers;
     }
     
     @Override

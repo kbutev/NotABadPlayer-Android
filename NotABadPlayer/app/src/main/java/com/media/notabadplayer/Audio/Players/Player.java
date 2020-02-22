@@ -42,19 +42,32 @@ public class Player implements AudioPlayer {
     private final Object lock = new Object();
     
     private AudioPlayerServiceBinding _serviceBinding = new AudioPlayerServiceBinding();
-    private AudioPlayer _player = getPlayerDummy();
+    private @NonNull AudioPlayer _player;
     
     private Application _application;
     private AudioInfo _audioInfo;
 
-    public final Player.Observers observers = new Player.Observers();
-    public final Player.PlayHistory playHistory = new Player.PlayHistory();
+    public final @NonNull Player.Observers observers = new Player.Observers();
+    public final @NonNull Player.PlayHistory playHistory = new Player.PlayHistory();
     
     private Player()
     {
         Log.v(Player.class.getCanonicalName(), "Initializing...");
         _application = PlayerApplication.getShared();
+        _player = getPlayerDummy();
         Log.v(Player.class.getCanonicalName(), "Initialized!");
+    }
+    
+    private AudioPlayer getInnerPlayer() {
+        synchronized (lock) {
+            return _player;
+        }
+    }
+    
+    private void setInnerPlayer(@NonNull AudioPlayer player) {
+        synchronized (lock) {
+            _player = player;
+        }
     }
     
     public synchronized static Player getShared()
@@ -105,7 +118,7 @@ public class Player implements AudioPlayer {
     
     private AudioPlayer getPlayer()
     {
-        return _player;
+        return getInnerPlayer();
     }
 
     private void setPlayer(AudioPlayerService player)
@@ -114,12 +127,12 @@ public class Player implements AudioPlayer {
         {
             Log.v(Player.class.getCanonicalName(), "Audio service started!");
 
-            _player = player;
+            setInnerPlayer(player);
 
             // Transfer observers from the dummy player to the real player
-            for (AudioPlayerObserver observer : observers._observers)
+            for (AudioPlayerObserver observer : observers.observersCopy())
             {
-                _player.observers().attach(observer);
+                getInnerPlayer().observers().attach(observer);
             }
 
             // Restore audio state here
@@ -133,7 +146,7 @@ public class Player implements AudioPlayer {
             {
                 BaseAudioTrack track = playlist.getPlayingTrack();
 
-                for (AudioPlayerObserver observer : observers._observers)
+                for (AudioPlayerObserver observer : observers.observersCopy())
                 {
                     observer.onPlayerPause(track);
                 }
@@ -150,7 +163,7 @@ public class Player implements AudioPlayer {
         {
             Log.v(Player.class.getCanonicalName(), "Audio service has been terminated!");
 
-            _player = getPlayerDummy();
+            setInnerPlayer(getPlayerDummy());
         }
     }
 
@@ -386,15 +399,20 @@ public class Player implements AudioPlayer {
     {
         private final Object lock = new Object();
         
-        // Have a copy of all the attached observers so they can be transfered from the dummy player
-        // to the real audio player service
+        // Exists only to keep track of observers attaching themselves to the player before
+        // the player is initalized.
+        // When the real player inits, these observers should be transfered to the real player.
         private ArrayList<AudioPlayerObserver> _observers = new ArrayList<>();
+
+        ArrayList<AudioPlayerObserver> observersCopy() {
+            synchronized (lock) {
+                return new ArrayList<>(_observers);
+            }
+        }
 
         @Override
         public void attach(@NonNull AudioPlayerObserver observer)
         {
-            getPlayer().observers().attach(observer);
-            
             synchronized (lock) {
                 if (_observers.contains(observer))
                 {
@@ -411,8 +429,6 @@ public class Player implements AudioPlayer {
             synchronized (lock) {
                 _observers.remove(observer);
             }
-            
-            getPlayer().observers().detach(observer);
         }
     }
 
