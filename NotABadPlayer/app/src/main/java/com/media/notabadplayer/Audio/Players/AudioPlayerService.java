@@ -763,25 +763,37 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     
     public class Observers implements AudioPlayerObservers
     {
+        private final Object lock = new Object();
+        
         private ArrayList<AudioPlayerObserver> _observers = new ArrayList<>();
 
-        @Override
-        public void attach(AudioPlayerObserver observer)
-        {
-            if (_observers.contains(observer))
-            {
-                return;
+        ArrayList<AudioPlayerObserver> observersCopy() {
+            synchronized (lock) {
+                return new ArrayList<>(_observers);
             }
+        }
 
-            _observers.add(observer);
+        @Override
+        public void attach(@NonNull AudioPlayerObserver observer)
+        {
+            synchronized (lock) {
+                if (_observers.contains(observer))
+                {
+                    return;
+                }
+                
+                _observers.add(observer);
+            }
 
             fullyUpdateObserver(observer);
         }
 
         @Override
-        public void detach(AudioPlayerObserver observer)
+        public void detach(@NonNull AudioPlayerObserver observer)
         {
-            _observers.remove(observer);
+            synchronized (lock) {
+                _observers.remove(observer);
+            }
         }
 
         private void fullyUpdateObserver(AudioPlayerObserver observer)
@@ -791,49 +803,68 @@ public class AudioPlayerService extends Service implements AudioPlayer {
 
         private void onPlay(@NonNull BaseAudioTrack track)
         {
-            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPlay(track);}
+            ArrayList<AudioPlayerObserver> observers = observersCopy();
+            
+            for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayerPlay(track);}
         }
 
         private void onFinish()
         {
-            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerFinish();}
+            ArrayList<AudioPlayerObserver> observers = observersCopy();
+            
+            for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayerFinish();}
         }
 
         private void onStop()
         {
-            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerStop();}
+            ArrayList<AudioPlayerObserver> observers = observersCopy();
+            
+            for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayerStop();}
         }
 
         private void onResume(@NonNull BaseAudioTrack track)
         {
-            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerResume(track);}
+            ArrayList<AudioPlayerObserver> observers = observersCopy();
+            
+            for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayerResume(track);}
         }
 
         private void onPause(@NonNull BaseAudioTrack track)
         {
-            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayerPause(track);}
+            ArrayList<AudioPlayerObserver> observers = observersCopy();
+            
+            for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayerPause(track);}
         }
 
         private void onPlayOrderChange(AudioPlayOrder order)
         {
-            for (int e = 0; e < _observers.size(); e++) {_observers.get(e).onPlayOrderChange(order);}
+            ArrayList<AudioPlayerObserver> observers = observersCopy();
+            
+            for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayOrderChange(order);}
         }
     }
 
     public class PlayHistory implements AudioPlayerHistory
     {
+        private final Object lock = new Object();
+        
         private ArrayList<BaseAudioTrack> _playHistory = new ArrayList<>();
 
         @Override
         public @NonNull List<BaseAudioTrack> getPlayHistory()
         {
-            return _playHistory;
+            synchronized (lock) {
+                return new ArrayList<>(_playHistory);
+            }
         }
 
         @Override
         public void setList(@NonNull List<BaseAudioTrack> playHistory)
         {
-            _playHistory = new ArrayList<>(playHistory);
+            synchronized (lock) {
+                _playHistory.clear();
+                _playHistory.addAll(playHistory);
+            }
         }
         
         @Override
@@ -848,15 +879,20 @@ public class AudioPlayerService extends Service implements AudioPlayer {
                 return;
             }
 
-            if (_playHistory.size() <= 1)
-            {
-                return;
+            BaseAudioTrack previousTrack;
+            BaseAudioTrack previouslyPlayed;
+
+            synchronized (lock) {
+                if (_playHistory.size() <= 1)
+                {
+                    return;
+                }
+
+                _playHistory.remove(0);
+
+                previousTrack = playlist.getPlayingTrack();
+                previouslyPlayed = _playHistory.get(0);
             }
-
-            _playHistory.remove(0);
-
-            BaseAudioTrack previousTrack = playlist.getPlayingTrack();
-            BaseAudioTrack previouslyPlayed = _playHistory.get(0);
 
             BaseAudioPlaylist sourcePlaylist = previouslyPlayed.getSource().getSourcePlaylist(audioInfo, previouslyPlayed);
             MutableAudioPlaylist newPlaylist;
@@ -889,24 +925,26 @@ public class AudioPlayerService extends Service implements AudioPlayer {
 
         private void addTrack(@NonNull BaseAudioTrack newTrack)
         {
-            // Make sure that the history tracks are unique
-            for (BaseAudioTrack track : _playHistory)
-            {
-                if (track.equals(newTrack))
-                {
-                    _playHistory.remove(track);
-                    break;
-                }
-            }
-
-            _playHistory.add(0, newTrack);
-
-            // Do not exceed the play history capacity
             int capacity = GeneralStorage.getShared().getPlayerPlayedHistoryCapacity();
+            
+            synchronized (lock) {
+                // Make sure that the history tracks are unique
+                for (BaseAudioTrack track : _playHistory)
+                {
+                    if (track.equals(newTrack))
+                    {
+                        _playHistory.remove(track);
+                        break;
+                    }
+                }
 
-            while (_playHistory.size() > capacity)
-            {
-                _playHistory.remove(_playHistory.size()-1);
+                _playHistory.add(0, newTrack);
+
+                // Do not exceed the play history capacity
+                while (_playHistory.size() > capacity)
+                {
+                    _playHistory.remove(_playHistory.size()-1);
+                }
             }
         }
     }
