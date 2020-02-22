@@ -26,21 +26,20 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
-import com.media.notabadplayer.Audio.AudioPlayerObserver;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.Audio.QuickPlayerObserver;
+import com.media.notabadplayer.Audio.QuickPlayerService;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
-import com.media.notabadplayer.Utilities.LooperService;
-import com.media.notabadplayer.Utilities.LooperClient;
 import com.media.notabadplayer.Utilities.StringUtilities;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
-public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObserver, LooperClient
+public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObserver
 {
     private static int MEDIA_BAR_MAX_VALUE = 100;
     private static int VOLUME_BAR_MAX_VALUE = 100;
@@ -148,9 +147,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
 
         _presenter.start();
 
-        _player.observers.attach(this);
-        
-        startLooping();
+        QuickPlayerService.getShared().attach(this);
     }
     
     @Override
@@ -158,9 +155,7 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     {
         super.onDestroy();
 
-        _player.observers.detach(this);
-
-        stopLooping();
+        QuickPlayerService.getShared().detach(this);
     }
     
     private void initUI()
@@ -507,16 +502,6 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         }
     }
 
-    private void startLooping()
-    {
-        LooperService.getShared().subscribe(this);
-    }
-
-    private void stopLooping()
-    {
-        LooperService.getShared().unsubscribe(this);
-    }
-
     public void enableInteraction()
     {
         _buttonRecall.setClickable(true);
@@ -625,6 +610,20 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
     }
 
     @Override
+    public void updateTime(double currentTime, double totalDuration)
+    {
+        FragmentActivity a = getActivity();
+
+        if (a != null)
+        {
+            if (a.hasWindowFocus())
+            {
+                updateSoftUIState();
+            }
+        }
+    }
+
+    @Override
     public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
     {
 
@@ -687,11 +686,5 @@ public class PlayerFragment extends Fragment implements BaseView, AudioPlayerObs
         };
         
         AlertWindows.showAlert(context, R.string.error, R.string.error_invalid_file_play, R.string.ok, action);
-    }
-
-    @Override
-    public void loop()
-    {
-        updateSoftUIState();
     }
 }

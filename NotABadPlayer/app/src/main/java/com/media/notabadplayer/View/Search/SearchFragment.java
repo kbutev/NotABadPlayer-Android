@@ -34,7 +34,8 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
-import com.media.notabadplayer.Audio.AudioPlayerObserver;
+import com.media.notabadplayer.Audio.QuickPlayerObserver;
+import com.media.notabadplayer.Audio.QuickPlayerService;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
@@ -48,7 +49,7 @@ import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
-public class SearchFragment extends Fragment implements BaseView, AudioPlayerObserver, TrackListFavoritesChecker
+public class SearchFragment extends Fragment implements BaseView, QuickPlayerObserver, TrackListFavoritesChecker
 {
     Player _player = Player.getShared();
     
@@ -106,8 +107,8 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
         super.onActivityCreated(savedInstanceState);
 
         _presenter.start();
-        
-        _player.observers.attach(this);
+
+        QuickPlayerService.getShared().attach(this);
     }
     
     @Override
@@ -151,7 +152,7 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     {
         super.onDestroy();
 
-        _player.observers.detach(this);
+        QuickPlayerService.getShared().detach(this);
     }
     
     private void initUI()
@@ -407,6 +408,12 @@ public class SearchFragment extends Fragment implements BaseView, AudioPlayerObs
     public void onPlayOrderChange(AudioPlayOrder order)
     {
 
+    }
+
+    @Override
+    public void updateTime(double currentTime, double totalDuration)
+    {
+        
     }
 
     @Override
