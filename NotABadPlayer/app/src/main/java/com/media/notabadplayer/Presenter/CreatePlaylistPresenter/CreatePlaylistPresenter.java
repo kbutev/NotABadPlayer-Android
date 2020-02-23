@@ -8,20 +8,27 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.common.base.Function;
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Constants.AppState;
+import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.Presenter.SearchPresenter;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Lists.CreatePlaylistActivity;
 import com.media.notabadplayer.View.Lists.CreatePlaylistAlbumsAdapter;
 import com.media.notabadplayer.View.Lists.CreatePlaylistTracksAdapter;
 
 public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
-    private @NonNull Context _context;
+    private @NonNull SearchPresenter _searchPresenter;
     
+    private @NonNull Context _context;
     private CreatePlaylistPresenterDelegate _delegate;
 
     private List<AudioAlbum> _albums;
@@ -33,28 +40,23 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
     private CreatePlaylistTracksAdapter _addedTracksAdapter;
     private CreatePlaylistAlbumsAdapter _albumsAdapter;
     
-    public CreatePlaylistPresenter(@NonNull Context context, @NonNull CreatePlaylistPresenterDelegate delegate)
+    public CreatePlaylistPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo, @NonNull CreatePlaylistPresenterDelegate delegate)
     {
+        this._searchPresenter = new SearchPresenter(context, audioInfo, false);
         this._context = context;
         this._delegate = delegate;
 
         _albums = Player.getShared().getAudioInfo().getAlbums();
+        
+        this._searchPresenter.setView(delegate);
     }
-
-    @Override
-    public void start()
-    {
-        updateAlbumsView();
-    }
-
-    @Override
+    
     public void updateAddedTracksView()
     {
         _addedTracksAdapter = new CreatePlaylistTracksAdapter(_context, _playlistTracks);
-        _delegate.updateAddedTracksDataSource(_addedTracksAdapter);
+        _delegate.updateAddedTracks(_addedTracksAdapter);
     }
 
-    @Override
     public void updateAlbumsView()
     {
         if (_albumsAdapter == null)
@@ -63,7 +65,12 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
             _albumsAdapter = new CreatePlaylistAlbumsAdapter(_context, Player.getShared().getAudioInfo(), _albums, onAlbumTrackClick);
         }
         
-        _delegate.updateAlbumsDataSource(_albumsAdapter);
+        _delegate.updateAlbums(_albumsAdapter);
+    }
+
+    public void updateSearchTracksView()
+    {
+        _delegate.refreshSearchTracks();
     }
     
     @Override
@@ -137,7 +144,10 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
         BaseAudioTrack track = _playlistTracks.get(index);
         removeFromPlaylist(track);
         _albumsAdapter.deselectTrack(track);
+        
         updateAddedTracksView();
+        updateAlbumsView();
+        updateSearchTracksView();
     }
 
     // Album track operations
@@ -180,6 +190,163 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
             return;
         }
         
+        selectOrDeselectTrack(track);
+    }
+    
+    // BasePresenter
+
+    @Override
+    public void setView(@NonNull BaseView view)
+    {
+
+    }
+
+    @Override
+    public void start()
+    {
+        Log.v(CreatePlaylistPresenter.class.getCanonicalName(), "Start.");
+        
+        _searchPresenter.onAppStateChange(AppState.RUNNING);
+        _searchPresenter.start();
+        
+        updateAlbumsView();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+
+    }
+
+    @Override
+    public void fetchData()
+    {
+
+    }
+
+    @Override
+    public void onAppStateChange(AppState state)
+    {
+
+    }
+
+    @Override
+    public void onAlbumItemClick(int index)
+    {
+
+    }
+
+    @Override
+    public void onPlaylistItemClick(int index)
+    {
+
+    }
+
+    @Override
+    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
+    {
+
+    }
+
+    @Override
+    public void onPlayerButtonClick(ApplicationInput input)
+    {
+
+    }
+
+    @Override
+    public void onPlayOrderButtonClick()
+    {
+
+    }
+
+    @Override
+    public void onOpenPlaylistButtonClick()
+    {
+
+    }
+
+    @Override
+    public void onPlayerVolumeSet(double value)
+    {
+
+    }
+
+    @Override
+    public boolean onMarkOrUnmarkContextTrackFavorite()
+    {
+        return false;
+    }
+
+    @Override
+    public void onPlaylistItemDelete(int index)
+    {
+
+    }
+
+    @Override
+    public void onSearchResultClick(int index)
+    {
+        List<BaseAudioTrack> searchResults = _searchPresenter.getSearchResults();
+        
+        if (index < 0 || index >= searchResults.size())
+        {
+            return;
+        }
+        
+        BaseAudioTrack track = searchResults.get(index);
+        
+        selectOrDeselectTrack(track);
+        
+        _delegate.onSearchResultClick(index);
+    }
+
+    @Override
+    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter)
+    {
+        _searchPresenter.onSearchQuery(searchValue, filter);
+    }
+
+    @Override
+    public void onAppSettingsReset()
+    {
+
+    }
+
+    @Override
+    public void onAppThemeChange(AppSettings.AppTheme themeValue)
+    {
+
+    }
+
+    @Override
+    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
+    {
+
+    }
+
+    @Override
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar showVolumeBar)
+    {
+
+    }
+
+    @Override
+    public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
+    {
+
+    }
+    
+    @Override
+    public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
+    {
+        
+    }
+    
+    // Playlist update
+    
+    private void selectOrDeselectTrack(@NonNull BaseAudioTrack track)
+    {
         if (!isTrackAdded(track))
         {
             // Select if not selected already
@@ -192,11 +359,10 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
             removeFromPlaylist(track);
             _albumsAdapter.deselectTrack(track);
         }
-        
+
         updateAddedTracksView();
+        updateSearchTracksView();
     }
-    
-    // Playlist update
 
     private void addToPlaylist(@NonNull BaseAudioTrack track)
     {

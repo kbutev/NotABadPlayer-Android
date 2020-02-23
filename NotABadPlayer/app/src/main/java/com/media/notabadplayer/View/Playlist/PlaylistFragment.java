@@ -36,9 +36,10 @@ import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
+import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 
-public class PlaylistFragment extends Fragment implements BaseView, QuickPlayerObserver, TrackListFavoritesChecker
+public class PlaylistFragment extends Fragment implements BaseView, QuickPlayerObserver, TrackListHighlightedChecker, TrackListFavoritesChecker
 {
     Player _player = Player.getShared();
     
@@ -216,7 +217,7 @@ public class PlaylistFragment extends Fragment implements BaseView, QuickPlayerO
         }
 
         // Table update
-        _tableAdapter = new PlaylistListAdapter(context, playlist, _adapterOptions, this);
+        _tableAdapter = new PlaylistListAdapter(context, playlist, _adapterOptions, this, this);
         _table.setAdapter(_tableAdapter);
 
         // Update album title header
@@ -390,6 +391,19 @@ public class PlaylistFragment extends Fragment implements BaseView, QuickPlayerO
         };
         
         AlertWindows.showAlert(context, R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
+    }
+
+    @Override
+    public boolean shouldBeHighlighted(@NonNull BaseAudioTrack track)
+    {
+        BaseAudioPlaylist playlist = _player.getPlaylist();
+
+        if (playlist == null)
+        {
+            return false;
+        }
+
+        return playlist.getPlayingTrack().equals(track);
     }
 
     @Override

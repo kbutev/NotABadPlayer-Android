@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,43 +15,54 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
-import java.util.ArrayList;
-import java.util.List;
 import com.google.common.base.Function;
-
+import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
-import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
-import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
-import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
+import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Presenter.CreatePlaylistPresenter.BaseCreatePlaylistPresenter;
 import com.media.notabadplayer.Presenter.CreatePlaylistPresenter.CreatePlaylistPresenter;
 import com.media.notabadplayer.Presenter.CreatePlaylistPresenter.CreatePlaylistPresenterDelegate;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Storage.AudioLibrary;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
+import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
+import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
+import com.media.notabadplayer.View.Search.SearchFragment;
 
-public class CreatePlaylistActivity extends AppCompatActivity implements CreatePlaylistPresenterDelegate
+import java.util.List;
+
+public class CreatePlaylistActivity extends AppCompatActivity implements CreatePlaylistPresenterDelegate, TrackListHighlightedChecker, TrackListFavoritesChecker
 {
-    private @NonNull BaseCreatePlaylistPresenter _presenter;
+    private AudioLibrary _audioLibrary = AudioLibrary.getShared();
+    
+    private BaseCreatePlaylistPresenter _presenter;
     
     private Button _cancelButton;
     private Button _doneButton;
     private EditText _nameField;
+    
     private ListView _addedTracksList;
+    private RadioButton _switchToSearchTracks;
+    private RadioButton _switchToSearchAlbumTracks;
     private ListView _albumsList;
+    private @Nullable SearchFragment _searchFragment;
 
-    Function<Integer, Void> onAlbumTrackClick;
+    private Function<Integer, Void> _onAlbumTrackClick;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
 
-        _presenter = new CreatePlaylistPresenter(this, this);
+        _presenter = new CreatePlaylistPresenter(this, _audioLibrary, this);
         
         // Never restore this activity, navigate back to the main activity
         if (savedInstanceState != null)
@@ -69,7 +81,10 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
         _cancelButton = findViewById(R.id.buttonCancel);
         _doneButton = findViewById(R.id.buttonDone);
         _nameField = findViewById(R.id.playlistNameField);
+        
         _addedTracksList = findViewById(R.id.addedTracksList);
+        _switchToSearchTracks = findViewById(R.id.switchSearchTracks);
+        _switchToSearchAlbumTracks = findViewById(R.id.switchSearchAlbumTracks);
         _albumsList = findViewById(R.id.albumsList);
         
         // Setup UI
@@ -111,16 +126,45 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
                 _presenter.onPlaylistNameChanged(s.toString());
             }
         });
+        
+        // On added track click
+        _addedTracksList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                _presenter.onAddedTrackClicked(position);
+            }
+        });
+        
+        // Switch
+        _switchToSearchTracks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSearchTracksView();
+            }
+        });
+        
+        _switchToSearchAlbumTracks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAlbumTracksView();
+            }
+        });
+        
+        if (_switchToSearchTracks.isChecked()) {
+            showSearchTracksView();
+        } else {
+            showAlbumTracksView();
+        }
 
         // On album track click
-        onAlbumTrackClick = new Function<Integer, Void>() {
+        _onAlbumTrackClick = new Function<Integer, Void>() {
             @Override
             public Void apply(@NullableDecl Integer index) {
                 _presenter.onAlbumTrackClick(index != null ? index : 0);
                 return null;
             }
         };
-        
+
         // On album click
         _albumsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -136,42 +180,43 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
                 }
             }
         });
-
-        // On added track click
-        _addedTracksList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                _presenter.onAddedTrackClicked(position);
-            }
-        });
     }
 
     @Override
-    public void updateAddedTracksDataSource(@NonNull CreatePlaylistTracksAdapter adapter)
+    public void updateAddedTracks(@NonNull CreatePlaylistTracksAdapter adapter)
     {
         _addedTracksList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void updateAlbumsDataSource(@NonNull CreatePlaylistAlbumsAdapter adapter)
+    public void updateAlbums(@NonNull CreatePlaylistAlbumsAdapter adapter)
     {
         _albumsList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
     @Override
+    public void refreshSearchTracks()
+    {
+        if (_searchFragment == null)
+        {
+            return;
+        }
+
+        _searchFragment.forceResultsUIRefresh();
+    }
+
+    @Override
     public @NonNull Function<Integer, Void> onAlbumTrackClick()
     {
-        return onAlbumTrackClick;
+        return _onAlbumTrackClick;
     }
-    
-    @Override
-    public void goBack()
-    {
-        hideKeyboard();
 
-        onBackPressed();
+    @Override
+    public void onSearchResultClick(int index)
+    {
+        refreshSearchTracks();
     }
 
     @Override
@@ -204,6 +249,167 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
         hideKeyboard();
         
         AlertWindows.showAlert(this, 0, R.string.error_unknown, R.string.ok, null);
+    }
+    
+    // BaseView
+
+    @Override
+    public void goBack()
+    {
+        hideKeyboard();
+
+        onBackPressed();
+    }
+
+    @Override
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
+    {
+        
+    }
+
+    @Override
+    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
+    {
+        
+    }
+
+    @Override
+    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
+    {
+        
+    }
+
+    @Override
+    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
+    {
+        
+    }
+
+    @Override
+    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
+    {
+        
+    }
+    
+    @Override
+    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
+    {
+        
+    }
+
+    @Override
+    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
+    {
+        if (_searchFragment == null)
+        { 
+            return;
+        }
+        
+        _searchFragment.updateSearchQueryResults(searchQuery, filter, songs, searchState);
+    }
+
+    @Override
+    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
+    {
+        
+    }
+
+    @Override
+    public void onResetAppSettings()
+    {
+        
+    }
+
+    @Override
+    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
+    {
+        
+    }
+
+    @Override
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    {
+        
+    }
+
+    @Override
+    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar showVolumeBar)
+    {
+        
+    }
+
+    @Override
+    public void onDeviceLibraryChanged()
+    {
+        
+    }
+
+    @Override
+    public void onFetchDataErrorEncountered(@NonNull Exception error)
+    {
+        
+    }
+
+    @Override
+    public void onPlayerErrorEncountered(@NonNull Exception error)
+    {
+        
+    }
+    
+    // TrackListHighlightedChecker, TrackListFavoritesChecker
+
+    @Override
+    public boolean shouldBeHighlighted(@NonNull BaseAudioTrack track)
+    {
+        return _presenter.isTrackAdded(track);
+    }
+
+    @Override
+    public boolean isMarkedFavorite(@NonNull BaseAudioTrack track)
+    {
+        return GeneralStorage.getShared().favorites.isMarkedFavorite(track);
+    }
+    
+    // Operations
+    
+    private void setVisibilityOfSearchList(boolean visible)
+    {
+        if (_searchFragment != null) {
+            if (_searchFragment.getView() != null) {
+                _searchFragment.getView().setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
+        }
+    }
+    
+    private void showSearchTracksView()
+    {
+        setVisibilityOfSearchList(true);
+        _albumsList.setVisibility(View.GONE);
+        
+        if (_searchFragment == null)
+        {
+            createSearchFragment();
+        }
+    }
+    
+    private void createSearchFragment()
+    {
+        View view = findViewById(R.id.searchList);
+        view.setVisibility(View.VISIBLE);
+        
+        SearchFragment fragment = SearchFragment.newInstance(_presenter, this, this, false);
+        _searchFragment = fragment;
+
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.searchList, fragment).commit();
+        
+        _searchFragment.hideFiltersView();
+    }
+
+    private void showAlbumTracksView()
+    {
+        setVisibilityOfSearchList(false);
+        _albumsList.setVisibility(View.VISIBLE);
     }
 
     private void scrollToAlbumAndSelectAfterDelay(final int position)

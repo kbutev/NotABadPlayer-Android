@@ -3,13 +3,9 @@ package com.media.notabadplayer.Presenter.CreatePlaylistPresenter;
 import android.support.annotation.NonNull;
 
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Presenter.BasePresenter;
 
-public interface BaseCreatePlaylistPresenter {
-    void start();
-    
-    void updateAddedTracksView();
-    void updateAlbumsView();
-    
+public interface BaseCreatePlaylistPresenter extends BasePresenter {
     void onPlaylistNameChanged(@NonNull String name);
     void onSaveUserPlaylist();
 

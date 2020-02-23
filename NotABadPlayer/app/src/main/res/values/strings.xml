@@ -42,7 +42,8 @@
     <string name="playlist_name">Playlist name</string>
     <string name="playlist_done">Done</string>
     <string name="playlist_added_tracks">Added tracks</string>
-    <string name="playlist_tracks">Tracks</string>
+    <string name="playlist_search_tracks">Search</string>
+    <string name="playlist_search_album_tracks">Album Tracks</string>
     <string name="playlist_dialog_no_tracks">Please add at least one track</string>
     <string name="playlist_dialog_invalid_name">Please enter a valid playlist name</string>
     <string name="playlist_dialog_taken_name">Playlist name is already taken</string>

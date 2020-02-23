@@ -25,8 +25,10 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.media.notabadplayer.Audio.AudioPlayer;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
@@ -46,23 +48,32 @@ import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
+import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
-public class SearchFragment extends Fragment implements BaseView, QuickPlayerObserver, TrackListFavoritesChecker
+public class SearchFragment extends Fragment implements BaseView, QuickPlayerObserver, TrackListHighlightedChecker, TrackListFavoritesChecker
 {
-    Player _player = Player.getShared();
-    
     private BasePresenter _presenter;
+    
+    private AudioPlayer _player = Player.getShared();
     
     private EditText _searchField;
     private ImageButton _searchFieldClearButton;
     private TextView _searchState;
     private ListView _searchResultsList;
     private ProgressBar _progressIndicator;
+    
+    private RadioGroup _searchFilterGroup;
     private RadioButton _searchByTrack;
     private RadioButton _searchByAlbum;
     private RadioButton _searchByArtist;
+
+    private @NonNull TrackListHighlightedChecker _highlightedChecker;
+    private @NonNull TrackListFavoritesChecker _favoriteChecker;
+    private boolean _highlightAnimation = true;
+    
+    private boolean _searchFilterVisible = true;
     
     private @Nullable SearchListAdapter _searchResultsAdapter;
     private @Nullable Parcelable _searchResultsState;
@@ -76,8 +87,26 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
     
     public static @NonNull SearchFragment newInstance(@NonNull BasePresenter presenter)
     {
+        return newInstance(presenter, null, null);
+    }
+
+    public static @NonNull SearchFragment newInstance(@NonNull BasePresenter presenter, 
+                                                      @Nullable TrackListHighlightedChecker highlightedChecker, 
+                                                      @Nullable TrackListFavoritesChecker favoriteChecker)
+    {
+        return newInstance(presenter, highlightedChecker, favoriteChecker, true);
+    }
+
+    public static @NonNull SearchFragment newInstance(@NonNull BasePresenter presenter,
+                                                      @Nullable TrackListHighlightedChecker highlightedChecker,
+                                                      @Nullable TrackListFavoritesChecker favoriteChecker,
+                                                      boolean highlightAnimation)
+    {
         SearchFragment fragment = new SearchFragment();
         fragment._presenter = presenter;
+        fragment._highlightedChecker = highlightedChecker != null ? highlightedChecker : fragment;
+        fragment._favoriteChecker = favoriteChecker != null ? favoriteChecker : fragment;
+        fragment._highlightAnimation = highlightAnimation;
         return fragment;
     }
 
@@ -92,6 +121,7 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
         _searchState = root.findViewById(R.id.searchState);
         _searchResultsList = root.findViewById(R.id.searchResultsList);
         _progressIndicator = root.findViewById(R.id.progressIndicator);
+        _searchFilterGroup = root.findViewById(R.id.searchFilterGroup);
         _searchByTrack = root.findViewById(R.id.searchByTrack);
         _searchByAlbum = root.findViewById(R.id.searchByAlbum);
         _searchByArtist = root.findViewById(R.id.searchByArtist);
@@ -226,6 +256,8 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
                 }
             }
         });
+        
+        _searchFilterGroup.setVisibility(_searchFilterVisible ? View.VISIBLE : View.GONE);
     }
     
     public void enableInteraction()
@@ -238,6 +270,27 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
     {
         _searchFieldClearButton.setClickable(false);
         _searchResultsList.setClickable(false);
+    }
+    
+    public void hideFiltersView()
+    {
+        if (_searchFilterGroup != null)
+        {
+            _searchFilterGroup.setVisibility(View.GONE);
+            _searchFilterVisible = false;
+        }
+        else
+        {
+            _searchFilterVisible = false;
+        }
+    }
+    
+    public void forceResultsUIRefresh()
+    {
+        if (_searchResultsAdapter != null)
+        {
+            _searchResultsAdapter.notifyDataSetInvalidated();
+        }
     }
 
     @Override
@@ -359,7 +412,7 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
             }
         }
 
-        _searchResultsAdapter = new SearchListAdapter(context, songs, this);
+        _searchResultsAdapter = new SearchListAdapter(context, songs, _highlightedChecker, _favoriteChecker, _highlightAnimation);
         _searchResultsList.setAdapter(_searchResultsAdapter);
         _searchResultsList.invalidateViews();
     }
@@ -475,7 +528,20 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
 
         AlertWindows.showAlert(context, R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
     }
-
+    
+    @Override
+    public boolean shouldBeHighlighted(@NonNull BaseAudioTrack track)
+    {
+        BaseAudioPlaylist playlist = _player.getPlaylist();
+        
+        if (playlist == null)
+        {
+            return false;
+        }
+        
+        return playlist.getPlayingTrack().equals(track);
+    }
+    
     @Override
     public boolean isMarkedFavorite(@NonNull BaseAudioTrack track)
     {

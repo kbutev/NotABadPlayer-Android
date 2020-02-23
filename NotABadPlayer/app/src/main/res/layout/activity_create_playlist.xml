@@ -53,6 +53,50 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:orientation="vertical">
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:gravity="center"
+            android:orientation="horizontal" >
+            <RadioButton
+                android:id="@+id/switchSearchTracks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableLeft="@android:drawable/btn_radio"
+                android:text="@string/playlist_search_tracks"
+                android:textSize="12sp"
+                android:textColor="?primaryTextColor"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/switchSearchAlbumTracks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableLeft="@android:drawable/btn_radio"
+                android:text="@string/playlist_search_album_tracks"
+                android:textSize="12sp"
+                android:textColor="?primaryTextColor"/>
+        </RadioGroup>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp">
+            <ListView
+                android:id="@+id/albumsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbarThumbVertical="@drawable/vertical_scroll_bar"
+                android:visibility="gone" />
+            <FrameLayout
+                android:id="@+id/searchList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+            </FrameLayout>
+        </FrameLayout>
+        
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,24 +110,8 @@
         <ListView
             android:id="@+id/addedTracksList"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:overScrollMode="never"
-            android:scrollbarThumbVertical="@drawable/vertical_scroll_bar" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/playlist_tracks"
-            android:textAppearance="@style/TitleText"/>
-        
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="10dp" />
-
-        <ListView
-            android:id="@+id/albumsList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:scrollbarThumbVertical="@drawable/vertical_scroll_bar" />
     </LinearLayout>
 

@@ -29,27 +29,43 @@ public abstract class TrackListAdapter extends BaseAdapter {
     protected Context _context;
     private String _playlistName;
     private List<BaseAudioTrack> _tracks;
-    private boolean _isPlaylist;
+    private final boolean _isPlaylist;
+    private final boolean _highlightAnimation;
     
     private @NonNull OpenPlaylistOptions _options;
 
+    private @NonNull TrackListHighlightedChecker _highlightedChecker;
     private @NonNull TrackListFavoritesChecker _favoritesChecker;
 
     private HashSet<View> _listViews = new HashSet<>();
 
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
-    
-    private Player _player = Player.getShared();
 
-    public TrackListAdapter(@NonNull Context context, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options, @Nullable TrackListFavoritesChecker checker)
+    public TrackListAdapter(@NonNull Context context,
+                            @NonNull BaseAudioPlaylist playlist,
+                            @NonNull OpenPlaylistOptions options,
+                            @Nullable TrackListHighlightedChecker highlightedChecker,
+                            @Nullable TrackListFavoritesChecker favoritesChecker)
+    {
+        this(context, playlist, options, highlightedChecker, favoritesChecker, false);
+    }
+
+    public TrackListAdapter(@NonNull Context context,
+                            @NonNull BaseAudioPlaylist playlist,
+                            @NonNull OpenPlaylistOptions options,
+                            @Nullable TrackListHighlightedChecker highlightedChecker,
+                            @Nullable TrackListFavoritesChecker favoritesChecker,
+                            boolean highlightAnimation)
     {
         this._context = context;
         this._playlistName = playlist.getName();
         this._tracks = playlist.getTracks();
         this._isPlaylist = !playlist.isAlbum();
+        this._highlightAnimation = highlightAnimation;
         this._options = options;
-        this._favoritesChecker = checker != null ? checker : new TrackListAdapter.DummyFavoritesChecker();
+        this._highlightedChecker = highlightedChecker != null ? highlightedChecker : new TrackListAdapter.DummyHighlightedChecker();
+        this._favoritesChecker = favoritesChecker != null ? favoritesChecker : new TrackListAdapter.DummyFavoritesChecker();
     }
     
     // Inflate views - can be overriden
@@ -176,24 +192,12 @@ public abstract class TrackListAdapter extends BaseAdapter {
             favoriteIcon.setVisibility(View.GONE);
         }
 
-        // Select playing track
-        boolean isPlayingTrack = false;
-
-        BaseAudioPlaylist playlist = _player.getPlaylist();
-
-        if (playlist != null)
-        {
-            BaseAudioTrack track = playlist.getPlayingTrack();
-
-            if (track.equals(item))
-            {
-                isPlayingTrack = true;
-            }
-        }
+        // Highlighted
+        boolean isHighlighted = _highlightedChecker.shouldBeHighlighted(item);
 
         Resources resources = parent.getResources();
 
-        if (!isPlayingTrack)
+        if (!isHighlighted)
         {
             listItem.setBackgroundColor(resources.getColor(R.color.transparent));
         }
@@ -201,7 +205,7 @@ public abstract class TrackListAdapter extends BaseAdapter {
         {
             _currentlySelectedView = listItem;
             _currentlySelectedViewListIndex = position;
-            _currentlySelectedView.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
+            _currentlySelectedView.setBackgroundColor(resources.getColor(R.color.currentHighlightedTrack));
         }
 
         return listItem;
@@ -294,9 +298,16 @@ public abstract class TrackListAdapter extends BaseAdapter {
 
         _currentlySelectedView = view;
         _currentlySelectedViewListIndex = position;
-
-        _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
-        UIAnimations.getShared().listItemAnimations.animateTap(_context, _currentlySelectedView);
+        
+        if (_highlightAnimation)
+        {
+            _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+            UIAnimations.getShared().listItemAnimations.animateTap(_context, _currentlySelectedView);
+        }
+        else
+        {
+            _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.currentHighlightedTrack));
+        }
     }
 
     public void deselectCurrentItem()
@@ -309,6 +320,12 @@ public abstract class TrackListAdapter extends BaseAdapter {
         {
             View child = iterator.next();
             child.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+        }
+    }
+
+    class DummyHighlightedChecker implements TrackListHighlightedChecker {
+        public boolean shouldBeHighlighted(@NonNull BaseAudioTrack track) {
+            return false;
         }
     }
 

@@ -25,19 +25,44 @@ import com.media.notabadplayer.View.BaseView;
 
 public class SearchPresenter implements BasePresenter
 {
+    private final Object lock = new Object();
+    
     private BaseView _view;
     private @NonNull Context _context;
     private @NonNull AudioInfo _audioInfo;
     private List<BaseAudioTrack> _searchResults = new ArrayList<>();
     private @Nullable String _lastSearchQuery = null;
     private SearchFilter _lastSearchFilter = SearchFilter.Title;
+    private final boolean _restoreLastSearchQuery;
 
     private boolean _running = false;
-    
-    public SearchPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo)
+
+    public SearchPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo, boolean restoreLastSearchQuery)
     {
         _context = context;
         _audioInfo = audioInfo;
+        _restoreLastSearchQuery = restoreLastSearchQuery;
+    }
+    
+    public SearchPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo)
+    {
+        this(context, audioInfo, true);
+    }
+
+    public @NonNull List<BaseAudioTrack> getSearchResults()
+    {
+        synchronized (lock)
+        {
+            return new ArrayList<>(_searchResults);
+        }
+    }
+    
+    private void setSearchResults(@NonNull List<BaseAudioTrack> results)
+    {
+        synchronized (lock)
+        { 
+            _searchResults = results;
+        }
     }
 
     @Override
@@ -62,7 +87,10 @@ public class SearchPresenter implements BasePresenter
         Log.v(SearchPresenter.class.getCanonicalName(), "Start.");
 
         // Restore last search query from storage
-        restoreSearchQueryFromStorage();
+        if (_restoreLastSearchQuery)
+        {
+            restoreSearchQueryFromStorage();
+        }
     }
 
     @Override
@@ -84,7 +112,7 @@ public class SearchPresenter implements BasePresenter
 
         _running = state.isRunning();
 
-        if (_running && !previousRunningState)
+        if (_running && !previousRunningState && _restoreLastSearchQuery)
         {
             restoreSearchQueryFromStorage();
         }
@@ -262,7 +290,7 @@ public class SearchPresenter implements BasePresenter
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                _searchResults = _audioInfo.searchForTracks(searchQuery, searchFilter);
+                final List<BaseAudioTrack> results = _audioInfo.searchForTracks(searchQuery, searchFilter);
 
                 Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -272,7 +300,9 @@ public class SearchPresenter implements BasePresenter
                     {
                         Log.v(SearchPresenter.class.getCanonicalName(), "Retrieved search results, updating view");
 
-                        _view.updateSearchQueryResults(searchQuery, searchFilter, _searchResults, null);
+                        setSearchResults(results);
+                        
+                        _view.updateSearchQueryResults(searchQuery, searchFilter, getSearchResults(), null);
                     }
                 };
 
