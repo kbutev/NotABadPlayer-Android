@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -24,29 +26,31 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Players.Player;
+import com.media.notabadplayer.Presenter.CreatePlaylistPresenter.BaseCreatePlaylistPresenter;
+import com.media.notabadplayer.Presenter.CreatePlaylistPresenter.CreatePlaylistPresenter;
+import com.media.notabadplayer.Presenter.CreatePlaylistPresenter.CreatePlaylistPresenterDelegate;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
 
-public class CreatePlaylistActivity extends AppCompatActivity
+public class CreatePlaylistActivity extends AppCompatActivity implements CreatePlaylistPresenterDelegate
 {
-    private List<AudioAlbum> _albums;
-    
-    private @Nullable BaseAudioPlaylist _playlist;
-    private @NonNull ArrayList<BaseAudioTrack> _playlistTracks = new ArrayList<>();
+    private @NonNull BaseCreatePlaylistPresenter _presenter;
     
     private Button _cancelButton;
     private Button _doneButton;
     private EditText _nameField;
     private ListView _addedTracksList;
-    private CreatePlaylistTracksAdapter _addedTracksAdapter;
     private ListView _albumsList;
-    private CreatePlaylistAlbumsAdapter _albumsAdapter;
+
+    Function<Integer, Void> onAlbumTrackClick;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
+
+        _presenter = new CreatePlaylistPresenter(this, this);
         
         // Never restore this activity, navigate back to the main activity
         if (savedInstanceState != null)
@@ -61,9 +65,6 @@ public class CreatePlaylistActivity extends AppCompatActivity
         // Content
         setContentView(R.layout.activity_create_playlist);
         
-        // Model
-        _albums = Player.getShared().getAudioInfo().getAlbums();
-        
         // UI
         _cancelButton = findViewById(R.id.buttonCancel);
         _doneButton = findViewById(R.id.buttonDone);
@@ -73,6 +74,9 @@ public class CreatePlaylistActivity extends AppCompatActivity
         
         // Setup UI
         initUI();
+
+        // Presenter start
+        _presenter.start();
     }
     
     private void initUI()
@@ -80,49 +84,49 @@ public class CreatePlaylistActivity extends AppCompatActivity
         _cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                quit();
+                goBack();
             }
         });
 
         _doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                savePlaylist();
+                _presenter.onSaveUserPlaylist();
             }
         });
         
-        Function<BaseAudioTrack, Void> onTrackClick = new Function<BaseAudioTrack, Void>() {
+        _nameField.addTextChangedListener(new TextWatcher() {
             @Override
-            public Void apply(@NullableDecl BaseAudioTrack input) {
-                if (input == null)
-                {
-                    return null;
-                }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                
+            }
 
-                if (!playlistTracksContain(input))
-                {
-                    addToPlaylist(input);
-                    _albumsAdapter.selectTrack(input);
-                }
-                else
-                {
-                    removeFromPlaylist(input);
-                    _albumsAdapter.deselectTrack(input);
-                }
-                
-                updateAddedTracks();
-                
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                _presenter.onPlaylistNameChanged(s.toString());
+            }
+        });
+
+        // On album track click
+        onAlbumTrackClick = new Function<Integer, Void>() {
+            @Override
+            public Void apply(@NullableDecl Integer index) {
+                _presenter.onAlbumTrackClick(index != null ? index : 0);
                 return null;
             }
         };
-
-        _albumsAdapter = new CreatePlaylistAlbumsAdapter(this, Player.getShared().getAudioInfo(), _albums, onTrackClick);
-        _albumsList.setAdapter(_albumsAdapter);
         
+        // On album click
         _albumsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (_albumsAdapter.getSelectedAlbumPosition() != position)
+                int selectedAlbumPosition = _presenter.getSelectedAlbumIndex();
+                if (selectedAlbumPosition != position)
                 {
                     scrollToAlbumAndSelectAfterDelay(position);
                 }
@@ -133,163 +137,89 @@ public class CreatePlaylistActivity extends AppCompatActivity
             }
         });
 
+        // On added track click
         _addedTracksList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BaseAudioTrack track = _playlistTracks.get(position);
-                removeFromPlaylist(track);
-                _albumsAdapter.deselectTrack(track);
-                updateAddedTracks();
+                _presenter.onAddedTrackClicked(position);
             }
         });
-        
-        updateAddedTracks();
+    }
+
+    @Override
+    public void updateAddedTracksDataSource(@NonNull CreatePlaylistTracksAdapter adapter)
+    {
+        _addedTracksList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void updateAlbumsDataSource(@NonNull CreatePlaylistAlbumsAdapter adapter)
+    {
+        _albumsList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public @NonNull Function<Integer, Void> onAlbumTrackClick()
+    {
+        return onAlbumTrackClick;
     }
     
-    private void updateAddedTracks()
+    @Override
+    public void goBack()
     {
-        _addedTracksAdapter = new CreatePlaylistTracksAdapter(this, _playlistTracks);
-        _addedTracksList.setAdapter(_addedTracksAdapter);
-        
-        _albumsAdapter.notifyDataSetChanged();
-    }
-    
-    private boolean playlistTracksContain(@Nullable BaseAudioTrack track)
-    {
-        if (track == null)
-        {
-            return false;
-        }
+        hideKeyboard();
 
-        return _playlistTracks.contains(track);
-    }
-    
-    private void addToPlaylist(@NonNull BaseAudioTrack track)
-    {
-        if (_playlistTracks.contains(track))
-        {
-            return;
-        }
-        
-        String name = _nameField.getText().toString();
-        
-        if (name.length() == 0)
-        {
-            name = "Playlist";
-        }
-
-        ArrayList<BaseAudioTrack> playlistTracks = new ArrayList<>(_playlistTracks);
-        playlistTracks.add(track);
-
-        BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
-        node.setName(name);
-        node.setTracks(playlistTracks);
-
-        // Try to build
-        try {
-            _playlist = node.build();
-            _playlistTracks.add(track);
-        } catch (Exception e) {
-            Log.v(CreatePlaylistActivity.class.getCanonicalName(), "Failed to rebuild playlist");
-        }
+        onBackPressed();
     }
 
-    private void removeFromPlaylist(@NonNull BaseAudioTrack track)
+    @Override
+    public void showNoTracksDialog()
     {
-        String name = _nameField.getText().toString();
-
-        if (name.length() == 0)
-        {
-            name = "Playlist";
-        }
-
-        ArrayList<BaseAudioTrack> playlistTracks = new ArrayList<>(_playlistTracks);
-        playlistTracks.remove(track);
-
-        if (!playlistTracks.isEmpty())
-        {
-            BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
-            node.setName(name);
-            node.setTracks(playlistTracks);
-
-            try {
-                _playlist = node.build();
-                _playlistTracks.remove(track);
-            } catch (Exception e) {
-                Log.v(CreatePlaylistActivity.class.getCanonicalName(), "Failed to rebuild playlist");
-            }
-        }
-        else
-        {
-            _playlist = null;
-            _playlistTracks.clear();
-        }
+        hideKeyboard();
+        
+        AlertWindows.showAlert(this, 0, R.string.playlist_dialog_no_tracks, R.string.ok, null);
     }
-    
-    private void savePlaylist()
+
+    @Override
+    public void showInvalidNameDialog()
     {
-        if (_playlist == null || _playlistTracks.size() == 0)
-        {
-            hideKeyboard();
-            showNoTracksDialog();
-            return;
-        }
+        hideKeyboard();
         
-        List<BaseAudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
-
-        String name = _nameField.getText().toString();
-        
-        // Must not have empty name
-        if (name.isEmpty())
-        {
-            showInvalidNameDialog();
-            return;
-        }
-        
-        // Name must not be taken already
-        for (int e = 0; e < playlists.size(); e++)
-        {
-            if (playlists.get(e).getName().equals(name))
-            {
-                showNameTakenDialog();
-                return;
-            }
-        }
-        
-        // Successful save
-        BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
-        node.setName(name);
-        node.setTracks(_playlistTracks);
-
-        // Try to build
-        try {
-            BaseAudioPlaylist playlist = node.build();
-
-            playlists.add(playlist);
-        } catch (Exception e) {
-            Log.v(CreatePlaylistActivity.class.getCanonicalName(), "Failed to save playlist to storage");
-            showUnknownErrorDialog();
-            return;
-        }
-
-        GeneralStorage.getShared().saveUserPlaylists(playlists);
-        
-        quit();
+        AlertWindows.showAlert(this, 0, R.string.playlist_dialog_invalid_name, R.string.ok, null);
     }
-    
+
+    @Override
+    public void showNameTakenDialog()
+    {
+        hideKeyboard();
+        
+        AlertWindows.showAlert(this, 0, R.string.playlist_dialog_taken_name, R.string.ok, null);
+    }
+
+    @Override
+    public void showUnknownErrorDialog()
+    {
+        hideKeyboard();
+        
+        AlertWindows.showAlert(this, 0, R.string.error_unknown, R.string.ok, null);
+    }
+
     private void scrollToAlbumAndSelectAfterDelay(final int position)
     {
-        final boolean hasSelectedAlbum = _albumsAdapter.getSelectedAlbumPosition() >= 0;
-        
+        int selectedAlbumPosition = _presenter.getSelectedAlbumIndex();
+        final boolean hasSelectedAlbum = selectedAlbumPosition >= 0;
+
         if (hasSelectedAlbum)
         {
             if (position < _albumsList.getCount())
             {
-                _albumsAdapter.deselectAlbum();
+                _presenter.onCloseAlbum();
                 _albumsList.setSelection(position);
             }
         }
-        
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -298,63 +228,41 @@ public class CreatePlaylistActivity extends AppCompatActivity
                     {
                         Thread.sleep(50);
                     }
-                    
+
                     // Update UI on main
                     Handler mainHandler = new Handler(getMainLooper());
 
                     Runnable myRunnable = new Runnable() {
                         @Override
                         public void run() {
-                            _albumsAdapter.selectAlbum(position);
-
-                            _albumsAdapter.notifyDataSetChanged();
+                            _presenter.onOpenAlbumAt(position);
                         }
                     };
                     mainHandler.post(myRunnable);
                 }
                 catch (Exception e)
                 {
-                    
+
                 }
             }
         };
-        
+
         Thread thread = new Thread(runnable);
-        
+
         thread.start();
     }
 
     private void scrollToAlbumAfterDeselectAfterDelay()
     {
-        if (_albumsAdapter.getSelectedAlbumPosition() < 0)
+        int selectedAlbumPosition = _presenter.getSelectedAlbumIndex();
+        
+        if (selectedAlbumPosition < 0)
         {
             return;
         }
-        
-        final int selectedAlbum = _albumsAdapter.getSelectedAlbumPosition();
 
-        _albumsAdapter.deselectAlbum();
-        _albumsList.setSelection(selectedAlbum);
-    }
-
-    private void showNoTracksDialog()
-    {
-        AlertWindows.showAlert(this, 0, R.string.playlist_dialog_no_tracks, R.string.ok, null);
-    }
-    
-    private void showInvalidNameDialog()
-    {
-        AlertWindows.showAlert(this, 0, R.string.playlist_dialog_invalid_name, R.string.ok, null);
-    }
-
-    private void showNameTakenDialog()
-    {
-        AlertWindows.showAlert(this, 0, R.string.playlist_dialog_taken_name, R.string.ok, null);
-    }
-
-    private void showUnknownErrorDialog()
-    {
-        AlertWindows.showAlert(this, 0, R.string.error_unknown, R.string.ok, null);
+        _presenter.onCloseAlbum();
+        _albumsList.setSelection(selectedAlbumPosition);
     }
 
     private void hideKeyboard()
@@ -366,12 +274,5 @@ public class CreatePlaylistActivity extends AppCompatActivity
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-
-    private void quit()
-    {
-        hideKeyboard();
-
-        onBackPressed();
     }
 }
