@@ -29,16 +29,16 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
     private @NonNull AudioInfo _audioInfo;
     
     private int _selectedAlbumPosition;
-    private LinearLayout _selectedAlbum;
-    private CreatePlaylistAlbumsTracksAdapter _selectedAlbumAdapter;
+    private @Nullable LinearLayout _selectedAlbum;
+    private @Nullable CreatePlaylistAlbumsTracksAdapter _selectedAlbumAdapter;
     private List<BaseAudioTrack> _selectedTracks = new ArrayList<>();
     
-    private @NonNull Function<BaseAudioTrack, Void> _onItemClick;
+    private @NonNull Function<Integer, Void> _onItemClick;
     
     public CreatePlaylistAlbumsAdapter(@NonNull Context context,
                                        @NonNull AudioInfo audioInfo,
                                        @NonNull List<AudioAlbum> albums,
-                                       @NonNull Function<BaseAudioTrack, Void> onItemClick)
+                                       @NonNull Function<Integer, Void> onItemClick)
     {
         this._albums = albums;
         this._context = context;
@@ -151,37 +151,64 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         title.setText(album.albumTitle);
 
         final List<BaseAudioTrack> tracks = _audioInfo.getAlbumTracks(album);
+
+        _selectedAlbum = listItem.findViewById(R.id.tracks);
         
         if (tracks.size() > 0)
         {
-            _selectedAlbum = listItem.findViewById(R.id.tracks);
             _selectedAlbum.setVisibility(View.VISIBLE);
-            _selectedAlbum.removeAllViews();
-            
-            _selectedAlbumAdapter = new CreatePlaylistAlbumsTracksAdapter(_context, tracks, _selectedTracks);
-            
-            for (int i = 0; i < _selectedAlbumAdapter.getCount(); i++)
-            {
-                View view = _selectedAlbumAdapter.getView(i, null, _selectedAlbum);
-                _selectedAlbum.addView(view);
-                
-                final int index = i;
-                
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        _onItemClick.apply(tracks.get(index));
-                    }
-                });
-            }
+            updateSelectedAlbumTracks(tracks);
         }
         else
         {
+            _selectedAlbum.setVisibility(View.GONE);
+            _selectedAlbum.removeAllViews();
             listItem.findViewById(R.id.tracks).setVisibility(View.GONE);
             ((LinearLayout)listItem.findViewById(R.id.tracks)).removeAllViews();
         }
 
         return listItem;
+    }
+
+    private void updateSelectedAlbumTracks()
+    {
+        if (_selectedAlbumAdapter == null)
+        {
+            return;
+        }
+        
+        List<BaseAudioTrack> tracks = _selectedAlbumAdapter.tracks;
+        updateSelectedAlbumTracks(tracks);
+    }
+    
+    private void updateSelectedAlbumTracks(@NonNull List<BaseAudioTrack> tracks)
+    {
+        if (_selectedAlbum == null)
+        { 
+            return;
+        }
+        
+        _selectedAlbum.removeAllViews();
+        
+        _selectedAlbumAdapter = new CreatePlaylistAlbumsTracksAdapter(_context, tracks, _selectedTracks);
+        _selectedAlbumAdapter.notifyDataSetChanged();
+
+        for (int i = 0; i < _selectedAlbumAdapter.getCount(); i++)
+        {
+            View view = _selectedAlbumAdapter.getView(i, null, _selectedAlbum);
+            _selectedAlbum.addView(view);
+
+            final int index = i;
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    _onItemClick.apply(index);
+                }
+            });
+        }
+        
+        notifyDataSetChanged();
     }
     
     public int getSelectedAlbumPosition()
@@ -209,24 +236,50 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 
         notifyDataSetChanged();
     }
+    
+    public @Nullable BaseAudioTrack getTrackForOpenedAlbumIndex(int index)
+    {
+        int selectedAlbumIndex = getSelectedAlbumPosition();
+        
+        if (selectedAlbumIndex >= _albums.size()) {
+            return null;
+        }
+        
+        AudioAlbum album = _albums.get(selectedAlbumIndex);
+
+        final List<BaseAudioTrack> tracks = _audioInfo.getAlbumTracks(album);
+        
+        if (index < 0 || index >= tracks.size()) {
+            return null;
+        }
+        
+        return tracks.get(index);
+    }
 
     public void selectTrack(@NonNull BaseAudioTrack track)
     {
         if (!_selectedTracks.contains(track))
         {
             _selectedTracks.add(track);
-            _selectedAlbumAdapter.selectTrack(track);
+
+            updateSelectedAlbumTracks();
         }
     }
     
     public void deselectTrack(@NonNull BaseAudioTrack track)
     {
-        _selectedTracks.remove(track);
+        if (_selectedTracks.contains(track))
+        {
+            _selectedTracks.remove(track);
+
+            updateSelectedAlbumTracks();
+        }
     }
 
+    // Album track item adapter
     public class CreatePlaylistAlbumsTracksAdapter extends BaseAdapter
     {
-        private @NonNull List<BaseAudioTrack> _tracks;
+        final @NonNull List<BaseAudioTrack> tracks;
         private @NonNull List<BaseAudioTrack> _selectedTracks;
 
         private Context _context;
@@ -235,19 +288,19 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
                                                  @NonNull List<BaseAudioTrack> tracks,
                                                  @NonNull List<BaseAudioTrack> selectedTracks)
         {
-            this._tracks = tracks;
-            this._selectedTracks = selectedTracks;
+            this.tracks = new ArrayList<>(tracks);
+            this._selectedTracks = new ArrayList<>(selectedTracks);
             this._context = context;
         }
 
         public int getCount()
         {
-            return _tracks.size();
+            return tracks.size();
         }
 
         public Object getItem(int position)
         {
-            return _tracks.get(position);
+            return tracks.get(position);
         }
 
         public long getItemId(int position)
@@ -266,7 +319,7 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 
             View listItem = convertView;
 
-            BaseAudioTrack track = _tracks.get(position);
+            BaseAudioTrack track = tracks.get(position);
             boolean selected = hasSelectedItem(track);
             
             TextView title = listItem.findViewById(R.id.title);
@@ -299,16 +352,6 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         public boolean hasSelectedItem(@NonNull BaseAudioTrack track)
         {
             return _selectedTracks.contains(track);
-        }
-        
-        public void selectTrack(@NonNull BaseAudioTrack track)
-        {
-            if (!hasSelectedItem(track))
-            {
-                _selectedTracks.add(track);
-            }
-
-            notifyDataSetChanged();
         }
     }
 }
