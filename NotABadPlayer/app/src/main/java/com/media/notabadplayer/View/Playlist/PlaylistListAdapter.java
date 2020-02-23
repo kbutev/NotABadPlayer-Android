@@ -14,12 +14,17 @@ import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.View.Other.TrackListAdapter;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
+import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
 
 class PlaylistListAdapter extends TrackListAdapter
 {
-    public PlaylistListAdapter(@NonNull Context context, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options, @Nullable TrackListFavoritesChecker checker)
+    public PlaylistListAdapter(@NonNull Context context, 
+                               @NonNull BaseAudioPlaylist playlist, 
+                               @NonNull OpenPlaylistOptions options,
+                               @Nullable TrackListHighlightedChecker highlightedChecker, 
+                               @Nullable TrackListFavoritesChecker favoritesChecker)
     {
-        super(context, playlist, options, checker);
+        super(context, playlist, options, highlightedChecker, favoritesChecker);
     }
 
     public @NonNull View getLayout(@NonNull ViewGroup parent) {

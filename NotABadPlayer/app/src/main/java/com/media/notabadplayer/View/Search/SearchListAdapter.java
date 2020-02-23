@@ -1,5 +1,6 @@
 package com.media.notabadplayer.View.Search;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -16,18 +17,19 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
-import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
+import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
 
 public class SearchListAdapter extends BaseAdapter
 {
     private Context _context;
     private List<BaseAudioTrack> _tracks;
-
+    private final boolean _highlightAnimation;
+    
+    private @NonNull TrackListHighlightedChecker _highlightedChecker;
     private @NonNull TrackListFavoritesChecker _favoritesChecker;
     
     private HashSet<View> _listViews = new HashSet<>();
@@ -35,11 +37,25 @@ public class SearchListAdapter extends BaseAdapter
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
 
-    public SearchListAdapter(@NonNull Context context, @NonNull List<BaseAudioTrack> tracks, @Nullable TrackListFavoritesChecker checker)
+    public SearchListAdapter(@NonNull Context context, 
+                             @NonNull List<BaseAudioTrack> tracks, 
+                             @Nullable TrackListHighlightedChecker highlightedChecker,
+                             @Nullable TrackListFavoritesChecker favoriteChecker)
+    {
+        this(context, tracks, highlightedChecker, favoriteChecker, true);
+    }
+
+    public SearchListAdapter(@NonNull Context context,
+                             @NonNull List<BaseAudioTrack> tracks,
+                             @Nullable TrackListHighlightedChecker highlightedChecker,
+                             @Nullable TrackListFavoritesChecker favoriteChecker,
+                             boolean highlightAnimation)
     {
         this._context = context;
-        this._tracks = tracks;
-        this._favoritesChecker = checker != null ? checker : new SearchListAdapter.DummyFavoritesChecker();
+        this._tracks = new ArrayList<>(tracks);
+        this._highlightAnimation = highlightAnimation;
+        this._highlightedChecker = highlightedChecker != null ? highlightedChecker : new SearchListAdapter.DummyHighlightedChecker();
+        this._favoritesChecker = favoriteChecker != null ? favoriteChecker : new SearchListAdapter.DummyFavoritesChecker();
     }
     
     public int getCount()
@@ -103,24 +119,12 @@ public class SearchListAdapter extends BaseAdapter
             favoriteIcon.setVisibility(View.GONE);
         }
 
-        // Select playing track
-        boolean isPlayingTrack = false;
-
-        BaseAudioPlaylist playlist = Player.getShared().getPlaylist();
-
-        if (playlist != null)
-        {
-            BaseAudioTrack track = playlist.getPlayingTrack();
-
-            if (track.equals(item))
-            {
-                isPlayingTrack = true;
-            }
-        }
+        // Highlighted
+        boolean isHighlighted = _highlightedChecker.shouldBeHighlighted(item);
 
         Resources resources = parent.getResources();
 
-        if (!isPlayingTrack)
+        if (!isHighlighted)
         {
             listItem.setBackgroundColor(resources.getColor(R.color.transparent));
         }
@@ -128,7 +132,7 @@ public class SearchListAdapter extends BaseAdapter
         {
             _currentlySelectedView = listItem;
             _currentlySelectedViewListIndex = position;
-            _currentlySelectedView.setBackgroundColor(resources.getColor(R.color.currentlyPlayingTrack));
+            _currentlySelectedView.setBackgroundColor(resources.getColor(R.color.currentHighlightedTrack));
         }
         
         return listItem;
@@ -164,8 +168,15 @@ public class SearchListAdapter extends BaseAdapter
         _currentlySelectedView = view;
         _currentlySelectedViewListIndex = position;
 
-        _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
-        UIAnimations.getShared().listItemAnimations.animateTap(_context, _currentlySelectedView);
+        if (_highlightAnimation)
+        {
+            _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+            UIAnimations.getShared().listItemAnimations.animateTap(_context, _currentlySelectedView);
+        }
+        else
+        {
+            _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.currentHighlightedTrack));
+        }
     }
 
     public void deselectCurrentItem()
@@ -179,6 +190,10 @@ public class SearchListAdapter extends BaseAdapter
             View child = iterator.next();
             child.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
         }
+    }
+    
+    class DummyHighlightedChecker implements TrackListHighlightedChecker {
+        public boolean shouldBeHighlighted(@NonNull BaseAudioTrack track) { return false; }
     }
 
     class DummyFavoritesChecker implements TrackListFavoritesChecker {

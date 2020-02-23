@@ -98,7 +98,7 @@
     <color name="volumeBarProgressBarFillEnd">#2196F3</color>
 
     <!-- Current track -->
-    <color name="currentlyPlayingTrack">#8D2196F3</color>
+    <color name="currentHighlightedTrack">#8D2196F3</color>
 
     <!-- Effects -->
     <color name="animationSelectionEffect">#4CAF50</color>

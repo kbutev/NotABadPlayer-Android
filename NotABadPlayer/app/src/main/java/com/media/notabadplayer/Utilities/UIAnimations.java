@@ -244,7 +244,7 @@ public class UIAnimations {
             endAll();
 
             int colorFrom = context.getResources().getColor(R.color.animationSelectionEffect);
-            int colorTo = context.getResources().getColor(R.color.currentlyPlayingTrack);
+            int colorTo = context.getResources().getColor(R.color.currentHighlightedTrack);
 
             animator = new ValueAnimator();
             animator.setIntValues(colorFrom, colorTo);
