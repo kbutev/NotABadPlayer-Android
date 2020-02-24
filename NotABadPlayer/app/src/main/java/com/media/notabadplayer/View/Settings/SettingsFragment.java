@@ -702,14 +702,13 @@ public class SettingsFragment extends Fragment implements BaseView
     
     class SettingsListAdapter extends BaseAdapter
     {
-        private ArrayList<String> _values;
+        private final Context _context;
+        private final ArrayList<String> _values;
         
-        private Context _context;
-        
-        public SettingsListAdapter(@NonNull Context context, ArrayList<String> values)
+        public SettingsListAdapter(@NonNull Context context, @NonNull ArrayList<String> values)
         {
-            this._values = values;
             this._context = context;
+            this._values = new ArrayList<>(values);
         }
         
         public int getCount()

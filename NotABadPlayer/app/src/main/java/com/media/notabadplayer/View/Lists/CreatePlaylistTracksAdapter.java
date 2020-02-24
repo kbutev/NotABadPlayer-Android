@@ -17,14 +17,13 @@ import com.media.notabadplayer.R;
 
 public class CreatePlaylistTracksAdapter extends BaseAdapter
 {
-    private ArrayList<BaseAudioTrack> _tracks;
-
-    private Context _context;
+    private final @NonNull Context _context;
+    private final @NonNull ArrayList<BaseAudioTrack> _tracks;
 
     public CreatePlaylistTracksAdapter(@NonNull Context context, @NonNull ArrayList<BaseAudioTrack> tracks)
     {
-        this._tracks = tracks;
         this._context = context;
+        this._tracks = new ArrayList<>(tracks);
     }
 
     public int getCount()

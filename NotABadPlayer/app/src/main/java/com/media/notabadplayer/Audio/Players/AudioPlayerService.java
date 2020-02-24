@@ -848,7 +848,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     {
         private final Object lock = new Object();
         
-        private ArrayList<BaseAudioTrack> _playHistory = new ArrayList<>();
+        private final ArrayList<BaseAudioTrack> _playHistory = new ArrayList<>();
 
         @Override
         public @NonNull List<BaseAudioTrack> getPlayHistory()

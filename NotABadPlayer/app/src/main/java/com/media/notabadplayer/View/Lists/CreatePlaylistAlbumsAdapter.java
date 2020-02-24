@@ -22,18 +22,16 @@ import com.media.notabadplayer.R;
 
 public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 {
-    private @NonNull List<AudioAlbum> _albums;
-    
-    private @NonNull Context _context;
-    
-    private @NonNull AudioInfo _audioInfo;
+    private final @NonNull Context _context;
+    private final @NonNull List<AudioAlbum> _albums;
+    private final @NonNull AudioInfo _audioInfo;
     
     private int _selectedAlbumPosition;
     private @Nullable LinearLayout _selectedAlbum;
     private @Nullable CreatePlaylistAlbumsTracksAdapter _selectedAlbumAdapter;
-    private List<BaseAudioTrack> _selectedTracks = new ArrayList<>();
+    private final List<BaseAudioTrack> _selectedTracks = new ArrayList<>();
     
-    private @NonNull Function<Integer, Void> _onItemClick;
+    private final @NonNull Function<Integer, Void> _onItemClick;
     
     public CreatePlaylistAlbumsAdapter(@NonNull Context context,
                                        @NonNull AudioInfo audioInfo,

@@ -25,14 +25,14 @@ import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
 
 public class SearchListAdapter extends BaseAdapter
 {
-    private Context _context;
-    private List<BaseAudioTrack> _tracks;
+    private final Context _context;
+    private final List<BaseAudioTrack> _tracks;
     private final boolean _highlightAnimation;
     
-    private @NonNull TrackListHighlightedChecker _highlightedChecker;
-    private @NonNull TrackListFavoritesChecker _favoritesChecker;
+    private final @NonNull TrackListHighlightedChecker _highlightedChecker;
+    private final @NonNull TrackListFavoritesChecker _favoritesChecker;
     
-    private HashSet<View> _listViews = new HashSet<>();
+    private final HashSet<View> _listViews = new HashSet<>();
 
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
