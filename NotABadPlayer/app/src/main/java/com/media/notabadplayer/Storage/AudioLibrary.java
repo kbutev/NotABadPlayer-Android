@@ -202,9 +202,11 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     {
         synchronized (_lock)
         {
-            if (_albumTracks.containsKey(album.albumID))
+            List<BaseAudioTrack> tracks = _albumTracks.get(album.albumID);
+            
+            if (tracks != null)
             {
-                return _albumTracks.get(album.albumID);
+                return tracks;
             }
         }
 

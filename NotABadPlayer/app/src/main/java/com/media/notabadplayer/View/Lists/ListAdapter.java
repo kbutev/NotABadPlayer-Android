@@ -1,6 +1,6 @@
 package com.media.notabadplayer.View.Lists;
 
-import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
 import android.net.Uri;
@@ -13,17 +13,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.R;
 
 class ListAdapter extends BaseAdapter
 {
-    private List<BaseAudioPlaylist> _playlists;
-
-    private Context _context;
-    
+    private final Context _context;
+    private final List<BaseAudioPlaylist> _playlists;
     private boolean _editMode = false;
     
     private @NonNull Function<Integer, Void> _onRemoveButton;
@@ -32,7 +29,7 @@ class ListAdapter extends BaseAdapter
                        @NonNull List<BaseAudioPlaylist> playlists,
                        @NonNull Function<Integer, Void> onRemoveButton)
     {
-        this._playlists = playlists;
+        this._playlists = new ArrayList<>(playlists);
         this._context = context;
         this._onRemoveButton = onRemoveButton;
     }

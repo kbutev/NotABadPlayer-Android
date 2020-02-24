@@ -14,7 +14,7 @@ import com.media.notabadplayer.R;
 
 public class SettingsKeybindListAdapter extends BaseAdapter
 {
-    private Context _context;
+    private final Context _context;
 
     public SettingsKeybindListAdapter(@NonNull Context context)
     {

@@ -21,18 +21,18 @@ import com.media.notabadplayer.View.Other.GridSideIndexingView;
 
 class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
 {
-    private Context _context;
-    private List<AudioAlbum> _albums;
-    private GridSideIndexingView _sideSelector;
+    private final @NonNull Context _context;
+    private final @NonNull List<AudioAlbum> _albums;
+    private final @NonNull GridSideIndexingView _sideSelector;
 
-    private AlbumsImageProcesses _imageSetterProcesses = new AlbumsImageProcesses();
+    private final @NonNull AlbumsImageProcesses _imageSetterProcesses = new AlbumsImageProcesses();
     
     private Drawable _artCoverNoneDrawable = null;
     
-    public AlbumsTableAdapter(@NonNull Context context, List<AudioAlbum> albums, GridSideIndexingView sideSelector)
+    public AlbumsTableAdapter(@NonNull Context context, @NonNull List<AudioAlbum> albums, @NonNull GridSideIndexingView sideSelector)
     {
         this._context = context;
-        this._albums = albums;
+        this._albums = new ArrayList<>(albums);
         this._sideSelector = sideSelector;
     }
     
