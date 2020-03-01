@@ -1,6 +1,7 @@
 package com.media.notabadplayer.View.Lists;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -34,6 +35,7 @@ import com.media.notabadplayer.Storage.AudioLibrary;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
+import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
 import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
 import com.media.notabadplayer.View.Search.SearchFragment;
@@ -61,8 +63,10 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
+        
+        @Nullable BaseAudioPlaylist editPlaylist = loadPlaylistFromIntent();
 
-        _presenter = new CreatePlaylistPresenter(this, _audioLibrary, this);
+        _presenter = new CreatePlaylistPresenter(this, _audioLibrary, this, editPlaylist);
         
         // Never restore this activity, navigate back to the main activity
         if (savedInstanceState != null)
@@ -89,6 +93,14 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
         
         // Setup UI
         initUI();
+        
+        // Update name field
+        if (editPlaylist != null)
+        {
+            _nameField.setText(editPlaylist.getName());
+            _nameField.setEnabled(false);
+            _doneButton.setText(getResources().getString(R.string.playlist_update));
+        }
 
         // Presenter start
         _presenter.start();
@@ -180,6 +192,12 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
                 }
             }
         });
+    }
+    
+    private @Nullable BaseAudioPlaylist loadPlaylistFromIntent()
+    {
+        String intentData = getIntent().getStringExtra("playlist");
+        return (BaseAudioPlaylist) Serializing.deserializeObject(intentData);
     }
 
     @Override
@@ -306,6 +324,12 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
         }
         
         _searchFragment.updateSearchQueryResults(searchQuery, filter, songs, searchState);
+    }
+
+    @Override
+    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
+    {
+
     }
 
     @Override

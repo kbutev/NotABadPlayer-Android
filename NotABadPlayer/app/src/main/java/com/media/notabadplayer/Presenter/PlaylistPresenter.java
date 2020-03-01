@@ -91,29 +91,6 @@ public class PlaylistPresenter implements BasePresenter {
     }
 
     @Override
-    public void onPlaylistItemClick(int index)
-    {
-        List<BaseAudioTrack> tracks = _playlist.getTracks();
-
-        if (index < 0 || index >= tracks.size())
-        {
-            Log.v(PlaylistPresenter.class.getCanonicalName(), "Error: Invalid track list index, cannot respond to event properly");
-            return;
-        }
-
-        BaseAudioTrack clickedTrack = tracks.get(index);
-
-        if (GeneralStorage.getShared().getOpenPlayerOnPlayValue().openForPlaylist())
-        {
-            openPlayerScreen(clickedTrack);
-        }
-        else
-        {
-            playNewTrack(clickedTrack);
-        }
-    }
-
-    @Override
     public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
         
@@ -147,6 +124,35 @@ public class PlaylistPresenter implements BasePresenter {
     public boolean onMarkOrUnmarkContextTrackFavorite()
     {
         return false;
+    }
+
+    @Override
+    public void onPlaylistItemClick(int index)
+    {
+        List<BaseAudioTrack> tracks = _playlist.getTracks();
+
+        if (index < 0 || index >= tracks.size())
+        {
+            Log.v(PlaylistPresenter.class.getCanonicalName(), "Error: Invalid track list index, cannot respond to event properly");
+            return;
+        }
+
+        BaseAudioTrack clickedTrack = tracks.get(index);
+
+        if (GeneralStorage.getShared().getOpenPlayerOnPlayValue().openForPlaylist())
+        {
+            openPlayerScreen(clickedTrack);
+        }
+        else
+        {
+            playNewTrack(clickedTrack);
+        }
+    }
+
+    @Override
+    public void onPlaylistItemEdit(int index)
+    {
+
     }
     
     @Override

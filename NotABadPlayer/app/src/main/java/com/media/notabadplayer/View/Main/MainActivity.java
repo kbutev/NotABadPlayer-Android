@@ -504,6 +504,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     }
 
     @Override
+    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
+    {
+
+    }
+
+    @Override
     public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
     {
 

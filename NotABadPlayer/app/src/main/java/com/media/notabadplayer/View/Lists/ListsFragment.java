@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import java.util.List;
 import com.google.common.base.Function;
 
@@ -31,6 +34,7 @@ import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.AlertWindows;
+import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 import com.media.notabadplayer.View.BaseView;
 
@@ -38,7 +42,7 @@ public class ListsFragment extends Fragment implements BaseView {
     private BasePresenter _presenter;
     
     private Button _createPlaylistButton;
-    private Button _deletePlaylistButton;
+    private Button _editPlaylistButton;
     private Button _donePlaylistButton;
     private ListView _playlistsList;
     private ListAdapter _playlistsAdapter;
@@ -46,6 +50,18 @@ public class ListsFragment extends Fragment implements BaseView {
     private ProgressBar _progressIndicator;
     
     private boolean _playlistsLoaded = false;
+    
+    private Function<Integer, Void> onRemoveButtonClick = new Function<Integer, Void>() {
+        @Override
+        public Void apply(Integer integer) {
+            if (integer != 0)
+            {
+                deletePlaylistOnIndex(integer);
+            }
+
+            return null;
+        }
+    };
     
     public ListsFragment()
     {
@@ -65,7 +81,7 @@ public class ListsFragment extends Fragment implements BaseView {
         View root = inflater.inflate(R.layout.fragment_playlists, container, false);
         
         _createPlaylistButton = root.findViewById(R.id.createPlaylistButton);
-        _deletePlaylistButton = root.findViewById(R.id.deletePlaylistButton);
+        _editPlaylistButton = root.findViewById(R.id.editPlaylistButton);
         _donePlaylistButton = root.findViewById(R.id.donePlaylistButton);
         _playlistsList = root.findViewById(R.id.playlistsList);
         _progressIndicator = root.findViewById(R.id.progressIndicator);
@@ -94,8 +110,8 @@ public class ListsFragment extends Fragment implements BaseView {
         // Request data from the presenter every time we resume
         _presenter.fetchData();
         
-        // Always make sure that we are not in delete mode when resuming
-        endDeleteMode();
+        // Always make sure that we are not in edit mode when resuming
+        endEditMode();
     }
 
     @Override
@@ -122,19 +138,20 @@ public class ListsFragment extends Fragment implements BaseView {
                     return;
                 }
 
-                openCreatePlaylistScreen();
+                openCreatePlaylistScreen(null);
             }
         });
-        
-        _deletePlaylistButton.setOnClickListener(new View.OnClickListener() {
+
+        _editPlaylistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!_deletePlaylistButton.isClickable())
+                if (!_editPlaylistButton.isClickable())
                 {
                     return;
                 }
 
-                enterDeleteMode();
+                enterEditMode();
+                displayTipForEditMode();
             }
         });
 
@@ -146,7 +163,7 @@ public class ListsFragment extends Fragment implements BaseView {
                     return;
                 }
 
-                endDeleteMode();
+                endEditMode();
             }
         });
         
@@ -162,31 +179,15 @@ public class ListsFragment extends Fragment implements BaseView {
                 {
                     _presenter.onPlaylistItemClick(position);
                 }
+                else
+                {
+                    _presenter.onPlaylistItemEdit(position);
+                }
             }
         });
     }
     
-    private void openCreatePlaylistScreen()
-    {
-        Activity a = getActivity();
-
-        if (a == null)
-        {
-            return;
-        }
-        
-        // Until the playlists are loaded, these requests will be ignored
-        if (!_playlistsLoaded)
-        {
-            return;
-        }
-
-        Intent intent = new Intent(a, CreatePlaylistActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-    
-    private void enterDeleteMode()
+    private void enterEditMode()
     {
         // Until the playlists are loaded, these requests will be ignored
         if (!_playlistsLoaded)
@@ -200,11 +201,11 @@ public class ListsFragment extends Fragment implements BaseView {
         }
         
         _playlistsAdapter.enterEditMode();
-        _deletePlaylistButton.setVisibility(View.GONE);
+        _editPlaylistButton.setVisibility(View.GONE);
         _donePlaylistButton.setVisibility(View.VISIBLE);
     }
 
-    private void endDeleteMode()
+    private void endEditMode()
     {
         if (_playlistsAdapter == null)
         {
@@ -213,7 +214,12 @@ public class ListsFragment extends Fragment implements BaseView {
         
         _playlistsAdapter.leaveEditMode();
         _donePlaylistButton.setVisibility(View.GONE);
-        _deletePlaylistButton.setVisibility(View.VISIBLE);
+        _editPlaylistButton.setVisibility(View.VISIBLE);
+    }
+    
+    private void displayTipForEditMode()
+    {
+        Toast.makeText(getActivity(), R.string.toast_edit_playlists, Toast.LENGTH_SHORT).show();
     }
 
     private void deletePlaylistOnIndex(int position)
@@ -224,7 +230,7 @@ public class ListsFragment extends Fragment implements BaseView {
     public void enableInteraction()
     {
         _createPlaylistButton.setClickable(true);
-        _deletePlaylistButton.setClickable(true);
+        _editPlaylistButton.setClickable(true);
         _donePlaylistButton.setClickable(true);
         _playlistsList.setClickable(true);
     }
@@ -232,7 +238,7 @@ public class ListsFragment extends Fragment implements BaseView {
     public void disableInteraction()
     {
         _createPlaylistButton.setClickable(false);
-        _deletePlaylistButton.setClickable(false);
+        _editPlaylistButton.setClickable(false);
         _donePlaylistButton.setClickable(false);
         _playlistsList.setClickable(false);
     }
@@ -298,22 +304,18 @@ public class ListsFragment extends Fragment implements BaseView {
             return;
         }
         
+        boolean isInEditMode = _playlistsAdapter != null && _playlistsAdapter.isInEditMode();
+        
         // Update adapter
-        Function<Integer, Void> onRemoveButtonClick = new Function<Integer, Void>() {
-            @Override
-            public Void apply(Integer integer) {
-                if (integer != 0)
-                {
-                    deletePlaylistOnIndex(integer);
-                }
-
-                return null;
-            }
-        };
-
         _playlistsLoaded = true;
         _playlistsAdapter = new ListAdapter(context, playlists, onRemoveButtonClick);
         _playlistsList.setAdapter(_playlistsAdapter);
+        
+        if (isInEditMode) 
+        {
+            _playlistsAdapter.enterEditMode();
+        }
+
         _playlistsList.invalidateViews();
         
         // Hide progress
@@ -336,6 +338,37 @@ public class ListsFragment extends Fragment implements BaseView {
     public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
     {
 
+    }
+
+    @Override
+    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
+    {
+        Activity a = getActivity();
+
+        if (a == null)
+        {
+            return;
+        }
+
+        // Until the playlists are loaded, these requests will be ignored
+        if (!_playlistsLoaded)
+        {
+            return;
+        }
+
+        Intent intent = new Intent(a, CreatePlaylistActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        if (playlistToEdit != null) 
+        {
+            intent.putExtra("playlist", Serializing.serializeObject(playlistToEdit));
+            Log.v(ListsFragment.class.getCanonicalName(), "Open create list activity by editing playlist '" + playlistToEdit.getName() + "'");
+        } else 
+            {
+            Log.v(ListsFragment.class.getCanonicalName(), "Open create list activity");
+        }
+
+        startActivity(intent);
     }
 
     @Override

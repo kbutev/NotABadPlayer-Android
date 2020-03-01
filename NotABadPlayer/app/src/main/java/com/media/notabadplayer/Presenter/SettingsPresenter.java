@@ -128,11 +128,6 @@ public class SettingsPresenter implements BasePresenter
     }
 
     @Override
-    public void onPlaylistItemClick(int index) {
-
-    }
-
-    @Override
     public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
         
@@ -168,6 +163,18 @@ public class SettingsPresenter implements BasePresenter
         return false;
     }
 
+    @Override
+    public void onPlaylistItemClick(int index) 
+    {
+
+    }
+
+    @Override
+    public void onPlaylistItemEdit(int index)
+    {
+
+    }
+    
     @Override
     public void onPlaylistItemDelete(int index)
     {

@@ -26,7 +26,7 @@ public interface BasePresenter {
     void onAppStateChange(AppState state);
     
     void onAlbumItemClick(int index);
-    void onPlaylistItemClick(int index);
+    
     void onOpenPlayer(@Nullable BaseAudioPlaylist playlist);
     
     void onPlayerButtonClick(ApplicationInput input);
@@ -34,7 +34,9 @@ public interface BasePresenter {
     void onOpenPlaylistButtonClick();
     void onPlayerVolumeSet(double value);
     boolean onMarkOrUnmarkContextTrackFavorite();
-    
+
+    void onPlaylistItemClick(int index);
+    void onPlaylistItemEdit(int index);
     void onPlaylistItemDelete(int index);
     
     void onSearchResultClick(int index);

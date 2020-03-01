@@ -176,28 +176,6 @@ public class ListsPresenter implements BasePresenter
     }
 
     @Override
-    public void onPlaylistItemClick(int index) 
-    {
-        if (!_running)
-        {
-            return;
-        }
-        
-        if (index < 0 || index >= _playlists.size())
-        {
-            return;
-        }
-
-        BaseAudioPlaylist playlist = _playlists.get(index);
-
-        Log.v(ListsPresenter.class.getCanonicalName(), "Open playlist '" + playlist.getName() + "'");
-
-        OpenPlaylistOptions appropriateOptions = getAppropriateOpenOptions(playlist);
-
-        _view.openPlaylistScreen(_audioInfo, playlist, appropriateOptions);
-    }
-
-    @Override
     public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
         
@@ -233,6 +211,53 @@ public class ListsPresenter implements BasePresenter
         return false;
     }
 
+    @Override
+    public void onPlaylistItemClick(int index)
+    {
+        if (!_running)
+        {
+            return;
+        }
+
+        if (index < 0 || index >= _playlists.size())
+        {
+            return;
+        }
+
+        BaseAudioPlaylist playlist = _playlists.get(index);
+
+        Log.v(ListsPresenter.class.getCanonicalName(), "Open playlist '" + playlist.getName() + "'");
+
+        OpenPlaylistOptions appropriateOptions = getAppropriateOpenOptions(playlist);
+
+        _view.openPlaylistScreen(_audioInfo, playlist, appropriateOptions);
+    }
+
+    @Override
+    public void onPlaylistItemEdit(int index)
+    {
+        if (!_running)
+        {
+            return;
+        }
+
+        if (index < 0 || index >= _playlists.size())
+        {
+            return;
+        }
+
+        BaseAudioPlaylist playlist = _playlists.get(index);
+        
+        if (playlist.isTemporary()) 
+        {
+            return;
+        }
+        
+        Log.v(ListsPresenter.class.getCanonicalName(), "Edit playlist '" + playlist.getName() + "'");
+        
+        _view.openCreatePlaylistScreen(playlist);
+    }
+    
     @Override
     public void onPlaylistItemDelete(int index)
     {

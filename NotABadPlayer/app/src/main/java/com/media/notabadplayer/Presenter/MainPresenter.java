@@ -65,12 +65,6 @@ public class MainPresenter implements BasePresenter {
     }
 
     @Override
-    public void onPlaylistItemClick(int index)
-    {
-
-    }
-
-    @Override
     public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
 
@@ -106,6 +100,18 @@ public class MainPresenter implements BasePresenter {
         return false;
     }
 
+    @Override
+    public void onPlaylistItemClick(int index)
+    {
+
+    }
+
+    @Override
+    public void onPlaylistItemEdit(int index)
+    {
+
+    }
+    
     @Override
     public void onPlaylistItemDelete(int index)
     {

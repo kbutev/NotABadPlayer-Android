@@ -37,10 +37,11 @@
     
     <!-- Playlists -->
     <string name="playlist_create">Create</string>
-    <string name="playlist_delete">Delete</string>
+    <string name="playlist_edit">Edit</string>
     <string name="playlist_cancel">Cancel</string>
     <string name="playlist_name">Playlist name</string>
     <string name="playlist_done">Done</string>
+    <string name="playlist_update">Update</string>
     <string name="playlist_added_tracks">Added tracks</string>
     <string name="playlist_search_tracks">Search</string>
     <string name="playlist_search_album_tracks">Album Tracks</string>
@@ -119,4 +120,5 @@
 
     <!-- Toasts -->
     <string name="toast_device_library_changed">Device library changed</string>
+    <string name="toast_edit_playlists">Tap on lists to edit</string>
 </resources>

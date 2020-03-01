@@ -174,12 +174,6 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
     }
 
     @Override
-    public void onPlaylistItemClick(int index)
-    {
-
-    }
-
-    @Override
     public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
         
@@ -215,6 +209,18 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
         return false;
     }
 
+    @Override
+    public void onPlaylistItemClick(int index)
+    {
+
+    }
+
+    @Override
+    public void onPlaylistItemEdit(int index)
+    {
+
+    }
+    
     @Override
     public void onPlaylistItemDelete(int index)
     {

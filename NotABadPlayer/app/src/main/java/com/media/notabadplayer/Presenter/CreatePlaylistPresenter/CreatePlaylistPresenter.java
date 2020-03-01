@@ -39,16 +39,34 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
     private String _playlistName = "";
     private CreatePlaylistTracksAdapter _addedTracksAdapter;
     private CreatePlaylistAlbumsAdapter _albumsAdapter;
+
+    private final boolean _isEditPlaylist;
     
-    public CreatePlaylistPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo, @NonNull CreatePlaylistPresenterDelegate delegate)
+    public CreatePlaylistPresenter(@NonNull Context context,
+                                   @NonNull AudioInfo audioInfo, 
+                                   @NonNull CreatePlaylistPresenterDelegate delegate, 
+                                   @Nullable BaseAudioPlaylist templatePlaylist)
     {
         this._searchPresenter = new SearchPresenter(context, audioInfo, false);
         this._context = context;
         this._delegate = delegate;
 
         _albums = Player.getShared().getAudioInfo().getAlbums();
-        
+
         this._searchPresenter.setView(delegate);
+
+        _isEditPlaylist = templatePlaylist != null;
+        
+        if (_isEditPlaylist)
+        {
+            this._playlist = templatePlaylist;
+            this._playlistTracks = new ArrayList<>(templatePlaylist.getTracks());
+        }
+    }
+    
+    public CreatePlaylistPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo, @NonNull CreatePlaylistPresenterDelegate delegate)
+    {
+        this(context, audioInfo, delegate, null);
     }
     
     public void updateAddedTracksView()
@@ -104,11 +122,19 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
         {
             if (playlists.get(e).getName().equals(name))
             {
-                _delegate.showNameTakenDialog();
-                return;
+                if (!_isEditPlaylist)
+                {
+                    _delegate.showNameTakenDialog();
+                    return;
+                }
+                else
+                {
+                    playlists.remove(e);
+                    break;
+                }
             }
         }
-
+        
         // Successful save
         BaseAudioPlaylistBuilderNode node = AudioPlaylistBuilder.start();
         node.setName(name);
@@ -209,6 +235,7 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
         _searchPresenter.onAppStateChange(AppState.RUNNING);
         _searchPresenter.start();
         
+        updateAddedTracksView();
         updateAlbumsView();
     }
 
@@ -232,12 +259,6 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
 
     @Override
     public void onAlbumItemClick(int index)
-    {
-
-    }
-
-    @Override
-    public void onPlaylistItemClick(int index)
     {
 
     }
@@ -278,6 +299,18 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
         return false;
     }
 
+    @Override
+    public void onPlaylistItemClick(int index)
+    {
+
+    }
+
+    @Override
+    public void onPlaylistItemEdit(int index)
+    {
+        
+    }
+    
     @Override
     public void onPlaylistItemDelete(int index)
     {
