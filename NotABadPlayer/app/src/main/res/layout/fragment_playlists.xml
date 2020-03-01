@@ -33,10 +33,10 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
             <Button
-                android:id="@+id/deletePlaylistButton"
+                android:id="@+id/editPlaylistButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/playlist_delete"
+                android:text="@string/playlist_edit"
                 android:textAppearance="@style/GenericButtonText"
                 android:background="@drawable/background_button"/>
             <Button

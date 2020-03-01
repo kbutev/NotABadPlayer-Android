@@ -75,12 +75,6 @@ public class QuickPlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void onPlaylistItemClick(int index)
-    {
-
-    }
-
-    @Override
     public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
     {
         if (!_running)
@@ -160,6 +154,18 @@ public class QuickPlayerPresenter implements BasePresenter
         return false;
     }
 
+    @Override
+    public void onPlaylistItemClick(int index)
+    {
+
+    }
+
+    @Override
+    public void onPlaylistItemEdit(int index)
+    {
+
+    }
+    
     @Override
     public void onPlaylistItemDelete(int index)
     {

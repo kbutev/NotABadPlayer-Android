@@ -25,6 +25,8 @@ public interface BaseView {
     
     void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState);
 
+    void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit);
+    
     void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage);
     void onResetAppSettings();
     void onAppThemeChanged(AppSettings.AppTheme appTheme);

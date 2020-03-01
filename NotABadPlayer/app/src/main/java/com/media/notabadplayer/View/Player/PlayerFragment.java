@@ -571,6 +571,12 @@ public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObs
     {
 
     }
+
+    @Override
+    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
+    {
+
+    }
     
     @Override
     public void onPlayerPlay(@NonNull BaseAudioTrack current)
