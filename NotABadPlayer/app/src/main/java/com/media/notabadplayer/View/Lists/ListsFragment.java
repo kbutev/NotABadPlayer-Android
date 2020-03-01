@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -219,7 +220,9 @@ public class ListsFragment extends Fragment implements BaseView {
     
     private void displayTipForEditMode()
     {
-        Toast.makeText(getActivity(), R.string.toast_edit_playlists, Toast.LENGTH_SHORT).show();
+        Toast toast = Toast.makeText(_playlistsList.getContext(), R.string.toast_edit_playlists, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
     }
 
     private void deletePlaylistOnIndex(int position)
