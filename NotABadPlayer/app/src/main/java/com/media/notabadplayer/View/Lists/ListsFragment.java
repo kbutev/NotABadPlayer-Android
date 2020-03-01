@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import java.util.List;
 import com.google.common.base.Function;
@@ -152,7 +150,6 @@ public class ListsFragment extends Fragment implements BaseView {
                 }
 
                 enterEditMode();
-                displayTipForEditMode();
             }
         });
 
@@ -218,13 +215,6 @@ public class ListsFragment extends Fragment implements BaseView {
         _editPlaylistButton.setVisibility(View.VISIBLE);
     }
     
-    private void displayTipForEditMode()
-    {
-        Toast toast = Toast.makeText(_playlistsList.getContext(), R.string.toast_edit_playlists, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
-    }
-
     private void deletePlaylistOnIndex(int position)
     {
         _presenter.onPlaylistItemDelete(position);
