@@ -40,7 +40,7 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
     private CreatePlaylistTracksAdapter _addedTracksAdapter;
     private CreatePlaylistAlbumsAdapter _albumsAdapter;
 
-    private final boolean _isEditPlaylist;
+    private final boolean _isEditingPlaylist;
     
     public CreatePlaylistPresenter(@NonNull Context context,
                                    @NonNull AudioInfo audioInfo, 
@@ -55,9 +55,9 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
 
         this._searchPresenter.setView(delegate);
 
-        _isEditPlaylist = templatePlaylist != null;
+        _isEditingPlaylist = templatePlaylist != null;
         
-        if (_isEditPlaylist)
+        if (_isEditingPlaylist)
         {
             this._playlist = templatePlaylist;
             this._playlistTracks = new ArrayList<>(templatePlaylist.getTracks());
@@ -107,6 +107,8 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
         }
 
         List<BaseAudioPlaylist> playlists = GeneralStorage.getShared().getUserPlaylists();
+        int endPlaylistsIndex = playlists.size();
+        int insertIndex = endPlaylistsIndex;
 
         String name = _playlistName;
 
@@ -118,17 +120,19 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
         }
 
         // Name must not be taken already
+        
         for (int e = 0; e < playlists.size(); e++)
         {
             if (playlists.get(e).getName().equals(name))
             {
-                if (!_isEditPlaylist)
+                if (!_isEditingPlaylist)
                 {
                     _delegate.showNameTakenDialog();
                     return;
                 }
                 else
                 {
+                    insertIndex = e;
                     playlists.remove(e);
                     break;
                 }
@@ -144,7 +148,7 @@ public class CreatePlaylistPresenter implements BaseCreatePlaylistPresenter {
         try {
             BaseAudioPlaylist playlist = node.build();
 
-            playlists.add(playlist);
+            playlists.add(insertIndex, playlist);
         } catch (Exception e) {
             Log.v(CreatePlaylistActivity.class.getCanonicalName(), "Failed to save playlist to storage");
             _delegate.showUnknownErrorDialog();
