@@ -121,7 +121,7 @@ public class LooperService {
 
             synchronized (mainLock)
             {
-                clients = Collections.unmodifiableCollection(_clients);
+                clients = CollectionUtilities.copy(_clients);
             }
             
             for (LooperClient client : clients)
