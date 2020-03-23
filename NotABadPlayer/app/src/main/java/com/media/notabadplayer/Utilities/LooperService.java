@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 import com.google.common.base.Function;
 
@@ -30,7 +31,9 @@ public class LooperService {
             }
         };
 
-        _backgroundHandler = new Handler();
+        HandlerThread background = new HandlerThread("LooperService.Background");
+        background.start();
+        _backgroundHandler = new Handler(background.getLooper());
         
         loopAgain();
     }
