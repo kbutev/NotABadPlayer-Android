@@ -30,6 +30,7 @@ import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrackBuilderNode;
 import com.media.notabadplayer.Constants.SearchFilter;
 import com.media.notabadplayer.PlayerApplication;
+import com.media.notabadplayer.Utilities.CollectionUtilities;
 import com.media.notabadplayer.Utilities.MediaSorting;
 
 // Provides simple interface to the audio library of the user.
@@ -177,7 +178,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
         synchronized (_lock)
         {
-            return Collections.unmodifiableList(_albums);
+            return CollectionUtilities.copy(_albums);
         }
     }
 

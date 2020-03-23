@@ -25,6 +25,7 @@ import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.PlayerApplication;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.CollectionUtilities;
 import com.media.notabadplayer.Utilities.Serializing;
 
 // Provides simple interface to the user preferences (built in storage).
@@ -492,7 +493,7 @@ public class GeneralStorage
     {
         if (_keyBindsFullyRetrieved)
         {
-            return Collections.unmodifiableMap(_keyBinds);
+            return CollectionUtilities.copy(_keyBinds);
         }
 
         _keyBindsFullyRetrieved = true;
@@ -514,7 +515,7 @@ public class GeneralStorage
             }
         }
 
-        return Collections.unmodifiableMap(_keyBinds);
+        return CollectionUtilities.copy(_keyBinds);
     }
     
     public int getPlayerPlayedHistoryCapacity()
