@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
-import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.StringUtilities;
 import com.media.notabadplayer.Utilities.UIAnimations;
@@ -41,15 +40,6 @@ public abstract class TrackListAdapter extends BaseAdapter {
 
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
-
-    public TrackListAdapter(@NonNull Context context,
-                            @NonNull BaseAudioPlaylist playlist,
-                            @NonNull OpenPlaylistOptions options,
-                            @Nullable TrackListHighlightedChecker highlightedChecker,
-                            @Nullable TrackListFavoritesChecker favoritesChecker)
-    {
-        this(context, playlist, options, highlightedChecker, favoritesChecker, false);
-    }
 
     public TrackListAdapter(@NonNull Context context,
                             @NonNull BaseAudioPlaylist playlist,
