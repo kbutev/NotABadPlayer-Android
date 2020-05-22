@@ -24,7 +24,7 @@ class PlaylistListAdapter extends TrackListAdapter
                                @Nullable TrackListHighlightedChecker highlightedChecker, 
                                @Nullable TrackListFavoritesChecker favoritesChecker)
     {
-        super(context, playlist, options, highlightedChecker, favoritesChecker);
+        super(context, playlist, options, highlightedChecker, favoritesChecker, true);
     }
 
     public @NonNull View getLayout(@NonNull ViewGroup parent) {
