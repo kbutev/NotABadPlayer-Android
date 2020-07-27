@@ -53,7 +53,9 @@ public class QuickPlayerPresenter implements BasePresenter
     @Override
     public void onDestroy()
     {
+        Log.v(QuickPlayerPresenter.class.getCanonicalName(), "Destroyed.");
 
+        _running = false;
     }
 
     @Override
