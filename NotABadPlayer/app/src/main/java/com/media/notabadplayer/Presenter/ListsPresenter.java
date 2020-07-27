@@ -88,6 +88,8 @@ public class ListsPresenter implements BasePresenter
         }
 
         Log.v(ListsPresenter.class.getCanonicalName(), "Fetching user playlists...");
+
+        final Player player = Player.getShared();
         
         _fetchingData = true;
         
@@ -100,7 +102,7 @@ public class ListsPresenter implements BasePresenter
                 Handler mainHandler = new Handler(Looper.getMainLooper());
                 Runnable myRunnable;
                 
-                if (_running)
+                if (_running && player.isInitialized())
                 {
                     List<BaseAudioPlaylist> lists = GeneralStorage.getShared().getUserPlaylists();
 
@@ -111,7 +113,7 @@ public class ListsPresenter implements BasePresenter
                         lists.add(0, recentlyAdded);
                     }
 
-                    BaseAudioPlaylist recentlyPlayed = Player.getShared().playHistory.getPlayHistoryAsPlaylist(_historyPlaylistName);
+                    BaseAudioPlaylist recentlyPlayed = player.playHistory.getPlayHistoryAsPlaylist(_historyPlaylistName);
                     
                     if (recentlyPlayed != null)
                     {

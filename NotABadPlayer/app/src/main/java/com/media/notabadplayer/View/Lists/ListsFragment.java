@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,6 +31,7 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Constants.AppSettings;
+import com.media.notabadplayer.Presenter.ListsPresenter;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.R;
@@ -107,7 +110,7 @@ public class ListsFragment extends Fragment implements BaseView {
         enableInteraction();
         
         // Request data from the presenter every time we resume
-        _presenter.fetchData();
+        fetchNewData();
         
         // Always make sure that we are not in edit mode when resuming
         endEditMode();
@@ -132,7 +135,7 @@ public class ListsFragment extends Fragment implements BaseView {
         super.onHiddenChanged(hidden);
 
         if (!hidden) {
-            _presenter.fetchData();
+            fetchNewData();
         }
     }
     
@@ -418,7 +421,7 @@ public class ListsFragment extends Fragment implements BaseView {
         }
         
         // Retry until we succeed
-        _presenter.fetchData();
+        retryFetchNewDataAfterDelay();
     }
 
     @Override
@@ -447,5 +450,21 @@ public class ListsFragment extends Fragment implements BaseView {
     private void hideProgressIndicator()
     {
         _progressIndicator.setVisibility(View.GONE);
+    }
+
+    private void fetchNewData() {
+        _presenter.fetchData();
+    }
+
+    private void retryFetchNewDataAfterDelay() {
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run()
+            {
+                fetchNewData();
+            }
+        };
+        mainHandler.postDelayed(myRunnable, 100);
     }
 }

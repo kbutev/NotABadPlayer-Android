@@ -9,6 +9,10 @@ import com.media.notabadplayer.Audio.Model.MutableAudioPlaylist;
 
 public interface AudioPlayer
 {
+    // It takes time for the player to start. If this returns false, the player may have some
+    // uninitialized properties.
+    boolean isInitialized();
+
     boolean isPlaying();
     boolean isCompletelyStopped();
     @Nullable BaseAudioPlaylist getPlaylist();
