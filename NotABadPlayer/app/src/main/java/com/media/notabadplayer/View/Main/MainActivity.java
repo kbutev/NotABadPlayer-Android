@@ -628,6 +628,11 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         private void willSelectTab(int destinationTabID)
         {
             cacheCurrentTab();
+
+            // On destroy event
+            if (currentTab != null) {
+                currentTab.presenter.onDestroy();
+            }
             
             // As soon as we cache the tab, clear the backstack
             clearCurrentTabBackStack();
@@ -776,14 +781,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
                 transaction.hide((Fragment) previousTabView);
                 transaction.commit();
                 return;
-            }
-
-            // Since tab is getting removed, alert the presenter of its destruction
-            CachedTab previousTab = cachedTabs.get(previousTabID);
-
-            if (previousTab != null)
-            {
-                previousTab.presenter.onDestroy();
             }
 
             // Remove view

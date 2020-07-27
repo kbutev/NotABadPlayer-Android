@@ -96,7 +96,9 @@ public class SearchPresenter implements BasePresenter
     @Override
     public void onDestroy()
     {
+        Log.v(SearchPresenter.class.getCanonicalName(), "Destroyed.");
 
+        _running = false;
     }
 
     @Override

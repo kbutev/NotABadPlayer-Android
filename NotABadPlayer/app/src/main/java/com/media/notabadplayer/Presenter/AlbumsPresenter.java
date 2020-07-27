@@ -69,6 +69,8 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
         Log.v(AlbumsPresenter.class.getCanonicalName(), "Destroyed.");
 
         AudioLibrary.getShared().unregisterLibraryChangesListener(this);
+
+        _running = false;
     }
 
     @Override

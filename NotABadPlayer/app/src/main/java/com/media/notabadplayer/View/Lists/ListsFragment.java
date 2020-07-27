@@ -126,6 +126,15 @@ public class ListsFragment extends Fragment implements BaseView {
     {
         super.onDestroy();
     }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        if (!hidden) {
+            _presenter.fetchData();
+        }
+    }
     
     private void initUI()
     {

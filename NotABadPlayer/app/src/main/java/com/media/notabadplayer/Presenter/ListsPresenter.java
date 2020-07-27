@@ -74,7 +74,9 @@ public class ListsPresenter implements BasePresenter
     @Override
     public void onDestroy()
     {
+        Log.v(ListsPresenter.class.getCanonicalName(), "Destroyed.");
 
+        _running = false;
     }
 
     @Override
@@ -89,8 +91,6 @@ public class ListsPresenter implements BasePresenter
         
         _fetchingData = true;
         
-        final boolean running = _running;
-        
         // Wait for the app start running
         // Then, update the view on the main thread
         Handler handler = new Handler();
@@ -100,7 +100,7 @@ public class ListsPresenter implements BasePresenter
                 Handler mainHandler = new Handler(Looper.getMainLooper());
                 Runnable myRunnable;
                 
-                if (running)
+                if (_running)
                 {
                     List<BaseAudioPlaylist> lists = GeneralStorage.getShared().getUserPlaylists();
 
