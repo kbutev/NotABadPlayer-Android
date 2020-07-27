@@ -224,6 +224,12 @@ public class Player implements AudioPlayer {
     }
 
     @Override
+    public boolean isInitialized()
+    {
+        return getPlayer().isInitialized();
+    }
+
+    @Override
     public boolean isPlaying()
     {
         return getPlayer().isPlaying();

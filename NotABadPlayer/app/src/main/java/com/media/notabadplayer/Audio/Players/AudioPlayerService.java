@@ -129,6 +129,11 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     }
 
     @Override
+    public boolean isInitialized() {
+        return _player != null;
+    }
+
+    @Override
     public boolean isPlaying()
     {
         return _player.isPlaying();

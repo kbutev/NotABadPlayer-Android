@@ -23,7 +23,12 @@ public class AudioPlayerDummy implements AudioPlayer {
     {
         this.observers = observers;
     }
-    
+
+    @Override
+    public boolean isInitialized() {
+        return false;
+    }
+
     @Override
     public boolean isPlaying() {
         return false;
