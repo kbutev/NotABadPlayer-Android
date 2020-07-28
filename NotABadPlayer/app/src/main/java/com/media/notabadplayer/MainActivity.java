@@ -1,4 +1,4 @@
-package com.media.notabadplayer.View.Main;
+package com.media.notabadplayer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +27,6 @@ import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
-import com.media.notabadplayer.R;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Presenter.ListsPresenter;
@@ -46,6 +45,7 @@ import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Main.CachedTab;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
 import com.media.notabadplayer.View.Lists.ListsFragment;
@@ -627,10 +627,10 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         private void willSelectTab(int destinationTabID)
         {
-            cacheCurrentTab();
+            boolean didCacheCurrentTab = cacheCurrentTab();
 
             // On destroy event
-            if (currentTab != null) {
+            if (didCacheCurrentTab && currentTab != null) {
                 currentTab.presenter.onDestroy();
             }
             
@@ -731,35 +731,39 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             return new CachedTab(tab, presenter, null, null);
         }
 
-        private void cacheCurrentTab()
+        private boolean cacheCurrentTab()
         {
             if (currentTab != null)
             {
-                boolean cacheTab = false;
+                boolean shouldCacheTab = false;
 
                 switch (currentTabID)
                 {
                     case R.id.navigation_albums:
-                        cacheTab = cachingPolicy.cacheAlbumsTab();
+                        shouldCacheTab = cachingPolicy.cacheAlbumsTab();
                         break;
                     case R.id.navigation_lists:
-                        cacheTab = cachingPolicy.cacheListsTab();
+                        shouldCacheTab = cachingPolicy.cacheListsTab();
                         break;
                     case R.id.navigation_search:
-                        cacheTab = cachingPolicy.cacheSearchTab();
+                        shouldCacheTab = cachingPolicy.cacheSearchTab();
                         break;
                     case R.id.navigation_settings:
-                        cacheTab = cachingPolicy.cacheSettingsTab();
+                        shouldCacheTab = cachingPolicy.cacheSettingsTab();
                         break;
                 }
 
-                if (cacheTab)
+                if (shouldCacheTab)
                 {
                     CachedTab current = currentTab;
                     
                     cachedTabs.put(currentTabID, CachedTab.create(current.tab, current.presenter, getSupportFragmentManager()));
+
+                    return true;
                 }
             }
+
+            return false;
         }
 
         private void clearTabCache()
