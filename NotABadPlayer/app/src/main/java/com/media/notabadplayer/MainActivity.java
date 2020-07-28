@@ -630,7 +630,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             boolean didCacheCurrentTab = cacheCurrentTab();
 
             // On destroy event
-            if (didCacheCurrentTab && currentTab != null) {
+            if (!didCacheCurrentTab && currentTab != null) {
                 currentTab.presenter.onDestroy();
             }
             
