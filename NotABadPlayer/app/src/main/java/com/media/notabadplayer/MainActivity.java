@@ -45,7 +45,7 @@ import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
-import com.media.notabadplayer.View.Main.CachedTab;
+import com.media.notabadplayer.Other.CachedTab;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
 import com.media.notabadplayer.View.Lists.ListsFragment;

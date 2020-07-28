@@ -1,4 +1,4 @@
-package com.media.notabadplayer.View.Main;
+package com.media.notabadplayer.Other;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.View.BaseView;
 
+// Unites a view and a presenter together.
 public class CachedTab {
     public final @NonNull BaseView tab;
     public final @NonNull BasePresenter presenter;
