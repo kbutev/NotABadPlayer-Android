@@ -38,7 +38,7 @@ import com.media.notabadplayer.Audio.Model.MutableAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.SafeMutableAudioPlaylist;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.View.Main.MainActivity;
+import com.media.notabadplayer.MainActivity;
 
 public class AudioPlayerService extends Service implements AudioPlayer {
     // Use to access and communicate with the audio player directly (no need for IPC communication)
