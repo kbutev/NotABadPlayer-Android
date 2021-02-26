@@ -7,9 +7,10 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,9 @@ import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.ArtImageFetcher;
 import com.media.notabadplayer.Utilities.UIAnimations;
+import com.media.notabadplayer.View.Albums.AlbumsImageProcess;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
 import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
 
@@ -31,6 +34,8 @@ public class SearchListAdapter extends BaseAdapter
     
     private final @NonNull TrackListHighlightedChecker _highlightedChecker;
     private final @NonNull TrackListFavoritesChecker _favoritesChecker;
+
+    private final @NonNull ArtImageFetcher _artImageFetcher;
     
     private final HashSet<View> _listViews = new HashSet<>();
 
@@ -56,6 +61,7 @@ public class SearchListAdapter extends BaseAdapter
         this._highlightAnimation = highlightAnimation;
         this._highlightedChecker = highlightedChecker != null ? highlightedChecker : new SearchListAdapter.DummyHighlightedChecker();
         this._favoritesChecker = favoriteChecker != null ? favoriteChecker : new SearchListAdapter.DummyFavoritesChecker();
+        this._artImageFetcher = new ArtImageFetcher(context);
     }
     
     public int getCount()
@@ -92,10 +98,12 @@ public class SearchListAdapter extends BaseAdapter
         BaseAudioTrack item = (BaseAudioTrack) getItem(position);
         
         ImageView cover = listItem.findViewById(R.id.albumCover);
+
+        Bitmap imageBitmap = _artImageFetcher.fetch(item.getArtCover());
         
-        if (!item.getArtCover().isEmpty())
+        if (imageBitmap != null)
         {
-            cover.setImageURI(Uri.parse(Uri.decode(item.getArtCover())));
+            cover.setImageBitmap(imageBitmap);
         }
         else
         {

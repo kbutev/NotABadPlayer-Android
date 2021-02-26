@@ -1,6 +1,6 @@
 package com.media.notabadplayer.Presenter.CreatePlaylistPresenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Presenter.BasePresenter;

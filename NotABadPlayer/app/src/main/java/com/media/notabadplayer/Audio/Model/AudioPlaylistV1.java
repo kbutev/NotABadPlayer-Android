@@ -1,8 +1,8 @@
 package com.media.notabadplayer.Audio.Model;
 
 import android.media.AudioTrack;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import java.io.IOException;
 import java.io.ObjectInputStream;

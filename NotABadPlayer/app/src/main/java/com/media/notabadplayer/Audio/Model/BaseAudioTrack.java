@@ -1,6 +1,6 @@
 package com.media.notabadplayer.Audio.Model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import java.io.Serializable;
 
 public interface BaseAudioTrack extends Serializable {
@@ -10,7 +10,7 @@ public interface BaseAudioTrack extends Serializable {
     @NonNull String getArtist();
     @NonNull String getAlbumTitle();
     @NonNull String getAlbumID();
-    @NonNull String getArtCover();
+    @NonNull AudioArtCover getArtCover();
     int getTrackNum();
 
     double getDurationInSeconds();

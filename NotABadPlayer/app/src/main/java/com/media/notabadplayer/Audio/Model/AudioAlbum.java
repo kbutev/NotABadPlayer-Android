@@ -1,18 +1,18 @@
 package com.media.notabadplayer.Audio.Model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class AudioAlbum {
-    public final String albumID;
-    public final String albumArtist;
-    public final String albumTitle;
-    public final String albumCover;
-    
-    public AudioAlbum(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull String albumCover)
+    public final @NonNull String albumID;
+    public final @NonNull String albumArtist;
+    public final @NonNull String albumTitle;
+    public final @NonNull AudioArtCover artCover;
+
+    public AudioAlbum(@NonNull String albumID, @NonNull String albumArtist, @NonNull String albumTitle, @NonNull AudioArtCover artCover)
     {
         this.albumID = albumID;
         this.albumArtist = albumArtist;
         this.albumTitle = albumTitle;
-        this.albumCover = albumCover;
+        this.artCover = artCover;
     }
 }

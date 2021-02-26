@@ -1,24 +1,32 @@
 package com.media.notabadplayer.View.Albums;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import android.util.Size;
 import android.view.View;
 import android.widget.ImageView;
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.media.notabadplayer.Audio.Model.AudioArtCover;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.ArtImageFetcher;
 
 public class AlbumsImageProcess {
     private @NonNull Context _context;
     private @NonNull final View _target;
     private @NonNull final ImageView _cover;
-    private @NonNull final String _dataCover;
+    private @NonNull final AudioArtCover _artCover;
     private @Nullable final AlbumsImageProcessDelegate _delegate;
+
+    private @NonNull final ArtImageFetcher _fetcher;
     
     private @NonNull final Runnable _runnable;
     
@@ -31,21 +39,21 @@ public class AlbumsImageProcess {
 
     AlbumsImageProcess(@NonNull Context context, 
                        @NonNull View target, 
-                       @NonNull String dataCover, 
+                       @NonNull AudioArtCover artCover,
                        @Nullable AlbumsImageProcessDelegate delegate) 
     {
         this._context = context;
         this._target = target;
-        this._dataCover = "file://" + dataCover;
+        this._artCover = artCover;
         this._cover = checkNotNull((ImageView) target.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
         this._delegate = delegate;
-        
+        this._fetcher = new ArtImageFetcher(_context);
+
         this._runnable = new Runnable() {
             @Override
             public void run() {
                 try {
-                    Uri uri = Uri.parse(Uri.decode(_dataCover));
-                    _bitmapResult = MediaStore.Images.Media.getBitmap(_context.getContentResolver(), uri);
+                    _bitmapResult = _fetcher.fetch(_artCover);
                     finish();
                 } 
                 catch (Exception e)

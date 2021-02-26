@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
 import com.media.notabadplayer.Audio.Players.Player;

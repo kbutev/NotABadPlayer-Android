@@ -3,9 +3,10 @@ package com.media.notabadplayer.View.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,14 @@ import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.ArtImageFetcher;
 
 public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 {
     private final @NonNull Context _context;
     private final @NonNull List<AudioAlbum> _albums;
     private final @NonNull AudioInfo _audioInfo;
+    private final @NonNull ArtImageFetcher _artImageFetcher;
     
     private int _selectedAlbumPosition;
     private @Nullable LinearLayout _selectedAlbum;
@@ -45,6 +48,7 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         this._selectedAlbum = null;
         this._selectedAlbumAdapter = null;
         this._onItemClick = onItemClick;
+        this._artImageFetcher = new ArtImageFetcher(context);
     }
 
     public int getCount()
@@ -86,18 +90,11 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 
         ImageView cover = listItem.findViewById(R.id.albumCover);
 
-        if (!album.albumCover.isEmpty())
-        {
-            String uri = Uri.decode(album.albumCover);
+        Bitmap artImage = _artImageFetcher.fetch(album.artCover);
 
-            if (uri != null)
-            {
-                cover.setImageURI(Uri.parse(uri));
-            }
-            else
-            {
-                cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.cover_art_none));
-            }
+        if (artImage != null)
+        {
+            cover.setImageBitmap(artImage);
         }
         else
         {
@@ -127,18 +124,11 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 
         ImageView cover = listItem.findViewById(R.id.albumCover);
 
-        if (!album.albumCover.isEmpty())
-        {
-            String uri = Uri.decode(album.albumCover);
+        Bitmap artImage = _artImageFetcher.fetch(album.artCover);
 
-            if (uri != null)
-            {
-                cover.setImageURI(Uri.parse(uri));
-            }
-            else
-            {
-                cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.cover_art_none));
-            }
+        if (artImage != null)
+        {
+            cover.setImageBitmap(artImage);
         }
         else
         {

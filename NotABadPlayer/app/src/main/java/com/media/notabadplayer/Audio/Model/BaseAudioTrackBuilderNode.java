@@ -1,6 +1,7 @@
 package com.media.notabadplayer.Audio.Model;
 
-import android.support.annotation.NonNull;
+import android.net.Uri;
+import androidx.annotation.NonNull;
 
 import java.util.Date;
 
@@ -14,7 +15,7 @@ public interface BaseAudioTrackBuilderNode {
     void setArtist(@NonNull String value);
     void setAlbumTitle(@NonNull String value);
     void setAlbumID(@NonNull String value);
-    void setArtCover(@NonNull String value);
+    void setArtCover(@NonNull AudioArtCover value);
     void setTrackNum(int number);
 
     void setDuration(double duration);
