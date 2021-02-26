@@ -1,6 +1,6 @@
 package com.media.notabadplayer.Audio.Model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.media.notabadplayer.Utilities.StringUtilities;
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     public @NonNull String artist;
     public @NonNull String albumTitle;
     public @NonNull String albumID;
-    public @NonNull String artCover;
+    public @NonNull AudioArtCover artCover;
     public int trackNum;
 
     public double durationInSeconds;
@@ -38,7 +38,7 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
         artist = "";
         albumTitle = "";
         albumID = "";
-        artCover = "";
+        artCover = new AudioArtCover();
 
         source = AudioTrackSource.createAlbumSource("");
         originalSource = AudioTrackSource.createAlbumSource("");
@@ -141,7 +141,7 @@ public class AudioTrackV1 implements BaseAudioTrack, Serializable {
     }
 
     @Override
-    public @NonNull String getArtCover() {
+    public @NonNull AudioArtCover getArtCover() {
         return artCover;
     }
 

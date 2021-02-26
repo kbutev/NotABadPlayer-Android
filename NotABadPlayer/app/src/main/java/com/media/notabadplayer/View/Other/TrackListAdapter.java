@@ -2,9 +2,10 @@ package com.media.notabadplayer.View.Other;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.ArtImageFetcher;
 import com.media.notabadplayer.Utilities.StringUtilities;
 import com.media.notabadplayer.Utilities.UIAnimations;
 
@@ -30,6 +32,7 @@ public abstract class TrackListAdapter extends BaseAdapter {
     private List<BaseAudioTrack> _tracks;
     private final boolean _isPlaylist;
     private final boolean _highlightAnimation;
+    private final @NonNull ArtImageFetcher _artImageFetcher;
     
     private @NonNull OpenPlaylistOptions _options;
 
@@ -56,6 +59,7 @@ public abstract class TrackListAdapter extends BaseAdapter {
         this._options = options;
         this._highlightedChecker = highlightedChecker != null ? highlightedChecker : new TrackListAdapter.DummyHighlightedChecker();
         this._favoritesChecker = favoritesChecker != null ? favoritesChecker : new TrackListAdapter.DummyFavoritesChecker();
+        this._artImageFetcher = new ArtImageFetcher(context);
     }
     
     // Inflate views - can be overriden
@@ -212,15 +216,12 @@ public abstract class TrackListAdapter extends BaseAdapter {
 
         BaseAudioTrack track = _tracks.get(0);
 
-        if (!track.getArtCover().isEmpty() && !_isPlaylist)
-        {
-            String uri = Uri.decode(track.getArtCover());
+        Bitmap artImage = _artImageFetcher.fetch(track.getArtCover());
 
-            if (uri != null)
-            {
-                albumCover.setImageURI(Uri.parse(uri));
-                albumCover.setVisibility(View.VISIBLE);
-            }
+        if (artImage != null && !_isPlaylist)
+        {
+            albumCover.setImageBitmap(artImage);
+            albumCover.setVisibility(View.VISIBLE);
         }
         else
         {

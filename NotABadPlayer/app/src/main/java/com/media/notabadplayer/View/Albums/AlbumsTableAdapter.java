@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +55,8 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
     {
+        loadNoCoverArtIfNecessary(parent);
+
         if (convertView == null)
         {
             convertView = LayoutInflater.from(_context).inflate(R.layout.item_album, parent, false);
@@ -65,25 +67,19 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
         // Item
         AudioAlbum item = (AudioAlbum) getItem(position);
         String dataTitle = item.albumTitle;
-        String dataCover = item.albumCover;
 
-        if (!dataCover.isEmpty())
+        ImageView cover = checkNotNull((ImageView)listItem.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
+        cover.setImageDrawable(_artCoverNoneDrawable);
+
+        if (item.artCover.isValid())
         {
-            AlbumsImageProcess p = new AlbumsImageProcess(_context, listItem, dataCover, _imageSetterProcesses);
+            AlbumsImageProcess p = new AlbumsImageProcess(_context, listItem, item.artCover, _imageSetterProcesses);
             _imageSetterProcesses.add(p);
             p.start();
         }
         else
         {
             _imageSetterProcesses.removeProcessForView(listItem);
-            
-            if (_artCoverNoneDrawable == null)
-            {
-                _artCoverNoneDrawable = parent.getResources().getDrawable(R.drawable.cover_art_none);
-            }
-            
-            ImageView cover = checkNotNull((ImageView)listItem.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
-            cover.setImageDrawable(_artCoverNoneDrawable);
         }
         
         TextView title = checkNotNull((TextView)listItem.findViewById(R.id.title), "Base adapter is expecting a valid text view");
@@ -145,6 +141,14 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     public int getSectionForPosition(int position) 
     {
         return 0;
+    }
+
+    private void loadNoCoverArtIfNecessary(@NonNull ViewGroup parent)
+    {
+        if (_artCoverNoneDrawable == null)
+        {
+            _artCoverNoneDrawable = parent.getResources().getDrawable(R.drawable.cover_art_none);
+        }
     }
 
     private class AlbumsImageProcesses implements AlbumsImageProcessDelegate {

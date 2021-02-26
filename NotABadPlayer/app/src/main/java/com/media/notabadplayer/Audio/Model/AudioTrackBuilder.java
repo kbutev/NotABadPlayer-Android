@@ -1,7 +1,8 @@
 package com.media.notabadplayer.Audio.Model;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.net.Uri;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -124,7 +125,8 @@ class AudioTrackBuilderNode implements BaseAudioTrackBuilderNode {
     }
 
     @Override
-    public void setArtCover(@NonNull String value) {
+    public void setArtCover(@NonNull AudioArtCover value)
+    {
         this.result.artCover = value;
     }
 
