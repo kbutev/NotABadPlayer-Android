@@ -1,6 +1,6 @@
 package com.media.notabadplayer.View.Other;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 

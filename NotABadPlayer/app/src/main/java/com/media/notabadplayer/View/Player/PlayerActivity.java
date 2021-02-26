@@ -6,11 +6,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -78,6 +78,9 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         // Noise suppression
         _noiseSuppression = new AudioPlayerNoiseSuppression();
         registerReceiver(_noiseSuppression, new IntentFilter(ACTION_AUDIO_BECOMING_NOISY));
+
+        // Transition animation
+        overridePendingTransition(R.anim.player_slide_up, R.anim.hold);
     }
     
     @Override
@@ -89,15 +92,6 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         }
         
         super.onDestroy();
-    }
-    
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        
-        // Transition animation
-        overridePendingTransition(R.anim.player_slide_up, R.anim.hold);
     }
 
     @Override

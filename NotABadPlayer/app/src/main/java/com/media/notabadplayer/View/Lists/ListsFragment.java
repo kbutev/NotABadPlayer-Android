@@ -7,12 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +31,6 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Presenter.ListsPresenter;
 import com.media.notabadplayer.Presenter.PlaylistPresenter;
 import com.media.notabadplayer.Presenter.BasePresenter;
 import com.media.notabadplayer.R;
@@ -80,7 +79,7 @@ public class ListsFragment extends Fragment implements BaseView {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_playlists, container, false);
+        View root = inflater.inflate(R.layout.fragment_lists, container, false);
         
         _createPlaylistButton = root.findViewById(R.id.createPlaylistButton);
         _editPlaylistButton = root.findViewById(R.id.editPlaylistButton);

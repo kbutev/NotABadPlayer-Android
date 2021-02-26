@@ -1,6 +1,6 @@
 package com.media.notabadplayer.Audio.Model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class OpenPlaylistOptions {
     public boolean openOriginalSourcePlaylist = false;

@@ -10,20 +10,23 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import android.app.Application;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Model.AudioArtCover;
 import com.media.notabadplayer.Audio.Model.AudioTrackBuilder;
 import com.media.notabadplayer.Audio.Model.AudioTrackSource;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
@@ -44,6 +47,9 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     public static int RECENTLY_ADDED_CAP = 100;
     public static int RECENTLY_ADDED_PREDICATE_DAYS_DIFFERENCE = 30;
 
+    // From google sample https://android.googlesource.com/platform/packages/providers/MediaProvider/+/51cba5e1acf1c56be3dc6c7c46a73a5a0409b452/src/com/android/providers/media/MediaProvider.java
+    public static final Uri LEGACY_ALBUMART_URI = Uri.parse("content://media/external/audio/albumart");
+
     private static AudioLibrary singleton;
 
     private final Object _lock = new Object();
@@ -63,15 +69,15 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     // List of recently added tracks
     private boolean _recentlyAddedLoaded;
     private final ArrayList<BaseAudioTrack> _recentlyAdded = new ArrayList<>();
-    private @Nullable Date _favoritesLastUpdated = null;
+    private @Nullable
+    Date _favoritesLastUpdated = null;
     private List<BaseAudioTrack> _favoriteTracks = new ArrayList<>();
 
     public interface ChangesListener {
         void onMediaLibraryChanged();
     }
 
-    private AudioLibrary()
-    {
+    private AudioLibrary() {
         // The handler decides which thread the callbacks will be performed on
         super(new Handler(Looper.getMainLooper()));
 
@@ -85,20 +91,17 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         Log.v(AudioLibrary.class.getCanonicalName(), "Initialized!");
     }
 
-    public synchronized static AudioLibrary getShared()
-    {
-        if (singleton == null)
-        {
+    public synchronized static AudioLibrary getShared() {
+        if (singleton == null) {
             singleton = new AudioLibrary();
         }
 
         return singleton;
     }
 
-    private @NonNull Application getContext()
-    {
-        if (_context == null)
-        {
+    private @NonNull
+    Application getContext() {
+        if (_context == null) {
             throw new UncheckedExecutionException(new Exception("AudioLibrary cannot be used before being initialized, initialize() has never been called"));
         }
 
@@ -108,12 +111,9 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     // # Init
 
     @Override
-    public void loadIfNecessary()
-    {
-        synchronized (_lock)
-        {
-            if (_albumsLoaded)
-            {
+    public void loadIfNecessary() {
+        synchronized (_lock) {
+            if (_albumsLoaded) {
                 return;
             }
         }
@@ -122,11 +122,17 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     }
 
     @Override
-    public void load()
-    {
+    public void load() {
         // Load whatever is needed to operate the library
         // Albums will be loaded and stored, since they hold huge amount of information
 
+        loadAlbumsData();
+    }
+
+    // # Album info
+
+    private void loadAlbumsData()
+    {
         synchronized (_lock)
         {
             Context context = getContext();
@@ -146,17 +152,30 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
             int artistColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
             int albumIdColumn = cursor.getColumnIndex(MediaStore.Audio.Albums._ID);
-            int albumArtColumn = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
 
             while (cursor.moveToNext())
             {
                 long albumID = cursor.getLong(albumIdColumn);
                 String title = cursor.getString(titleColumn);
                 String artist = cursor.getString(artistColumn);
-                String cover = cursor.getString(albumArtColumn);
 
-                AudioAlbum a = new AudioAlbum(String.valueOf(albumID), artist, title, cover != null ? cover : "");
-                _albums.add(a);
+                AudioArtCover artCover;
+
+                if (Build.VERSION.SDK_INT >= 29) {
+                    int thumbColumn = cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID);
+                    int thumpId = cursor.getInt(thumbColumn);
+                    Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, thumpId);
+                    artCover = new AudioArtCover(null, uri);
+                } else {
+                    Uri artURI = ContentUris.withAppendedId(LEGACY_ALBUMART_URI, albumID);
+                    artCover = new AudioArtCover(null, artURI);
+                }
+
+                AudioAlbum albumItem = new AudioAlbum(String.valueOf(albumID), artist, title, artCover);
+
+                if (albumItem != null) {
+                    _albums.add(albumItem);
+                }
             }
 
             cursor.close();
@@ -168,8 +187,6 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
             _albumsLoaded = true;
         }
     }
-
-    // # Album info
 
     @Override
     public @NonNull List<AudioAlbum> getAlbums()
@@ -410,7 +427,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         }
 
         BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
-        ColumnIndexes indexes = new ColumnIndexes(cursor);
+        TrackColumnIndexes indexes = new TrackColumnIndexes(cursor);
 
         while (cursor.moveToNext())
         {
@@ -498,7 +515,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         }
 
         BaseAudioTrackBuilderNode node = AudioTrackBuilder.start();
-        ColumnIndexes indexes = new ColumnIndexes(cursor);
+        TrackColumnIndexes indexes = new TrackColumnIndexes(cursor);
 
         while (cursor.moveToNext())
         {
@@ -521,10 +538,10 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         return tracks;
     }
     
-    @NonNull BaseAudioTrack buildTrackFromCursor(@NonNull Cursor cursor, @Nullable BaseAudioTrackBuilderNode reusableNode, @Nullable ColumnIndexes cIndexes) throws Exception {
+    @NonNull BaseAudioTrack buildTrackFromCursor(@NonNull Cursor cursor, @Nullable BaseAudioTrackBuilderNode reusableNode, @Nullable TrackColumnIndexes cIndexes) throws Exception {
         BaseAudioTrackBuilderNode node = reusableNode != null ? reusableNode : AudioTrackBuilder.start();
 
-        ColumnIndexes indexes = cIndexes != null ? cIndexes : new ColumnIndexes(cursor);
+        TrackColumnIndexes indexes = cIndexes != null ? cIndexes : new TrackColumnIndexes(cursor);
 
         String filePath = cursor.getString(indexes.dataColumn);
         Date dateAdded = buildDateFromDatabaseLong(cursor.getLong(indexes.dateAddedColumn));
@@ -538,7 +555,6 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         double lastPlayedPosition = cursor.getLong(indexes.bookmarkColumn) / 1000.0;
 
         @Nullable AudioAlbum album = getAlbumByID(albumID);
-        String albumCover = album != null ? album.albumCover : "";
 
         AudioTrackSource source = album != null ? AudioTrackSource.createAlbumSource(albumID) : AudioTrackSource.createPlaylistSource(title);
 
@@ -549,7 +565,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         node.setArtist(artist);
         node.setAlbumTitle(albumTitle);
         node.setAlbumID(albumID);
-        node.setArtCover(albumCover);
+        node.setArtCover(album.artCover);
         node.setTrackNum(trackNum);
         node.setDuration(duration);
         node.setSource(source);
@@ -619,7 +635,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
     }
     
     // Column indexes
-    class ColumnIndexes {
+    class TrackColumnIndexes {
         final int dataColumn;
         final int dateAddedColumn;
         final int dateModifiedColumn;
@@ -631,7 +647,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
         final int durationColumn;
         final int bookmarkColumn;
 
-        ColumnIndexes(@NonNull Cursor cursor) {
+        TrackColumnIndexes(@NonNull Cursor cursor) {
             dataColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             dateAddedColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
             dateModifiedColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED);

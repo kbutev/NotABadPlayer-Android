@@ -2,12 +2,13 @@ package com.media.notabadplayer.View.Player;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
+import com.media.notabadplayer.Utilities.ArtImageFetcher;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.StringUtilities;
 import com.media.notabadplayer.Utilities.UIAnimations;
@@ -57,7 +59,9 @@ public class QuickPlayerFragment extends Fragment implements BaseView, QuickPlay
     private Button _buttonForward;
     private Button _buttonPlaylist;
     private Button _buttonPlayOrder;
-    
+
+    private ArtImageFetcher _artImageFetcher;
+
     public QuickPlayerFragment()
     {
 
@@ -88,6 +92,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, QuickPlay
         _buttonForward = root.findViewById(R.id.mediaButtonForward);
         _buttonPlaylist = root.findViewById(R.id.mediaButtonPlaylist);
         _buttonPlayOrder = root.findViewById(R.id.mediaButtonPlayOrder);
+        _artImageFetcher = new ArtImageFetcher(inflater.getContext());
         
         // Init UI
         initUI();
@@ -287,9 +292,11 @@ public class QuickPlayerFragment extends Fragment implements BaseView, QuickPlay
     {
         if (playingTrack != null)
         {
-            if (!playingTrack.getArtCover().isEmpty())
+            Bitmap artImage = _artImageFetcher.fetch(playingTrack.getArtCover());
+
+            if (artImage != null)
             {
-                _imageCover.setImageURI(Uri.parse(Uri.decode(playingTrack.getArtCover())));
+                _imageCover.setImageBitmap(artImage);
             }
             else
             {

@@ -3,9 +3,10 @@ package com.media.notabadplayer.View.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.common.base.Function;
+import com.media.notabadplayer.Audio.Model.AudioArtCover;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.ArtImageFetcher;
 
 class ListAdapter extends BaseAdapter
 {
     private final Context _context;
     private final List<BaseAudioPlaylist> _playlists;
+
+    private final @NonNull ArtImageFetcher _artImageFetcher;
+
     private boolean _editMode = false;
     
     private @NonNull Function<Integer, Void> _onRemoveButton;
@@ -32,6 +38,7 @@ class ListAdapter extends BaseAdapter
         this._playlists = new ArrayList<>(playlists);
         this._context = context;
         this._onRemoveButton = onRemoveButton;
+        this._artImageFetcher = new ArtImageFetcher(context);
     }
 
     public int getCount()
@@ -129,14 +136,14 @@ class ListAdapter extends BaseAdapter
             }
         }
         
-        String artCover = "";
+        AudioArtCover artCover = null;
 
         if (playlist.size() > 0)
         {
             artCover = playlist.getTrack(0).getArtCover();
         }
         
-        if (!artCover.isEmpty())
+        if (artCover != null)
         {
             setCover(cover, artCover);
         }
@@ -146,13 +153,13 @@ class ListAdapter extends BaseAdapter
         }
     }
     
-    void setCover(@NonNull ImageView cover, @Nullable String artCover)
+    void setCover(@NonNull ImageView cover, @Nullable AudioArtCover artCover)
     {
-        String uri = Uri.decode(artCover);
+        Bitmap artCoverBitmap = _artImageFetcher.fetch(artCover);
 
-        if (uri != null)
+        if (artCoverBitmap != null)
         {
-            cover.setImageURI(Uri.parse(uri));
+            cover.setImageBitmap(artCoverBitmap);
             cover.setScaleType(ImageView.ScaleType.FIT_XY);
         }
         else

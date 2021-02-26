@@ -1,6 +1,6 @@
 package com.media.notabadplayer.Audio;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface AudioPlayerObservers
 {

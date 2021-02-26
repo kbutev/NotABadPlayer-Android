@@ -8,14 +8,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import com.google.common.base.Function;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Utilities.AudioPlayerNoiseSuppression;
 import com.media.notabadplayer.Constants.AppState;
@@ -92,13 +91,13 @@ public class PlayerApplication extends Application {
     }
     
     private class Permissions {
-        public final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 1;
+        public final int PERMISSION_REQUEST_USE_EXTERNAL_STORAGE = 1;
 
         PermissionsStatus evaluatePermissions(@NonNull final Activity activity)
         {
             // Request for permission, handle it with the activity method onRequestPermissionsResult()
             try {
-                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED)
                 {
                     return PermissionsStatus.DENIED;
@@ -121,12 +120,12 @@ public class PlayerApplication extends Application {
             if (Build.VERSION.SDK_INT >= 16)
             {
                 ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_USE_EXTERNAL_STORAGE);
             }
             else
             {
-                ActivityCompat.requestPermissions(activity, new String[]{}, PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+                ActivityCompat.requestPermissions(activity, new String[]{}, PERMISSION_REQUEST_USE_EXTERNAL_STORAGE);
             }
         }
     }
