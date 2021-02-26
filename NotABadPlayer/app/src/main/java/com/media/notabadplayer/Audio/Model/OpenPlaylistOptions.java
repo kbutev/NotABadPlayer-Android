@@ -20,7 +20,6 @@ public class OpenPlaylistOptions {
     public static @NonNull OpenPlaylistOptions buildFavorites()
     {
         OpenPlaylistOptions options = new OpenPlaylistOptions();
-        options.openOriginalSourcePlaylist = true;
         options.displayDescriptionAlbumTitle = true;
         options.displayTrackNumber = false;
         return options;
@@ -29,7 +28,6 @@ public class OpenPlaylistOptions {
     public static @NonNull OpenPlaylistOptions buildRecentlyAdded()
     {
         OpenPlaylistOptions options = new OpenPlaylistOptions();
-        options.openOriginalSourcePlaylist = true;
         options.displayDescriptionAlbumTitle = true;
         options.displayTrackNumber = false;
         return options;
