@@ -70,6 +70,7 @@ public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObs
     private Button _buttonPlay;
     private Button _buttonForward;
     private Button _buttonPlayOrder;
+    private Button _buttonExit;
 
     private ArtImageFetcher _artImageFetcher;
 
@@ -106,37 +107,28 @@ public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObs
         _buttonPlay = root.findViewById(R.id.mediaButtonPlay);
         _buttonForward = root.findViewById(R.id.mediaButtonForward);
         _buttonPlayOrder = root.findViewById(R.id.mediaButtonPlayOrder);
+        _buttonExit = root.findViewById(R.id.exitPlayer);
         _artImageFetcher = new ArtImageFetcher(inflater.getContext());
         
         AppSettings.ShowVolumeBar showBarState = GeneralStorage.getShared().getShowVolumeBarValue();
-        
+        boolean isLeftVolumeOn = showBarState == AppSettings.ShowVolumeBar.LEFT_SIDE;
+        boolean isRightVolumeOn = showBarState == AppSettings.ShowVolumeBar.RIGHT_SIDE;
+
         if (showBarState == AppSettings.ShowVolumeBar.NO)
         {
             _volumeBar = root.findViewById(R.id.volumeBarLeftSeek);
             _volumeIcon = root.findViewById(R.id.volumeBarLeftIcon);
-            root.findViewById(R.id.volumeBarLeft).setVisibility(View.INVISIBLE);
-            root.findViewById(R.id.volumeBarRight).setVisibility(View.INVISIBLE);
         }
-
-        boolean isLeftVolumeOn = showBarState == AppSettings.ShowVolumeBar.LEFT_SIDE;
-        boolean isRightVolumeOn = showBarState == AppSettings.ShowVolumeBar.RIGHT_SIDE;
-        
-        if (isLeftVolumeOn)
+        else if (isLeftVolumeOn)
         {
             _volumeBar = root.findViewById(R.id.volumeBarLeftSeek);
             _volumeIcon = root.findViewById(R.id.volumeBarLeftIcon);
-            root.findViewById(R.id.volumeBarLeft).setVisibility(View.VISIBLE);
-            root.findViewById(R.id.volumeBarRight).setVisibility(View.INVISIBLE);
-        } else if (isRightVolumeOn) {
+            hideRightSideControls(root);
+        }
+        else if (isRightVolumeOn) {
             _volumeBar = root.findViewById(R.id.volumeBarRightSeek);
             _volumeIcon = root.findViewById(R.id.volumeBarRightIcon);
-            root.findViewById(R.id.volumeBarRight).setVisibility(View.VISIBLE);
-            root.findViewById(R.id.volumeBarLeft).setVisibility(View.INVISIBLE);
-        } else {
-            _volumeBar = root.findViewById(R.id.volumeBarRightSeek);
-            _volumeIcon = root.findViewById(R.id.volumeBarRightIcon);
-            root.findViewById(R.id.volumeBarRight).setVisibility(View.GONE);
-            root.findViewById(R.id.volumeBarLeft).setVisibility(View.GONE);
+            hideLeftSideControls(root);
         }
         
         // Init UI
@@ -331,6 +323,15 @@ public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObs
             }
         });
 
+        _buttonExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIAnimations.getShared().buttonAnimations.animateTap(getContext(), _buttonExit);
+
+                exit();
+            }
+        });
+
         _layout.setSwipeLeftCallback(new Function<Void, Void>() {
             @NullableDecl
             @Override
@@ -503,6 +504,11 @@ public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObs
     
     private void swipeDown()
     {
+        exit();
+    }
+
+    private void exit()
+    {
         if (getActivity() != null)
         {
             getActivity().finish();
@@ -533,6 +539,16 @@ public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObs
     
     private boolean isStorageMarkedFavorite(@NonNull BaseAudioTrack track) {
         return GeneralStorage.getShared().favorites.isMarkedFavorite(track);
+    }
+
+    private void hideLeftSideControls(@NonNull View root) {
+        root.findViewById(R.id.volumeBarLeft).setVisibility(View.INVISIBLE);
+        root.findViewById(R.id.volumeBarRight).setVisibility(View.VISIBLE);
+    }
+
+    private void hideRightSideControls(@NonNull View root) {
+        root.findViewById(R.id.volumeBarLeft).setVisibility(View.VISIBLE);
+        root.findViewById(R.id.volumeBarRight).setVisibility(View.INVISIBLE);
     }
     
     @Override

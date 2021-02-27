@@ -7,12 +7,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/background_player">
-    
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="0dp" />
+        <Button
+            android:id="@+id/exitPlayer"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_arrow_back_24"
+            app:backgroundTint="?playerButtonsTintColor"/>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="325dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
+        android:layout_weight="1.0"
         android:orientation="horizontal">
         <LinearLayout
             android:id="@+id/volumeBarLeft"
@@ -20,13 +38,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
             android:layout_gravity="center"
+            android:visibility="invisible"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:orientation="vertical"
-            android:visibility="invisible">
+            android:orientation="vertical">
+
             <com.media.notabadplayer.View.Player.VerticalSeekBar
                 android:id="@+id/volumeBarLeftSeek"
-                android:layout_width="20dp"
+                android:layout_width="28dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
                 android:progressDrawable="@drawable/volumebar_seek_bar"
@@ -54,13 +73,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
             android:layout_gravity="center"
+            android:visibility="invisible"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:orientation="vertical"
-            android:visibility="invisible">
+            android:orientation="vertical">
             <com.media.notabadplayer.View.Player.VerticalSeekBar
                 android:id="@+id/volumeBarRightSeek"
-                android:layout_width="20dp"
+                android:layout_width="28dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
                 android:progressDrawable="@drawable/volumebar_seek_bar"
@@ -81,12 +100,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_weight="0.4">
+        android:gravity="center_horizontal|bottom">
         
         <TextView
             android:id="@+id/songTitle"
@@ -133,8 +150,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:gravity="bottom"
-        android:orientation="vertical"
-        android:layout_weight="0.35">
+        android:orientation="vertical">
 
         <SeekBar
             android:id="@+id/mediaBar"
