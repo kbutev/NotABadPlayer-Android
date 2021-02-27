@@ -46,7 +46,7 @@
             <com.media.notabadplayer.View.Player.VerticalSeekBar
                 android:id="@+id/volumeBarLeftSeek"
                 android:layout_width="28dp"
-                android:layout_height="200dp"
+                android:layout_height="220dp"
                 android:layout_gravity="center"
                 android:progressDrawable="@drawable/volumebar_seek_bar"
                 android:thumb="@drawable/volumebar_seek_thumb"/>
@@ -80,7 +80,7 @@
             <com.media.notabadplayer.View.Player.VerticalSeekBar
                 android:id="@+id/volumeBarRightSeek"
                 android:layout_width="28dp"
-                android:layout_height="200dp"
+                android:layout_height="220dp"
                 android:layout_gravity="center"
                 android:progressDrawable="@drawable/volumebar_seek_bar"
                 android:thumb="@drawable/volumebar_seek_thumb"
