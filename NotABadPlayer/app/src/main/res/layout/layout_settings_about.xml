@@ -15,7 +15,8 @@
         android:text="@string/about"
         android:textAppearance="@style/TitleText"
         android:singleLine="true"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:gravity="center_horizontal"/>
     
     <TextView
         android:layout_width="match_parent"
@@ -23,7 +24,8 @@
         android:text="@string/about_version"
         android:textAppearance="@style/PrimaryText"
         android:singleLine="true"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:gravity="center_horizontal"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -31,12 +33,14 @@
         android:text="@string/about_release_date"
         android:textAppearance="@style/PrimaryText"
         android:singleLine="true"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:gravity="center_horizontal"/>
     
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/about_credits"
         android:textAppearance="@style/PrimaryText"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:gravity="center_horizontal"/>
 </LinearLayout>

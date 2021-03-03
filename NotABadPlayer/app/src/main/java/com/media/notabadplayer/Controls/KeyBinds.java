@@ -1,7 +1,13 @@
 package com.media.notabadplayer.Controls;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
+import com.media.notabadplayer.PlayerApplication;
+import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 
 import javax.annotation.Nullable;
@@ -145,7 +151,18 @@ public class KeyBinds
                 }
                 break;
         }
+
+        broadcastKeybindAction();
         
         return exception;
+    }
+
+    private void broadcastKeybindAction()
+    {
+        Context context = PlayerApplication.getShared();
+
+        Intent intent = new Intent();
+        intent.setAction(context.getResources().getString(R.string.broadcast_keybind_action));
+        context.sendBroadcast(intent);
     }
 }

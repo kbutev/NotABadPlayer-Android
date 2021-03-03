@@ -15,7 +15,8 @@
         android:text="@string/settings_appearance"
         android:textAppearance="@style/TitleText"
         android:singleLine="true"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:gravity="center_horizontal" />
 
     <LinearLayout
         android:layout_width="match_parent"

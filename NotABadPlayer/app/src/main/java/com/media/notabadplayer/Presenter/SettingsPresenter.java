@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
+import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
@@ -306,6 +307,17 @@ public class SettingsPresenter implements BasePresenter
             Player.getShared().unmute();
             Player.getShared().pause();
         }
+    }
+
+    @Override
+    public void onAudioIdleTimerValueChange(AudioPlayerTimerValue value)
+    {
+        if (!_running)
+        {
+            return;
+        }
+
+        GeneralStorage.getShared().saveAudioIdleStopTimer(value);
     }
 
     private void updateSettingsData()

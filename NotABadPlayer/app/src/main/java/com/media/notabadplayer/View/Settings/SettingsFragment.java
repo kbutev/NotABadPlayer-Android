@@ -26,6 +26,7 @@ import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
+import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -61,7 +62,9 @@ public class SettingsFragment extends Fragment implements BaseView
     private Spinner _keybindQPlayerPrev;
     private Spinner _keybindEarphonesUnplug;
     private Spinner _keybindExternalPlay;
-    
+
+    private Spinner _audioIdleStopTimer;
+
     private Button _resetSettingsButton;
 
     private ProgressBar _progressIndicator;
@@ -114,6 +117,7 @@ public class SettingsFragment extends Fragment implements BaseView
         _keybindQPlayerPrev = root.findViewById(R.id.keybindQPlayerPrev);
         _keybindEarphonesUnplug = root.findViewById(R.id.keybindEarphonesUnplug);
         _keybindExternalPlay = root.findViewById(R.id.keybindExternalPlay);
+        _audioIdleStopTimer = root.findViewById(R.id.audioIdleStopTimer);
         _resetSettingsButton = root.findViewById(R.id.resetButton);
         
         _progressIndicator = root.findViewById(R.id.progressIndicator);
@@ -253,6 +257,17 @@ public class SettingsFragment extends Fragment implements BaseView
 
         SettingsKeybindListAdapter keybindEarphonesExternalPlay = new SettingsKeybindListAdapter(context);
         _keybindExternalPlay.setAdapter(keybindEarphonesExternalPlay);
+
+        // Timer pickers - setup adapters
+
+        ArrayList<String> audioIdleStopTimerValues = new ArrayList<>();
+        for (int e = 0; e < AudioPlayerTimerValue.values().length; e++)
+        {
+            audioIdleStopTimerValues.add(AudioPlayerTimerValue.values()[e].name());
+        }
+
+        SettingsListAdapter audioIdleStopTimerAdapter = new SettingsListAdapter(context, audioIdleStopTimerValues);
+        _audioIdleStopTimer.setAdapter(audioIdleStopTimerAdapter);
     }
     
     private void setupPickersCallbacks()
@@ -334,6 +349,17 @@ public class SettingsFragment extends Fragment implements BaseView
         setKeybindsOnItemSelectedListener(_keybindEarphonesUnplug, ApplicationInput.EARPHONES_UNPLUG);
 
         setKeybindsOnItemSelectedListener(_keybindExternalPlay, ApplicationInput.EXTERNAL_PLAY);
+
+        // Timers
+        _audioIdleStopTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                AudioPlayerTimerValue selectedValue = AudioPlayerTimerValue.values()[position];
+                _presenter.onAudioIdleTimerValueChange(selectedValue);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
     
     private void setKeybindsOnItemSelectedListener(final Spinner spinner, final ApplicationInput input)
@@ -362,6 +388,7 @@ public class SettingsFragment extends Fragment implements BaseView
         selectProperShowVolumeBarValue();
         selectProperOpenPlayerOnPlayValue();
         selectProperKeybinds();
+        selectProperTimerValues();
     }
     
     private void selectProperAppTheme()
@@ -471,6 +498,20 @@ public class SettingsFragment extends Fragment implements BaseView
 
         ApplicationAction EXTERNAL_PLAY = keybinds.get(ApplicationInput.EXTERNAL_PLAY);
         _keybindExternalPlay.setSelection(SettingsKeybindListAdapter.getCountForAction(EXTERNAL_PLAY), false);
+    }
+
+    private void selectProperTimerValues()
+    {
+        AudioPlayerTimerValue idleStopTimer = GeneralStorage.getShared().getAudioIdleStopTimer();
+
+        for (int e = 0; e < AudioPlayerTimerValue.values().length; e++)
+        {
+            if (idleStopTimer == AudioPlayerTimerValue.values()[e])
+            {
+                _audioIdleStopTimer.setSelection(e, false);
+                break;
+            }
+        }
     }
     
     private void showResetSettingsDialog()

@@ -71,6 +71,20 @@ public class PlayerApplication extends Application {
         intent.setAction(getResources().getString(R.string.broadcast_application_is_running));
         sendBroadcast(intent);
     }
+
+    private void broadcastActivityStart()
+    {
+        Intent intent = new Intent();
+        intent.setAction(getResources().getString(R.string.broadcast_activity_start));
+        sendBroadcast(intent);
+    }
+
+    private void broadcastActivityPause()
+    {
+        Intent intent = new Intent();
+        intent.setAction(getResources().getString(R.string.broadcast_activity_pause));
+        sendBroadcast(intent);
+    }
     
     private void terminate()
     {
@@ -304,7 +318,10 @@ public class PlayerApplication extends Application {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {}
         @Override
-        public void onActivityStarted(Activity activity) {}
+        public void onActivityStarted(Activity activity)
+        {
+            broadcastActivityStart();
+        }
         @Override
         public void onActivityResumed(Activity activity) 
         {
@@ -338,7 +355,10 @@ public class PlayerApplication extends Application {
             }
         }
         @Override
-        public void onActivityPaused(Activity activity) {}
+        public void onActivityPaused(Activity activity)
+        {
+            broadcastActivityPause();
+        }
         @Override
         public void onActivityStopped(Activity activity) {}
         @Override

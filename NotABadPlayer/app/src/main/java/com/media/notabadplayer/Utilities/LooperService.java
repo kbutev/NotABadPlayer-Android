@@ -12,6 +12,8 @@ public class LooperService {
     public static int LOOPER_INTERVAL_MSEC = 100;
 
     private static LooperService singleton;
+
+    private final int _loopIntervalMSec;
     
     private final ClientsManager _clientsManager = new ClientsManager();
 
@@ -19,9 +21,16 @@ public class LooperService {
     private final Runnable _loopingRunnable;
 
     private final Handler _backgroundHandler;
-    
-    private LooperService()
+
+    public LooperService()
     {
+        this(LOOPER_INTERVAL_MSEC);
+    }
+    
+    public LooperService(int loopIntervalMSec)
+    {
+        _loopIntervalMSec = loopIntervalMSec;
+
         _mainHandler = new Handler(Looper.getMainLooper());
         _loopingRunnable = new Runnable() {
             @Override
@@ -89,7 +98,7 @@ public class LooperService {
 
     private void loopAgain()
     {
-        _mainHandler.postDelayed(_loopingRunnable, LOOPER_INTERVAL_MSEC);
+        _mainHandler.postDelayed(_loopingRunnable, _loopIntervalMSec);
     }
     
     class ClientsManager 

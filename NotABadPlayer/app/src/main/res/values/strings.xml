@@ -5,6 +5,9 @@
 
     <!-- Events -->
     <string name="broadcast_application_is_running">Broadcast.ApplicationIsRunning</string>
+    <string name="broadcast_activity_start">Broadcast.ActivityStart</string>
+    <string name="broadcast_activity_pause">Broadcast.ActivityPause</string>
+    <string name="broadcast_keybind_action">Broadcast.KeyBindAction</string>
 
     <!-- Storage -->
     <string name="storage_version">1.4</string>
@@ -95,6 +98,10 @@
     <string name="settings_reset">Reset</string>
     <string name="settings_reset_button">Reset to defaults</string>
     <string name="settings_dialog_reset">Reset settings to defaults?</string>
+
+    <!-- Timers -->
+    <string name="timers">Timers</string>
+    <string name="timers_audio_idle_stop">Stop after being idle</string>
     
     <!-- About -->
     <string name="about">About</string>

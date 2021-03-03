@@ -15,6 +15,7 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
+import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Constants.AppSettings;
@@ -273,6 +274,12 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
 
     @Override
     public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
+    {
+
+    }
+
+    @Override
+    public void onAudioIdleTimerValueChange(AudioPlayerTimerValue value)
     {
 
     }

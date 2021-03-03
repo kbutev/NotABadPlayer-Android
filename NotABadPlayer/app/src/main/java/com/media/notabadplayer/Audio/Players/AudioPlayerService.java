@@ -2,25 +2,18 @@ package com.media.notabadplayer.Audio.Players;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.IBinder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 import androidx.core.math.MathUtils;
 import android.util.Log;
 
@@ -36,11 +29,12 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.MutableAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.SafeMutableAudioPlaylist;
+import com.media.notabadplayer.Audio.Other.AudioPlayerIdleStopTimer;
+import com.media.notabadplayer.Audio.Other.AudioPlayerIdleStopDelegate;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.MainActivity;
 
-public class AudioPlayerService extends Service implements AudioPlayer {
+public class AudioPlayerService extends Service implements AudioPlayer, AudioPlayerIdleStopDelegate {
     // Use to access and communicate with the audio player directly (no need for IPC communication)
     class LocalBinder extends Binder {
         AudioPlayerService getService()
@@ -52,7 +46,8 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     private final Object _lock = new Object();
     
     private final IBinder _binder = new LocalBinder();
-    private AudioPlayerService.NotificationCenter _notificationCenter;
+    private AudioPlayerServiceNotificationCenter _notificationCenter;
+    private final AudioPlayerIdleStopTimer _timer = new AudioPlayerIdleStopTimer();
     
     private android.media.MediaPlayer _player;
     private @Nullable SafeMutableAudioPlaylist __unsafePlaylist;
@@ -63,15 +58,12 @@ public class AudioPlayerService extends Service implements AudioPlayer {
     private final AudioPlayerService.Observers _observers = new AudioPlayerService.Observers();
     private final AudioPlayerService.PlayHistory _playHistory = new AudioPlayerService.PlayHistory();
 
-    private final String BROADCAST_ACTION_PLAY = "AudioPlayerService.play";
-    private final String BROADCAST_ACTION_PAUSE = "AudioPlayerService.pause";
-    private final String BROADCAST_ACTION_PREVIOUS = "AudioPlayerService.previous";
-    private final String BROADCAST_ACTION_NEXT = "AudioPlayerService.next";
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    private BroadcastReceiver playerActionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent)
         {
+            onUserInteraction();
+
             String value = intent.getAction();
             
             if (value != null)
@@ -82,10 +74,18 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             }
         }
     };
+
+    private BroadcastReceiver userInteractionReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            onUserInteraction();
+        }
+    };
     
     private void initialize()
     {
-        _notificationCenter = new AudioPlayerService.NotificationCenter();
+        _notificationCenter = new AudioPlayerServiceNotificationCenter(this);
         
         _player = new android.media.MediaPlayer();
         _player.setOnCompletionListener(new android.media.MediaPlayer.OnCompletionListener() {
@@ -111,11 +111,20 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         _muted = false;
         
         IntentFilter filter = new IntentFilter();
-        filter.addAction(BROADCAST_ACTION_PLAY);
-        filter.addAction(BROADCAST_ACTION_PAUSE);
-        filter.addAction(BROADCAST_ACTION_PREVIOUS);
-        filter.addAction(BROADCAST_ACTION_NEXT);
-        registerReceiver(receiver, filter);
+        filter.addAction(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_PLAY);
+        filter.addAction(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_PAUSE);
+        filter.addAction(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_PREVIOUS);
+        filter.addAction(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_NEXT);
+        registerReceiver(playerActionReceiver, filter);
+
+        filter = new IntentFilter();
+        filter.addAction(getResources().getString(R.string.broadcast_activity_start));
+        filter.addAction(getResources().getString(R.string.broadcast_activity_pause));
+        filter.addAction(getResources().getString(R.string.broadcast_keybind_action));
+        registerReceiver(userInteractionReceiver, filter);
+
+        _timer.delegate = this;
+        _timer.start();
     }
     
     private @NonNull Context getContext()
@@ -723,17 +732,17 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             return;
         }
         
-        if (value.equals(BROADCAST_ACTION_PLAY))
+        if (value.equals(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_PLAY))
         {
             resume();
         }
 
-        if (value.equals(BROADCAST_ACTION_PAUSE))
+        if (value.equals(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_PAUSE))
         {
             pause();
         }
 
-        if (value.equals(BROADCAST_ACTION_PREVIOUS))
+        if (value.equals(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_PREVIOUS))
         {
             if (!playlist.isPlayingFirstTrack())
             {
@@ -749,7 +758,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             }
         }
 
-        if (value.equals(BROADCAST_ACTION_NEXT))
+        if (value.equals(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_NEXT))
         {
             if (!playlist.isPlayingLastTrack())
             {
@@ -765,11 +774,53 @@ public class AudioPlayerService extends Service implements AudioPlayer {
             }
         }
     }
-    
+
+    @Override
+    public IBinder onBind(Intent intent)
+    {
+        return _binder;
+    }
+
+    @Override
+    public void onCreate() 
+    {
+        super.onCreate();
+        
+        initialize();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+        super.onStartCommand(intent, flags, startId);
+
+        Log.v(AudioPlayerService.class.getCanonicalName(), "Started!");
+        
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        
+        unregisterReceiver(playerActionReceiver);
+        unregisterReceiver(userInteractionReceiver);
+
+        stop();
+
+        _timer.stop();
+        
+        Log.v(AudioPlayerService.class.getCanonicalName(), "Destroyed!");
+        
+        // Cancel the persistent notification.
+        _notificationCenter.clear();
+    }
+
+    // # Observers
     public class Observers implements AudioPlayerObservers
     {
         private final Object lock = new Object();
-        
+
         private ArrayList<AudioPlayerObserver> _observers = new ArrayList<>();
 
         ArrayList<AudioPlayerObserver> observersCopy() {
@@ -786,7 +837,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
                 {
                     return;
                 }
-                
+
                 _observers.add(observer);
             }
 
@@ -809,50 +860,67 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         private void onPlay(@NonNull BaseAudioTrack track)
         {
             ArrayList<AudioPlayerObserver> observers = observersCopy();
-            
+
             for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayerPlay(track);}
         }
 
         private void onFinish()
         {
             ArrayList<AudioPlayerObserver> observers = observersCopy();
-            
+
             for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayerFinish();}
         }
 
         private void onStop()
         {
             ArrayList<AudioPlayerObserver> observers = observersCopy();
-            
+
             for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayerStop();}
         }
 
         private void onResume(@NonNull BaseAudioTrack track)
         {
             ArrayList<AudioPlayerObserver> observers = observersCopy();
-            
+
             for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayerResume(track);}
         }
 
         private void onPause(@NonNull BaseAudioTrack track)
         {
             ArrayList<AudioPlayerObserver> observers = observersCopy();
-            
+
             for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayerPause(track);}
         }
 
         private void onPlayOrderChange(AudioPlayOrder order)
         {
             ArrayList<AudioPlayerObserver> observers = observersCopy();
-            
+
             for (int e = 0; e < observers.size(); e++) {observers.get(e).onPlayOrderChange(order);}
         }
     }
 
+    // Handles any generic user input.
+    // The player usually alerts its timers here, since some of them are dependant on knowing
+    // when was the last time the user interacted with the app.
+    void onUserInteraction()
+    {
+        _timer.onUserInteraction();
+    }
+
+    // # AudioPlayerServiceIdleTimerDelegate
+
+    @Override
+    public void handleIdle()
+    {
+        pause();
+    }
+
+    // # PlayHistory
     public class PlayHistory implements AudioPlayerHistory
     {
         private final Object lock = new Object();
-        
+
         private final ArrayList<BaseAudioTrack> _playHistory = new ArrayList<>();
 
         @Override
@@ -871,7 +939,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
                 _playHistory.addAll(playHistory);
             }
         }
-        
+
         @Override
         public void playPreviousInHistory(@NonNull AudioInfo audioInfo) throws Exception
         {
@@ -931,7 +999,7 @@ public class AudioPlayerService extends Service implements AudioPlayer {
         private void addTrack(@NonNull BaseAudioTrack newTrack)
         {
             int capacity = GeneralStorage.getShared().getPlayerPlayedHistoryCapacity();
-            
+
             synchronized (lock) {
                 // Make sure that the history tracks are unique
                 for (BaseAudioTrack track : _playHistory)
@@ -951,151 +1019,6 @@ public class AudioPlayerService extends Service implements AudioPlayer {
                     _playHistory.remove(_playHistory.size()-1);
                 }
             }
-        }
-    }
-    
-    @Override
-    public IBinder onBind(Intent intent)
-    {
-        return _binder;
-    }
-
-    @Override
-    public void onCreate() 
-    {
-        super.onCreate();
-        
-        initialize();
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
-        super.onStartCommand(intent, flags, startId);
-
-        Log.v(AudioPlayerService.class.getCanonicalName(), "Started!");
-        
-        return START_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        
-        unregisterReceiver(receiver);
-
-        stop();
-        
-        Log.v(AudioPlayerService.class.getCanonicalName(), "Destroyed!");
-        
-        // Cancel the persistent notification.
-        _notificationCenter.clear();
-    }
-    
-    private class NotificationCenter {
-        private NotificationManager _notificationManager;
-        private NotificationChannel _notificationChannel;
-        
-        private String _channelID = "NotABadPlayer";
-        private String _channelName = "playing";
-        private String _channelDescription = "playing audio in the background";
-        private int _notificationID = 1;
-
-        private String _actionResumeString;
-        private String _actionPauseString;
-        private String _actionPreviousString;
-        private String _actionNextString;
-        
-        private String _notificationPrefix;
-        private String _notificationSuffix;
-        
-        NotificationCenter()
-        {
-            _notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-            
-            // After Android 8, it is required to register with the system before pushing notifications
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) 
-            {
-                _notificationChannel = new NotificationChannel(_channelID, _channelName, NotificationManager.IMPORTANCE_LOW);
-                _notificationChannel.setDescription(_channelDescription);
-                _notificationChannel.setShowBadge(false);
-                _notificationManager.createNotificationChannel(_notificationChannel);
-            }
-
-            Resources resources = getContext().getResources();
-            _actionResumeString = resources.getString(R.string.notification_resume);
-            _actionPauseString = resources.getString(R.string.notification_pause);
-            _actionPreviousString = resources.getString(R.string.notification_previous);
-            _actionNextString = resources.getString(R.string.notification_next);
-            _notificationPrefix = resources.getString(R.string.notification_title_prefix);
-            _notificationSuffix = resources.getString(R.string.notification_title_suffix);
-        }
-        
-        private void showNotificationForPlayingTrack(@NonNull BaseAudioTrack track, boolean isPlaying)
-        {
-            String playingTrackName = track.getTitle();
-            String content = _notificationPrefix + playingTrackName + _notificationSuffix + track.getAlbumTitle();
-            
-            showNotification(content, isPlaying);
-        }
-        
-        private void showNotification(@NonNull String content, boolean isPlaying)
-        {
-            Log.v(AudioPlayerService.class.getCanonicalName(), "Showing notification '" + content + "' " + (isPlaying ? "playing" : "paused"));
-            
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-            Intent actionIntentData;
-
-            // Build basics
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), _channelID)
-                    .setSmallIcon(R.drawable.media_play)
-                    .setContentTitle(content)
-                    .setCategory(NotificationCompat.CATEGORY_ALARM)
-                    .setPriority(NotificationCompat.PRIORITY_MAX)
-                    .setContentIntent(contentIntent);
-            
-            // Previous and next actions
-            actionIntentData = new Intent();
-            actionIntentData.setAction(BROADCAST_ACTION_PREVIOUS);
-            PendingIntent previousAction = PendingIntent.getBroadcast(getApplicationContext(), 1, actionIntentData, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            actionIntentData = new Intent();
-            actionIntentData.setAction(BROADCAST_ACTION_NEXT);
-            PendingIntent nextAction = PendingIntent.getBroadcast(getApplicationContext(), 1, actionIntentData, PendingIntent.FLAG_UPDATE_CURRENT);
-            
-            // Build pause/play action
-            actionIntentData = new Intent();
-            String playPauseString = null;
-
-            if (isPlaying)
-            {
-                actionIntentData.setAction(BROADCAST_ACTION_PAUSE);
-                playPauseString = _actionPauseString;
-            }
-            else
-            {
-                actionIntentData.setAction(BROADCAST_ACTION_PLAY);
-                playPauseString = _actionResumeString;
-            }
-
-            PendingIntent playPauseAction = PendingIntent.getBroadcast(getApplicationContext(), 1, actionIntentData, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            builder.addAction(0, _actionPreviousString, previousAction)
-                    .addAction(0, playPauseString, playPauseAction)
-                    .addAction(0, _actionNextString, nextAction);
-            
-            // Result
-            Notification n = builder.build();
-            
-            // Notify
-            _notificationManager.notify(_notificationID, n);
-        }
-        
-        private void clear()
-        {
-            _notificationManager.cancel(_notificationID);
         }
     }
 }

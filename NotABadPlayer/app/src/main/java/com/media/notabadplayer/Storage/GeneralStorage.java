@@ -18,6 +18,7 @@ import com.media.notabadplayer.Audio.Model.AudioTrackBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.MutableAudioPlaylist;
+import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.SearchFilter;
@@ -31,6 +32,8 @@ import com.media.notabadplayer.Utilities.Serializing;
 // Provides simple interface to the user preferences (built in storage).
 public class GeneralStorage
 {
+    public static final int PLAYER_HISTORY_CAPACITY = 50;
+
     private static GeneralStorage singleton;
     
     public final FavoritesStorage favorites;
@@ -207,12 +210,13 @@ public class GeneralStorage
         Log.v(GeneralStorage.class.getCanonicalName(), "Resetting values to their defaults");
 
         resetPlayerState();
-        savePlayerPlayedHistoryCapacity(50);
+        savePlayerPlayedHistoryCapacity(PLAYER_HISTORY_CAPACITY);
         saveAppThemeValue(AppSettings.AppTheme.LIGHT);
         saveAlbumSortingValue(AppSettings.AlbumSorting.TITLE);
         saveTrackSortingValue(AppSettings.TrackSorting.TRACK_NUMBER);
         saveShowVolumeBarValue(AppSettings.ShowVolumeBar.NO);
         saveOpenPlayerOnPlayValue(AppSettings.OpenPlayerOnPlay.NO);
+        saveAudioIdleStopTimer(AudioPlayerTimerValue.NONE);
 
         saveSettingsAction(ApplicationInput.PLAYER_VOLUME_UP_BUTTON, ApplicationAction.VOLUME_UP);
         saveSettingsAction(ApplicationInput.PLAYER_VOLUME_DOWN_BUTTON, ApplicationAction.VOLUME_DOWN);
@@ -738,6 +742,29 @@ public class GeneralStorage
         SharedPreferences preferences = getSharedPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("caching_policy", value.name());
+        editor.apply();
+    }
+
+    public AudioPlayerTimerValue getAudioIdleStopTimer()
+    {
+        SharedPreferences preferences = getSharedPreferences();
+
+        try {
+            return AudioPlayerTimerValue.valueOf(preferences.getString("audio_idle_stop_timer", ""));
+        }
+        catch (Exception e)
+        {
+            Log.v(GeneralStorage.class.getCanonicalName(), "Error: could not read AudioPlayerTimerValue value from storage");
+        }
+
+        return AudioPlayerTimerValue.NONE;
+    }
+
+    public void saveAudioIdleStopTimer(AudioPlayerTimerValue value)
+    {
+        SharedPreferences preferences = getSharedPreferences();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("audio_idle_stop_timer", value.name());
         editor.apply();
     }
 }

@@ -13,7 +13,8 @@
         android:text="@string/settings_reset"
         android:textAppearance="@style/TitleText"
         android:singleLine="true"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:gravity="center_horizontal"/>
     
     <Button
         android:id="@+id/resetButton"

@@ -14,6 +14,7 @@ import com.media.notabadplayer.Audio.Model.AudioPlaylistBuilder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Constants.SearchFilter;
@@ -270,6 +271,12 @@ public class SearchPresenter implements BasePresenter
     public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
     {
         
+    }
+
+    @Override
+    public void onAudioIdleTimerValueChange(AudioPlayerTimerValue value)
+    {
+
     }
 
     private void searchForQuery()

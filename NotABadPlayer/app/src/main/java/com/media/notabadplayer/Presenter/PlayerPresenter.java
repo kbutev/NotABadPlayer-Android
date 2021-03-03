@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
@@ -229,6 +230,12 @@ public class PlayerPresenter implements BasePresenter
 
     @Override
     public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
+    {
+
+    }
+
+    @Override
+    public void onAudioIdleTimerValueChange(AudioPlayerTimerValue value)
     {
 
     }

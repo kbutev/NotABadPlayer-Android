@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
+import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationInput;
@@ -48,4 +49,5 @@ public interface BasePresenter {
     void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar showVolumeBar);
     void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value);
     void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input);
+    void onAudioIdleTimerValueChange(AudioPlayerTimerValue value);
 }
