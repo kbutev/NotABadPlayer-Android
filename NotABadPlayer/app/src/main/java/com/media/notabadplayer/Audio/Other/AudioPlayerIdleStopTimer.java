@@ -103,7 +103,7 @@ public class AudioPlayerIdleStopTimer implements AudioPlayerTimerTrigger, Looper
         AudioPlayerIdleStopDelegate d = delegate;
 
         if (d != null) {
-            //d.handleIdle();
+            d.handleIdle();
         }
     }
 
