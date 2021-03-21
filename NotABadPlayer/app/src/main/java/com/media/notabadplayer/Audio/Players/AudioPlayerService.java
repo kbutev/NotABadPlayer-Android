@@ -109,7 +109,8 @@ public class AudioPlayerService extends Service implements AudioPlayer, AudioPla
         });
 
         _muted = false;
-        
+
+        // The player has to listen to command broadcast events
         IntentFilter filter = new IntentFilter();
         filter.addAction(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_PLAY);
         filter.addAction(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_PAUSE);
@@ -117,12 +118,14 @@ public class AudioPlayerService extends Service implements AudioPlayer, AudioPla
         filter.addAction(AudioPlayerServiceNotificationCenter.BROADCAST_ACTION_NEXT);
         registerReceiver(playerActionReceiver, filter);
 
+        // Events we have to listen to, in order to alert the player timers
         filter = new IntentFilter();
         filter.addAction(getResources().getString(R.string.broadcast_activity_start));
         filter.addAction(getResources().getString(R.string.broadcast_activity_pause));
         filter.addAction(getResources().getString(R.string.broadcast_keybind_action));
         registerReceiver(userInteractionReceiver, filter);
 
+        // Player timers
         _timer.delegate = this;
         _timer.start();
     }
@@ -131,6 +134,8 @@ public class AudioPlayerService extends Service implements AudioPlayer, AudioPla
     {
         return getApplicationContext();
     }
+
+    // # AudioPlayer
 
     public final android.media.MediaPlayer getPlayer()
     {
@@ -723,6 +728,8 @@ public class AudioPlayerService extends Service implements AudioPlayer, AudioPla
         return _playHistory;
     }
 
+    // # Broadcast
+
     private void performBroadcastAction(@NonNull String value)
     {
         MutableAudioPlaylist playlist = getSafeMutablePlaylist();
@@ -774,6 +781,8 @@ public class AudioPlayerService extends Service implements AudioPlayer, AudioPla
             }
         }
     }
+
+    // # Service
 
     @Override
     public IBinder onBind(Intent intent)
