@@ -29,7 +29,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.media.notabadplayer.Audio.AudioPlayer;
-import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
@@ -40,21 +39,22 @@ import com.media.notabadplayer.Audio.QuickPlayerObserver;
 import com.media.notabadplayer.Audio.QuickPlayerService;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.SearchFilter;
-import com.media.notabadplayer.Presenter.PlaylistPresenter;
+import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
+import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenterImpl;
+import com.media.notabadplayer.Presenter.Search.SearchPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.Serializing;
-import com.media.notabadplayer.Presenter.BasePresenter;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.MVP.BasePresenter;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
 import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
-public class SearchFragment extends Fragment implements BaseView, QuickPlayerObserver, TrackListHighlightedChecker, TrackListFavoritesChecker
+public class SearchFragment extends Fragment implements SearchView, QuickPlayerObserver, TrackListHighlightedChecker, TrackListFavoritesChecker
 {
-    private BasePresenter _presenter;
+    private SearchPresenter _presenter;
     
     private AudioPlayer _player = Player.getShared();
     
@@ -85,19 +85,19 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
         _searchFilter = SearchFilter.Title;
     }
     
-    public static @NonNull SearchFragment newInstance(@NonNull BasePresenter presenter)
+    public static @NonNull SearchFragment newInstance(@NonNull SearchPresenter presenter)
     {
         return newInstance(presenter, null, null);
     }
 
-    public static @NonNull SearchFragment newInstance(@NonNull BasePresenter presenter, 
+    public static @NonNull SearchFragment newInstance(@NonNull SearchPresenter presenter,
                                                       @Nullable TrackListHighlightedChecker highlightedChecker, 
                                                       @Nullable TrackListFavoritesChecker favoriteChecker)
     {
         return newInstance(presenter, highlightedChecker, favoriteChecker, true);
     }
 
-    public static @NonNull SearchFragment newInstance(@NonNull BasePresenter presenter,
+    public static @NonNull SearchFragment newInstance(@NonNull SearchPresenter presenter,
                                                       @Nullable TrackListHighlightedChecker highlightedChecker,
                                                       @Nullable TrackListFavoritesChecker favoriteChecker,
                                                       boolean highlightAnimation)
@@ -293,6 +293,8 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
         }
     }
 
+    // SearchView
+
     @Override
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
@@ -320,7 +322,7 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
             manager.popBackStackImmediate();
         }
         
-        BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo, options);
+        PlaylistPresenter presenter = new PlaylistPresenterImpl(playlist, audioInfo, options);
         PlaylistFragment view = PlaylistFragment.newInstance(presenter, options);
         presenter.setView(view);
 
@@ -333,23 +335,23 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
     }
 
     @Override
-    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
+    public void onResetAppSettings()
     {
 
     }
 
     @Override
-    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
+    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
     {
 
     }
 
     @Override
-    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }
-    
+
     @Override
     public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
@@ -369,7 +371,7 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
     @Override
     public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
-        
+
     }
 
     @Override
@@ -418,10 +420,24 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
     }
 
     @Override
-    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
+    public void onPlayerErrorEncountered(@NonNull Exception error)
     {
+        Context context = getContext();
 
+        if (context == null) {
+            return;
+        }
+
+        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                _searchResultsList.invalidateViews();
+            }
+        };
+
+        AlertWindows.showAlert(context, R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
     }
+
+    // QuickPlayerObserver
 
     @Override
     public void onPlayerPlay(@NonNull BaseAudioTrack current)
@@ -475,66 +491,8 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
         
     }
 
-    @Override
-    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
-    {
+    // TrackListHighlightedChecker
 
-    }
-
-    @Override
-    public void onResetAppSettings()
-    {
-        
-    }
-
-    @Override
-    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
-    {
-
-    }
-
-    @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
-    {
-
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-
-    }
-
-    @Override
-    public void onDeviceLibraryChanged()
-    {
-
-    }
-
-    @Override
-    public void onFetchDataErrorEncountered(@NonNull Exception error)
-    {
-
-    }
-
-    @Override
-    public void onPlayerErrorEncountered(@NonNull Exception error)
-    {
-        Context context = getContext();
-        
-        if (context == null) {
-            return;
-        }
-        
-        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                _searchResultsList.invalidateViews();
-            }
-        };
-
-        AlertWindows.showAlert(context, R.string.error_invalid_file, R.string.error_invalid_file_play, R.string.ok, action);
-    }
-    
     @Override
     public boolean shouldBeHighlighted(@NonNull BaseAudioTrack track)
     {
@@ -547,6 +505,8 @@ public class SearchFragment extends Fragment implements BaseView, QuickPlayerObs
         
         return playlist.getPlayingTrack().equals(track);
     }
+
+    // TrackListFavoritesChecker
     
     @Override
     public boolean isMarkedFavorite(@NonNull BaseAudioTrack track)

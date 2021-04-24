@@ -1,14 +1,11 @@
 package com.media.notabadplayer.View.Player;
 
-import java.util.List;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
@@ -21,35 +18,31 @@ import android.widget.TextView;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import com.google.common.base.Function;
-import com.media.notabadplayer.Audio.Model.AudioAlbum;
-import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
-import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Audio.Model.AudioPlayOrder;
 import com.media.notabadplayer.Audio.QuickPlayerObserver;
 import com.media.notabadplayer.Audio.QuickPlayerService;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.Presenter.Player.PlayerPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.ArtImageFetcher;
 import com.media.notabadplayer.Utilities.StringUtilities;
 import com.media.notabadplayer.Utilities.UIAnimations;
-import com.media.notabadplayer.Presenter.BasePresenter;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.MVP.BasePresenter;
 
-public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObserver
+public class PlayerFragment extends Fragment implements PlayerView, QuickPlayerObserver
 {
     private static int MEDIA_BAR_MAX_VALUE = 100;
     private static int VOLUME_BAR_MAX_VALUE = 100;
     
-    private BasePresenter _presenter;
+    private PlayerPresenter _presenter;
 
-    @NonNull
-    Player _player = Player.getShared();
+    @NonNull Player _player = Player.getShared();
     
     private boolean _playerIsMuted = false;
     
@@ -79,7 +72,7 @@ public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObs
 
     }
     
-    public static @NonNull PlayerFragment newInstance(@NonNull BasePresenter presenter)
+    public static @NonNull PlayerFragment newInstance(@NonNull PlayerPresenter presenter)
     {
         PlayerFragment fragment = new PlayerFragment();
         fragment._presenter = presenter;
@@ -550,36 +543,8 @@ public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObs
         root.findViewById(R.id.volumeBarLeft).setVisibility(View.VISIBLE);
         root.findViewById(R.id.volumeBarRight).setVisibility(View.INVISIBLE);
     }
-    
-    @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
-    {
 
-    }
-
-    @Override
-    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums) 
-    {
-
-    }
-
-    @Override
-    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
-    {
-
-    }
-    
-    @Override
-    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-        
-    }
+    // PlayerView
 
     @Override
     public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
@@ -588,19 +553,32 @@ public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObs
         
         updateMediaInfo(playing, isStorageMarkedFavorite(playing));
     }
-    
-    @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
-    {
-
-    }
 
     @Override
-    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
+    public void onPlayerErrorEncountered(@NonNull Exception error)
     {
+        Context context = getContext();
 
+        if (context == null) {
+            return;
+        }
+
+        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                FragmentActivity a = getActivity();
+
+                if (a != null)
+                {
+                    a.finish();
+                }
+            }
+        };
+
+        AlertWindows.showAlert(context, R.string.error, R.string.error_invalid_file_play, R.string.ok, action);
     }
-    
+
+    // QuickPlayerObserver
+
     @Override
     public void onPlayerPlay(@NonNull BaseAudioTrack current)
     {
@@ -650,70 +628,5 @@ public class PlayerFragment extends Fragment implements BaseView, QuickPlayerObs
                 updateSoftUIState();
             }
         }
-    }
-
-    @Override
-    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
-    {
-
-    }
-    
-    @Override
-    public void onResetAppSettings()
-    {
-
-    }
-
-    @Override
-    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
-    {
-
-    }
-
-    @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
-    {
-
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-
-    }
-
-    @Override
-    public void onDeviceLibraryChanged()
-    {
-
-    }
-
-    @Override
-    public void onFetchDataErrorEncountered(@NonNull Exception error)
-    {
-
-    }
-
-    @Override
-    public void onPlayerErrorEncountered(@NonNull Exception error)
-    {
-        Context context = getContext();
-        
-        if (context == null) {
-            return;
-        }
-        
-        DialogInterface.OnClickListener action = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                FragmentActivity a = getActivity();
-                
-                if (a != null)
-                {
-                    a.finish();
-                }
-            }
-        };
-        
-        AlertWindows.showAlert(context, R.string.error, R.string.error_invalid_file_play, R.string.ok, action);
     }
 }

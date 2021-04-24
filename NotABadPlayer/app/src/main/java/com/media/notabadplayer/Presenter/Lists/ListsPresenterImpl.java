@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Presenter;
+package com.media.notabadplayer.Presenter.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +15,16 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
-import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Audio.Players.Player;
-import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
-import com.media.notabadplayer.Controls.ApplicationAction;
-import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.AudioLibrary;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Lists.ListsView;
 
-public class ListsPresenter implements BasePresenter
+public class ListsPresenterImpl implements ListsPresenter
 {
-    private BaseView _view;
+    private ListsView _view;
     
     private @NonNull AudioInfo _audioInfo;
     
@@ -42,25 +38,16 @@ public class ListsPresenter implements BasePresenter
     
     private boolean _fetchingData = false;
     
-    public ListsPresenter(@NonNull Context context, @NonNull AudioInfo audioInfo)
+    public ListsPresenterImpl(@NonNull Context context, @NonNull AudioInfo audioInfo)
     {
         _audioInfo = audioInfo;
         _historyPlaylistName = context.getResources().getString(R.string.playlist_name_history);
         _recentlyAddedPlaylistName = context.getResources().getString(R.string.playlist_name_recently_added);
         _favoritesPlaylistName = context.getResources().getString(R.string.playlist_name_favorites);
     }
-    
-    @Override
-    public void setView(@NonNull BaseView view)
-    {
-        if (_view != null)
-        {
-            throw new IllegalStateException("ListsPresenter: view has already been set");
-        }
-        
-        _view = view;
-    }
-    
+
+    // ListsPresenter
+
     @Override
     public void start()
     {
@@ -69,13 +56,24 @@ public class ListsPresenter implements BasePresenter
             throw new IllegalStateException("ListsPresenter: view has not been set");
         }
 
-        Log.v(ListsPresenter.class.getCanonicalName(), "Start.");
+        Log.v(ListsPresenterImpl.class.getCanonicalName(), "Start.");
+    }
+
+    @Override
+    public void setView(@NonNull ListsView view)
+    {
+        if (_view != null)
+        {
+            throw new IllegalStateException("ListsPresenter: view has already been set");
+        }
+        
+        _view = view;
     }
 
     @Override
     public void onDestroy()
     {
-        Log.v(ListsPresenter.class.getCanonicalName(), "Destroyed.");
+        Log.v(ListsPresenterImpl.class.getCanonicalName(), "Destroyed.");
 
         _running = false;
     }
@@ -88,7 +86,7 @@ public class ListsPresenter implements BasePresenter
             return;
         }
 
-        Log.v(ListsPresenter.class.getCanonicalName(), "Fetching user playlists...");
+        Log.v(ListsPresenterImpl.class.getCanonicalName(), "Fetching user playlists...");
 
         final Player player = Player.getShared();
         
@@ -134,7 +132,7 @@ public class ListsPresenter implements BasePresenter
                         @Override
                         public void run()
                         {
-                            Log.v(ListsPresenter.class.getCanonicalName(), "Retrieved user playlists, updating view");
+                            Log.v(ListsPresenterImpl.class.getCanonicalName(), "Retrieved user playlists, updating view");
 
                             _fetchingData = false;
                             
@@ -150,7 +148,7 @@ public class ListsPresenter implements BasePresenter
                         @Override
                         public void run()
                         {
-                            Log.v(ListsPresenter.class.getCanonicalName(), "Presenter is not ready to fetch yet!");
+                            Log.v(ListsPresenterImpl.class.getCanonicalName(), "Presenter is not ready to fetch yet!");
 
                             _fetchingData = false;
                             
@@ -173,48 +171,6 @@ public class ListsPresenter implements BasePresenter
     }
 
     @Override
-    public void onAlbumItemClick(int index)
-    {
-
-    }
-
-    @Override
-    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
-    {
-        
-    }
-
-    @Override
-    public void onPlayerButtonClick(ApplicationInput input)
-    {
-
-    }
-
-    @Override
-    public void onPlayOrderButtonClick()
-    {
-
-    }
-
-    @Override
-    public void onOpenPlaylistButtonClick()
-    {
-
-    }
-
-    @Override
-    public void onPlayerVolumeSet(double value)
-    {
-
-    }
-
-    @Override
-    public boolean onMarkOrUnmarkContextTrackFavorite()
-    {
-        return false;
-    }
-
-    @Override
     public void onPlaylistItemClick(int index)
     {
         if (!_running)
@@ -229,11 +185,15 @@ public class ListsPresenter implements BasePresenter
 
         BaseAudioPlaylist playlist = _playlists.get(index);
 
-        Log.v(ListsPresenter.class.getCanonicalName(), "Open playlist '" + playlist.getName() + "'");
+        Log.v(ListsPresenterImpl.class.getCanonicalName(), "Open playlist '" + playlist.getName() + "'");
 
         OpenPlaylistOptions appropriateOptions = getAppropriateOpenOptions(playlist);
 
-        _view.openPlaylistScreen(_audioInfo, playlist, appropriateOptions);
+        try {
+            _view.openPlaylistScreen(_audioInfo, playlist, appropriateOptions);
+        } catch (Exception e) {
+            Log.v(ListsPresenterImpl.class.getCanonicalName(), "Failed to open playlist screen, error: " + e);
+        }
     }
 
     @Override
@@ -256,7 +216,7 @@ public class ListsPresenter implements BasePresenter
             return;
         }
         
-        Log.v(ListsPresenter.class.getCanonicalName(), "Edit playlist '" + playlist.getName() + "'");
+        Log.v(ListsPresenterImpl.class.getCanonicalName(), "Edit playlist '" + playlist.getName() + "'");
         
         _view.openCreatePlaylistScreen(playlist);
     }
@@ -294,60 +254,6 @@ public class ListsPresenter implements BasePresenter
         }
     }
 
-    @Override
-    public void onSearchResultClick(int index) 
-    {
-
-    }
-
-    @Override
-    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter)
-    {
-
-    }
-
-    @Override
-    public void onAppSettingsReset()
-    {
-
-    }
-
-    @Override
-    public void onAppThemeChange(AppSettings.AppTheme themeValue)
-    {
-
-    }
-
-    @Override
-    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
-    {
-
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value) 
-    {
-
-    }
-
-    @Override
-    public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
-    {
-
-    }
-
-    @Override
-    public void onKeybindChange(ApplicationAction action, ApplicationInput input) 
-    {
-
-    }
-
-    @Override
-    public void onAudioIdleTimerValueChange(AudioPlayerTimerValue value)
-    {
-
-    }
-    
     private void updatePlaylistsData()
     {
         _view.onUserPlaylistsLoad(_playlists);

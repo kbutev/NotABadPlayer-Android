@@ -30,16 +30,18 @@ import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.MVP.BaseRootView;
+import com.media.notabadplayer.Presenter.Settings.SettingsPresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.Presenter.BasePresenter;
+import com.media.notabadplayer.MVP.BasePresenter;
 import com.media.notabadplayer.Utilities.AlertWindows;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.MVP.BaseView;
 
-public class SettingsFragment extends Fragment implements BaseView
+public class SettingsFragment extends Fragment implements SettingsView
 {
-    private BasePresenter _presenter;
-    private BaseView _rootView;
+    private SettingsPresenter _presenter;
+    private BaseRootView _rootView;
     
     private View _layout;
     
@@ -76,7 +78,7 @@ public class SettingsFragment extends Fragment implements BaseView
 
     }
 
-    public static @NonNull SettingsFragment newInstance(@NonNull BasePresenter presenter, @NonNull BaseView rootView)
+    public static @NonNull SettingsFragment newInstance(@NonNull SettingsPresenter presenter, @NonNull BaseRootView rootView)
     {
         SettingsFragment fragment = new SettingsFragment();
         fragment._presenter = presenter;
@@ -575,52 +577,12 @@ public class SettingsFragment extends Fragment implements BaseView
         _resetSettingsButton.setClickable(false);
     }
 
-    @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
-    {
-        
-    }
-    
-    @Override
-    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
-    {
-
-    }
+    // SettingsView
 
     @Override
-    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options) throws Exception
     {
-
-    }
-
-    @Override
-    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
-    {
-
-    }
-    
-    @Override
-    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-        
-    }
-    
-    @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
-    {
-        
-    }
-
-    @Override
-    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
-    {
-
+        throw new UnsupportedOperationException("Can't open player from the Settings screen");
     }
 
     @Override
@@ -695,18 +657,6 @@ public class SettingsFragment extends Fragment implements BaseView
         {
             _rootView.onAppTrackSortingChanged(trackSorting);
         }
-    }
-    
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-
-    }
-
-    @Override
-    public void onDeviceLibraryChanged()
-    {
-
     }
 
     @Override

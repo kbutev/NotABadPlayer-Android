@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -27,20 +26,20 @@ import android.widget.Toast;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
-import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Presenter.PlaylistPresenter;
+import com.media.notabadplayer.Presenter.Albums.AlbumsPresenter;
+import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
+import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenterImpl;
 import com.media.notabadplayer.R;
-import com.media.notabadplayer.Presenter.BasePresenter;
+import com.media.notabadplayer.MVP.BasePresenter;
 import com.media.notabadplayer.Utilities.AlertWindows;
-import com.media.notabadplayer.View.BaseView;
 import com.media.notabadplayer.View.Other.GridSideIndexingView;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
 
-public class AlbumsFragment extends Fragment implements BaseView
+public class AlbumsFragment extends Fragment implements AlbumsView
 {
-    private BasePresenter _presenter;
+    private AlbumsPresenter _presenter;
     
     private GridView _table;
     private AlbumsTableAdapter _tableAdapter;
@@ -55,7 +54,7 @@ public class AlbumsFragment extends Fragment implements BaseView
 
     }
     
-    public static @NonNull AlbumsFragment newInstance(@NonNull BasePresenter presenter)
+    public static @NonNull AlbumsFragment newInstance(@NonNull AlbumsPresenter presenter)
     {
         AlbumsFragment fragment = new AlbumsFragment();
         fragment._presenter = presenter;
@@ -141,6 +140,8 @@ public class AlbumsFragment extends Fragment implements BaseView
         _table.setClickable(false);
     }
 
+    // AlbumsView
+
     @Override
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
@@ -168,7 +169,7 @@ public class AlbumsFragment extends Fragment implements BaseView
             manager.popBackStackImmediate();
         }
         
-        BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo, options);
+        PlaylistPresenter presenter = new PlaylistPresenterImpl(playlist, audioInfo, options);
         PlaylistFragment view = PlaylistFragment.newInstance(presenter, options);
         presenter.setView(view);
 
@@ -178,6 +179,24 @@ public class AlbumsFragment extends Fragment implements BaseView
         transaction.addToBackStack(newEntryName);
         transaction.hide(this);
         transaction.commit();
+    }
+
+    @Override
+    public void onResetAppSettings()
+    {
+
+    }
+
+    @Override
+    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
+    {
+
+    }
+
+    @Override
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    {
+
     }
     
     @Override
@@ -213,72 +232,6 @@ public class AlbumsFragment extends Fragment implements BaseView
         }
 
         _tableSideIndexingView.start(_table, _indexingTextCharacter, titles);
-    }
-
-    @Override
-    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
-    {
-        
-    }
-
-    @Override
-    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
-    {
-        
-    }
-    
-    @Override
-    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
-    {
-
-    }
-
-    @Override
-    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
-    {
-        
-    }
-
-    @Override
-    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
-    {
-        
-    }
-
-    @Override
-    public void onResetAppSettings()
-    {
-
-    }
-
-    @Override
-    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
-    {
-
-    }
-
-    @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
-    {
-        
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-
     }
 
     @Override

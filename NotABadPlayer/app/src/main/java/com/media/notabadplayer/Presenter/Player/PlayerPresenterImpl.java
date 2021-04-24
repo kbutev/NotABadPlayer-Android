@@ -1,42 +1,30 @@
-package com.media.notabadplayer.Presenter;
+package com.media.notabadplayer.Presenter.Player;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
-import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Audio.Players.Player;
-import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Player.PlayerView;
 
-public class PlayerPresenter implements BasePresenter
+public class PlayerPresenterImpl implements PlayerPresenter
 {
-    private BaseView _view;
+    private PlayerView _view;
     private @NonNull BaseAudioPlaylist _playlist;
     
-    public PlayerPresenter(@NonNull BaseAudioPlaylist playlist)
+    public PlayerPresenterImpl(@NonNull BaseAudioPlaylist playlist)
     {
         _playlist = playlist;
     }
 
-    @Override
-    public void setView(@NonNull BaseView view)
-    {
-        if (_view != null)
-        {
-            throw new IllegalStateException("PlayerPresenter: view has already been set");
-        }
-        
-        _view = view;
-    }
-    
+    // PlayerPresenter
+
     @Override
     public void start() 
     {
@@ -45,7 +33,7 @@ public class PlayerPresenter implements BasePresenter
             throw new IllegalStateException("PlayerPresenter: view has not been set");
         }
 
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Start.");
+        Log.v(PlayerPresenterImpl.class.getCanonicalName(), "Start.");
         
         Player player = Player.getShared();
         BaseAudioPlaylist currentPlaylist = player.getPlaylist();
@@ -59,21 +47,21 @@ public class PlayerPresenter implements BasePresenter
             if (!_playlist.equals(currentPlaylist))
             {
                 // Change the audio player playlist to equal the presenter's playlist
-                Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen and playing track '" + newTrack.getTitle() + "'");
+                Log.v(PlayerPresenterImpl.class.getCanonicalName(), "Opening player screen and playing track '" + newTrack.getTitle() + "'");
                 playNew(_playlist);
 
                 return;
             }
             
             // Just open screen
-            Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen with current audio player track '" + currentTrack.getTitle() + "'");
+            Log.v(PlayerPresenterImpl.class.getCanonicalName(), "Opening player screen with current audio player track '" + currentTrack.getTitle() + "'");
             playContinue(currentPlaylist);
             
             return;
         }
 
         // Set audio player playlist for the first time and play its track
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player screen for the first time and playing track '" + _playlist.getPlayingTrack().getTitle() + "'");
+        Log.v(PlayerPresenterImpl.class.getCanonicalName(), "Opening player screen for the first time and playing track '" + _playlist.getPlayingTrack().getTitle() + "'");
         playFirstTime(_playlist);
     }
 
@@ -84,27 +72,20 @@ public class PlayerPresenter implements BasePresenter
     }
 
     @Override
-    public void fetchData()
-    {
-
-    }
-
-    @Override
     public void onAppStateChange(AppState state)
     {
 
     }
-    
-    @Override
-    public void onAlbumItemClick(int index)
-    {
-        
-    }
-    
-    @Override
-    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
-    {
 
+    @Override
+    public void setView(@NonNull PlayerView view)
+    {
+        if (_view != null)
+        {
+            throw new IllegalStateException("PlayerPresenter: view has already been set");
+        }
+
+        _view = view;
     }
 
     @Override
@@ -112,7 +93,7 @@ public class PlayerPresenter implements BasePresenter
     {
         ApplicationAction action = KeyBinds.getShared().getActionForInput(input);
         
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Perform KeyBinds action '" + action.name() + "' for input '" + input.name() + "'");
+        Log.v(PlayerPresenterImpl.class.getCanonicalName(), "Perform KeyBinds action '" + action.name() + "' for input '" + input.name() + "'");
 
         Exception exception = KeyBinds.getShared().performAction(action);
 
@@ -125,7 +106,7 @@ public class PlayerPresenter implements BasePresenter
     @Override
     public void onPlayOrderButtonClick()
     {
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Player input: change play order");
+        Log.v(PlayerPresenterImpl.class.getCanonicalName(), "Player input: change play order");
 
         Exception exception = KeyBinds.getShared().performAction(ApplicationAction.CHANGE_PLAY_ORDER);
 
@@ -133,12 +114,6 @@ public class PlayerPresenter implements BasePresenter
         {
             _view.onPlayerErrorEncountered(exception);
         }
-    }
-    
-    @Override
-    public void onOpenPlaylistButtonClick()
-    {
-
     }
     
     @Override
@@ -168,78 +143,6 @@ public class PlayerPresenter implements BasePresenter
         return !isFavorite;
     }
 
-    @Override
-    public void onPlaylistItemClick(int index)
-    {
-
-    }
-
-    @Override
-    public void onPlaylistItemEdit(int index)
-    {
-
-    }
-
-    @Override
-    public void onPlaylistItemDelete(int index)
-    {
-
-    }
-    
-    @Override
-    public void onSearchResultClick(int index)
-    {
-
-    }
-    
-    @Override
-    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter)
-    {
-
-    }
-
-    @Override
-    public void onAppSettingsReset() 
-    {
-
-    }
-
-    @Override
-    public void onAppThemeChange(AppSettings.AppTheme themeValue)
-    {
-
-    }
-    
-    @Override
-    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
-    {
-
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-
-    }
-
-    @Override
-    public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
-    {
-
-    }
-
-    @Override
-    public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
-    {
-
-    }
-
-    @Override
-    public void onAudioIdleTimerValueChange(AudioPlayerTimerValue value)
-    {
-
-    }
-
     private void playFirstTime(@NonNull BaseAudioPlaylist playlist)
     {
         playNew(playlist);
@@ -247,7 +150,7 @@ public class PlayerPresenter implements BasePresenter
 
     private void playContinue(@NonNull BaseAudioPlaylist playlist)
     {
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player without changing current audio player state");
+        Log.v(PlayerPresenterImpl.class.getCanonicalName(), "Opening player without changing current audio player state");
 
         _view.updatePlayerScreen(playlist);
     }
@@ -257,7 +160,7 @@ public class PlayerPresenter implements BasePresenter
         String newPlaylistName = playlist.getName();
         BaseAudioTrack newTrack = playlist.getPlayingTrack();
 
-        Log.v(PlayerPresenter.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.getTitle() + "'");
+        Log.v(PlayerPresenterImpl.class.getCanonicalName(), "Opening player and playing new playlist '" + newPlaylistName + "' with track '" + newTrack.getTitle() + "'");
 
         Player player = Player.getShared();
 

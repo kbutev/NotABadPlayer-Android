@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Presenter;
+package com.media.notabadplayer.Presenter.Player;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,23 +14,38 @@ import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.MVP.BasePresenter;
+import com.media.notabadplayer.MVP.BaseView;
+import com.media.notabadplayer.View.Player.QuickPlayerView;
 
-public class QuickPlayerPresenter implements BasePresenter
+public class QuickPlayerPresenterImpl implements QuickPlayerPresenter
 {
-    private BaseView _view;
+    private QuickPlayerView _view;
 
     private @NonNull AudioInfo _audioInfo;
     
     private boolean _running = false;
 
-    public QuickPlayerPresenter(@NonNull AudioInfo audioInfo)
+    public QuickPlayerPresenterImpl(@NonNull AudioInfo audioInfo)
     {
         this._audioInfo = audioInfo;
     }
 
+    // QuickPlayerPresenter
+
     @Override
-    public void setView(@NonNull BaseView view)
+    public void start()
+    {
+        if (_view == null)
+        {
+            throw new IllegalStateException("QuickPlayerPresenter: view has not been set");
+        }
+
+        Log.v(QuickPlayerPresenterImpl.class.getCanonicalName(), "Start.");
+    }
+
+    @Override
+    public void setView(@NonNull QuickPlayerView view)
     {
         if (_view != null)
         {
@@ -39,42 +54,19 @@ public class QuickPlayerPresenter implements BasePresenter
         
         _view = view;
     }
-    
-    @Override
-    public void start() 
-    {
-        if (_view == null)
-        {
-            throw new IllegalStateException("QuickPlayerPresenter: view has not been set");
-        }
-
-        Log.v(QuickPlayerPresenter.class.getCanonicalName(), "Start.");
-    }
 
     @Override
     public void onDestroy()
     {
-        Log.v(QuickPlayerPresenter.class.getCanonicalName(), "Destroyed.");
+        Log.v(QuickPlayerPresenterImpl.class.getCanonicalName(), "Destroyed.");
 
         _running = false;
-    }
-
-    @Override
-    public void fetchData()
-    {
-
     }
 
     @Override
     public void onAppStateChange(AppState state)
     {
         _running = state.isRunning();
-    }
-
-    @Override
-    public void onAlbumItemClick(int index)
-    {
-
     }
 
     @Override
@@ -92,7 +84,7 @@ public class QuickPlayerPresenter implements BasePresenter
             return;
         }
 
-        Log.v(QuickPlayerPresenter.class.getCanonicalName(), "Open player screen");
+        Log.v(QuickPlayerPresenterImpl.class.getCanonicalName(), "Open player screen");
         
         _view.openPlayerScreen(currentlyPlayingPlaylist);
     }
@@ -141,90 +133,11 @@ public class QuickPlayerPresenter implements BasePresenter
         
         if (currentlyPlayingPlaylist != null)
         {
-            _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist, OpenPlaylistOptions.buildDefault());
+            try {
+                _view.openPlaylistScreen(_audioInfo, currentlyPlayingPlaylist, OpenPlaylistOptions.buildDefault());
+            } catch (Exception e) {
+                Log.v(QuickPlayerPresenterImpl.class.getCanonicalName(), "Failed to open playlist screen, error: " + e);
+            }
         }
-    }
-
-    @Override
-    public void onPlayerVolumeSet(double value)
-    {
-
-    }
-
-    @Override
-    public boolean onMarkOrUnmarkContextTrackFavorite()
-    {
-        return false;
-    }
-
-    @Override
-    public void onPlaylistItemClick(int index)
-    {
-
-    }
-
-    @Override
-    public void onPlaylistItemEdit(int index)
-    {
-
-    }
-    
-    @Override
-    public void onPlaylistItemDelete(int index)
-    {
-
-    }
-
-    @Override
-    public void onSearchResultClick(int index)
-    {
-
-    }
-
-    @Override
-    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter)
-    {
-
-    }
-
-    @Override
-    public void onAppSettingsReset() 
-    {
-
-    }
-
-    @Override
-    public void onAppThemeChange(AppSettings.AppTheme themeValue) 
-    {
-
-    }
-
-    @Override
-    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting) 
-    {
-
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value) 
-    {
-
-    }
-
-    @Override
-    public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
-    {
-
-    }
-
-    @Override
-    public void onKeybindChange(ApplicationAction action, ApplicationInput input) {
-
-    }
-
-    @Override
-    public void onAudioIdleTimerValueChange(AudioPlayerTimerValue value)
-    {
-
     }
 }

@@ -3,12 +3,13 @@ package com.media.notabadplayer.View.Player;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,22 +32,24 @@ import com.media.notabadplayer.Audio.QuickPlayerObserver;
 import com.media.notabadplayer.Audio.QuickPlayerService;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.MVP.BasePlayerPresenter;
+import com.media.notabadplayer.MVP.BaseRootView;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.ArtImageFetcher;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.Utilities.StringUtilities;
 import com.media.notabadplayer.Utilities.UIAnimations;
-import com.media.notabadplayer.Presenter.BasePresenter;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.MVP.BasePresenter;
+import com.media.notabadplayer.MVP.BaseView;
 
-public class QuickPlayerFragment extends Fragment implements BaseView, QuickPlayerObserver {
+public class QuickPlayerFragment extends Fragment implements QuickPlayerView, QuickPlayerObserver {
     private static int MEDIA_BAR_MAX_VALUE = 100;
     
     Player _player = Player.getShared();
     
-    private BasePresenter _presenter;
-    private BaseView _rootView;
+    private BasePlayerPresenter _presenter;
+    private BaseRootView _rootView;
     
     private QuickPlayerLayout _layout;
     private ImageView _imageCover;
@@ -67,7 +70,7 @@ public class QuickPlayerFragment extends Fragment implements BaseView, QuickPlay
 
     }
     
-    public static @NonNull QuickPlayerFragment newInstance(@NonNull BasePresenter presenter, @NonNull BaseView rootView)
+    public static @NonNull QuickPlayerFragment newInstance(@NonNull BasePlayerPresenter presenter, @NonNull BaseRootView rootView)
     {
         QuickPlayerFragment fragment = new QuickPlayerFragment();
         fragment._presenter = presenter;
@@ -374,34 +377,22 @@ public class QuickPlayerFragment extends Fragment implements BaseView, QuickPlay
         _buttonPlayOrder.setClickable(false);
     }
 
+    // QuickPlayerView
+
     @Override
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
         // Forward request to the application's root view
         if (_rootView != null)
         {
-            _rootView.openPlaylistScreen(audioInfo, playlist, options);
+            try {
+                _rootView.openPlaylistScreen(audioInfo, playlist, options);
+            } catch (Exception e) {
+                Log.v(QuickPlayerFragment.class.getCanonicalName(), "Failed to open playlist screen, error: " + e);
+            }
         }
     }
 
-    @Override
-    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
-    {
-
-    }
-
-    @Override
-    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
-    {
-
-    }
-    
     @Override
     public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
@@ -421,22 +412,27 @@ public class QuickPlayerFragment extends Fragment implements BaseView, QuickPlay
     }
 
     @Override
-    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
+    public void onPlayerErrorEncountered(@NonNull Exception error)
     {
 
     }
 
     @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
-    {
+    public void onResetAppSettings() {
 
     }
 
     @Override
-    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
-    {
+    public void onAppThemeChanged(AppSettings.AppTheme appTheme) {
 
     }
+
+    @Override
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting) {
+
+    }
+
+    // QuickPlayerObserver
 
     @Override
     public void onPlayerPlay(@NonNull BaseAudioTrack current)
@@ -494,53 +490,5 @@ public class QuickPlayerFragment extends Fragment implements BaseView, QuickPlay
                 updateSoftUIState();
             }
         }
-    }
-
-    @Override
-    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
-    {
-
-    }
-    
-    @Override
-    public void onResetAppSettings()
-    {
-
-    }
-
-    @Override
-    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
-    {
-
-    }
-
-    @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
-    {
-
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-
-    }
-
-    @Override
-    public void onDeviceLibraryChanged()
-    {
-
-    }
-
-    @Override
-    public void onFetchDataErrorEncountered(@NonNull Exception error)
-    {
-
-    }
-    
-    @Override
-    public void onPlayerErrorEncountered(@NonNull Exception error)
-    {
-
     }
 }

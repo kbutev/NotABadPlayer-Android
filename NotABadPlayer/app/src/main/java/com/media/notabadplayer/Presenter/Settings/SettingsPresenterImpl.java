@@ -1,4 +1,4 @@
-package com.media.notabadplayer.Presenter;
+package com.media.notabadplayer.Presenter.Settings;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -13,33 +13,26 @@ import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Controls.ApplicationAction;
 import com.media.notabadplayer.Controls.ApplicationInput;
+import com.media.notabadplayer.MVP.BasePresenter;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.MVP.BaseView;
+import com.media.notabadplayer.View.Settings.SettingsView;
 
-public class SettingsPresenter implements BasePresenter 
+public class SettingsPresenterImpl implements SettingsPresenter
 {
-    private BaseView _view;
+    private SettingsView _view;
 
     private boolean _running = false;
     
     private boolean _fetchingData = false;
     
-    public SettingsPresenter()
+    public SettingsPresenterImpl()
     {
         
     }
-    
-    @Override
-    public void setView(@NonNull BaseView view)
-    {
-        if (_view != null)
-        {
-            throw new IllegalStateException("SettingsPresenter: view has already been set");
-        }
-        
-        _view = view;
-    }
-    
+
+    // SettingsPresenter
+
     @Override
     public void start() {
         if (_view == null)
@@ -47,8 +40,8 @@ public class SettingsPresenter implements BasePresenter
             throw new IllegalStateException("SettingsPresenter: view has not been set");
         }
 
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Start.");
-        
+        Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Start.");
+
         fetchData();
     }
 
@@ -56,6 +49,17 @@ public class SettingsPresenter implements BasePresenter
     public void onDestroy()
     {
 
+    }
+    
+    @Override
+    public void setView(@NonNull SettingsView view)
+    {
+        if (_view != null)
+        {
+            throw new IllegalStateException("SettingsPresenter: view has already been set");
+        }
+        
+        _view = view;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class SettingsPresenter implements BasePresenter
             return;
         }
 
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Fetching app settings...");
+        Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Fetching app settings...");
         
         _fetchingData = true;
 
@@ -87,7 +91,7 @@ public class SettingsPresenter implements BasePresenter
                         @Override
                         public void run()
                         {
-                            Log.v(SettingsPresenter.class.getCanonicalName(), "Retrieved app settings, updating view");
+                            Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Retrieved app settings, updating view");
 
                             _fetchingData = false;
                             
@@ -101,7 +105,7 @@ public class SettingsPresenter implements BasePresenter
                         @Override
                         public void run()
                         {
-                            Log.v(SettingsPresenter.class.getCanonicalName(), "Presenter is not ready to fetch yet!");
+                            Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Presenter is not ready to fetch yet!");
 
                             _fetchingData = false;
                             
@@ -124,75 +128,6 @@ public class SettingsPresenter implements BasePresenter
     }
 
     @Override
-    public void onAlbumItemClick(int index) {
-
-    }
-
-    @Override
-    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
-    {
-        
-    }
-    
-    @Override
-    public void onPlayerButtonClick(ApplicationInput input) 
-    {
-        
-    }
-
-    @Override
-    public void onPlayOrderButtonClick()
-    {
-
-    }
-
-    @Override
-    public void onOpenPlaylistButtonClick()
-    {
-
-    }
-
-    @Override
-    public void onPlayerVolumeSet(double value)
-    {
-
-    }
-
-    @Override
-    public boolean onMarkOrUnmarkContextTrackFavorite()
-    {
-        return false;
-    }
-
-    @Override
-    public void onPlaylistItemClick(int index) 
-    {
-
-    }
-
-    @Override
-    public void onPlaylistItemEdit(int index)
-    {
-
-    }
-    
-    @Override
-    public void onPlaylistItemDelete(int index)
-    {
-
-    }
-
-    @Override
-    public void onSearchResultClick(int index) {
-
-    }
-
-    @Override
-    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter) {
-
-    }
-    
-    @Override
     public void onAppSettingsReset() 
     {
         if (!_running)
@@ -200,7 +135,7 @@ public class SettingsPresenter implements BasePresenter
             return;
         }
 
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Resetting app settings to their defaults...");
+        Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Resetting app settings to their defaults...");
 
         GeneralStorage storage = GeneralStorage.getShared();
         Player player = Player.getShared();
@@ -219,7 +154,7 @@ public class SettingsPresenter implements BasePresenter
         player.unmute();
         player.pause();
 
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Finished resetting app settings!");
+        Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Finished resetting app settings!");
     }
 
     @Override
@@ -234,7 +169,7 @@ public class SettingsPresenter implements BasePresenter
             return;
         }
 
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings AppTheme value " + themeValue.name());
+        Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Save picked settings AppTheme value " + themeValue.name());
         
         GeneralStorage.getShared().saveAppThemeValue(themeValue);
         
@@ -249,7 +184,7 @@ public class SettingsPresenter implements BasePresenter
             return;
         }
         
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings ShowVolumeBar value " + trackSorting.name());
+        Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Save picked settings ShowVolumeBar value " + trackSorting.name());
         
         GeneralStorage.getShared().saveTrackSortingValue(trackSorting);
         
@@ -264,12 +199,12 @@ public class SettingsPresenter implements BasePresenter
             return;
         }
         
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings ShowVolumeBar value " + value.name());
+        Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Save picked settings ShowVolumeBar value " + value.name());
         
         GeneralStorage.getShared().saveShowVolumeBarValue(value);
 
         // Since the volume icon may no longer be visible after this change, always unmute & pause
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Setting ShowVolumeBar was changed, automatically unmuting and pausing player");
+        Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Setting ShowVolumeBar was changed, automatically unmuting and pausing player");
         Player.getShared().unmute();
         Player.getShared().pause();
     }
@@ -282,7 +217,7 @@ public class SettingsPresenter implements BasePresenter
             return;
         }
         
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked settings OpenPlayerOnPlay value " + value.name());
+        Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Save picked settings OpenPlayerOnPlay value " + value.name());
         
         GeneralStorage.getShared().saveOpenPlayerOnPlayValue(value);
     }
@@ -295,14 +230,14 @@ public class SettingsPresenter implements BasePresenter
             return;
         }
         
-        Log.v(SettingsPresenter.class.getCanonicalName(), "Save picked keybind value of action " + action.name() + " for input " + input.name());
+        Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Save picked keybind value of action " + action.name() + " for input " + input.name());
         
         GeneralStorage.getShared().saveSettingsAction(input, action);
         
         // If the player volume keybind was changed, always unmute & pause
         if (input == ApplicationInput.PLAYER_VOLUME)
         {
-            Log.v(SettingsPresenter.class.getCanonicalName(), "Keybind PLAYER_VOLUME was changed, automatically unmuting and pausing player");
+            Log.v(SettingsPresenterImpl.class.getCanonicalName(), "Keybind PLAYER_VOLUME was changed, automatically unmuting and pausing player");
             
             Player.getShared().unmute();
             Player.getShared().pause();

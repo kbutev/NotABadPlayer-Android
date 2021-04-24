@@ -25,22 +25,21 @@ import android.widget.ProgressBar;
 import java.util.List;
 import com.google.common.base.Function;
 
-import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
-import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Presenter.PlaylistPresenter;
-import com.media.notabadplayer.Presenter.BasePresenter;
+import com.media.notabadplayer.Presenter.Lists.ListsPresenter;
+import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenter;
+import com.media.notabadplayer.Presenter.Playlist.PlaylistPresenterImpl;
+import com.media.notabadplayer.MVP.BasePresenter;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.AlertWindows;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Playlist.PlaylistFragment;
-import com.media.notabadplayer.View.BaseView;
 
-public class ListsFragment extends Fragment implements BaseView {
-    private BasePresenter _presenter;
+public class ListsFragment extends Fragment implements ListsView {
+    private ListsPresenter _presenter;
     
     private Button _createPlaylistButton;
     private Button _editPlaylistButton;
@@ -69,7 +68,7 @@ public class ListsFragment extends Fragment implements BaseView {
 
     }
     
-    public static @NonNull ListsFragment newInstance(@NonNull BasePresenter presenter)
+    public static @NonNull ListsFragment newInstance(@NonNull ListsPresenter presenter)
     {
         ListsFragment fragment = new ListsFragment();
         fragment._presenter = presenter;
@@ -247,6 +246,8 @@ public class ListsFragment extends Fragment implements BaseView {
         _playlistsList.setClickable(false);
     }
 
+    // ListsView
+
     @Override
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
@@ -274,7 +275,7 @@ public class ListsFragment extends Fragment implements BaseView {
             manager.popBackStackImmediate();
         }
 
-        BasePresenter presenter = new PlaylistPresenter(playlist, audioInfo, options);
+        PlaylistPresenter presenter = new PlaylistPresenterImpl(playlist, audioInfo, options);
         PlaylistFragment view = PlaylistFragment.newInstance(presenter, options);
         presenter.setView(view);
 
@@ -287,13 +288,19 @@ public class ListsFragment extends Fragment implements BaseView {
     }
 
     @Override
-    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
+    public void onResetAppSettings()
     {
 
     }
 
     @Override
-    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
+    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
+    {
+
+    }
+
+    @Override
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
     {
 
     }
@@ -325,24 +332,6 @@ public class ListsFragment extends Fragment implements BaseView {
         // Hide progress
         hideProgressIndicator();
     }
-    
-    @Override
-    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
-    {
-
-    }
 
     @Override
     public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
@@ -373,42 +362,6 @@ public class ListsFragment extends Fragment implements BaseView {
         }
 
         startActivity(intent);
-    }
-
-    @Override
-    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
-    {
-
-    }
-
-    @Override
-    public void onResetAppSettings()
-    {
-
-    }
-
-    @Override
-    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
-    {
-
-    }
-
-    @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
-    {
-
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-
-    }
-
-    @Override
-    public void onDeviceLibraryChanged()
-    {
-
     }
 
     @Override

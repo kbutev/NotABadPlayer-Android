@@ -1,11 +1,10 @@
-package com.media.notabadplayer.Presenter;
+package com.media.notabadplayer.Presenter.Albums;
 
 import java.util.ArrayList;
 import java.util.List;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
@@ -15,15 +14,12 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
-import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Constants.AppState;
-import com.media.notabadplayer.Controls.ApplicationInput;
-import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Storage.AudioLibrary;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Albums.AlbumsView;
 
-public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListener {
-    private BaseView _view;
+public class AlbumsPresenterImpl implements AlbumsPresenter, AudioLibrary.ChangesListener {
+    private AlbumsView _view;
     
     private @NonNull AudioInfo _audioInfo;
     
@@ -33,22 +29,13 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
     
     private boolean _fetchingData = false;
     
-    public AlbumsPresenter(@NonNull AudioInfo audioInfo)
+    public AlbumsPresenterImpl(@NonNull AudioInfo audioInfo)
     {
         _audioInfo = audioInfo;
     }
-    
-    @Override
-    public void setView(@NonNull BaseView view)
-    {
-        if (_view != null)
-        {
-            throw new IllegalStateException("AlbumsPresenter: view has already been set");
-        }
-        
-        _view = view;
-    }
-    
+
+    // AlbumsPresenter
+
     @Override
     public void start()
     {
@@ -57,7 +44,7 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
             throw new IllegalStateException("AlbumsPresenter: view has not been set");
         }
 
-        Log.v(AlbumsPresenter.class.getCanonicalName(), "Start.");
+        Log.v(AlbumsPresenterImpl.class.getCanonicalName(), "Start.");
 
         AudioLibrary.getShared().registerLibraryChangesListener(this);
 
@@ -65,9 +52,19 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
     }
 
     @Override
+    public void setView(@NonNull AlbumsView view)
+    {
+        if (_view != null) {
+            throw new IllegalStateException("AlbumsPresenter: view has already been set");
+        }
+
+        _view = view;
+    }
+
+    @Override
     public void onDestroy()
     {
-        Log.v(AlbumsPresenter.class.getCanonicalName(), "Destroyed.");
+        Log.v(AlbumsPresenterImpl.class.getCanonicalName(), "Destroyed.");
 
         AudioLibrary.getShared().unregisterLibraryChangesListener(this);
 
@@ -82,7 +79,7 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
             return;
         }
         
-        Log.v(AlbumsPresenter.class.getCanonicalName(), "Fetching albums...");
+        Log.v(AlbumsPresenterImpl.class.getCanonicalName(), "Fetching albums...");
 
         _fetchingData = true;
 
@@ -105,7 +102,7 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
                         @Override
                         public void run()
                         {
-                            Log.v(AlbumsPresenter.class.getCanonicalName(), "Retrieved albums, updating view");
+                            Log.v(AlbumsPresenterImpl.class.getCanonicalName(), "Retrieved albums, updating view");
 
                             _fetchingData = false;
 
@@ -121,7 +118,7 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
                         @Override
                         public void run()
                         {
-                            Log.v(AlbumsPresenter.class.getCanonicalName(), "Presenter is not ready to fetch yet!");
+                            Log.v(AlbumsPresenterImpl.class.getCanonicalName(), "Presenter is not ready to fetch yet!");
 
                             _fetchingData = false;
 
@@ -153,13 +150,13 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
         
         if (index < 0 || index >= _albums.size())
         {
-            Log.v(AlbumsPresenter.class.getCanonicalName(), "Error: Invalid album list index, cannot respond to event properly");
+            Log.v(AlbumsPresenterImpl.class.getCanonicalName(), "Error: Invalid album list index, cannot respond to event properly");
             return;
         }
 
         AudioAlbum album = _albums.get(index);
         
-        Log.v(AlbumsPresenter.class.getCanonicalName(), "Open '" + album.albumTitle + "' album");
+        Log.v(AlbumsPresenterImpl.class.getCanonicalName(), "Open '" + album.albumTitle + "' album");
 
         List<BaseAudioTrack> tracks = _audioInfo.getAlbumTracks(album);
 
@@ -172,117 +169,11 @@ public class AlbumsPresenter implements BasePresenter, AudioLibrary.ChangesListe
             BaseAudioPlaylist playlist = node.build();
             _view.openPlaylistScreen(_audioInfo, playlist, OpenPlaylistOptions.buildDefault());
         } catch (Exception e) {
-            Log.v(AlbumsPresenter.class.getCanonicalName(), "Error: Failed to create a playlist for the clicked album track");
+            Log.v(AlbumsPresenterImpl.class.getCanonicalName(), "Error: Failed to create a playlist for the clicked album track");
         }
     }
 
-    @Override
-    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
-    {
-        
-    }
-
-    @Override
-    public void onPlayerButtonClick(ApplicationInput input)
-    {
-
-    }
-
-    @Override
-    public void onPlayOrderButtonClick()
-    {
-
-    }
-
-    @Override
-    public void onOpenPlaylistButtonClick()
-    {
-
-    }
-
-    @Override
-    public void onPlayerVolumeSet(double value)
-    {
-
-    }
-
-    @Override
-    public boolean onMarkOrUnmarkContextTrackFavorite()
-    {
-        return false;
-    }
-
-    @Override
-    public void onPlaylistItemClick(int index)
-    {
-
-    }
-
-    @Override
-    public void onPlaylistItemEdit(int index)
-    {
-
-    }
-    
-    @Override
-    public void onPlaylistItemDelete(int index)
-    {
-        
-    }
-
-    @Override
-    public void onSearchResultClick(int index)
-    {
-
-    }
-
-    @Override
-    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter)
-    {
-
-    }
-
-    @Override
-    public void onAppSettingsReset()
-    {
-
-    }
-
-    @Override
-    public void onAppThemeChange(AppSettings.AppTheme themeValue)
-    {
-
-    }
-    
-    @Override
-    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
-    {
-
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-
-    }
-
-    @Override
-    public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
-    {
-
-    }
-
-    @Override
-    public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
-    {
-
-    }
-
-    @Override
-    public void onAudioIdleTimerValueChange(AudioPlayerTimerValue value)
-    {
-
-    }
+    // AudioLibrary.ChangesListener
 
     @Override
     public void onMediaLibraryChanged()

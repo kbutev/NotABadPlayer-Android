@@ -1,10 +1,8 @@
-package com.media.notabadplayer.Presenter;
+package com.media.notabadplayer.Presenter.Playlist;
 
 import java.util.List;
 
-import android.media.MediaRecorder;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.media.notabadplayer.Audio.AudioInfo;
@@ -14,23 +12,21 @@ import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylistBuilderNode;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
-import com.media.notabadplayer.Audio.Other.AudioPlayerTimerValue;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Constants.AppState;
-import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Storage.GeneralStorage;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.View.Playlist.PlaylistView;
 
-public class PlaylistPresenter implements BasePresenter {
-    private BaseView _view;
+public class PlaylistPresenterImpl implements PlaylistPresenter {
+    private PlaylistView _view;
 
     private final @NonNull BaseAudioPlaylist _playlist;
 
     private @NonNull AudioInfo _audioInfo;
     private @NonNull OpenPlaylistOptions _options;
     
-    public PlaylistPresenter(@NonNull BaseAudioPlaylist playlist, @NonNull AudioInfo audioInfo, @NonNull OpenPlaylistOptions options)
+    public PlaylistPresenterImpl(@NonNull BaseAudioPlaylist playlist, @NonNull AudioInfo audioInfo, @NonNull OpenPlaylistOptions options)
     {
         // Sort playlist
         // Sort only playlists of type album
@@ -43,17 +39,8 @@ public class PlaylistPresenter implements BasePresenter {
         _options = options;
     }
 
-    @Override
-    public void setView(@NonNull BaseView view)
-    {
-        if (_view != null)
-        {
-            throw new IllegalStateException("PlaylistPresenter: view has already been set");
-        }
-        
-        _view = view;
-    }
-    
+    // PlaylistPresenter
+
     @Override
     public void start()
     {
@@ -62,19 +49,13 @@ public class PlaylistPresenter implements BasePresenter {
             throw new IllegalStateException("PlaylistPresenter: view has not been set");
         }
 
-        Log.v(PlaylistPresenter.class.getCanonicalName(), "Start.");
-        
+        Log.v(PlaylistPresenterImpl.class.getCanonicalName(), "Start.");
+
         _view.onPlaylistLoad(_playlist);
     }
 
     @Override
     public void onDestroy()
-    {
-
-    }
-
-    @Override
-    public void fetchData()
     {
 
     }
@@ -86,45 +67,14 @@ public class PlaylistPresenter implements BasePresenter {
     }
 
     @Override
-    public void onAlbumItemClick(int index)
+    public void setView(@NonNull PlaylistView view)
     {
+        if (_view != null)
+        {
+            throw new IllegalStateException("PlaylistPresenter: view has already been set");
+        }
         
-    }
-
-    @Override
-    public void onOpenPlayer(@Nullable BaseAudioPlaylist playlist)
-    {
-        
-    }
-
-    @Override
-    public void onPlayerButtonClick(ApplicationInput input)
-    {
-
-    }
-
-    @Override
-    public void onPlayOrderButtonClick()
-    {
-
-    }
-
-    @Override
-    public void onOpenPlaylistButtonClick()
-    {
-
-    }
-
-    @Override
-    public void onPlayerVolumeSet(double value)
-    {
-        
-    }
-
-    @Override
-    public boolean onMarkOrUnmarkContextTrackFavorite()
-    {
-        return false;
+        _view = view;
     }
 
     @Override
@@ -134,7 +84,7 @@ public class PlaylistPresenter implements BasePresenter {
 
         if (index < 0 || index >= tracks.size())
         {
-            Log.v(PlaylistPresenter.class.getCanonicalName(), "Error: Invalid track list index, cannot respond to event properly");
+            Log.v(PlaylistPresenterImpl.class.getCanonicalName(), "Error: Invalid track list index, cannot respond to event properly");
             return;
         }
 
@@ -150,72 +100,6 @@ public class PlaylistPresenter implements BasePresenter {
         }
     }
 
-    @Override
-    public void onPlaylistItemEdit(int index)
-    {
-
-    }
-    
-    @Override
-    public void onPlaylistItemDelete(int index)
-    {
-
-    }
-
-    @Override
-    public void onSearchResultClick(int index)
-    {
-
-    }
-
-    @Override
-    public void onSearchQuery(@NonNull String searchValue, com.media.notabadplayer.Constants.SearchFilter filter)
-    {
-
-    }
-
-    @Override
-    public void onAppSettingsReset() 
-    {
-
-    }
-
-    @Override
-    public void onAppThemeChange(AppSettings.AppTheme themeValue)
-    {
-        
-    }
-    
-    @Override
-    public void onAppTrackSortingChange(AppSettings.TrackSorting trackSorting)
-    {
-
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-
-    }
-
-    @Override
-    public void onOpenPlayerOnPlaySettingChange(AppSettings.OpenPlayerOnPlay value)
-    {
-
-    }
-
-    @Override
-    public void onKeybindChange(com.media.notabadplayer.Controls.ApplicationAction action, com.media.notabadplayer.Controls.ApplicationInput input)
-    {
-
-    }
-
-    @Override
-    public void onAudioIdleTimerValueChange(AudioPlayerTimerValue value)
-    {
-
-    }
-
     private void openPlayerScreen(@NonNull BaseAudioTrack clickedTrack)
     {
         BaseAudioPlaylist playlist;
@@ -227,11 +111,11 @@ public class PlaylistPresenter implements BasePresenter {
             // Try to build
             playlist = node.build();
         } catch (Exception e) {
-            Log.v(PlaylistPresenter.class.getCanonicalName(), "Error: Could not open player screen: " + e.toString());
+            Log.v(PlaylistPresenterImpl.class.getCanonicalName(), "Error: Could not open player screen: " + e.toString());
             return;
         }
 
-        Log.v(PlaylistPresenter.class.getCanonicalName(), "Opening player screen");
+        Log.v(PlaylistPresenterImpl.class.getCanonicalName(), "Opening player screen");
 
         _view.openPlayerScreen(playlist);
     }
@@ -261,7 +145,7 @@ public class PlaylistPresenter implements BasePresenter {
             // Try to build
             playlistToPlay = node.build();
         } catch (Exception e) {
-            Log.v(PlaylistPresenter.class.getCanonicalName(), "Error: Could not play track: " + e.toString());
+            Log.v(PlaylistPresenterImpl.class.getCanonicalName(), "Error: Could not play track: " + e.toString());
             return;
         }
 
@@ -277,7 +161,7 @@ public class PlaylistPresenter implements BasePresenter {
             if (!playlistToPlay.equals(currentPlaylist))
             {
                 // Change the audio player playlist to equal the presenter's playlist
-                Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + newTrack.getTitle() + "' from playlist '" + newPlaylistName + "'");
+                Log.v(PlaylistPresenterImpl.class.getCanonicalName(), "Playing track '" + newTrack.getTitle() + "' from playlist '" + newPlaylistName + "'");
                 playNew(playlistToPlay);
 
                 return;
@@ -289,7 +173,7 @@ public class PlaylistPresenter implements BasePresenter {
         }
 
         // Set audio player playlist for the first time and play its track
-        Log.v(PlaylistPresenter.class.getCanonicalName(), "Playing track '" + _playlist.getPlayingTrack().getTitle() + "' from playlist '" + _playlist.getName() + " for the first time");
+        Log.v(PlaylistPresenterImpl.class.getCanonicalName(), "Playing track '" + _playlist.getPlayingTrack().getTitle() + "' from playlist '" + _playlist.getName() + " for the first time");
         playFirstTime(playlistToPlay);
     }
 

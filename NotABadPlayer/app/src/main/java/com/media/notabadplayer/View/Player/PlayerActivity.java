@@ -1,13 +1,11 @@
 package com.media.notabadplayer.View.Player;
 
-import java.util.List;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,28 +16,22 @@ import android.view.Window;
 import android.view.WindowManager;
 import static android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY;
 
-import com.media.notabadplayer.Audio.Model.AudioAlbum;
-import com.media.notabadplayer.Audio.AudioInfo;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
-import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
-import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Utilities.AudioPlayerNoiseSuppression;
-import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
-import com.media.notabadplayer.Presenter.PlayerPresenter;
+import com.media.notabadplayer.Presenter.Player.PlayerPresenter;
+import com.media.notabadplayer.Presenter.Player.PlayerPresenterImpl;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
 import com.media.notabadplayer.Utilities.Serializing;
-import com.media.notabadplayer.Presenter.BasePresenter;
-import com.media.notabadplayer.View.BaseView;
 
-public class PlayerActivity extends AppCompatActivity implements BaseView
+public class PlayerActivity extends AppCompatActivity implements PlayerView
 {
-    private BasePresenter _presenter;
+    private PlayerPresenter _presenter;
     
-    private BaseView _fragment;
+    private PlayerView _fragment;
     
     private AudioPlayerNoiseSuppression _noiseSuppression;
     
@@ -137,10 +129,10 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         
         return super.onKeyDown(keyCode, event);
     }
-    
+
     private void initUI(@NonNull BaseAudioPlaylist playlist)
     {
-        _presenter = new PlayerPresenter(playlist);
+        _presenter = new PlayerPresenterImpl(playlist);
         _fragment = PlayerFragment.newInstance(_presenter);
         _presenter.setView(_fragment);
         
@@ -148,92 +140,10 @@ public class PlayerActivity extends AppCompatActivity implements BaseView
         manager.beginTransaction().replace(R.id.player, (Fragment)_fragment).commit();
     }
 
-    @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
-    {
-
-    }
-    
-    @Override
-    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
-    {
-
-    }
-
-    @Override
-    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
-    {
-
-    }
-    
-    @Override
-    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
+    // PlayerView
 
     @Override
     public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
-    {
-
-    }
-
-    @Override
-    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
-    {
-
-    }
-
-    @Override
-    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
-    {
-
-    }
-    
-    @Override
-    public void onResetAppSettings()
-    {
-
-    }
-
-    @Override
-    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
-    {
-
-    }
-
-    @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
-    {
-
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-
-    }
-
-    @Override
-    public void onDeviceLibraryChanged()
-    {
-
-    }
-
-    @Override
-    public void onFetchDataErrorEncountered(@NonNull Exception error)
     {
 
     }

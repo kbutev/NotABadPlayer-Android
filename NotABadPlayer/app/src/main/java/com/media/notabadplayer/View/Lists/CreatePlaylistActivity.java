@@ -1,7 +1,6 @@
 package com.media.notabadplayer.View.Lists;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
@@ -10,25 +9,22 @@ import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.Model.BaseAudioPlaylist;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Constants.AppSettings;
-import com.media.notabadplayer.Presenter.CreatePlaylistPresenter.BaseCreatePlaylistPresenter;
 import com.media.notabadplayer.Presenter.CreatePlaylistPresenter.CreatePlaylistPresenter;
+import com.media.notabadplayer.Presenter.CreatePlaylistPresenter.CreatePlaylistPresenterImpl;
 import com.media.notabadplayer.Presenter.CreatePlaylistPresenter.CreatePlaylistPresenterDelegate;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Storage.AudioLibrary;
@@ -46,7 +42,7 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
 {
     private AudioLibrary _audioLibrary = AudioLibrary.getShared();
     
-    private BaseCreatePlaylistPresenter _presenter;
+    private CreatePlaylistPresenter _presenter;
     
     private Button _cancelButton;
     private Button _doneButton;
@@ -66,7 +62,7 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
         
         @Nullable BaseAudioPlaylist editPlaylist = loadPlaylistFromIntent();
 
-        _presenter = new CreatePlaylistPresenter(this, _audioLibrary, this, editPlaylist);
+        _presenter = new CreatePlaylistPresenterImpl(this, _audioLibrary, this, editPlaylist);
         
         // Never restore this activity, navigate back to the main activity
         if (savedInstanceState != null)
@@ -269,7 +265,31 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
         AlertWindows.showAlert(this, 0, R.string.error_unknown, R.string.ok, null);
     }
     
-    // BaseView
+    // CreatePlaylistPresenterDelegate
+
+    @Override
+    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options) throws Exception
+    {
+        throw new UnsupportedOperationException("Cannot open player screen from create playlist screen");
+    }
+
+    @Override
+    public void onResetAppSettings()
+    {
+
+    }
+
+    @Override
+    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
+    {
+
+    }
+
+    @Override
+    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
+    {
+
+    }
 
     @Override
     public void goBack()
@@ -280,39 +300,15 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
     }
 
     @Override
-    public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
-    {
-        
-    }
-
-    @Override
-    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
-    {
-        
-    }
-
-    @Override
-    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
-    {
-        
-    }
-
-    @Override
-    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
-    {
-        
-    }
-
-    @Override
     public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
-        
+
     }
-    
+
     @Override
     public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
     {
-        
+
     }
 
     @Override
@@ -327,66 +323,20 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
     }
 
     @Override
-    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
-    {
-
-    }
-
-    @Override
-    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
-    {
-        
-    }
-
-    @Override
-    public void onResetAppSettings()
-    {
-        
-    }
-
-    @Override
-    public void onAppThemeChanged(AppSettings.AppTheme appTheme)
-    {
-        
-    }
-
-    @Override
-    public void onAppTrackSortingChanged(AppSettings.TrackSorting trackSorting)
-    {
-        
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar showVolumeBar)
-    {
-        
-    }
-
-    @Override
-    public void onDeviceLibraryChanged()
-    {
-        
-    }
-
-    @Override
-    public void onFetchDataErrorEncountered(@NonNull Exception error)
-    {
-        
-    }
-
-    @Override
     public void onPlayerErrorEncountered(@NonNull Exception error)
     {
-        
+
     }
     
-    // TrackListHighlightedChecker, TrackListFavoritesChecker
+    // TrackListHighlightedChecker
 
     @Override
     public boolean shouldBeHighlighted(@NonNull BaseAudioTrack track)
     {
         return _presenter.isTrackAdded(track);
     }
+
+    // TrackListFavoritesChecker
 
     @Override
     public boolean isMarkedFavorite(@NonNull BaseAudioTrack track)
@@ -420,7 +370,7 @@ public class CreatePlaylistActivity extends AppCompatActivity implements CreateP
     {
         View view = findViewById(R.id.searchList);
         view.setVisibility(View.VISIBLE);
-        
+
         SearchFragment fragment = SearchFragment.newInstance(_presenter, this, this, false);
         _searchFragment = fragment;
 

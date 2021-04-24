@@ -1,7 +1,6 @@
 package com.media.notabadplayer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,32 +26,41 @@ import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Audio.Players.Player;
 import com.media.notabadplayer.Constants.AppState;
-import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
-import com.media.notabadplayer.Presenter.ListsPresenter;
-import com.media.notabadplayer.Presenter.QuickPlayerPresenter;
+import com.media.notabadplayer.MVP.BaseRootView;
+import com.media.notabadplayer.Presenter.Albums.AlbumsPresenter;
+import com.media.notabadplayer.Presenter.Lists.ListsPresenter;
+import com.media.notabadplayer.Presenter.Lists.ListsPresenterImpl;
+import com.media.notabadplayer.Presenter.Player.QuickPlayerPresenter;
+import com.media.notabadplayer.Presenter.Player.QuickPlayerPresenterImpl;
+import com.media.notabadplayer.Presenter.Search.SearchPresenter;
+import com.media.notabadplayer.Presenter.Settings.SettingsPresenter;
 import com.media.notabadplayer.Storage.AudioLibrary;
 import com.media.notabadplayer.Constants.AppSettings;
 import com.media.notabadplayer.Controls.ApplicationInput;
 import com.media.notabadplayer.Controls.KeyBinds;
-import com.media.notabadplayer.Presenter.AlbumsPresenter;
-import com.media.notabadplayer.Presenter.MainPresenter;
-import com.media.notabadplayer.Presenter.SearchPresenter;
-import com.media.notabadplayer.Presenter.SettingsPresenter;
+import com.media.notabadplayer.Presenter.Albums.AlbumsPresenterImpl;
+import com.media.notabadplayer.Presenter.Main.MainPresenterImpl;
+import com.media.notabadplayer.Presenter.Search.SearchPresenterImpl;
+import com.media.notabadplayer.Presenter.Settings.SettingsPresenterImpl;
 import com.media.notabadplayer.Storage.GeneralStorage;
 import com.media.notabadplayer.Utilities.AppThemeUtility;
 import com.media.notabadplayer.Utilities.Serializing;
 import com.media.notabadplayer.View.Albums.AlbumsFragment;
-import com.media.notabadplayer.Presenter.BasePresenter;
-import com.media.notabadplayer.View.BaseView;
+import com.media.notabadplayer.MVP.BasePresenter;
+import com.media.notabadplayer.MVP.BaseView;
 import com.media.notabadplayer.Other.CachedTab;
+import com.media.notabadplayer.View.Albums.AlbumsView;
+import com.media.notabadplayer.View.Lists.ListsView;
 import com.media.notabadplayer.View.Player.PlayerActivity;
 import com.media.notabadplayer.View.Player.QuickPlayerFragment;
 import com.media.notabadplayer.View.Lists.ListsFragment;
 import com.media.notabadplayer.View.Search.SearchFragment;
+import com.media.notabadplayer.View.Search.SearchView;
 import com.media.notabadplayer.View.Settings.SettingsFragment;
+import com.media.notabadplayer.View.Settings.SettingsView;
 
-public class MainActivity extends AppCompatActivity implements BaseView {
+public class MainActivity extends AppCompatActivity implements BaseRootView {
     public static final int DEFAULT_SELECTED_TAB_ID = R.id.navigation_albums;
     
     private boolean _appIsRunning = false;
@@ -61,12 +69,12 @@ public class MainActivity extends AppCompatActivity implements BaseView {
     private Uri _launchedFromFileUri;
     
     private AudioLibrary _audioLibrary = AudioLibrary.getShared();
-    private MainPresenter _presenter;
+    private MainPresenterImpl _presenter;
     
     private TabNavigation _tabNavigation = new TabNavigation();
     
     private QuickPlayerFragment _quickPlayer = null;
-    private BasePresenter _quickPlayerPresenter = null;
+    private QuickPlayerPresenter _quickPlayerPresenter = null;
     private boolean _quickPlayerIsHidden = false;
     
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -130,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         setContentView(R.layout.activity_main);
 
         // Presenter setup
-        _presenter = new MainPresenter();
+        _presenter = new MainPresenterImpl();
         _presenter.setView(this);
 
         // UI
@@ -346,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements BaseView {
 
     private void initQuickPlayer()
     {
-        _quickPlayerPresenter = new QuickPlayerPresenter(_audioLibrary);
+        _quickPlayerPresenter = new QuickPlayerPresenterImpl(_audioLibrary);
         _quickPlayer = QuickPlayerFragment.newInstance(_quickPlayerPresenter, this);
         _quickPlayerPresenter.setView(_quickPlayer);
 
@@ -447,6 +455,8 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         GeneralStorage.getShared().saveCurrentlySelectedNavigationTab(itemID);
     }
 
+    // BaseRootView
+
     @Override
     public void openPlaylistScreen(@NonNull AudioInfo audioInfo, @NonNull BaseAudioPlaylist playlist, @NonNull OpenPlaylistOptions options)
     {
@@ -456,63 +466,19 @@ public class MainActivity extends AppCompatActivity implements BaseView {
             // Make sure that the current tab exists and has been created (onCreate() was called)
             if (_tabNavigation.currentTab != null)
             {
-                BaseView view = _tabNavigation.currentTab.tab;
+                BaseRootView view = _tabNavigation.currentTab.tab;
                 Fragment fragment = (Fragment) view;
                 
                 if (fragment.getView() != null)
                 {
-                    view.openPlaylistScreen(_audioLibrary, playlist, options);
+                    try {
+                        view.openPlaylistScreen(_audioLibrary, playlist, options);
+                    } catch (Exception e) {
+                        Log.v(MainActivity.class.getCanonicalName(), "Failed to open playlist screen, error: " + e);
+                    }
                 }
             }
         }
-    }
-
-    @Override
-    public void onMediaAlbumsLoad(@NonNull List<AudioAlbum> albums)
-    {
-
-    }
-
-    @Override
-    public void onPlaylistLoad(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void onUserPlaylistsLoad(@NonNull List<BaseAudioPlaylist> playlists)
-    {
-
-    }
-    
-    @Override
-    public void openPlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void updatePlayerScreen(@NonNull BaseAudioPlaylist playlist)
-    {
-
-    }
-
-    @Override
-    public void updateSearchQueryResults(@NonNull String searchQuery, com.media.notabadplayer.Constants.SearchFilter filter, @NonNull List<BaseAudioTrack> songs, @Nullable String searchState)
-    {
-
-    }
-
-    @Override
-    public void openCreatePlaylistScreen(@Nullable BaseAudioPlaylist playlistToEdit)
-    {
-
-    }
-
-    @Override
-    public void onAppSettingsLoad(com.media.notabadplayer.Storage.GeneralStorage storage)
-    {
-
     }
 
     @Override
@@ -543,34 +509,6 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         _tabNavigation.clearTabCache();
         
         _quickPlayer.onAppTrackSortingChanged(trackSorting);
-    }
-
-    @Override
-    public void onShowVolumeBarSettingChange(AppSettings.ShowVolumeBar value)
-    {
-        Log.v(MainActivity.class.getSimpleName(), "App appearance changed.");
-
-        _tabNavigation.clearTabCache();
-        
-        _quickPlayer.onShowVolumeBarSettingChange(value);
-    }
-
-    @Override
-    public void onDeviceLibraryChanged()
-    {
-
-    }
-
-    @Override
-    public void onFetchDataErrorEncountered(@NonNull Exception error)
-    {
-
-    }
-
-    @Override
-    public void onPlayerErrorEncountered(@NonNull Exception error)
-    {
-
     }
 
     private void showQuickPlayer()
@@ -699,36 +637,38 @@ public class MainActivity extends AppCompatActivity implements BaseView {
         
         private @Nullable CachedTab createTabFromScratch(int tabID)
         {
-            BaseView tab = null;
-            BasePresenter presenter = null;
-            
-            switch (tabID)
-            {
-                case R.id.navigation_albums:
-                    presenter = new AlbumsPresenter(_audioLibrary);
-                    tab = AlbumsFragment.newInstance(presenter);
-                    presenter.setView(tab);
-                    break;
-                case R.id.navigation_lists:
-                    presenter = new ListsPresenter(getBaseContext(), _audioLibrary);
-                    tab = ListsFragment.newInstance(presenter);
-                    presenter.setView(tab);
-                    break;
-                case R.id.navigation_search:
-                    presenter = new SearchPresenter(getBaseContext(), _audioLibrary);
-                    tab = SearchFragment.newInstance(presenter);
-                    presenter.setView(tab);
-                    break;
-                case R.id.navigation_settings:
-                    presenter = new SettingsPresenter();
-                    tab = SettingsFragment.newInstance(presenter, MainActivity.this);
-                    presenter.setView(tab);
-                    break;
-                default:
-                    return null;
+            BaseRootView v = null;
+            BasePresenter p = null;
+
+            if (tabID == R.id.navigation_albums) {
+                AlbumsPresenter presenter = new AlbumsPresenterImpl(_audioLibrary);
+                AlbumsView view = AlbumsFragment.newInstance(presenter);
+                presenter.setView(view);
+                p = presenter;
+                v = view;
+            } else if (tabID == R.id.navigation_lists) {
+                ListsPresenter presenter = new ListsPresenterImpl(getBaseContext(), _audioLibrary);
+                ListsView view = ListsFragment.newInstance(presenter);
+                presenter.setView(view);
+                p = presenter;
+                v = view;
+            } else if (tabID == R.id.navigation_search) {
+                SearchPresenter presenter = new SearchPresenterImpl(getBaseContext(), _audioLibrary);
+                SearchView view = SearchFragment.newInstance(presenter);
+                presenter.setView(view);
+                p = presenter;
+                v = view;
+            } else if (tabID == R.id.navigation_settings) {
+                SettingsPresenter presenter = new SettingsPresenterImpl();
+                SettingsView view = SettingsFragment.newInstance(presenter, MainActivity.this);
+                presenter.setView(view);
+                p = presenter;
+                v = view;
+            } else {
+                return null;
             }
-            
-            return new CachedTab(tab, presenter, null, null);
+
+            return new CachedTab(v, p, null, null);
         }
 
         private boolean cacheCurrentTab()
