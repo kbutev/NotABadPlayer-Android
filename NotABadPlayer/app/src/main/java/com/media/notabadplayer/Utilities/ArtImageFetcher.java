@@ -77,12 +77,14 @@ public class ArtImageFetcher {
             @NullableDecl
             @Override
             public Void apply(@NullableDecl Void input) {
+                final Bitmap result = self.fetch(artCover);
+
                 looper.runOnMain(new Function<Void, Void>() {
                     @NullableDecl
                     @Override
                     public Void apply(@NullableDecl Void input) {
                         if (token.isValid()) {
-                            callback.apply(self.fetch(artCover));
+                            callback.apply(result);
                         }
 
                         return null;
