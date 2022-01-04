@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,9 +19,14 @@ import android.widget.TextView;
 import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.Audio.AudioInfo;
+import com.media.notabadplayer.Audio.Model.AudioArtCover;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.ArtImageFetcher;
+import com.media.notabadplayer.Utilities.InternalAdapterView;
+import com.media.notabadplayer.Utilities.InternalAdapterViews;
+
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 {
@@ -35,6 +41,10 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
     private final List<BaseAudioTrack> _selectedTracks = new ArrayList<>();
     
     private final @NonNull Function<Integer, Void> _onItemClick;
+
+    private final InternalAdapterViews _listViews = new InternalAdapterViews();
+
+    private final Drawable _coverArtNone;
     
     public CreatePlaylistAlbumsAdapter(@NonNull Context context,
                                        @NonNull AudioInfo audioInfo,
@@ -49,6 +59,8 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         this._selectedAlbumAdapter = null;
         this._onItemClick = onItemClick;
         this._artImageFetcher = new ArtImageFetcher(context);
+
+        this._coverArtNone = context.getResources().getDrawable(R.drawable.cover_art_none);
     }
 
     public int getCount()
@@ -85,21 +97,16 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         }
         
         View listItem = convertView;
-        
+
+        // Views update
+        InternalAdapterView itemView = _listViews.add(listItem);
+        itemView.reset();
+
+        // Item update
         AudioAlbum album = _albums.get(position);
 
-        ImageView cover = listItem.findViewById(R.id.albumCover);
-
-        Bitmap artImage = _artImageFetcher.fetch(album.artCover);
-
-        if (artImage != null)
-        {
-            cover.setImageBitmap(artImage);
-        }
-        else
-        {
-            cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.cover_art_none));
-        }
+        final ImageView cover = listItem.findViewById(R.id.albumCover);
+        fetchArtCoverAsync(itemView, cover, album.artCover);
 
         TextView title = listItem.findViewById(R.id.title);
         title.setText(album.albumTitle);
@@ -117,23 +124,18 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         {
             convertView = LayoutInflater.from(_context).inflate(R.layout.item_playlist_album_expanded, parent, false);
         }
-        
+
         View listItem = convertView;
-        
+
+        // Views update
+        InternalAdapterView itemView = _listViews.add(listItem);
+        itemView.reset();
+
+        // Item update
         AudioAlbum album = _albums.get(position);
 
         ImageView cover = listItem.findViewById(R.id.albumCover);
-
-        Bitmap artImage = _artImageFetcher.fetch(album.artCover);
-
-        if (artImage != null)
-        {
-            cover.setImageBitmap(artImage);
-        }
-        else
-        {
-            cover.setImageDrawable(_context.getResources().getDrawable(R.drawable.cover_art_none));
-        }
+        fetchArtCoverAsync(itemView, cover, album.artCover);
 
         TextView title = listItem.findViewById(R.id.title);
         title.setText(album.albumTitle);
@@ -156,6 +158,26 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         }
 
         return listItem;
+    }
+
+    private void fetchArtCoverAsync(final @NonNull InternalAdapterView itemView,
+                                    final @NonNull ImageView cover,
+                                    @NonNull AudioArtCover artCover)
+    {
+        Function<Bitmap, Void> callback = new Function<Bitmap, Void>() {
+            @NullableDecl
+            @Override
+            public Void apply(@NullableDecl Bitmap imageBitmap) {
+                if (imageBitmap != null) {
+                    cover.setImageBitmap(imageBitmap);
+                } else {
+                    cover.setImageDrawable(_coverArtNone);
+                }
+                return null;
+            }
+        };
+
+        itemView.token = _artImageFetcher.fetchAsync(artCover, callback);
     }
 
     private void updateSelectedAlbumTracks()

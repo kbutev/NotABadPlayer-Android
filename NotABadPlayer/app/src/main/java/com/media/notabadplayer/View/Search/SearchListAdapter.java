@@ -24,6 +24,8 @@ import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.ArtImageFetcher;
+import com.media.notabadplayer.Utilities.InternalAdapterView;
+import com.media.notabadplayer.Utilities.InternalAdapterViews;
 import com.media.notabadplayer.Utilities.UIAnimations;
 import com.media.notabadplayer.View.Albums.AlbumsImageProcess;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
@@ -33,22 +35,6 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 public class SearchListAdapter extends BaseAdapter
 {
-    class SearchView {
-        @NonNull final View view;
-        @Nullable ArtImageFetcher.AsyncToken token;
-
-        SearchView(@NonNull View view) {
-            this.view = view;
-        }
-
-        void reset() {
-            if (token != null) {
-                token.invalidate();
-                token = null;
-            }
-        }
-    }
-
     private final Context _context;
     private final List<BaseAudioTrack> _tracks;
     private final boolean _highlightAnimation;
@@ -57,8 +43,8 @@ public class SearchListAdapter extends BaseAdapter
     private final @NonNull TrackListFavoritesChecker _favoritesChecker;
 
     private final @NonNull ArtImageFetcher _artImageFetcher;
-    
-    private final ArrayList<SearchView> _listViews = new ArrayList<>();
+
+    private final InternalAdapterViews _listViews = new InternalAdapterViews();
 
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
@@ -112,8 +98,8 @@ public class SearchListAdapter extends BaseAdapter
 
         View listItem = convertView;
 
-        // Views set update
-        SearchView searchView = addSearchView(listItem);
+        // Views update
+        InternalAdapterView searchView = _listViews.add(listItem);
         searchView.reset();
         
         // Item update
@@ -170,20 +156,6 @@ public class SearchListAdapter extends BaseAdapter
         return listItem;
     }
 
-    private @NonNull SearchView addSearchView(@NonNull View view)
-    {
-        for (SearchView searchView : _listViews) {
-            if (searchView.view == view) {
-                return searchView;
-            }
-        }
-
-        SearchView searchView = new SearchView(view);
-        _listViews.add(searchView);
-
-        return searchView;
-    }
-
     public boolean isItemSelectedForTrack(@NonNull BaseAudioTrack track)
     {
         int position = -1;
@@ -229,7 +201,7 @@ public class SearchListAdapter extends BaseAdapter
     {
         UIAnimations.getShared().listItemAnimations.endAll();
 
-        Iterator<SearchView> iterator = _listViews.iterator();
+        Iterator<InternalAdapterView> iterator = _listViews.iterator();
 
         while (iterator.hasNext())
         {
