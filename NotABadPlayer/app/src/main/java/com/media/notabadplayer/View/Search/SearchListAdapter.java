@@ -116,8 +116,6 @@ public class SearchListAdapter extends BaseAdapter
             }
         };
 
-        cover.setImageDrawable(_coverArtNone);
-
         searchView.token = _artImageFetcher.fetchAsync(item.getArtCover(), callback);
 
         TextView titleText = listItem.findViewById(R.id.titleText);
