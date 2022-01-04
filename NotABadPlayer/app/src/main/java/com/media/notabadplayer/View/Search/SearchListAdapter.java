@@ -8,6 +8,8 @@ import java.util.List;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +20,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.ArtImageFetcher;
@@ -26,8 +29,26 @@ import com.media.notabadplayer.View.Albums.AlbumsImageProcess;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
 import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
 
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+
 public class SearchListAdapter extends BaseAdapter
 {
+    class SearchView {
+        @NonNull final View view;
+        @Nullable ArtImageFetcher.AsyncToken token;
+
+        SearchView(@NonNull View view) {
+            this.view = view;
+        }
+
+        void reset() {
+            if (token != null) {
+                token.invalidate();
+                token = null;
+            }
+        }
+    }
+
     private final Context _context;
     private final List<BaseAudioTrack> _tracks;
     private final boolean _highlightAnimation;
@@ -37,18 +58,14 @@ public class SearchListAdapter extends BaseAdapter
 
     private final @NonNull ArtImageFetcher _artImageFetcher;
     
-    private final HashSet<View> _listViews = new HashSet<>();
+    private final ArrayList<SearchView> _listViews = new ArrayList<>();
 
     private View _currentlySelectedView = null;
     private int _currentlySelectedViewListIndex = -1;
 
-    public SearchListAdapter(@NonNull Context context, 
-                             @NonNull List<BaseAudioTrack> tracks, 
-                             @Nullable TrackListHighlightedChecker highlightedChecker,
-                             @Nullable TrackListFavoritesChecker favoriteChecker)
-    {
-        this(context, tracks, highlightedChecker, favoriteChecker, true);
-    }
+    private final Drawable _coverArtNone;
+    private final int _transparentColor;
+    private final int _highlightedColor;
 
     public SearchListAdapter(@NonNull Context context,
                              @NonNull List<BaseAudioTrack> tracks,
@@ -62,6 +79,10 @@ public class SearchListAdapter extends BaseAdapter
         this._highlightedChecker = highlightedChecker != null ? highlightedChecker : new SearchListAdapter.DummyHighlightedChecker();
         this._favoritesChecker = favoriteChecker != null ? favoriteChecker : new SearchListAdapter.DummyFavoritesChecker();
         this._artImageFetcher = new ArtImageFetcher(context);
+
+        this._coverArtNone = context.getResources().getDrawable(R.drawable.cover_art_none);
+        this._transparentColor = context.getResources().getColor(R.color.transparent);
+        this._highlightedColor = context.getResources().getColor(R.color.currentHighlightedTrack);
     }
     
     public int getCount()
@@ -92,24 +113,29 @@ public class SearchListAdapter extends BaseAdapter
         View listItem = convertView;
 
         // Views set update
-        _listViews.add(convertView);
+        SearchView searchView = addSearchView(listItem);
+        searchView.reset();
         
         // Item update
         BaseAudioTrack item = (BaseAudioTrack) getItem(position);
         
-        ImageView cover = listItem.findViewById(R.id.albumCover);
+        final ImageView cover = listItem.findViewById(R.id.albumCover);
 
-        Bitmap imageBitmap = _artImageFetcher.fetch(item.getArtCover());
-        
-        if (imageBitmap != null)
-        {
-            cover.setImageBitmap(imageBitmap);
-        }
-        else
-        {
-            cover.setImageDrawable(parent.getResources().getDrawable(R.drawable.cover_art_none));
-        }
-        
+        Function<Bitmap, Void> callback = new Function<Bitmap, Void>() {
+            @NullableDecl
+            @Override
+            public Void apply(@NullableDecl Bitmap imageBitmap) {
+                if (imageBitmap != null) {
+                    cover.setImageBitmap(imageBitmap);
+                } else {
+                    cover.setImageDrawable(_coverArtNone);
+                }
+                return null;
+            }
+        };
+
+        searchView.token = _artImageFetcher.fetchAsync(item.getArtCover(), callback);
+
         TextView titleText = listItem.findViewById(R.id.titleText);
         titleText.setText(item.getTitle());
 
@@ -130,20 +156,32 @@ public class SearchListAdapter extends BaseAdapter
         // Highlighted
         boolean isHighlighted = _highlightedChecker.shouldBeHighlighted(item);
 
-        Resources resources = parent.getResources();
-
         if (!isHighlighted)
         {
-            listItem.setBackgroundColor(resources.getColor(R.color.transparent));
+            listItem.setBackgroundColor(_transparentColor);
         }
         else
         {
             _currentlySelectedView = listItem;
             _currentlySelectedViewListIndex = position;
-            _currentlySelectedView.setBackgroundColor(resources.getColor(R.color.currentHighlightedTrack));
+            _currentlySelectedView.setBackgroundColor(_highlightedColor);
         }
         
         return listItem;
+    }
+
+    private @NonNull SearchView addSearchView(@NonNull View view)
+    {
+        for (SearchView searchView : _listViews) {
+            if (searchView.view == view) {
+                return searchView;
+            }
+        }
+
+        SearchView searchView = new SearchView(view);
+        _listViews.add(searchView);
+
+        return searchView;
     }
 
     public boolean isItemSelectedForTrack(@NonNull BaseAudioTrack track)
@@ -178,12 +216,12 @@ public class SearchListAdapter extends BaseAdapter
 
         if (_highlightAnimation)
         {
-            _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+            _currentlySelectedView.setBackgroundColor(_transparentColor);
             UIAnimations.getShared().listItemAnimations.animateTap(_context, _currentlySelectedView);
         }
         else
         {
-            _currentlySelectedView.setBackgroundColor(_context.getResources().getColor(R.color.currentHighlightedTrack));
+            _currentlySelectedView.setBackgroundColor(_highlightedColor);
         }
     }
 
@@ -191,12 +229,12 @@ public class SearchListAdapter extends BaseAdapter
     {
         UIAnimations.getShared().listItemAnimations.endAll();
 
-        Iterator<View> iterator = _listViews.iterator();
+        Iterator<SearchView> iterator = _listViews.iterator();
 
         while (iterator.hasNext())
         {
-            View child = iterator.next();
-            child.setBackgroundColor(_context.getResources().getColor(R.color.transparent));
+            View child = iterator.next().view;
+            child.setBackgroundColor(_transparentColor);
         }
     }
     
