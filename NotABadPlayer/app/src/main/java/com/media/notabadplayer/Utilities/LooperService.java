@@ -76,7 +76,7 @@ public class LooperService {
             }
         };
         
-        _mainHandler.postDelayed(runnable, 1);
+        _mainHandler.post(runnable);
     }
 
     public void runOnBackground(final Function<Void, Void> callback)
@@ -88,7 +88,7 @@ public class LooperService {
             }
         };
 
-        _backgroundHandler.postDelayed(runnable, 1);
+        _backgroundHandler.post(runnable);
     }
 
     private void loop()
