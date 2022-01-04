@@ -1,16 +1,13 @@
 package com.media.notabadplayer.View.Search;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -27,7 +24,6 @@ import com.media.notabadplayer.Utilities.ArtImageFetcher;
 import com.media.notabadplayer.Utilities.InternalAdapterView;
 import com.media.notabadplayer.Utilities.InternalAdapterViews;
 import com.media.notabadplayer.Utilities.UIAnimations;
-import com.media.notabadplayer.View.Albums.AlbumsImageProcess;
 import com.media.notabadplayer.View.Other.TrackListFavoritesChecker;
 import com.media.notabadplayer.View.Other.TrackListHighlightedChecker;
 

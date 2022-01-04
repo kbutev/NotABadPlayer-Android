@@ -3,6 +3,7 @@ package com.media.notabadplayer.View.Albums;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,9 +16,15 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Function;
 import com.media.notabadplayer.Audio.Model.AudioAlbum;
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.ArtImageFetcher;
+import com.media.notabadplayer.Utilities.InternalAdapterView;
+import com.media.notabadplayer.Utilities.InternalAdapterViews;
 import com.media.notabadplayer.View.Other.GridSideIndexingView;
+
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
 {
@@ -25,15 +32,19 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     private final @NonNull List<AudioAlbum> _albums;
     private final @NonNull GridSideIndexingView _sideSelector;
 
-    private final @NonNull AlbumsImageProcesses _imageSetterProcesses = new AlbumsImageProcesses();
-    
-    private Drawable _artCoverNoneDrawable = null;
+    private @NonNull final ArtImageFetcher _fetcher;
+
+    private final InternalAdapterViews _listViews = new InternalAdapterViews();
+
+    private final Drawable _artCoverNoneDrawable;
     
     public AlbumsTableAdapter(@NonNull Context context, @NonNull List<AudioAlbum> albums, @NonNull GridSideIndexingView sideSelector)
     {
-        this._context = context;
-        this._albums = new ArrayList<>(albums);
-        this._sideSelector = sideSelector;
+        _context = context;
+        _albums = new ArrayList<>(albums);
+        _sideSelector = sideSelector;
+        _fetcher = new ArtImageFetcher(_context);
+        _artCoverNoneDrawable = context.getResources().getDrawable(R.drawable.cover_art_none);
     }
     
     public int getCount()
@@ -55,33 +66,42 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
     {
-        loadNoCoverArtIfNecessary(parent);
-
         if (convertView == null)
         {
             convertView = LayoutInflater.from(_context).inflate(R.layout.item_album, parent, false);
         }
         
         View listItem = convertView;
+
+        // Views update
+        InternalAdapterView albumView = _listViews.add(listItem);
+        albumView.reset();
         
         // Item
         AudioAlbum item = (AudioAlbum) getItem(position);
         String dataTitle = item.albumTitle;
 
-        ImageView cover = checkNotNull((ImageView)listItem.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
+        final ImageView cover = checkNotNull((ImageView)listItem.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
+
         cover.setImageDrawable(_artCoverNoneDrawable);
 
         if (item.artCover.isValid())
         {
-            AlbumsImageProcess p = new AlbumsImageProcess(_context, listItem, item.artCover, _imageSetterProcesses);
-            _imageSetterProcesses.add(p);
-            p.start();
+            albumView.token = _fetcher.fetchAsync(item.artCover, new Function<Bitmap, Void>() {
+                @NullableDecl
+                @Override
+                public Void apply(@NullableDecl Bitmap input) {
+                    if (input != null) {
+                        cover.setImageBitmap(input);
+                    } else {
+                        cover.setImageDrawable(_artCoverNoneDrawable);
+                    }
+
+                    return null;
+                }
+            });
         }
-        else
-        {
-            _imageSetterProcesses.removeProcessForView(listItem);
-        }
-        
+
         TextView title = checkNotNull((TextView)listItem.findViewById(R.id.title), "Base adapter is expecting a valid text view");
         
         if (dataTitle.length() == 0)
@@ -141,76 +161,5 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     public int getSectionForPosition(int position) 
     {
         return 0;
-    }
-
-    private void loadNoCoverArtIfNecessary(@NonNull ViewGroup parent)
-    {
-        if (_artCoverNoneDrawable == null)
-        {
-            _artCoverNoneDrawable = parent.getResources().getDrawable(R.drawable.cover_art_none);
-        }
-    }
-
-    private class AlbumsImageProcesses implements AlbumsImageProcessDelegate {
-        ArrayList<AlbumsImageProcess> currentRunningProcesses = new ArrayList<>();
-
-        private void add(@NonNull AlbumsImageProcess process)
-        {
-            AlbumsImageProcess alreadyRunning = findRunningProcessWithSameTarget(process);
-
-            if (alreadyRunning != null)
-            {
-                remove(alreadyRunning);
-            }
-            
-            currentRunningProcesses.add(process);
-        }
-
-        private void remove(@NonNull AlbumsImageProcess process)
-        {
-            process.stop();
-
-            currentRunningProcesses.remove(process);
-        }
-        
-        private void removeProcessForView(@NonNull View view)
-        {
-            for (int e = 0; e < currentRunningProcesses.size(); e++)
-            {
-                if (currentRunningProcesses.get(e).getTarget() == view)
-                {
-                    currentRunningProcesses.get(e).stop();
-                    currentRunningProcesses.remove(e);
-                    break;
-                }
-            }
-        }
-
-        private AlbumsImageProcess findRunningProcessWithSameTarget(@NonNull AlbumsImageProcess process)
-        {
-            for (AlbumsImageProcess p : currentRunningProcesses)
-            {
-                if (p.isEqualTo(process))
-                {
-                    return p;
-                }
-            }
-
-            return null;
-        }
-        
-        @Override
-        public void onProcessFinish()
-        {
-            // Cleanup - remove non running process
-            for (int e = 0; e < currentRunningProcesses.size(); e++)
-            {
-                if (!currentRunningProcesses.get(e).isRunning())
-                {
-                    currentRunningProcesses.remove(e);
-                    break;
-                }
-            }
-        }
     }
 }
