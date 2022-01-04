@@ -100,13 +100,12 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 
         // Views update
         InternalAdapterView itemView = _listViews.add(listItem);
-        itemView.reset();
 
         // Item update
         AudioAlbum album = _albums.get(position);
 
         final ImageView cover = listItem.findViewById(R.id.albumCover);
-        fetchArtCoverAsync(itemView, cover, album.artCover);
+        itemView.fetchArtCoverAsync(cover, _artImageFetcher, album.artCover, _coverArtNone);
 
         TextView title = listItem.findViewById(R.id.title);
         title.setText(album.albumTitle);
@@ -129,13 +128,12 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
 
         // Views update
         InternalAdapterView itemView = _listViews.add(listItem);
-        itemView.reset();
 
         // Item update
         AudioAlbum album = _albums.get(position);
 
         ImageView cover = listItem.findViewById(R.id.albumCover);
-        fetchArtCoverAsync(itemView, cover, album.artCover);
+        itemView.fetchArtCoverAsync(cover, _artImageFetcher, album.artCover, _coverArtNone);
 
         TextView title = listItem.findViewById(R.id.title);
         title.setText(album.albumTitle);
@@ -158,26 +156,6 @@ public class CreatePlaylistAlbumsAdapter extends BaseAdapter
         }
 
         return listItem;
-    }
-
-    private void fetchArtCoverAsync(final @NonNull InternalAdapterView itemView,
-                                    final @NonNull ImageView cover,
-                                    @NonNull AudioArtCover artCover)
-    {
-        Function<Bitmap, Void> callback = new Function<Bitmap, Void>() {
-            @NullableDecl
-            @Override
-            public Void apply(@NullableDecl Bitmap imageBitmap) {
-                if (imageBitmap != null) {
-                    cover.setImageBitmap(imageBitmap);
-                } else {
-                    cover.setImageDrawable(_coverArtNone);
-                }
-                return null;
-            }
-        };
-
-        itemView.token = _artImageFetcher.fetchAsync(artCover, callback);
     }
 
     private void updateSelectedAlbumTracks()

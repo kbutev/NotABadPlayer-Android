@@ -22,12 +22,12 @@ public class AudioArtCover implements Serializable {
         this.path = uri != null ? uri.toString() : null;
     }
 
-    public boolean isValid() {
-        if (path != null) {
-            return true;
-        }
+    public String value() {
+        return path != null ? path : key;
+    }
 
-        return key != null && !key.isEmpty();
+    public boolean isValid() {
+        return !value().isEmpty();
     }
 
     public @Nullable Uri buildImageUri() {

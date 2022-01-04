@@ -32,19 +32,19 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     private final @NonNull List<AudioAlbum> _albums;
     private final @NonNull GridSideIndexingView _sideSelector;
 
-    private @NonNull final ArtImageFetcher _fetcher;
+    private @NonNull final ArtImageFetcher _artImageFetcher;
 
     private final InternalAdapterViews _listViews = new InternalAdapterViews();
 
-    private final Drawable _artCoverNoneDrawable;
+    private final Drawable _coverArtNone;
     
     public AlbumsTableAdapter(@NonNull Context context, @NonNull List<AudioAlbum> albums, @NonNull GridSideIndexingView sideSelector)
     {
         _context = context;
         _albums = new ArrayList<>(albums);
         _sideSelector = sideSelector;
-        _fetcher = new ArtImageFetcher(_context);
-        _artCoverNoneDrawable = context.getResources().getDrawable(R.drawable.cover_art_none);
+        _artImageFetcher = new ArtImageFetcher(_context);
+        _coverArtNone = context.getResources().getDrawable(R.drawable.cover_art_none);
     }
     
     public int getCount()
@@ -75,32 +75,13 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
 
         // Views update
         InternalAdapterView albumView = _listViews.add(listItem);
-        albumView.reset();
         
         // Item
         AudioAlbum item = (AudioAlbum) getItem(position);
         String dataTitle = item.albumTitle;
 
         final ImageView cover = checkNotNull((ImageView)listItem.findViewById(R.id.cover), "Base adapter is expecting a valid image view");
-
-        cover.setImageDrawable(_artCoverNoneDrawable);
-
-        if (item.artCover.isValid())
-        {
-            albumView.token = _fetcher.fetchAsync(item.artCover, new Function<Bitmap, Void>() {
-                @NullableDecl
-                @Override
-                public Void apply(@NullableDecl Bitmap input) {
-                    if (input != null) {
-                        cover.setImageBitmap(input);
-                    } else {
-                        cover.setImageDrawable(_artCoverNoneDrawable);
-                    }
-
-                    return null;
-                }
-            });
-        }
+        albumView.fetchArtCoverAsync(cover, _artImageFetcher, item.artCover, _coverArtNone);
 
         TextView title = checkNotNull((TextView)listItem.findViewById(R.id.title), "Base adapter is expecting a valid text view");
         

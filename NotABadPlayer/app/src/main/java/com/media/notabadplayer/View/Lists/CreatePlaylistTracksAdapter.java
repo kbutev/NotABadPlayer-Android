@@ -70,27 +70,12 @@ public class CreatePlaylistTracksAdapter extends BaseAdapter
 
         // Views update
         InternalAdapterView itemView = _listViews.add(listItem);
-        itemView.reset();
 
         // Item update
         BaseAudioTrack track = _tracks.get(position);
 
         final ImageView cover = listItem.findViewById(R.id.albumCover);
-
-        Function<Bitmap, Void> callback = new Function<Bitmap, Void>() {
-            @NullableDecl
-            @Override
-            public Void apply(@NullableDecl Bitmap imageBitmap) {
-                if (imageBitmap != null) {
-                    cover.setImageBitmap(imageBitmap);
-                } else {
-                    cover.setImageDrawable(_coverArtNone);
-                }
-                return null;
-            }
-        };
-
-        itemView.token = _artImageFetcher.fetchAsync(track.getArtCover(), callback);
+        itemView.fetchArtCoverAsync(cover, _artImageFetcher, track.getArtCover(), _coverArtNone);
 
         TextView title = listItem.findViewById(R.id.title);
         title.setText(track.getTitle());

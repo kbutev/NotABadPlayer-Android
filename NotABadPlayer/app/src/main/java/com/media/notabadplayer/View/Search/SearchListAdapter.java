@@ -96,27 +96,12 @@ public class SearchListAdapter extends BaseAdapter
 
         // Views update
         InternalAdapterView searchView = _listViews.add(listItem);
-        searchView.reset();
-        
+
         // Item update
         BaseAudioTrack item = (BaseAudioTrack) getItem(position);
-        
+
         final ImageView cover = listItem.findViewById(R.id.albumCover);
-
-        Function<Bitmap, Void> callback = new Function<Bitmap, Void>() {
-            @NullableDecl
-            @Override
-            public Void apply(@NullableDecl Bitmap imageBitmap) {
-                if (imageBitmap != null) {
-                    cover.setImageBitmap(imageBitmap);
-                } else {
-                    cover.setImageDrawable(_coverArtNone);
-                }
-                return null;
-            }
-        };
-
-        searchView.token = _artImageFetcher.fetchAsync(item.getArtCover(), callback);
+        searchView.fetchArtCoverAsync(cover, _artImageFetcher, item.getArtCover(), _coverArtNone);
 
         TextView titleText = listItem.findViewById(R.id.titleText);
         titleText.setText(item.getTitle());
