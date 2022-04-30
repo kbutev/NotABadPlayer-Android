@@ -162,9 +162,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
                 AudioArtCover artCover;
 
                 if (Build.VERSION.SDK_INT >= 29) {
-                    int thumbColumn = cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID);
-                    int thumpId = cursor.getInt(thumbColumn);
-                    Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, thumpId);
+                    Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, albumID);
                     artCover = new AudioArtCover(null, uri);
                 } else {
                     Uri artURI = ContentUris.withAppendedId(LEGACY_ALBUMART_URI, albumID);
@@ -232,7 +230,7 @@ public class AudioLibrary extends ContentObserver implements AudioInfo {
 
         String selection = "is_music != 0";
 
-        if (Integer.parseInt(album.albumID) > 0)
+        if (album.albumIDAsLong() > 0)
         {
             selection = selection + " and album_id = " + album.albumID;
         }

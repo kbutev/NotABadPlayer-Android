@@ -55,11 +55,12 @@ public class ArtImageFetcher {
         try {
             if (Build.VERSION.SDK_INT >= 29) {
                 ContentResolver contentResolver = context.getContentResolver();
-                return contentResolver.loadThumbnail(uri, thumbSize, null);
+                Bitmap result = contentResolver.loadThumbnail(uri, thumbSize, null);
+                return result;
+            } else {
+                ContentResolver contentResolver = context.getContentResolver();
+                return MediaStore.Images.Media.getBitmap(contentResolver, uri);
             }
-
-            ContentResolver contentResolver = context.getContentResolver();
-            return MediaStore.Images.Media.getBitmap(contentResolver, uri);
         } catch (Exception e) {
             return null;
         }

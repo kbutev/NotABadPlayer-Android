@@ -15,4 +15,12 @@ public class AudioAlbum {
         this.albumTitle = albumTitle;
         this.artCover = artCover;
     }
+
+    public Long albumIDAsLong() {
+        if (albumID.isEmpty()) {
+            return 0L;
+        }
+
+        return Long.parseLong(albumID);
+    }
 }
