@@ -1,7 +1,8 @@
 package com.media.notabadplayer.View.Other;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -16,11 +17,11 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.media.notabadplayer.R;
+import com.media.notabadplayer.Utilities.ListAlphabet;
 import com.media.notabadplayer.Utilities.UIAnimations;
 
 public class GridSideIndexingView extends View {
     public static final int BOTTOM_PADDING = 10;
-    public static final int ALPHABET_CAPACITY = 24;
     
     private @NonNull Context _context;
     
@@ -30,7 +31,7 @@ public class GridSideIndexingView extends View {
 
     private GridView _view;
     private TextView _indexingTextCharacter;
-    private ArrayList<Character> _alphabet = new ArrayList<>();
+    private @NonNull ListAlphabet _alphabet = new ListAlphabet();
     
     public GridSideIndexingView(@NonNull Context context)
     {
@@ -106,41 +107,19 @@ public class GridSideIndexingView extends View {
         hide();
     }
     
-    public @NonNull ArrayList<Character> getAlphabet()
+    public @NonNull List<Character> getAlphabet()
     {
-        return _alphabet;
+        return _alphabet.getCharacters();
     }
 
     private void updateAlphabet(@NonNull ArrayList<String> titles)
     {
-        _alphabet.clear();
-
-        for (int e = 0; e < titles.size(); e++)
-        {
-            String title = titles.get(e);
-            
-            if (title.length() > 0)
-            {
-                char firstChar = title.charAt(0);
-
-                if (!_alphabet.contains(firstChar))
-                {
-                    _alphabet.add(firstChar);
-                }
-            }
-
-            if (_alphabet.size() >= ALPHABET_CAPACITY)
-            {
-                break;
-            }
-        }
-
-        Collections.sort(_alphabet);
+        _alphabet.updateAlphabet(titles);
     }
     
     protected void onDraw(Canvas canvas) 
     {
-        if (_alphabet.size() == 0)
+        if (_alphabet.isEmpty())
         {
             super.onDraw(canvas);
             return;
@@ -149,7 +128,7 @@ public class GridSideIndexingView extends View {
         int viewHeight = getPaddedHeight();
         float charHeight = ((float) viewHeight) / (float) _sections.length;
 
-        float widthCenter = getMeasuredWidth() / 2;
+        float widthCenter = getMeasuredWidth() / 2.0f;
         
         for (int i = 0; i < _sections.length; i++) 
         {
@@ -168,7 +147,7 @@ public class GridSideIndexingView extends View {
     {
         super.onTouchEvent(event);
 
-        if (_alphabet.size() == 0 || _selectionIndexer == null)
+        if (_alphabet.isEmpty() || _selectionIndexer == null)
         {
             return true;
         }

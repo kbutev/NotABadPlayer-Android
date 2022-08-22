@@ -1,6 +1,8 @@
 package com.media.notabadplayer.View.Albums;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +24,7 @@ import com.media.notabadplayer.R;
 import com.media.notabadplayer.Utilities.ArtImageFetcher;
 import com.media.notabadplayer.Utilities.InternalAdapterView;
 import com.media.notabadplayer.Utilities.InternalAdapterViews;
+import com.media.notabadplayer.Utilities.ListAlphabet;
 import com.media.notabadplayer.View.Other.GridSideIndexingView;
 
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
@@ -45,6 +48,8 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
         _sideSelector = sideSelector;
         _artImageFetcher = new ArtImageFetcher(_context);
         _coverArtNone = context.getResources().getDrawable(R.drawable.cover_art_none);
+
+        sortAlbums();
     }
     
     public int getCount()
@@ -100,7 +105,7 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     @Override
     public Object[] getSections() 
     {
-        ArrayList<Character> alphabet = _sideSelector.getAlphabet();
+        List<Character> alphabet = _sideSelector.getAlphabet();
         
         String[] chars = new String[alphabet.size()];
         
@@ -115,7 +120,7 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     @Override
     public int getPositionForSection(int selectedIndex)
     {
-        ArrayList<Character> alphabet = _sideSelector.getAlphabet();
+        List<Character> alphabet = _sideSelector.getAlphabet();
 
         // Check for invalid index
         if (selectedIndex >= alphabet.size()) {
@@ -142,5 +147,17 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     public int getSectionForPosition(int position) 
     {
         return 0;
+    }
+
+    private void sortAlbums()
+    {
+        Collections.sort(_albums, new Comparator<AudioAlbum>() {
+            @Override
+            public int compare(AudioAlbum first, AudioAlbum second) {
+                String a = first.albumTitle;
+                String b = second.albumTitle;
+                return ListAlphabet.compareStrings(a, b);
+            }
+        });
     }
 }
