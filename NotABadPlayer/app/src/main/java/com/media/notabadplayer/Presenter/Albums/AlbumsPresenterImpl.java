@@ -1,6 +1,8 @@
 package com.media.notabadplayer.Presenter.Albums;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,6 +18,7 @@ import com.media.notabadplayer.Audio.Model.BaseAudioTrack;
 import com.media.notabadplayer.Audio.Model.OpenPlaylistOptions;
 import com.media.notabadplayer.Constants.AppState;
 import com.media.notabadplayer.Storage.AudioLibrary;
+import com.media.notabadplayer.Utilities.ListAlphabet;
 import com.media.notabadplayer.View.Albums.AlbumsView;
 
 public class AlbumsPresenterImpl implements AlbumsPresenter, AudioLibrary.ChangesListener {
@@ -107,6 +110,7 @@ public class AlbumsPresenterImpl implements AlbumsPresenter, AudioLibrary.Change
                             _fetchingData = false;
 
                             _albums = albums;
+                            sortAlbums();
 
                             _view.onMediaAlbumsLoad(_albums);
                         }
@@ -185,5 +189,19 @@ public class AlbumsPresenterImpl implements AlbumsPresenter, AudioLibrary.Change
 
         // Stay up to date with the latest library data
         fetchData();
+    }
+
+    // Utilities
+
+    private void sortAlbums()
+    {
+        Collections.sort(_albums, new Comparator<AudioAlbum>() {
+            @Override
+            public int compare(AudioAlbum first, AudioAlbum second) {
+                String a = first.albumTitle;
+                String b = second.albumTitle;
+                return ListAlphabet.compareStrings(a, b);
+            }
+        });
     }
 }

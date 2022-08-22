@@ -48,8 +48,6 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
         _sideSelector = sideSelector;
         _artImageFetcher = new ArtImageFetcher(_context);
         _coverArtNone = context.getResources().getDrawable(R.drawable.cover_art_none);
-
-        sortAlbums();
     }
     
     public int getCount()
@@ -147,17 +145,5 @@ class AlbumsTableAdapter extends BaseAdapter implements SectionIndexer
     public int getSectionForPosition(int position) 
     {
         return 0;
-    }
-
-    private void sortAlbums()
-    {
-        Collections.sort(_albums, new Comparator<AudioAlbum>() {
-            @Override
-            public int compare(AudioAlbum first, AudioAlbum second) {
-                String a = first.albumTitle;
-                String b = second.albumTitle;
-                return ListAlphabet.compareStrings(a, b);
-            }
-        });
     }
 }
