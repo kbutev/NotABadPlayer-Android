@@ -436,19 +436,16 @@ public class MainActivity extends AppCompatActivity implements BaseRootView {
             return;
         }
 
-        switch (itemID) {
-            case R.id.navigation_albums:
-                selectAlbumsTab();
-                break;
-            case R.id.navigation_lists:
-                selectListsTab();
-                break;
-            case R.id.navigation_search:
-                selectSearchTab();
-                break;
-            case R.id.navigation_settings:
-                selectSettingsTab();
-                break;
+        if (itemID == R.id.navigation_albums) {
+            selectAlbumsTab();
+        } else if (itemID == R.id.navigation_lists) {
+            selectListsTab();
+        } else if (itemID == R.id.navigation_search) {
+            selectSearchTab();
+        } else if (itemID == R.id.navigation_settings) {
+            selectSettingsTab();
+        } else {
+            assert false;
         }
 
         // Save the current id to storage
@@ -677,20 +674,16 @@ public class MainActivity extends AppCompatActivity implements BaseRootView {
             {
                 boolean shouldCacheTab = false;
 
-                switch (currentTabID)
-                {
-                    case R.id.navigation_albums:
-                        shouldCacheTab = cachingPolicy.cacheAlbumsTab();
-                        break;
-                    case R.id.navigation_lists:
-                        shouldCacheTab = cachingPolicy.cacheListsTab();
-                        break;
-                    case R.id.navigation_search:
-                        shouldCacheTab = cachingPolicy.cacheSearchTab();
-                        break;
-                    case R.id.navigation_settings:
-                        shouldCacheTab = cachingPolicy.cacheSettingsTab();
-                        break;
+                if (currentTabID == R.id.navigation_albums) {
+                    shouldCacheTab = cachingPolicy.cacheAlbumsTab();
+                } else if (currentTabID == R.id.navigation_lists) {
+                    shouldCacheTab = cachingPolicy.cacheListsTab();
+                } else if (currentTabID == R.id.navigation_search) {
+                    shouldCacheTab = cachingPolicy.cacheSearchTab();
+                } else if (currentTabID == R.id.navigation_settings) {
+                    shouldCacheTab = cachingPolicy.cacheSettingsTab();
+                } else {
+                    assert false;
                 }
 
                 if (shouldCacheTab)

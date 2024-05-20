@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
@@ -37,7 +38,27 @@ public class PlayerApplication extends Application {
     {
         return application;
     }
-    
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    public static String[] permissions = {
+            Manifest.permission.READ_MEDIA_AUDIO
+    };
+
+    public static String[] old_permissions = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
+    public static String[] all_app_permissions() {
+        String[] p;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            p = permissions;
+        } else {
+            p = old_permissions;
+        }
+        return p;
+    }
+
     @Override
     public void onCreate()
     {
@@ -105,21 +126,20 @@ public class PlayerApplication extends Application {
     }
     
     private class Permissions {
-        public final int PERMISSION_REQUEST_USE_EXTERNAL_STORAGE = 1;
+        public final int PERMISSION_REQUEST_USE_MEDIA_AUDIO = 1;
 
         PermissionsStatus evaluatePermissions(@NonNull final Activity activity)
         {
             // Request for permission, handle it with the activity method onRequestPermissionsResult()
             try {
-                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED)
-                {
-                    return PermissionsStatus.DENIED;
+                for (String permission : all_app_permissions()) {
+                    int result = ContextCompat.checkSelfPermission(activity, permission);
+                    if (result != PackageManager.PERMISSION_GRANTED) {
+                        return PermissionsStatus.DENIED;
+                    }
                 }
-                else
-                {
-                    return PermissionsStatus.GRANTED;
-                }
+
+                return PermissionsStatus.GRANTED;
             }
             catch (Exception e)
             {
@@ -131,16 +151,7 @@ public class PlayerApplication extends Application {
         
         private void requestPermissions(@NonNull final Activity activity)
         {
-            if (Build.VERSION.SDK_INT >= 16)
-            {
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PERMISSION_REQUEST_USE_EXTERNAL_STORAGE);
-            }
-            else
-            {
-                ActivityCompat.requestPermissions(activity, new String[]{}, PERMISSION_REQUEST_USE_EXTERNAL_STORAGE);
-            }
+            ActivityCompat.requestPermissions(activity, all_app_permissions(), 1);
         }
     }
 
