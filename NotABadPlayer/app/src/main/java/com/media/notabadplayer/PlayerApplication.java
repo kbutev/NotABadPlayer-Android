@@ -41,7 +41,9 @@ public class PlayerApplication extends Application {
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     public static String[] permissions = {
-            Manifest.permission.READ_MEDIA_AUDIO
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.FOREGROUND_SERVICE,
+            Manifest.permission.POST_NOTIFICATIONS
     };
 
     public static String[] old_permissions = {
